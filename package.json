@@ -1,0 +1,38 @@
+{
+  "name": "eatlas",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "leaflet": "^1.4.0",
+    "prop-types": "^15.6.2",
+    "react": "^16.7.0",
+    "react-bootstrap": "^0.32.4",
+    "react-dom": "^16.7.0",
+    "react-leaflet": "^2.2.0",
+    "react-leaflet-control": "^2.1.0",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.8.0",
+    "react-test-renderer": "^16.7.0",
+    "sinon": "^7.2.3"
+  }
+}
