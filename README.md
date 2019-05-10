@@ -1,11 +1,9 @@
-stats19-private
+eAtlas
 ================
-2019-05-10
-
-\#eAtlas
 
 ![image](https://user-images.githubusercontent.com/408568/50227914-c5d07580-039e-11e9-9118-7b9a3d82669f.png)
-This is a geopumber app. Build
+This is a [geopumber](%22https://github.com/ATFutures/geoplumber%22)
+app. Build
 
 ``` r
 library(geoplumber)
