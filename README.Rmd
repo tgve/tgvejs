@@ -4,7 +4,9 @@ output: github_document
 ---
 
 ![image](https://user-images.githubusercontent.com/408568/50227914-c5d07580-039e-11e9-9118-7b9a3d82669f.png)
-This is a [geopumber](https://github.com/ATFutures/geoplumber) app. Build 
+This is a [geopumber](https://github.com/ATFutures/geoplumber) app. That means it is an R powered backend API (think Flask in Python) and a ReactJS front end.
+
+To build, from an R console:
 ```{r, eval=FALSE}
 library(geoplumber)
 gp_build()
