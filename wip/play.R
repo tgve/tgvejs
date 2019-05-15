@@ -2,7 +2,7 @@
 # get main table and export as csv
 # make sure you do not include the 1000s separator commas
 
-csv = read.csv("ne-other.csv", stringsAsFactors=FALSE)
+csv = read.csv("wip/ne-other.csv", stringsAsFactors=FALSE)
 names(csv) = gsub("X", "", names(csv)) # remove X's make.names
 names(csv) = gsub("..b.", "", names(csv)) # remove X's make.names
 csv = Filter(function(x)!all(is.na(x)), csv) # efficient
@@ -33,6 +33,6 @@ indices = unlist(sapply(csv$Between.North.East.and,
 # then
 library(sf)
 st_geometry(csv) = json$geometry[indices]
-mapview::mapview(csv)
+# mapview::mapview(csv)
 # mapview::mapview(json[9,])
 

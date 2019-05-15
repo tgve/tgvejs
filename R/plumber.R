@@ -48,6 +48,14 @@ uol_geojson <- function(res, grow){
   res
 }
 
+source("wip/play.R")
+json <- geojsonsf::sf_geojson(csv)
+#' @get /api/trips
+trips_geojson <- function(res){
+  res$body <- json
+  res
+}
+
 #' Tell plumber where our public facing directory is to SERVE.
 #' No need to map / to the build or public index.html. This will do.
 #'
