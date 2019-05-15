@@ -43,9 +43,9 @@ export default class Welcome extends Component {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                 />
-                <GeoJSONComponent fetchURL="http://localhost:8000/api/uol" />
                 {/* #ADD_COMPONENT */}
                 <GeoJSONComponent style={{color:'#3388ff'}} fetchURL='http://localhost:8000/api/trips' map={ this.state.map } />
+                <GeoJSONComponent style={{color:'#ff0000'}} fetchURL='http://localhost:8000/api/target' map={ this.state.map } />
             </Map>
         );
     }

@@ -81,6 +81,7 @@ export default class GeoJSONComponent extends React.Component {
             if(geojson.coordinates) { //single feature.
                 return(
                 <GeoJSON //react-leaflet component
+                    style={style}
                     key={JSON.stringify(geojson)}
                     data={geojson}
                 />
@@ -89,7 +90,7 @@ export default class GeoJSONComponent extends React.Component {
                 return(null) //nothing is passed to me.
             }
         }
-        // we have type: "FeatureCollection"
+        // we have type: "FeatureCollection"        
         return (
             geojson.features.map((feature, i) => {
                 return (

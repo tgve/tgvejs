@@ -49,10 +49,26 @@ uol_geojson <- function(res, grow){
 }
 
 source("wip/play.R")
-json <- geojsonsf::sf_geojson(csv)
+geojson <- geojsonsf::sf_geojson(csv)
 #' @get /api/trips
 trips_geojson <- function(res){
-  res$body <- json
+  res$body <- geojson
+  res
+}
+
+target <- json[grep("North East", json$NUTS112NM), "geometry"]
+target <- geojsonsf::sf_geojson(target)
+#' @get /api/target
+trips_target <- function(res, name) {
+  res$body <- target
+  res
+}
+
+others <- st_centroid(csv$geometry)
+northe <- st_centroid(json$geometry[grep("North East", json$NUTS112NM)]) 
+#' @get /api/lines
+trips_target <- function(res, name) {
+  res$body <- target
   res
 }
 
