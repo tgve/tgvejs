@@ -19,4 +19,23 @@ r = r[1:14] # 15 and 16 are index changes
 r = gsub("report/html","html/excel", r)
 r
 download.file(paste0(root, r[4]), destfile = paste0(a[4], ".xls"))
+download.file(paste0(root, r[1]), destfile = paste0(a[1], ".xls"))
 # now play with the xls
+
+
+# there is so much reaxl can do now.
+library(readxl)
+
+readXL = function(file) {
+  df = read_xls(file)
+  # class(df)
+  # nrow(df)
+  # head(df)
+  # df = Filter(function(x)!all(is.na(x)), df) # or drop_na()
+  return(df)
+}
+file = paste0(a[4], ".xls")
+
+df = readXL(file)
+df2 = readXL(paste0(a[1], ".xls"))
+
