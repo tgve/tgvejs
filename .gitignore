@@ -27,3 +27,6 @@ yarn-debug.log*
 yarn-error.log*
 /dft*
 dft*
+
+# xls by accident
+*.xls*
