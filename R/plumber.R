@@ -66,12 +66,12 @@ trips_target <- function(res, name) {
 
 cent_others <- st_centroid(csv)
 cent_northe <- st_centroid(target) 
-lines_sfc <- lapply(cent_others$geometry, 
+linestrings <- lapply(cent_others$geometry, 
                      function(x)rbind(st_coordinates(cent_northe$geometry),st_coordinates(x)))
-lines_sfc <- lapply(lines_sfc, 
+linestrings <- lapply(linestrings, 
                     function(x)st_linestring(x))
-lines = st_sf(csv, geometry = st_sfc(lines_sfc, crs = 4326))
-lines_geojson = geojsonsf::sf_geojson(lines)
+lines_sf = st_sf(csv, geometry = st_sfc(linestrings, crs = 4326))
+lines_geojson = geojsonsf::sf_geojson(lines_sf)
 #' @get /api/lines
 trips_target <- function(res, name) {
   res$body <- lines_geojson

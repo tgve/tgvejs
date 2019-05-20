@@ -55,6 +55,27 @@ export default class GeoJSONComponent extends React.Component {
 
     componentDidMount() {
         this._fetchData()
+        if(this.props.fetchURL.endsWith('trips')) {
+            var legend = L.control({position: 'topright'});
+
+            legend.onAdd = () => {
+    
+                var div = L.DomUtil.create('div', 'info legend'),
+                    grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+                    labels = [];
+    
+                // loop through our density intervals and generate a label with a colored square for each interval
+                for (var i = 0; i < grades.length; i++) {
+                    div.innerHTML +=
+                        '<i style="background:' + this._getColor(grades[i] + 1) + '"></i> ' +
+                        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+                }
+                div.innerHTML += "<br/>Million trips"
+                return div;
+            };
+    
+            legend.addTo(this.props.map);
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -79,7 +100,7 @@ export default class GeoJSONComponent extends React.Component {
     
     render() {
         const { geojson } = this.state;
-        let { radius, style } = this.props;
+        let { radius, style, year } = this.props;
 
         if (!geojson) {
             return (null) // as per React docs
@@ -106,11 +127,11 @@ export default class GeoJSONComponent extends React.Component {
             geojson.features.map((feature) => {
                 return (
                     <GeoJSON //react-leaflet component
-                        key={JSON.stringify(feature) + radius}
-                        // gp_add_geojson can define values from `feature`
+                    key={feature.properties['Between.North.East.and'] + year}
+                    // gp_add_geojson can define values from `feature`
                         style={typeof(style) === 'function' ?
                         {
-                            fillColor: this._getColor(feature.properties['1995.96']),
+                            fillColor: this._getColor(feature.properties[year]),
                             weight: 2,
                             opacity: 1,
                             color: 'white',

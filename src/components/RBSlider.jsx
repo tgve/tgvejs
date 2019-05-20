@@ -28,7 +28,8 @@ export default class RBSlider extends Component {
             <Control position={
                 this.props.position || "topright"
             }>
-                <div style={{backgroundColor: 'white'}}>
+                <div style={{
+                    backgroundColor: 'white'}}>
                     <input
                         id="typeinp"
                         type="range"

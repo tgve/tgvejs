@@ -20,7 +20,6 @@ export default class RailUse extends React.Component {
         super(props);
         this.state = {
             geojson: null,
-            year: '1995.96'
         }
         this._fetchData = this._fetchData.bind(this)
     }
@@ -69,8 +68,10 @@ export default class RailUse extends React.Component {
 
     render() {
         const { geojson } = this.state;
-        let { radius, style } = this.props;
+        let { radius, style, year } = this.props;
 
+        console.log(year);
+        
         if (!geojson) {
             return (null) // as per React docs
         }
@@ -83,7 +84,7 @@ export default class RailUse extends React.Component {
                 return(
                 <GeoJSON //react-leaflet component
                     style={style}
-                    key={JSON.stringify(geojson)}
+                    key={JSON.stringify(geojson) + year}
                     data={geojson}
                 />
                 )
@@ -94,24 +95,20 @@ export default class RailUse extends React.Component {
         // we have type: "FeatureCollection"        
         return (
             geojson.features.map((feature) => {
+                console.log(feature);
+                
                 return (
                     <GeoJSON //react-leaflet component
-                        key={JSON.stringify(feature) + radius}
+                        key={feature.properties['Between.North.East.and'] + year}
                         // gp_add_geojson can define values from `feature`
                         style={(feature) => {
-                            return Object.assign(style,{'weight': feature.properties[this.state.year]/100})
+                            return Object.assign(style,{'weight': feature.properties[year]/100})
                         }}
-                        /**
-                         * https://leafletjs.com/examples/geojson/
-                         * style for leaflet is
-                         * {"color": "#hexstr", "weight": 5, "opacity": 0.65}
-                         * or of course a function returning these.
-                         */
                         data={feature}
                         onEachFeature={(feature, layer) => {
                             const properties = [
                                 "Between.North.East.and : " + feature.properties['Between.North.East.and'],
-                                "Year: " + this.state.year
+                                "Year: " + year
                             ]
                             layer.bindPopup(
                                 properties.join('<br/>')
