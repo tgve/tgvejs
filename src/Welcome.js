@@ -23,6 +23,7 @@ export default class Welcome extends Component {
     componentDidMount() {
         const map = this.refs.map.leafletElement
         this.setState({ map })
+        // get regions
     }
 
     render() {
@@ -45,12 +46,9 @@ export default class Welcome extends Component {
                     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                 />
                 {/* #ADD_COMPONENT */}
-                <GeoJSONComponent style={{color:'#ff0000'}} fetchURL='http://localhost:8000/api/target' map={ this.state.map } />
-                <GeoJSONComponent style={{
-                    color:'#00ff00', 
-                    opacity: 0.4, 
-                    fillColor: "#2e5696"}} fetchURL='http://localhost:8000/api/trips' map={ this.state.map } />
-                <RailUse style={{color:'#3388ff'}} fetchURL='http://localhost:8000/api/lines' map={ this.state.map } />
+                <GeoJSONComponent style={{color:'#00ff00'}} fetchURL='http://localhost:8000/api/target' map={ this.state.map } />
+                <GeoJSONComponent style={() => {}} fetchURL='http://localhost:8000/api/trips' map={ this.state.map } />
+                <RailUse style={{color:'#000'}} fetchURL='http://localhost:8000/api/lines' map={ this.state.map } />
 
             </Map>
         );

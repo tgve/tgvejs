@@ -99,7 +99,7 @@ export default class RailUse extends React.Component {
                         key={JSON.stringify(feature) + radius}
                         // gp_add_geojson can define values from `feature`
                         style={(feature) => {
-                            return {'weight': feature.properties[this.state.year]/100}
+                            return Object.assign(style,{'weight': feature.properties[this.state.year]/100})
                         }}
                         /**
                          * https://leafletjs.com/examples/geojson/

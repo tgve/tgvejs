@@ -66,6 +66,17 @@ export default class GeoJSONComponent extends React.Component {
         }
     }
 
+    _getColor(d) {
+        return d > 1000 ? '#800026' :
+               d > 500  ? '#BD0026' :
+               d > 200  ? '#E31A1C' :
+               d > 100  ? '#FC4E2A' :
+               d > 50   ? '#FD8D3C' :
+               d > 20   ? '#FEB24C' :
+               d > 10   ? '#FED976' :
+                          '#FFEDA0';
+    }
+    
     render() {
         const { geojson } = this.state;
         let { radius, style } = this.props;
@@ -92,13 +103,20 @@ export default class GeoJSONComponent extends React.Component {
         }
         // we have type: "FeatureCollection"        
         return (
-            geojson.features.map((feature, i) => {
+            geojson.features.map((feature) => {
                 return (
                     <GeoJSON //react-leaflet component
                         key={JSON.stringify(feature) + radius}
                         // gp_add_geojson can define values from `feature`
                         style={typeof(style) === 'function' ?
-                        style(feature) : style }
+                        {
+                            fillColor: this._getColor(feature.properties['1995.96']),
+                            weight: 2,
+                            opacity: 1,
+                            color: 'white',
+                            dashArray: '3',
+                            fillOpacity: 0.7
+                        } : style }
                         /**
                          * https://leafletjs.com/examples/geojson/
                          * style for leaflet is
