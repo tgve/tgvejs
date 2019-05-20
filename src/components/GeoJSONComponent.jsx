@@ -70,7 +70,7 @@ export default class GeoJSONComponent extends React.Component {
                         '<i style="background:' + this._getColor(grades[i] + 1) + '"></i> ' +
                         grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
                 }
-                div.innerHTML += "<br/>Million trips"
+                div.innerHTML += "<br/>(Thousands)"
                 return div;
             };
     
