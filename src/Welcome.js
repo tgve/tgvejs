@@ -9,6 +9,7 @@ import Control from 'react-leaflet-control';
 import GeoJSONComponent from './components/GeoJSONComponent.jsx';
 
 import './App.css';
+import RailUse from './components/RailUse.jsx';
 
 export default class Welcome extends Component {
     constructor(props) {
@@ -44,8 +45,13 @@ export default class Welcome extends Component {
                     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                 />
                 {/* #ADD_COMPONENT */}
-                <GeoJSONComponent style={{color:'#3388ff'}} fetchURL='http://localhost:8000/api/trips' map={ this.state.map } />
                 <GeoJSONComponent style={{color:'#ff0000'}} fetchURL='http://localhost:8000/api/target' map={ this.state.map } />
+                <GeoJSONComponent style={{
+                    color:'#00ff00', 
+                    opacity: 0.4, 
+                    fillColor: "#2e5696"}} fetchURL='http://localhost:8000/api/trips' map={ this.state.map } />
+                <RailUse style={{color:'#3388ff'}} fetchURL='http://localhost:8000/api/lines' map={ this.state.map } />
+
             </Map>
         );
     }

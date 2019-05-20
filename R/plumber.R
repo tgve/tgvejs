@@ -57,18 +57,24 @@ trips_geojson <- function(res){
 }
 
 target <- json[grep("North East", json$NUTS112NM), "geometry"]
-target <- geojsonsf::sf_geojson(target)
+target_geojson <- geojsonsf::sf_geojson(target)
 #' @get /api/target
 trips_target <- function(res, name) {
-  res$body <- target
+  res$body <- target_geojson
   res
 }
 
-others <- st_centroid(csv$geometry)
-northe <- st_centroid(json$geometry[grep("North East", json$NUTS112NM)]) 
+cent_others <- st_centroid(csv)
+cent_northe <- st_centroid(target) 
+lines_sfc <- lapply(cent_others$geometry, 
+                     function(x)rbind(st_coordinates(cent_northe$geometry),st_coordinates(x)))
+lines_sfc <- lapply(lines_sfc, 
+                    function(x)st_linestring(x))
+lines = st_sf(csv, geometry = st_sfc(lines_sfc, crs = 4326))
+lines_geojson = geojsonsf::sf_geojson(lines)
 #' @get /api/lines
 trips_target <- function(res, name) {
-  res$body <- target
+  res$body <- lines_geojson
   res
 }
 
