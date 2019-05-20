@@ -3,7 +3,8 @@ title: eAtlas
 output: github_document
 ---
 
-![image](https://user-images.githubusercontent.com/408568/50227914-c5d07580-039e-11e9-9118-7b9a3d82669f.png)
+<img width="933" alt="Screenshot 2019-05-20 at 18 42 52" src="https://user-images.githubusercontent.com/408568/58041081-18b97f00-7b2f-11e9-941b-cea1b386d0bd.png">
+
 This is a [geopumber](https://github.com/ATFutures/geoplumber) app. That means it is an R powered backend API (think Flask in Python) and a ReactJS front end.
 
 To build, from an R console:
