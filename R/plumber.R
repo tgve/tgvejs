@@ -79,33 +79,35 @@ trips_target <- function(res, name) {
 }
 
 
-csvs = list.files("data", pattern = ".csv", full.names = TRUE)
-csv = NULL
-for (file in csvs) {
-  csv = rbind(csv, read.csv(file))
-}
-csv$JOBS = round(csv$JOBS, 3)
+# csvs = list.files("data", pattern = ".csv", 
+#                   full.names = TRUE)
+scenarios = read.csv("data/scenario0e.csv")
+# for (file in csvs) {
+#   scenarios = rbind(scenarios, read.csv(file))
+# }
+scenarios$JOBS = round(scenarios$JOBS, 3)
 lad = "lad.json"
 if(!file.exists(lad)) {
   download.file("https://github.com/martinjc/UK-GeoJSON/blob/master/json/administrative/gb/lad.json?raw=true",
                 destfile = lad)
 }
-names(csv) = gsub("GEOGRAPHY_", "", names(csv))
-geojson = geojsonsf::geojson_sf(lad)
-geom = geojson[match(levels(factor(csv$GEOGRAPHY_CODE)), 
-                     geojson$LAD13CD), 
+names(scenarios) = gsub("GEOGRAPHY_", "", names(scenarios))
+lad_geojson = geojsonsf::geojson_sf(lad)
+geom = lad_geojson[match(levels(factor(scenarios$CODE)), 
+                         lad_geojson$LAD13CD), 
                c("LAD13CD", "geometry")]
-rm(geojson)
-csv_json = jsonlite::toJSON(csv[])
-csv_geojson = geojsonsf::sf_geojson(geom)
+rm(lad_geojson)
+scenarios_json = jsonlite::toJSON(scenarios)
+geom = st_centroid(geom)
+scenarios_geojson = geojsonsf::sf_geojson(geom)
 #' @get /api/scenarios
 scenarios <- function(res) {
-  res$body <- csv_json
+  res$body <- scenarios_json
   res
 }
 #' @get /api/geom
-scenarios <- function(res) {
-  res$body <- csv_geojson
+geom <- function(res) {
+  res$body <- scenarios_geojson
   res
 }
 #' Tell plumber where our public facing directory is to SERVE.
