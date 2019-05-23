@@ -14,12 +14,12 @@ import React from 'react';
 import { GeoJSON } from 'react-leaflet';
 import L from 'leaflet';
 
-export default class GeoJSONComponent extends React.Component {
+export default class RailUse extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            geojson: null
+            geojson: null,
         }
         this._fetchData = this._fetchData.bind(this)
     }
@@ -55,27 +55,6 @@ export default class GeoJSONComponent extends React.Component {
 
     componentDidMount() {
         this._fetchData()
-        if(this.props.fetchURL.endsWith('trips')) {
-            var legend = L.control({position: 'topright'});
-
-            legend.onAdd = () => {
-    
-                var div = L.DomUtil.create('div', 'info legend'),
-                    grades = [0, 10, 20, 50, 100, 200, 500, 1000],
-                    labels = [];
-    
-                // loop through our density intervals and generate a label with a colored square for each interval
-                for (var i = 0; i < grades.length; i++) {
-                    div.innerHTML +=
-                        '<i style="background:' + this._getColor(grades[i] + 1) + '"></i> ' +
-                        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
-                }
-                div.innerHTML += "<br/>(Thousands)"
-                return div;
-            };
-    
-            legend.addTo(this.props.map);
-        }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -87,21 +66,12 @@ export default class GeoJSONComponent extends React.Component {
         }
     }
 
-    _getColor(d) {
-        return d > 1000 ? '#800026' :
-               d > 500  ? '#BD0026' :
-               d > 200  ? '#E31A1C' :
-               d > 100  ? '#FC4E2A' :
-               d > 50   ? '#FD8D3C' :
-               d > 20   ? '#FEB24C' :
-               d > 10   ? '#FED976' :
-                          '#FFEDA0';
-    }
-    
     render() {
         const { geojson } = this.state;
         let { radius, style, year } = this.props;
 
+        console.log(year);
+        
         if (!geojson) {
             return (null) // as per React docs
         }
@@ -114,7 +84,7 @@ export default class GeoJSONComponent extends React.Component {
                 return(
                 <GeoJSON //react-leaflet component
                     style={style}
-                    key={JSON.stringify(geojson)}
+                    key={JSON.stringify(geojson) + year}
                     data={geojson}
                 />
                 )
@@ -125,30 +95,21 @@ export default class GeoJSONComponent extends React.Component {
         // we have type: "FeatureCollection"        
         return (
             geojson.features.map((feature) => {
+                console.log(feature);
+                
                 return (
                     <GeoJSON //react-leaflet component
-                    key={feature.properties['Between.North.East.and'] + year}
-                    // gp_add_geojson can define values from `feature`
-                        style={typeof(style) === 'function' ?
-                        {
-                            fillColor: this._getColor(feature.properties[year]),
-                            weight: 2,
-                            opacity: 1,
-                            color: 'white',
-                            dashArray: '3',
-                            fillOpacity: 0.7
-                        } : style }
-                        /**
-                         * https://leafletjs.com/examples/geojson/
-                         * style for leaflet is
-                         * {"color": "#hexstr", "weight": 5, "opacity": 0.65}
-                         * or of course a function returning these.
-                         */
+                        key={feature.properties['Between.North.East.and'] + year}
+                        // gp_add_geojson can define values from `feature`
+                        style={(feature) => {
+                            return Object.assign(style,{'weight': feature.properties[year]/100})
+                        }}
                         data={feature}
                         onEachFeature={(feature, layer) => {
-                            const properties = Object.keys(feature.properties).map((key) => {
-                                return (key + " : " + feature.properties[key])
-                            })
+                            const properties = [
+                                "Between.North.East.and : " + feature.properties['Between.North.East.and'],
+                                "Year: " + year
+                            ]
                             layer.bindPopup(
                                 properties.join('<br/>')
                             );
