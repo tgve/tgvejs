@@ -78,6 +78,36 @@ trips_target <- function(res, name) {
   res
 }
 
+
+csvs = list.files("data", pattern = ".csv", full.names = TRUE)
+csv = NULL
+for (file in csvs) {
+  csv = rbind(csv, read.csv(file))
+}
+csv$JOBS = round(csv$JOBS, 3)
+lad = "lad.json"
+if(!file.exists(lad)) {
+  download.file("https://github.com/martinjc/UK-GeoJSON/blob/master/json/administrative/gb/lad.json?raw=true",
+                destfile = lad)
+}
+names(csv) = gsub("GEOGRAPHY_", "", names(csv))
+geojson = geojsonsf::geojson_sf(lad)
+geom = geojson[match(levels(factor(csv$GEOGRAPHY_CODE)), 
+                     geojson$LAD13CD), 
+               c("LAD13CD", "geometry")]
+rm(geojson)
+csv_json = jsonlite::toJSON(csv[])
+csv_geojson = geojsonsf::sf_geojson(geom)
+#' @get /api/scenarios
+scenarios <- function(res) {
+  res$body <- csv_json
+  res
+}
+#' @get /api/geom
+scenarios <- function(res) {
+  res$body <- csv_geojson
+  res
+}
 #' Tell plumber where our public facing directory is to SERVE.
 #' No need to map / to the build or public index.html. This will do.
 #'
