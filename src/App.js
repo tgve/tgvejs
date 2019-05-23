@@ -6,6 +6,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import Welcome from './Welcome';
 import Header from './components/Header';
+import Deck from './components/Deck';
 
 import './App.css';
 
@@ -21,6 +22,7 @@ class App extends Component {
         <Header />
         <Switch>
           <Route exact path="/" component={Welcome} />
+          <Route exact path="/deck" component={Deck} />
         </Switch>
       </main>
     )
