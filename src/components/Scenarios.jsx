@@ -7,7 +7,6 @@ import { Map, TileLayer } from 'react-leaflet';
 import Control from 'react-leaflet-control';
 
 import '../App.css';
-import RBSlider from './RBSlider'
 import ScenariosComponent from './ScenariosComponent';
 
 export default class Scenarios extends Component {
@@ -44,17 +43,6 @@ export default class Scenarios extends Component {
                     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                 />
                 {/* #ADD_COMPONENT */}
-                <RBSlider
-                    min="1995"
-                    max="2017"
-                    step="1"
-                    position="bottomleft"
-                    onChange={(year) =>
-                        this.setState({ 
-                            year: year + "." + ((parseInt(year) + 1) + "").substring(2)
-                        })
-                    } 
-                />
                 <ScenariosComponent 
                     map={ this.state.map } />
             </Map>

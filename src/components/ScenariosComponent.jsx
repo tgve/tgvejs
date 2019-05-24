@@ -14,15 +14,19 @@ import React from 'react';
 import { GeoJSON } from 'react-leaflet';
 import L from 'leaflet';
 import { interpolatePlasma } from 'd3-scale-chromatic';
+// import { min, max} from 'd3-array';
 
+import RBSlider from './RBSlider'
 export default class ScenariosComponent extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             geojson: null,
+            year: 2020
         }
         this._fetchData = this._fetchData.bind(this)
+        this._generateLegend = this._generateLegend.bind(this);
     }
 
     _fetchData(url, callback) {
@@ -55,32 +59,39 @@ export default class ScenariosComponent extends React.Component {
             });
     }
 
+    _generateLegend(year, jobsSum) {
+
+        var legend = L.control({ position: 'topright' });
+        legend.onAdd = () => {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = year.map(each => each.JOBS).sort().slice(year.length/2, year.length),
+                labels = [];
+
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + interpolatePlasma(10 * grades[i]/jobsSum) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '<br>' : '+');
+            }
+            return div;
+        };
+        legend.addTo(this.props.map);
+        this.setState({legend})
+    }
     componentDidMount() {
         const geom = 'http://localhost:8000/api/geom'
         const json = 'http://localhost:8000/api/scenarios'
         this._fetchData(geom, (geojson) => this.setState({ geojson }))
         this._fetchData(json, (scenarios) => {
-            const year1 = scenarios.filter(each => each.YEAR === 2020)
-            var legend = L.control({ position: 'topright' });
+            const year1 = scenarios.filter(each => each.YEAR === this.state.year)
             let jobsSum = 0
             year1.forEach((each) => jobsSum += parseFloat(each.JOBS))
-
-            legend.onAdd = () => {
-                var div = L.DomUtil.create('div', 'info legend'),
-                    grades = year1.map(each => each.JOBS).sort().slice(year1.length/2, year1.length),
-                    labels = [];
-
-                // loop through our density intervals and generate a label with a colored square for each interval
-                for (var i = 0; i < grades.length; i++) {
-                    div.innerHTML +=
-                        '<i style="background:' + interpolatePlasma(10 * grades[i]/jobsSum) + '"></i> ' +
-                        grades[i] + (grades[i + 1] ? '<br>' : '+');
-                }
-                return div;
-            };
-
-            legend.addTo(this.props.map);
-            this.setState({ scenarios: year1, jobsSum })
+            this._generateLegend(year1, jobsSum)
+            this.setState({
+                allScenarios: scenarios, 
+                scenarios: year1, 
+                jobsSum,
+             })
         })
     }
 
@@ -94,7 +105,8 @@ export default class ScenariosComponent extends React.Component {
     }
 
     render() {
-        const { geojson, scenarios } = this.state;
+        const { geojson, scenarios, year,
+            allScenarios } = this.state;
         let { style } = this.props;
         if (!geojson || !scenarios) {
             return (null) // as per React docs
@@ -114,52 +126,76 @@ export default class ScenariosComponent extends React.Component {
         }
         // we have type: "FeatureCollection"
         return (
-            geojson.features.map((feature, i) => {
-                const record = scenarios.filter(each => each.CODE === feature.properties['LAD13CD'])
-                return (
-                    <GeoJSON //react-leaflet component
-                        key={feature.properties['LAD13CD']}
-                        style={{
-                            fillColor: interpolatePlasma(10 * record[0].JOBS / this.state.jobsSum),
-                            weight: 5 + record[0].HOUSEHOLDS,
-                            opacity: 1,
-                            color: 'white',
-                            dashArray: '3',
-                            fillOpacity: 0.7
-                        }}
-                        data={feature}
-                        onEachFeature={(feature, layer) => {
-                            const record = scenarios.filter(each => each.CODE === feature.properties['LAD13CD'])
-                            const properties = Object.keys(record[0]).map((key) => {
-                                return (key + " : " + record[0][key])
-                            })
-                            layer.bindPopup(
-                                properties.join('<br/>')
-                            );
-                        }}
-                        pointToLayer={
-                            // use cricles prop if not 10 markers is enough
-                            this.props.circle || geojson.features.length > 8 ?
-                                (_, latlng) => {
-                                    // Change the values of these options to change the symbol's appearance
-                                    let options = {
-                                        radius: record[0].GVA / 10,
-                                        fillColor: "green",
-                                        color: "black",
-                                        weight: 1,
-                                        opacity: 1,
-                                        fillOpacity: 0.8
-                                    }
-                                    return L.circleMarker(latlng, options);
+            <div>
+                <RBSlider
+                    min={2020}
+                    max={2050}
+                    step="1"
+                    position="bottomleft"
+                    onChange={(year) =>{
+                        //each.YEAR is integer!
+                        const aYear = allScenarios.filter(each => each.YEAR === parseInt(year))
+                        let jobsSum = 0
+                        aYear.forEach((each) => jobsSum += parseFloat(each.JOBS))                        
+                        this.state.legend.remove();
+                        this._generateLegend(aYear, jobsSum)
+                        this.setState({
+                            scenarios: aYear, 
+                            jobsSum, 
+                            year: year
+                        })
+                    }} 
+                />
+                {
+                    geojson.features.map((feature, i) => {
+                        const record = scenarios.filter(each => each.CODE === feature.properties['LAD13CD'])
+                        return (
+                            <GeoJSON //react-leaflet component
+                                key={feature.properties['LAD13CD'] + year}
+                                style={{
+                                    fillColor: interpolatePlasma(10 * record[0].JOBS / this.state.jobsSum),
+                                    weight: 5 + record[0].HOUSEHOLDS,
+                                    opacity: 1,
+                                    color: 'white',
+                                    dashArray: '3',
+                                    fillOpacity: 0.7
+                                }}
+                                data={feature}
+                                onEachFeature={(feature, layer) => {
+                                    const record = scenarios.filter(each => each.CODE === feature.properties['LAD13CD'])
+                                    const properties = Object.keys(record[0]).map((key) => {
+                                        return (key + " : " + record[0][key])
+                                    })
+                                    layer.bindPopup(
+                                        properties.join('<br/>')
+                                    );
+                                }}
+                                pointToLayer={
+                                    // use cricles prop if not 10 markers is enough
+                                    this.props.circle || geojson.features.length > 8 ?
+                                        (_, latlng) => {
+                                            // Change the values of these options to change the symbol's appearance
+                                            let options = {
+                                                radius: record[0].GVA / 10,
+                                                fillColor: "green",
+                                                color: "black",
+                                                weight: 1,
+                                                opacity: 1,
+                                                fillOpacity: 0.8
+                                            }
+                                            return L.circleMarker(latlng, options);
+                                        }
+                                        :
+                                        (_, latlng) => {
+                                            return L.marker(latlng);
+                                        }
                                 }
-                                :
-                                (_, latlng) => {
-                                    return L.marker(latlng);
-                                }
-                        }
-                    />
-                )
-            })
+                            />
+                        )
+                    })
+                }
+            </div>
+            
         )
     }
 }

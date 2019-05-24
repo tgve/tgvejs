@@ -72,7 +72,10 @@ export default class Welcome extends Component {
                     year={this.state.year} 
                     style={{color:'#000'}} 
                     fetchURL='http://localhost:8000/api/lines' 
-                    map={ this.state.map } />
+                    map={ this.state.map } 
+                    connectionError={(error) => {
+                        this.setState({label: error})
+                    }}/>
             </Map>
         );
     }

@@ -50,6 +50,8 @@ export default class RailUse extends React.Component {
             })
             .catch((err) => {
                 console.log('Fetch Error: ', err);
+                typeof(this.props.connectionError) === 'function' &&
+                this.props.connectionError("Failed to load data")
             });
     }
 
@@ -69,8 +71,6 @@ export default class RailUse extends React.Component {
     render() {
         const { geojson } = this.state;
         let { radius, style, year } = this.props;
-
-        console.log(year);
         
         if (!geojson) {
             return (null) // as per React docs
@@ -95,7 +95,6 @@ export default class RailUse extends React.Component {
         // we have type: "FeatureCollection"        
         return (
             geojson.features.map((feature) => {
-                console.log(feature);
                 
                 return (
                     <GeoJSON //react-leaflet component
