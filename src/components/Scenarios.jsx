@@ -14,6 +14,7 @@ export default class Scenarios extends Component {
         super(props);
         this.state = {
             map: null,
+            label: "Scenario 1"
         }
     }
 
@@ -34,10 +35,10 @@ export default class Scenarios extends Component {
                     this.setState({ touchReceived: true })
                 }}
             >
-                {/* <Control position="bottomright">
+                <Control position="bottomleft">
                     <h3 style={{backgroundColor: 'white'}}>
                     {this.state.label}</h3>
-                </Control> */}
+                </Control>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"

@@ -60,7 +60,7 @@ export default class App extends React.Component {
             loading: false, //empty!
             layers: [],
             backgroundImage: gradient.backgroundImage,
-            radius: 100,
+            radius: 10,
             elevation: 4,
             mapStyle: "mapbox://styles/mapbox/dark-v9",
             initialViewState: init, 
@@ -78,9 +78,9 @@ export default class App extends React.Component {
     }
 
     _fetchAndUpdateState() {
-        fetchData(url + "/api/stats19", (data, error) => {
+        fetchData(url + "/api/geom", (data, error) => {
             if (!error) {
-                // console.log(data.features);
+                console.log(data.features);
                 this.setState({
                     loading: false,
                     data: data.features,
@@ -106,7 +106,7 @@ export default class App extends React.Component {
 
     _recalculateLayers(radius, elevation, filter) {
         let { data } = this.state
-        const { year, road_type, severity } = this.state;
+        const { year, road_type, severity } = this.state;        
         if (!data) return;
         //if resetting a value
         if (filter && filter.selected !== "") {
@@ -135,9 +135,9 @@ export default class App extends React.Component {
                 return (true)
             }
         )
-        // console.log(data.length);
+        console.log(data.length);
         let layer_style = 'grid';
-        if (data.length < 100) layer_style = 'icon'
+        if (data.length < 100) layer_style = 'icon';
         const alayer = generateDeckLayer(
             layer_style, data, this._renderTooltip,
             {
@@ -147,7 +147,8 @@ export default class App extends React.Component {
                 lightSettings: LIGHT_SETTINGS
             }
         )
-
+        console.log(alayer);
+        
         this.setState({
             mapStyle: filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
             tooltip: "",

@@ -134,6 +134,8 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
         addOptionsToObject(options, geojsonObj)
         return(new GeoJsonLayer(geojsonObj))
     } else if (name === 'icon') {
+        console.log(data);
+        
         //icon from https://github.com/uber/deck.gl/blob/8d5b4df9e4ad41eaa1d06240c5fddb922576ee21/website/src/static/images/icon-atlas.png
         const iconObj = {
             id: 'icon-layer',

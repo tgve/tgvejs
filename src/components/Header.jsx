@@ -8,11 +8,16 @@ import { Link, withRouter } from 'react-router-dom';
 const navs = [
     {
         key: 1,
-        to: "test",
-        title: "Test"
+        to: "scenarios",
+        title: "Scenarios"
     },
     {
         key: 2,
+        to: "deck",
+        title: "Deck"
+    },
+    {
+        key: 3,
         to: "about",
         title: "About"
     },
