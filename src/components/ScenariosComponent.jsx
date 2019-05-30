@@ -78,6 +78,7 @@ export default class ScenariosComponent extends React.Component {
         legend.addTo(this.props.map);
         this.setState({legend})
     }
+    
     componentDidMount() {
         const geom = 'http://localhost:8000/api/geom'
         const json = 'http://localhost:8000/api/scenarios'
@@ -154,9 +155,9 @@ export default class ScenariosComponent extends React.Component {
                                 key={feature.properties['LAD13CD'] + year}
                                 style={{
                                     fillColor: interpolatePlasma(10 * record[0].JOBS / this.state.jobsSum),
-                                    weight: 5 + record[0].HOUSEHOLDS,
+                                    weight: 2,
                                     opacity: 1,
-                                    color: 'white',
+                                    color: 'red',
                                     dashArray: '3',
                                     fillOpacity: 0.7
                                 }}
@@ -176,10 +177,10 @@ export default class ScenariosComponent extends React.Component {
                                         (_, latlng) => {
                                             // Change the values of these options to change the symbol's appearance
                                             let options = {
-                                                radius: record[0].GVA / 10,
+                                                radius: record[0].GVA / 50,
                                                 fillColor: "green",
                                                 color: "black",
-                                                weight: 1,
+                                                weight: 15,
                                                 opacity: 1,
                                                 fillOpacity: 0.8
                                             }

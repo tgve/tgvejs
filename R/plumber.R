@@ -1,4 +1,4 @@
-#' plumber 0.4.6
+library(sf)
 
 # Enable CORS -------------------------------------------------------------
 #' CORS enabled for now. See docs of plumber
@@ -29,26 +29,32 @@ swagger <- function(req, res){
   plumber::include_html(fname, res)
 }
 
-# Below is part of Welcome endpoint:
-library(geoplumber)
-uol <- rbind(uni_point, uni_poly)
-uol <- geojsonsf::sf_geojson(uol)
-#' Welcome endpoint. Feel free to remove, relevant line in Welcome.js (line 41)
-#' @get /api/uol
-uol_geojson <- function(res, grow){
-  if(!missing(grow) && !is.na(as.numeric(grow))) {
-    # add a buffer around poly for now
-    # TODO: further checks for value validity.
-    poly <- sf::st_buffer(uni_poly, as.numeric(grow))
-    poly <- geojsonsf::sf_geojson(poly)
-    res$body <- poly # geojson
-    return (res)
-  }
-  res$body <- uol
-  res
-}
-
-source("wip/play.R")
+#' start wip/play.R
+#' 
+csv = read.csv("wip/ne-other.csv", stringsAsFactors=FALSE)
+names(csv) = gsub("X", "", names(csv)) # remove X's make.names
+names(csv) = gsub("..b.", "", names(csv)) # remove X's make.names
+csv = Filter(function(x)!all(is.na(x)), csv) # efficient
+max.trips = max(as.numeric(sapply(csv[,names(csv)[2:24]], max, na.rm = TRUE)))
+min.trips = min(as.numeric(sapply(csv[,names(csv)[2:24]], min, na.rm = TRUE)))
+# regions including scotland
+# https://opendata.arcgis.com/datasets/bafeb380d7e34f04a3cdf1628752d5c3_0.geojson
+json = geojsonsf::geojson_sf("https://raw.githubusercontent.com/martinjc/UK-GeoJSON/master/json/eurostat/ew/nuts1.json")
+json = json[order(json$NUTS112NM),]
+csv$Between.North.East.and[match("Wales - Cymru", csv$Between.North.East.and)] = "Wales"
+json$NUTS112NM
+csv$Between.North.East.and
+# no geometry for scotland
+csv = csv[-(match("Scotland", csv$Between.North.East.and)),]
+indices = unlist(sapply(csv$Between.North.East.and, 
+                        function(x)grep(pattern = x, json$NUTS112NM, 
+                                        ignore.case = TRUE)))
+# json = json[order(json$NUTS112NM[indices]),] 
+# json$NUTS112NM rows should match csv$Between.North.East.and
+# then
+st_geometry(csv) = json$geometry[indices]
+#' 
+#' end wip/play.R
 geojson <- geojsonsf::sf_geojson(csv)
 #' @get /api/trips
 trips_geojson <- function(res){

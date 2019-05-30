@@ -36,14 +36,14 @@ export default class RailUse extends React.Component {
                 }
                 // Examine the text in the response
                 response.json()
-                    .then((geojson) => {
+                    .then((geojson) => {                        
                         if ((geojson.features && geojson.features.length === 0) || response.status === 'ZERO_RESULTS') {
                             this.setState({ error: response.status })
-                        } else {
+                        } else {                            
                             var geojsonLayer = L.geoJson(geojson)
                             const bbox = geojsonLayer.getBounds()
                             // assuming parent has provided "map" object
-                            this.props.map && this.props.map.fitBounds(bbox)
+                            this.props.map && this.props.map.fitBounds(bbox)                            
                             this.setState({ geojson })
                         }
                     });
