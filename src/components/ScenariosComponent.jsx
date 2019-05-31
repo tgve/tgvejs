@@ -14,7 +14,7 @@ import React from 'react';
 import { GeoJSON } from 'react-leaflet';
 import L from 'leaflet';
 import { interpolatePlasma } from 'd3-scale-chromatic';
-import { min, max} from 'd3-array';
+// import { min, max} from 'd3-array';
 
 import RBSlider from './RBSlider'
 export default class ScenariosComponent extends React.Component {

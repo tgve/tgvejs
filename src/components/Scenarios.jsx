@@ -9,11 +9,14 @@ import Control from 'react-leaflet-control';
 import '../App.css';
 import ScenariosComponent from './ScenariosComponent';
 
+import {FormGroup, Radio} from 'react-bootstrap';
+
 export default class Scenarios extends Component {
     constructor(props) {
         super(props);
         this.state = {
             map: null,
+            selectedOption: '0',
             label: "Scenario 1"
         }
     }
@@ -35,6 +38,27 @@ export default class Scenarios extends Component {
                     this.setState({ touchReceived: true })
                 }}
             >
+                <Control position="bottomright">
+                    <FormGroup style={{backgroundColor: 'white'}}>
+                        {
+                            ['0','1','2'].map((key) => {
+                                return (
+                                    <Radio
+                                        checked={this.state.selectedOption === key}
+                                        value={key}
+                                        key={key}
+                                        onChange={(e) => {
+                                            this.setState({
+                                                label: "Scenario " + e.target.value,
+                                                selectedOption: e.target.value
+                                            })
+                                        }}
+                                    >{"Scenario " + key}</Radio>
+                                )
+                            })
+                        }
+                    </FormGroup>
+                </Control>
                 <Control position="bottomleft">
                     <h3 style={{backgroundColor: 'white'}}>
                     {this.state.label}</h3>
