@@ -14,7 +14,7 @@ import React from 'react';
 import { GeoJSON } from 'react-leaflet';
 import L from 'leaflet';
 import { interpolatePlasma } from 'd3-scale-chromatic';
-// import { min, max} from 'd3-array';
+import { min, max} from 'd3-array';
 
 import RBSlider from './RBSlider'
 export default class ScenariosComponent extends React.Component {
@@ -60,19 +60,25 @@ export default class ScenariosComponent extends React.Component {
     }
 
     _generateLegend(year, jobsSum) {
-
+        function sortNumber(a, b) {
+            return a - b;
+        }
         var legend = L.control({ position: 'topright' });
         legend.onAdd = () => {
             var div = L.DomUtil.create('div', 'info legend'),
-                grades = year.map(each => each.JOBS).sort().slice(year.length/2, year.length),
+                grades = year.map(each => parseFloat(each.JOBS)).sort(sortNumber),
                 labels = [];
-
+            const jMax = grades[grades.length - 1], jMin = grades[0];
+                                   
             // loop through our density intervals and generate a label with a colored square for each interval
-            for (var i = 0; i < grades.length; i++) {
+            for (var i = 0; i < 1; i+=0.1) {
                 div.innerHTML +=
-                    '<i style="background:' + interpolatePlasma(10 * grades[i]/jobsSum) + '"></i> ' +
-                    grades[i] + (grades[i + 1] ? '<br>' : '+');
+                    '<i style="background:' + interpolatePlasma(i) + '"></i> ';
+                if(i === 0) div.innerHTML += jMin.toFixed(2)
+                if(i - 0.9 >= Number.EPSILON)div.innerHTML += jMax.toFixed(2)
+                div.innerHTML += '<br/>';
             }
+            div.innerHTML += "Jobs"
             return div;
         };
         legend.addTo(this.props.map);
