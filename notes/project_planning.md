@@ -107,16 +107,18 @@ How much exploration do we want to support? How complex do we want to make the q
 
 I mentioned the generalisability issue. Most likely we will choose to design different tools depending on domain -- domain-specific e-Atlas(es).
 
-## Tech (webgl)
+### Tech (webgl)
 Browsers are now capable of rendering graphic intensive and large amounts of datasets. Uber, amonst others, are leading the way to visualize geospatial data in "novel" ways. They have two separate projects which would be useful and source of inspiration. Their "DeckGL" work and "react-vis".
 
-### Tech stack
+#### Tech stack
 As mentioned above it will be "web based", this does not mean it will have to be "online". It means it will be developed using "latest" web technologies but thanks to the advance in this area, we can develop it as a "native" desktop/smartphone application. We will avoid the details in this document on purpose.
 
 We aim to develop an online application. However, for the record, applications which have been developed using this tech stack include Microsoft's VS Code and GitHub's Atom (IDE's), Slack, Rstudio (partly). This means, limitations and security concerns for the "online" version of it can be addressed. 
 
-### Implementing above ideas
+#### Implementing above ideas
 Most of the interactions, components and other aspects of the "prototype" are feasible and achievable. Layik has already worked on STATS19 dataset and developed a basic "interaction dashboard" to explore STATS19 which does include elements from above/below mentioned ideas and work by Roger.
+
+![STATS19 dashboard](./images/stats19.png)
 
 ## Planned activity
 
