@@ -30,5 +30,6 @@ dft*
 
 # xls by accident
 *.xls*
+*.Rds
 
 lad.json
