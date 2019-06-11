@@ -4,7 +4,6 @@ import { scaleLinear } from 'd3-scale';
 
 import DataSeries from './DataSeries';
 import './LineChart.css';
-import { SSL_OP_NO_TICKET } from 'constants';
 
 export default class LineChart extends React.Component {
     constructor(props) {
@@ -42,7 +41,7 @@ export default class LineChart extends React.Component {
             size = { width: this.props.width, height: this.props.height };
         // console.log(data);
         if (!data) return (null) // React
-        const { x, y } = this.state;
+        const { x } = this.state;
         // console.log(x, y);
 
         const max = _.chain(data)
@@ -76,7 +75,7 @@ export default class LineChart extends React.Component {
                 {
                     data && data.map((year, i) => {
                         const x1 = i * (260 / data.length);
-                        const y1 = i * (180 / data.length);
+                        // const y1 = i * (180 / data.length);
                         return (
                             <g key={year + "" + i}>
                                 <line x1={x1} y1="180" x2={x1} y2="175" />

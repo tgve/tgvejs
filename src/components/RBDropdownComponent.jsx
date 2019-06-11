@@ -1,5 +1,5 @@
 import React from 'react';
-import { MenuItem, DropdownButton, ButtonToolbar } from 'react-bootstrap';
+import { MenuItem, DropdownButton } from 'react-bootstrap';
 
 export default class RBDropDown extends React.Component {
     constructor(props) {

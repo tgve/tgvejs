@@ -56,7 +56,7 @@ export default class DeckSidebar extends React.Component {
                     <div className="side-pane-header">
                         <h4>{data && data.length && "Showing"}</h4>
                         <h2>{data && data.length ? 
-                            (data.length == 1 ? data.length + " crash." : data.length + " crashes.") 
+                            (data.length === 1 ? data.length + " crash." : data.length + " crashes.") 
                             : "Nothing to show"}
                         </h2>
                         </div>

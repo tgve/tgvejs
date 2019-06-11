@@ -59,7 +59,7 @@ export default class ScenariosComponent extends React.Component {
             });
     }
 
-    _generateLegend(year, jobsSum) {
+    _generateLegend(year) {
         function sortNumber(a, b) {
             return a - b;
         }

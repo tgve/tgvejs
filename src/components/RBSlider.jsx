@@ -26,7 +26,7 @@ export default class RBSlider extends Component {
     }
 
     _generateTicks() {
-        let { min, max, step } = this.props;
+        let { min, max } = this.props;
         let i = min;
         const ticks = [];
         while (i < max) {

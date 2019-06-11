@@ -32,9 +32,6 @@ const LIGHT_SETTINGS = {
     numberOfLights: 2
 };
 
-// Data to be used by the LineLayer
-// const data = [{sourcePosition: [-122.41669, 37.7853], targetPosition: [-122.41669, 37.781]}];
-
 export default class App extends React.Component {
     constructor(props) {
         super(props)
@@ -98,7 +95,7 @@ export default class App extends React.Component {
     // placed below function next to componentDidMount
     // to be noticed for conusion with standard React.componentDidMount
     _onMapLoad() {
-        console.log(this.map.getBounds());
+        // console.log(this.map.getBounds());
         //update initialViewState
         // below crashes with some n[r] weird error. See this:
         // https://uber.github.io/react-map-gl/#/Documentation/advanced/viewport-transition?section=transition-and-the-onviewportchange-callback
