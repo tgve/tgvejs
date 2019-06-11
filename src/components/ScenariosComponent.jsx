@@ -60,24 +60,31 @@ export default class ScenariosComponent extends React.Component {
     }
 
     _generateLegend(year, jobsSum) {
-
+        function sortNumber(a, b) {
+            return a - b;
+        }
         var legend = L.control({ position: 'topright' });
         legend.onAdd = () => {
             var div = L.DomUtil.create('div', 'info legend'),
-                grades = year.map(each => each.JOBS).sort().slice(year.length/2, year.length),
+                grades = year.map(each => parseFloat(each.JOBS)).sort(sortNumber),
                 labels = [];
-
+            const jMax = grades[grades.length - 1], jMin = grades[0];
+                                   
             // loop through our density intervals and generate a label with a colored square for each interval
-            for (var i = 0; i < grades.length; i++) {
+            for (var i = 0; i < 1; i+=0.1) {
                 div.innerHTML +=
-                    '<i style="background:' + interpolatePlasma(10 * grades[i]/jobsSum) + '"></i> ' +
-                    grades[i] + (grades[i + 1] ? '<br>' : '+');
+                    '<i style="background:' + interpolatePlasma(i) + '"></i> ';
+                if(i === 0) div.innerHTML += jMin.toFixed(2)
+                if(i - 0.9 >= Number.EPSILON)div.innerHTML += jMax.toFixed(2)
+                div.innerHTML += '<br/>';
             }
+            div.innerHTML += "Jobs"
             return div;
         };
         legend.addTo(this.props.map);
         this.setState({legend})
     }
+    
     componentDidMount() {
         const geom = 'http://localhost:8000/api/geom'
         const json = 'http://localhost:8000/api/scenarios'
@@ -154,9 +161,9 @@ export default class ScenariosComponent extends React.Component {
                                 key={feature.properties['LAD13CD'] + year}
                                 style={{
                                     fillColor: interpolatePlasma(10 * record[0].JOBS / this.state.jobsSum),
-                                    weight: 5 + record[0].HOUSEHOLDS,
+                                    weight: 2,
                                     opacity: 1,
-                                    color: 'white',
+                                    color: 'red',
                                     dashArray: '3',
                                     fillOpacity: 0.7
                                 }}
@@ -176,10 +183,10 @@ export default class ScenariosComponent extends React.Component {
                                         (_, latlng) => {
                                             // Change the values of these options to change the symbol's appearance
                                             let options = {
-                                                radius: record[0].GVA / 10,
+                                                radius: record[0].GVA / 50,
                                                 fillColor: "green",
                                                 color: "black",
-                                                weight: 1,
+                                                weight: 15,
                                                 opacity: 1,
                                                 fillOpacity: 0.8
                                             }

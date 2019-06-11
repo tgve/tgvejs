@@ -38,8 +38,8 @@ export default class App extends React.Component {
     constructor(props) {
         super(props)
         const init = {
-            longitude: -1.6362,
-            latitude: 53.8321,
+            longitude: -1.162,
+            latitude: 51.8321,
             zoom: 10,
             pitch: 55,
             bearing: 0
@@ -254,7 +254,7 @@ export default class App extends React.Component {
                         />
                     </div>
                     <DeckGL
-                        {...viewport}
+                        viewState={viewport ? viewport : initialViewState}
                         initialViewState={initialViewState}
                         layers={this.state.layers}
                     >

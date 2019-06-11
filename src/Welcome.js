@@ -62,12 +62,14 @@ export default class Welcome extends Component {
                 <GeoJSONComponent
                     key="source" 
                     style={{color:'#00ff00'}} 
-                    fetchURL='http://localhost:8000/api/target' map={ this.state.map } />
+                    fetchURL='http://localhost:8000/api/target' 
+                    map={ this.state.map } />
                 <GeoJSONComponent
                     key="dests"
                     year={this.state.year} 
                     style={() => {}} 
-                    fetchURL='http://localhost:8000/api/trips' map={ this.state.map } />
+                    fetchURL='http://localhost:8000/api/trips' 
+                    map={ this.state.map } />
                 <RailUse
                     year={this.state.year} 
                     style={{color:'#000'}} 

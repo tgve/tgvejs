@@ -1,0 +1,7 @@
+.ticks {
+    position: absolute;
+    background-color: lightgrey;
+    width: 1px;
+    height: 10px;
+    display: inline-block;
+}

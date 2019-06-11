@@ -9,8 +9,8 @@ csv = Filter(function(x)!all(is.na(x)), csv) # efficient
 max.trips = max(as.numeric(sapply(csv[,names(csv)[2:24]], max, na.rm = TRUE)))
 min.trips = min(as.numeric(sapply(csv[,names(csv)[2:24]], min, na.rm = TRUE)))
 
-plot(as.numeric(csv[1,3:length(names(csv))-1]), type = "o", col = "blue", 
-     ylim = c(min.trips,max.trips), xlab = csv[1,1])
+# plot(as.numeric(csv[1,3:length(names(csv))-1]), type = "o", col = "blue", 
+     # ylim = c(min.trips,max.trips), xlab = csv[1,1])
 
 # regions including scotland
 # https://opendata.arcgis.com/datasets/bafeb380d7e34f04a3cdf1628752d5c3_0.geojson
