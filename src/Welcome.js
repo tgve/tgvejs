@@ -254,7 +254,7 @@ export default class App extends React.Component {
                         />
                     </div>
                     <DeckGL
-                        {...viewport}
+                        viewState={viewport ? viewport : initialViewState}
                         initialViewState={initialViewState}
                         layers={this.state.layers}
                     >

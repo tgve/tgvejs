@@ -1,8 +1,5 @@
-'use-strict';
-
 import React from 'react';
 import { MenuItem, DropdownButton, ButtonToolbar } from 'react-bootstrap';
-import Control from 'react-leaflet-control';
 
 export default class RBDropDown extends React.Component {
     constructor(props) {
@@ -55,35 +52,29 @@ export default class RBDropDown extends React.Component {
         const keyIsArray = menuitems && typeof (menuitems[0]) !== 'string';
 
         // console.log(title);
-        if(!menuitems || menuitems.length == 0) {
-            return(null)
+        if (!menuitems || menuitems.length === 0) {
+            return (null)
         }
-        
+
         return (
-            <Control position={
-                this.props.position || "topright"
-            }>
-                <ButtonToolbar>
-                    <DropdownButton
-                        title={title}
-                        className={classNames && classNames.length > 0 && [...classNames]}
-                        id={typeof (size) === 'string' ? size : "dropdown-size-medium"}
-                        onSelect={(event) => {
-                            //update title
-                            this.setState({
-                                title: keyIsArray ? Object.values(event)[0] : event
-                            })
-                            if (typeof (this.props.onSelectCallback) === 'function') {
-                                this.props.onSelectCallback(keyIsArray ? Object.values(event)[0] : event)
-                            }
-                            //die gracefully
-                        }}>
-                        {
-                            this._generateMenuItems(menuitems)
-                        }
-                    </DropdownButton>
-                </ButtonToolbar>
-            </Control>
+            <DropdownButton
+                title={title}
+                className={classNames && classNames.length > 0 && [...classNames]}
+                id={typeof (size) === 'string' ? size : "dropdown-size-medium"}
+                onSelect={(event) => {
+                    //update title
+                    this.setState({
+                        title: keyIsArray ? Object.values(event)[0] : event
+                    })
+                    if (typeof (this.props.onSelectCallback) === 'function') {
+                        this.props.onSelectCallback(keyIsArray ? Object.values(event)[0] : event)
+                    }
+                    //die gracefully
+                }}>
+                {
+                    this._generateMenuItems(menuitems)
+                }
+            </DropdownButton>
         )
     }
 }
