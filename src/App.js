@@ -9,6 +9,7 @@ import Header from './components/Header';
 import Deck from './components/Deck';
 import Scenarios from './components/Scenarios';
 import About from './About';
+import RailShowcase from './components/RailShowcase';
 
 import './App.css';
 
@@ -24,6 +25,7 @@ class App extends Component {
         <Header />
         <Switch>
           <Route exact path="/" component={Welcome} />
+          <Route exact path="/rail" component={RailShowcase} />
           <Route exact path="/deck" component={Deck} />
           <Route exacg path="/scenarios" component={Scenarios} />
           <Route exact path="/about" component={About} />
