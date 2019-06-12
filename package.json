@@ -19,6 +19,7 @@
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^3.0.1",
+    "react-vis": "^1.11.7",
     "underscore": "^1.9.1"
   },
   "scripts": {
