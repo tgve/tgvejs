@@ -6,7 +6,7 @@ import './DeckSidebar.css';
 import RBDropDown from '../RBDropdownComponent';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import LineChart from '../LineChart/LineChart';
-import { summariseByYear } from '../../Utils';
+import { summariseByYear } from '../../utils';
 
 export default class DeckSidebar extends React.Component {
     constructor(props) {

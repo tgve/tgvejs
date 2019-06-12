@@ -3,7 +3,7 @@ import DeckGL from 'deck.gl';
 import MapGL, { NavigationControl } from 'react-map-gl';
 
 import { fetchData, generateDeckLayer, 
-    getParamsFromSearch, getBbx} from './Utils';
+    getParamsFromSearch, getBbx} from './utils';
 import Constants from './Constants';
 import DeckSidebar from './components/DeckSidebar/DeckSidebar';
 import history from './history';
