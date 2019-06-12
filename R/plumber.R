@@ -38,9 +38,6 @@ lapply(packages, library, character.only = TRUE)
 
 
 # get data ----------------------------------------------------------------
-# prep the data
-cas_type = "Pedestrian"
-
 # #' @examples
 # #' find_csv_name(2009:2017, "accidents")
 # find_csv_name = function(years, type) {
@@ -58,11 +55,8 @@ if(!file.exists("ac_joined_wy_2009-2017.Rds")) {
 }
 accidents <- NULL
 read_downloaded <- function() {
-  if (is.null(accidents)) {
-    accidents <- readRDS("ac_joined_wy_2009-2017.Rds")
-    accidents <<- sf::st_transform(accidents, 4326)
-    
-  }
+  accidents <<- readRDS("ac_joined_wy_2009-2017.Rds")
+  accidents <<- sf::st_transform(accidents, 4326)
   # Leeds bbox
   bb <- osmdata::getbb("leeds")
   bb_str <- osmdata::bbox_to_string(bb)
@@ -85,12 +79,23 @@ read_downloaded <- function() {
     "age_band_of_casualty",
     "vehicle_types"
   )]
+  # saving memory
+  # accidents$road_type[accidents$road_type == "Dual carriageway"] = 1
+  # accidents$road_type[accidents$road_type == "Single carriageway"] = 2
+  # accidents$road_type[accidents$road_type == "One way street"] = 3
+  # accidents$road_type[accidents$road_type == "Roundabout"] = 4
+  # accidents$road_type[accidents$road_type == "Slip road"] = 5
+  # accidents$road_type[accidents$road_type == "Unknown"] = 6
+  
+  # replace casualty_type too
+  # ct <- 1:length(levels(factor(accidents$casualty_type)))
+  # names(ct) <- levels(factor(accidents$casualty_type))
+  # accidents$casualty_type <- vapply(accidents$casualty_type, 2, FUN = function(x) ct[[x]])
+  # 
   message("Converting them to geojson")
-  accidents_geojson <-  geojsonsf::sf_geojson(accidents)
-  accidents_geojson
+  geojsonsf::sf_geojson(accidents)
 }
 
-accidents_geojson <- NULL
 accidents_geojson <- read_downloaded()
 
 # print(accidents)

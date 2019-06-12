@@ -103,6 +103,16 @@ export default class App extends React.Component {
     }
 
     _recalculateLayers(radius, elevation, filter) {
+        function match(value) {
+            switch(value) {
+                case 1:
+                    return("Dual carriageway")
+                case 2:
+                    return("Single carriageway")
+                default:
+                    return("Unknown")
+            }
+        }
         let { data } = this.state
         const { year, road_type, severity } = this.state;
         if (!data) return;
@@ -111,7 +121,7 @@ export default class App extends React.Component {
             data = data.filter(
                 d => {
                     if (filter.what === 'road_type') {
-                        return (d.properties.road_type === filter.selected)
+                        return (match(d.properties.road_type) === filter.selected)
                     } else if (filter.what === 'severity') {
                         return (d.properties.accident_severity === filter.selected)
                     } else if (filter.what === 'year') {
