@@ -80,12 +80,12 @@ read_downloaded <- function() {
     "vehicle_types"
   )]
   # saving memory
-  # accidents$road_type[accidents$road_type == "Dual carriageway"] = 1
-  # accidents$road_type[accidents$road_type == "Single carriageway"] = 2
-  # accidents$road_type[accidents$road_type == "One way street"] = 3
-  # accidents$road_type[accidents$road_type == "Roundabout"] = 4
-  # accidents$road_type[accidents$road_type == "Slip road"] = 5
-  # accidents$road_type[accidents$road_type == "Unknown"] = 6
+  accidents$road_type[accidents$road_type == "Dual carriageway"] = 1
+  accidents$road_type[accidents$road_type == "Single carriageway"] = 2
+  accidents$road_type[accidents$road_type == "One way street"] = 3
+  accidents$road_type[accidents$road_type == "Roundabout"] = 4
+  accidents$road_type[accidents$road_type == "Slip road"] = 5
+  accidents$road_type[accidents$road_type == "Unknown"] = 6
   
   # replace casualty_type too
   # ct <- 1:length(levels(factor(accidents$casualty_type)))

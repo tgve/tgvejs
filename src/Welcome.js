@@ -105,10 +105,16 @@ export default class App extends React.Component {
     _recalculateLayers(radius, elevation, filter) {
         function match(value) {
             switch(value) {
-                case 1:
+                case '1':
                     return("Dual carriageway")
-                case 2:
+                case '2':
                     return("Single carriageway")
+                case '3':
+                    return("One way street")
+                case '4':
+                    return("Roundabout")
+                case '5':
+                    return("Slip road")
                 default:
                     return("Unknown")
             }
