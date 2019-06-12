@@ -22,6 +22,6 @@ readScenarios = function() {
   rm(geom)
   # mapview::mapview(csv_sf[1:10,])
   csv
-}
+  }
 
   
