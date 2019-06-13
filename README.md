@@ -1,7 +1,7 @@
 eAtlas
 ================
 
-<img width="100%" alt="Screenshot 2019-06-11 at 17 22 02" src="https://user-images.githubusercontent.com/408568/59289239-7b54f500-8c6d-11e9-8419-7eeae5c795d7.png">
+<img width="100%" alt="Screenshot 2019-06-12 at 22 53 36" src="https://user-images.githubusercontent.com/408568/59395062-fefc0800-8d79-11e9-91b8-6216ab292615.png">
 
 Currently this is just a “WIP” as we explore and gather requirements of
 the project. There are some
