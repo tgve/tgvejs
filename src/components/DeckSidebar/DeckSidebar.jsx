@@ -5,8 +5,9 @@ import { Tabs, Tab, FormGroup, InputGroup,
 import './DeckSidebar.css';
 import RBDropDown from '../RBDropdownComponent';
 import MapboxBaseLayers from '../MapboxBaseLayers';
-import LineChart from '../LineChart/LineChart';
 import { summariseByYear } from '../../utils';
+import {XYPlot, LineSeries, VerticalBarSeries, XAxis, YAxis, } from 'react-vis';
+import Variables from '../Variables';
 
 export default class DeckSidebar extends React.Component {
     constructor(props) {
@@ -54,7 +55,6 @@ export default class DeckSidebar extends React.Component {
                 <div
                     className="side-panel">
                     <div className="side-pane-header">
-                        <h4>{data && data.length && "Showing"}</h4>
                         <h2>{data && data.length ? 
                             (data.length === 1 ? data.length + " crash." : data.length + " crashes.") 
                             : "Nothing to show"}
@@ -154,9 +154,33 @@ export default class DeckSidebar extends React.Component {
                                     <i style={{ fontSize: '2rem' }}
                                         className="fa fa-info" />
                                 }>
-                                    <LineChart
-                                        data={summariseByYear(data)}
-                                    />
+                                    {data && data.length > 0 && <Variables data={data} />}
+                                    <XYPlot 
+                                        xType="ordinal"
+                                        animation={{ duration: 1 }}
+                                        height={250} width={250}>
+                                        <XAxis
+                                            position="right"
+                                            tickLabelAngle={-45}
+                                            style={{
+                                                text: { fill: '#fff', fontWeight: 400 }
+                                            }} />
+                                        <YAxis
+                                            tickLabelAngle={-45}
+                                            tickFormat={v => v > 1000 ? v/1000 + "K" : v}
+                                            style={{
+                                                title: {fill: '#fff'},
+                                                text: { fill: '#fff', fontWeight: 400 }
+                                            }}
+                                            position="start"
+                                            title="Crashes" />
+                                        <LineSeries
+                                            onSeriesMouseOver={(event)=>{
+                                                
+                                            }}
+                                            style={{ fill: 'none' }}
+                                            data={summariseByYear(data)} />
+                                    </XYPlot>
                                 </Tab>
                                 <Tab eventKey="2" title={
                                     <i style={{ fontSize: '2rem' }}

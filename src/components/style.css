@@ -5,3 +5,29 @@
     height: 10px;
     display: inline-block;
 }
+.tagcloud {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.tagcloud span {
+	display: inline-block;
+	margin: 0.125rem;
+	padding: 0.4375rem;
+	background: #29323C;
+	border: 1px solid rgb(72, 87, 104);
+    transition: all 0.1s ease-in-out;
+    border-radius: 1rem;
+}
+
+.tagcloud .sub {
+	background: rgb(3, 4, 5);
+}
+
+.tagcloud span:hover,
+.tagcloud span:focus {
+	background: rgb(33, 47, 63);
+	color: white;
+	transform: scale(1.1);
+}

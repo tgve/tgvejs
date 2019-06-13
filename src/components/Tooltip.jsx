@@ -83,7 +83,7 @@ export default class Tooltip extends React.Component {
                                 style={{
                                     text: { fill: '#fff', fontWeight: 600 }
                                 }}
-                                title="X Axis" />
+                                title="Crashes" />
                             <LineSeries 
                             
                             data={crashes_data} />
