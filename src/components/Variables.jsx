@@ -26,6 +26,18 @@ export default class Variables extends Component {
         })
     }
     
+    componentDidUpdate(prevProps) {
+        const { data } = this.props;
+        if(!data || data.length === 0) return;
+        if(data.length !== prevProps.data.length) {
+            const properties = data[0].properties;
+            const list = this._generateList(properties) 
+            this.setState({
+                list
+            })
+        }
+    }
+
     _generateList(properties) {
         const {data} = this.props;
         const list = Object.keys(properties).map(key =>
@@ -70,6 +82,8 @@ export default class Variables extends Component {
         return (
             <div 
             className="tagcloud">
+                Dataset variables:
+                <p>
                 {
                     key ? <span
                     onClick={() => this.setState({
@@ -84,6 +98,7 @@ export default class Variables extends Component {
                         <i>Showing 5 out of {sublist.length}</i>
                     </>: sublist
                 }
+                </p>
             </div>
         )
     }

@@ -48,7 +48,7 @@ export default class DeckSidebar extends React.Component {
             onSelectCallback, data,
             toggleSubsetBoundsChange } = this.props;
         // console.log("render");
-
+        const plot_data = summariseByYear(data);
         return (
             <div className="side-panel-container"
                 style={{ marginLeft: hide ? '-320px' : '0px' }}>
@@ -155,7 +155,7 @@ export default class DeckSidebar extends React.Component {
                                         className="fa fa-info" />
                                 }>
                                     {data && data.length > 0 && <Variables data={data} />}
-                                    <XYPlot 
+                                    {plot_data && plot_data.length > 1 && <XYPlot 
                                         xType="ordinal"
                                         animation={{ duration: 1 }}
                                         height={250} width={250}>
@@ -179,8 +179,8 @@ export default class DeckSidebar extends React.Component {
                                                 
                                             }}
                                             style={{ fill: 'none' }}
-                                            data={summariseByYear(data)} />
-                                    </XYPlot>
+                                            data={plot_data} />
+                                    </XYPlot>}
                                 </Tab>
                                 <Tab eventKey="2" title={
                                     <i style={{ fontSize: '2rem' }}
