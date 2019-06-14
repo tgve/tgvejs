@@ -1,6 +1,6 @@
 # SPF e-Atlas
 
-Date : 03.06.2019
+Date : 12.06.2019
 
 ## Project outcomes
 
@@ -92,14 +92,14 @@ Displays results of large-sample public attitude survey, with results shown them
 
 ### So, what is a Turing e-Atlas?
 
-As we begin discussing/advertising with colleagues at Turing (next month?) we probably need to make some decisions internally on this -- ruling features in- and out-.
+As we begin discussing/advertising with colleagues at Turing (next month?) we probably need to make some decisions internally on this -- ruling features in and out.
 
-#### Generalisability
+#### Generalisability : no view composition, but possibly user-uploaded data
 
 We clearly will not allow users to do their own view composition (e.g. Tableau), but it may be possible to design a tool (with fixed views) that supports thematically different data, providing it is regularly structured. An example of this is [UpSet](http://caleydo.org/tools/upset/) (very cool and with R package so may use in teaching!).
 
 
-#### Flexibility
+#### Flexibility : exploration vs. communication
 
 How much exploration do we want to support? How complex do we want to make the querying? Clearly depends on domain, but we probably want pretty hard constraints on this -- and there are technical implications (@Layik, realise these have not been mentioned yet!).
 
@@ -108,9 +108,17 @@ How much exploration do we want to support? How complex do we want to make the q
 I mentioned the generalisability issue. Most likely we will choose to design different tools depending on domain -- domain-specific e-Atlas(es).
 
 
-## Planned activity
+## What is a Turing (geo)visualization toolkit?
 
-To be discussed with RB, NL and LH, but 3 month plan:
+A separate activity discussed was in developing design guidelines for supporting visual analysis of Turing data.
+
+Difficult to know quite what we should be doing here. Is this about setting up initiatives at Turing for discussing and sharing InfoVis work? If so, is this something likely to be outside of SPF?  
+
+Could this instead be a more *research-focussed* activity aimed at developing and applying new visualization techniques to analysing SPF datasets specifically - e.g. to support SPF data analysis.
+
+
+
+## Planned activity (3 month-plan)
 
 ### Jun 2019
 
@@ -129,7 +137,8 @@ To be discussed with RB, NL and LH, but 3 month plan:
 
 * Prototype 1 implemented : RB, LH
 
-## Prototype 1 / making a 'case' : a thought on picking a domain
+## Prototype 1 / making a 'case' : a thought on picking a domain (SPENCER data)
+
 
 I've previously developed some visualization software (more prototypes) for the crime analysis domain that, interpreted pretty loosely, could be considered as an e-Atlas -- couple of papers and tools.
 
