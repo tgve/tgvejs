@@ -1,0 +1,83 @@
+/*minor customization to bootstrap*/
+.nav-tabs>li.active>a, 
+.nav-tabs>li.active>a:focus, 
+.nav-tabs>li.active>a:hover,
+.nav-tabs>li>a:focus {
+    background-color: unset;
+    color: #a3a5a8;
+}
+.nav-tabs>li.active {
+    border-bottom: 2px solid #ddd;
+}
+.side-panel-container {
+    top: 44px;
+    height: 95%;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: stretch;
+    -webkit-transition: margin 250ms;
+    transition: margin 250ms;
+    position: absolute;
+    padding-top: 20px;
+    padding-bottom: 30px;
+    padding-left: 20px;
+    z-index: 1;
+}
+.side-panel {
+    padding: 20px;
+    width: 300px;
+    background-color: #242730;
+    color: #a3a5a8;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.side-pane-header {
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #29323C;
+}
+
+.side-panel-body {
+    flex: 1 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* border: 1px solid white; */
+}
+/* .side-panel-body > form, .side-panel-body-content {
+    border: 1px solid red;
+} */
+.close-button {
+    -webkit-transition: left 250ms, right 250ms;
+    transition: left 250ms, right 250ms;
+}
+
+.side-panel .btn,
+.side-panel .btn-default,
+.side-panel .dropdown-menu,
+.open>.dropdown-toggle.btn-default,
+.side-panel .dropdown-menu>li>a {
+    background-color: #242730;
+    color: #a3a5a8;
+}
+.side-panel .dropdown-menu {
+    border: 1px solid #adadad;
+}
+.side-panel .dropdown-menu>li>a:hover {
+    background-color: white;
+    color: #242730;
+}
+.search-form {
+    padding-bottom: 0;
+    max-width: 260px;
+}
+.search-form .form-control,
+.search-form .input-group-addon {
+    background-color: #242730;
+    color: #a3a5a8;
+}

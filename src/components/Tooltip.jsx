@@ -1,5 +1,5 @@
 import React from 'react';
-
+import {XYPlot, LineSeries, VerticalBarSeries, XAxis, YAxis, } from 'react-vis';
 export default class Tooltip extends React.Component {
 
     render() {
@@ -10,7 +10,9 @@ export default class Tooltip extends React.Component {
 
         const type_feature = hoveredObject.type && hoveredObject.type === 'Feature';
         let list;
-    
+        let crashes_data = [];
+        let severity_data = [];
+
         if (!type_feature) {
             list = hoveredObject.points.map(feature => {                
                 const aKey = {}
@@ -41,35 +43,69 @@ export default class Tooltip extends React.Component {
                 }
             });
             // list severity and year counts
-            list = Array.from(map.keys()).map(key => {
+            Array.from(map.keys()).forEach(key => {
                 // console.log(key, [ ...map.keys() ]);
-                return (
-                    <li key={key} style={{
-                        color: key.toLowerCase() === 'fatal' ? 'red' : 'white'
-                    }}>
-                        {key} : {map.get(key)}
-                    </li>
-                )
+                if(parseInt(key)) {
+                    crashes_data.push({x: key, y: map.get(key)})
+                } else {
+                    severity_data.push({x: key, y: map.get(key)})
+                }
             })
         }
-    
+        
         const w = window.innerWidth;
+        const y = window.innerHeight
         const tooltip =
             <div
-                className="xyz" style={{ top: topy, left: topx + 100 > w ? topx - 100 : topx }}>
+                className="xyz" style={{ 
+                    top: topy + 300 > y ? topy - 300 : topy, 
+                    left: topx + 300 > w ? topx - 300 : topx }}>
                 <div>
-                    <b>Accidents({type_feature ? 1 : hoveredObject.points.length})</b>
+                    <b>Total:{type_feature ? 1 : hoveredObject.points.length}</b>
                 </div>
                 <div>
                     <div>
-                        Speed: {type_feature ? hoveredObject.properties.speed_limit : hoveredObject.points[0].properties.speed_limit}
+                        Road speed: {type_feature ? hoveredObject.properties.speed_limit : hoveredObject.points[0].properties.speed_limit}
                     </div>
-                    {!type_feature &&
-                        <ul style={{ paddingLeft: 10 }}>
-                            {
-                                list
-                            }
-                        </ul>}
+                    {
+                        // react-vis cannot generate plot for single value
+                        crashes_data.length > 1 &&
+                        <XYPlot 
+                        animation={{duration: 0.8}}
+                        height={300} width={300}>
+                            <XAxis 
+                                tickLabelAngle={-45}
+                                tickFormat={v => v + ""}
+                                style={{
+                                    text: { fill: '#fff', fontWeight: 600 }
+                                }} />
+                            <YAxis 
+                                style={{
+                                    text: { fill: '#fff', fontWeight: 600 }
+                                }}
+                                title="Crashes" />
+                            <LineSeries 
+                            
+                            data={crashes_data} />
+                        </XYPlot>
+                    }
+                                        {
+                        // react-vis cannot generate plot for single value
+                        severity_data.length > 1 &&
+                        <XYPlot 
+                        xType="ordinal" 
+                            width={300} height={100}>
+                            <XAxis 
+                                tickLabelAngle={-45}
+                                tickFormat={v => v + ""}
+                                style={{
+                                    text: { fill: '#fff', fontWeight: 600 }
+                                }} />
+                            <VerticalBarSeries
+                            // color={v => v === "Fatal" ? 1 : v === "Slight" ? 0 : null}
+                            data={severity_data} />
+                        </XYPlot>
+                    }
                 </div>
             </div>
         return (tooltip)

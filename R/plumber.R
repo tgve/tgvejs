@@ -1,5 +1,3 @@
-library(sf)
-
 # Enable CORS -------------------------------------------------------------
 #' CORS enabled for now. See docs of plumber
 #' for disabling it for any endpoint we want in future
@@ -29,6 +27,108 @@ swagger <- function(req, res){
   plumber::include_html(fname, res)
 }
 
+packages <- c("sf", "geojsonsf")
+
+if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
+  install.packages(setdiff(packages, rownames(installed.packages())),repos='http://cran.us.r-project.org')
+}
+# devtools::install_github("ITSLeeds/stats19")
+packages <- c(packages, "stats19")
+lapply(packages, library, character.only = TRUE)
+
+
+# get data ----------------------------------------------------------------
+# #' @examples
+# #' find_csv_name(2009:2017, "accidents")
+# find_csv_name = function(years, type) {
+#   z = find_file_name(years = years, type = type)
+#   z = gsub("dftRoadSafetyData_Accidents_2017.zip", "Acc.zip", z)
+#   z = gsub("RoadSafetyData_Accidents_2015.zip", "Accidents_2015.zip", z)
+#   # z = gsub("Accidents7904.zip", "whatever.zip")
+#   z_dir = gsub(pattern = ".zip", replacement = "", x = z)
+#   z_csv = gsub(pattern = ".zip", replacement = ".csv", x = z)
+#   file.path(z_dir, z_csv)
+# }
+
+if(!file.exists("ac_joined_wy_2009-2017.Rds")) {
+  stop("ac_joined_wy_2009-2017.Rds")
+}
+accidents <- NULL
+read_downloaded <- function() {
+  accidents <<- readRDS("ac_joined_wy_2009-2017.Rds")
+  accidents <<- sf::st_transform(accidents, 4326)
+  # Leeds bbox
+  bb <- osmdata::getbb("leeds")
+  bb_str <- osmdata::bbox_to_string(bb)
+  v <- as.double(unlist(strsplit(bb_str, ",")))
+  bbx <- c(
+    xmin = v[2],
+    ymin = v[1],
+    xmax = v[4],
+    ymax = v[3]
+  )
+  accidents <<- sf::st_crop(accidents, bbx) # Leeds only
+  accidents <<- accidents[c(
+    "speed_limit",
+    "date",
+    "road_type",
+    "number_of_casualties",
+    "accident_severity",
+    "casualty_type",
+    "age_of_casualty",
+    "age_band_of_casualty",
+    "vehicle_types"
+  )]
+  # saving memory
+  accidents$road_type[accidents$road_type == "Dual carriageway"] = 1
+  accidents$road_type[accidents$road_type == "Single carriageway"] = 2
+  accidents$road_type[accidents$road_type == "One way street"] = 3
+  accidents$road_type[accidents$road_type == "Roundabout"] = 4
+  accidents$road_type[accidents$road_type == "Slip road"] = 5
+  accidents$road_type[accidents$road_type == "Unknown"] = 6
+  
+  # replace casualty_type too
+  # ct <- 1:length(levels(factor(accidents$casualty_type)))
+  # names(ct) <- levels(factor(accidents$casualty_type))
+  # accidents$casualty_type <- vapply(accidents$casualty_type, 2, FUN = function(x) ct[[x]])
+  # 
+  message("Converting them to geojson")
+  geojsonsf::sf_geojson(accidents)
+}
+
+accidents_geojson <- read_downloaded()
+
+# print(accidents)
+#' @get /api/stats19
+all_geojson <- function(res){
+  res$headers$`Content-type` <- "application/json"
+  res$body <- accidents_geojson
+  res
+}
+
+#' get a subset of results depending on a bbox provided
+#' @get /api/stats19/<xmin:double>/<ymin:double>/<xmax:double>/<xmax:double>/
+#' @get /api/stats19/<xmin:double>/<ymin:double>/<xmax:double>/<ymax:double>
+#'
+subs_geojson <- function(res, xmin, ymin, xmax, ymax){
+  res$headers$`Content-type` <- "application/json"
+  if(exists(c('xmin', 'ymin', 'xmax', 'ymax')) &&
+     !is.na(as.numeric(c(xmin, ymin, xmax, ymax)))) {
+    cat(c(xmin, ymin, xmax, ymax))
+    
+    bbx <- c(xmin = xmin, ymin = ymin, xmax = xmax, ymax = ymax)
+    cat(bbx)
+    cat(length(accidents))
+    subset <-  sf::st_crop(accidents, bbx) # bbox only
+    subset_geojson <-  geojsonsf::sf_geojson(subset)
+    print(subset)
+    print(subset_geojson)
+    res$body <- subset_geojson
+  } else {
+    res$body <- accidents_geojson
+  }
+  res
+}
 #' start wip/play.R
 #' 
 csv = read.csv("wip/ne-other.csv", stringsAsFactors=FALSE)

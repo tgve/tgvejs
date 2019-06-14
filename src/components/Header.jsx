@@ -13,8 +13,8 @@ const navs = [
     },
     {
         key: 2,
-        to: "deck",
-        title: "Deck"
+        to: "rail",
+        title: "Rail"
     },
     {
         key: 3,
