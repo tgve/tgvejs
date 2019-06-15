@@ -6,7 +6,7 @@ import './DeckSidebar.css';
 import RBDropDown from '../RBDropdownComponent';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import { summariseByYear } from '../../utils';
-import {XYPlot, LineSeries, VerticalBarSeries, XAxis, YAxis, } from 'react-vis';
+import {XYPlot, LineSeries, XAxis, YAxis, } from 'react-vis';
 import Variables from '../Variables';
 
 export default class DeckSidebar extends React.Component {
@@ -39,6 +39,15 @@ export default class DeckSidebar extends React.Component {
     //     }
     //     return null
     // }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        const { data } = this.props;
+        if(data && nextProps && nextProps.data && 
+            data.length === nextProps.data.length) {
+            return false
+        }
+        return true;
+    }
 
     render() {
         const { hide, open, elevation, road_type, severity,

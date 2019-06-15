@@ -10,7 +10,8 @@ export default class Variables extends Component {
         super(props);
         this.state = {
             list:null,
-            drill: false
+            drill: false,
+            selected: {}
         }
         this._generateList = this._generateList.bind(this)
         this._humanize = this._humanize.bind(this)
@@ -19,27 +20,28 @@ export default class Variables extends Component {
     componentDidMount() {
         const { data } = this.props;
         if(!data || data.length === 0) return(null);
-        const properties = data[0].properties;
-        const list = this._generateList(properties) 
-        this.setState({
-            list
-        })
+        this._processData(data);
     }
     
+    _processData(data) {
+        const properties = data[0].properties;
+        const list = this._generateList(properties);
+        this.setState({
+            list
+        });
+    }
+
     componentDidUpdate(prevProps) {
         const { data } = this.props;
         if(!data || data.length === 0) return;
         if(data.length !== prevProps.data.length) {
-            const properties = data[0].properties;
-            const list = this._generateList(properties) 
-            this.setState({
-                list
-            })
+            this._processData(data);
         }
     }
 
     _generateList(properties) {
         const {data} = this.props;
+        const selected  = this.state.selected;
         const list = Object.keys(properties).map(key =>
             <span
                 onClick={() => {
@@ -49,13 +51,27 @@ export default class Variables extends Component {
                         Object.keys(feature.properties).forEach(property => 
                             property === key && 
                             !sublist.includes(feature.properties[key]) &&
+                            (!selected[key] || !selected[key]
+                                .has(feature.properties[key])) &&
                             sublist.push(
                                 feature.properties[key]
                             )
                         )
                     )
                     sublist = sublist.map(each => each && 
-                        <span className="sub" key={each}> {each} </span>)
+                        <span 
+                            onClick={() => {
+                                //add each to the key
+                                if(!selected.hasOwnProperty(key)) {
+                                    selected[key] = new Set()
+                                }
+                                if(!selected[key].has(each)) {
+                                    selected[key].add(each);
+                                    this.setState({ selected })
+                                }
+                            }}
+                            className="sub" 
+                            key={each}> {each} </span>)
                     
                     this.setState({
                         sublist: sublist,
@@ -78,7 +94,9 @@ export default class Variables extends Component {
     }
 
     render() {
-        const { list, sublist, key } = this.state;                        
+        const { list, sublist, key } = this.state;
+        console.log(this.state.selected);
+                                
         return (
             <div 
             className="tagcloud">
