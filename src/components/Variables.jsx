@@ -74,16 +74,16 @@ export default class Variables extends Component {
                         <span 
                             onClick={() => {
                                 //add each to the key
-                                let hidden = this.state.hidden || [];
                                 if(!selected.hasOwnProperty(key)) {
                                     selected[key] = new Set()
                                 }
-                                selected[key].add(each);
-                                hidden.push(each+""); // do not add ints
-                                this.setState({ selected, hidden })
+                                console.log(each);
+                                
+                                selected[key].add(each + "");
+                                this.setState({ selected })
                             }}
                             className="sub" 
-                            key={each}> {each} </span>)
+                            key={each + ""}> {each} </span>)
                     
                     this.setState({
                         sublist: sublist,
@@ -134,64 +134,82 @@ export default class Variables extends Component {
     }
 
     render() {
-        const { list, sublist, key, hidden } = this.state;
-        // console.log(this.state.hidden);
-        const shownSublist = sublist && hidden && 
-        sublist.filter(each => !hidden.includes(each.key))
+        const { list, sublist, key, selected } = this.state;
+        console.log(selected[key]);
+        
+        const shownSublist = sublist && selected && key &&
+        sublist.filter(each => {
+            console.log(each);
+            
+            return selected[key] && !selected[key].has(each.key)})
         // console.log(shownSublist);
                               
         return (
-            <div 
-            className="tagcloud">
+            <div >
                 Dataset variables:
                 <div>
-                {
-                    //show main GeoJSON key if there is one chosen
-                    key ? <span
-                    onClick={() => this.setState({
-                        sublist: null,
-                        hidden: null,
-                        key: null
-                    })}>{`${this._humanize(key)} x`}</span> : list
-                }
-                {
-                    /**
-                     * Show:
-                     * 1. If filtered sublist has been populated and it is
-                     * above 5 (top 5)
-                     * 2. If all has been filtered then show nothing
-                     * 3. If 5 or less has been filtered show them
-                     * 4. Otherwise just show sublist UNfiltered (top 5)
-                     */
-                    //better if/else is needed.
-                    shownSublist && shownSublist.length > 5 ? 
-                    this._showTopn(shownSublist): hidden && hidden.length === shownSublist && shownSublist.length ?
-                    null : shownSublist && shownSublist.length <= 5 ? shownSublist : sublist && this._showTopn(sublist)
-                }
-                {
-                    hidden && hidden.length > 0 &&
-                    <p>Chosen key > values</p>
-                }
-                {
-                    // simplest logic
-                    // if you click me, I will remove myself from the list
-                    hidden && hidden.length > 0 &&
-                    hidden.map(each => {
-                        //add remove
-                        return(
-                            <span
-                                key={"remove-" + each}
-                                onClick={() => {
-                                    let newHidden = [...hidden];
-                                    const index = newHidden.indexOf(each);
-                                    if (index !== -1) newHidden.splice(index, 1);
-                                    this.setState({hidden: newHidden})
-                                }}>{`${each} x`}</span>
-                        )
-                    })
-                }
+                    <div className="tagcloud">
+                        {
+                            //show main GeoJSON key if there is one chosen
+                            key ? <span
+                                onClick={() => this.setState({
+                                    sublist: null,
+                                    key: null
+                                })}>{`${this._humanize(key)} x`}</span> : list
+                        }
+                    </div>
+                    <div className="tagcloud">
+                        {
+                            this._geoJSONPropsOrValues(shownSublist, selected, key, sublist)
+                        }
+                    </div>
+                    <div className="tagcloud">
+                        {
+                            // simplest logic
+                            // if you click me, I will remove myself from the list
+                            this._showSelectedVars(selected, key)
+                        }
+                    </div>
                 </div>
             </div>
         )
+    }
+    _showSelectedVars(selected, key) {
+        let ret = []
+        selected && selected[key] && selected[key].size > 0 &&
+            selected[key].forEach(each => {
+                if(ret.length === 0) ret.push(<p key="chosen-label">
+                    <b>{` ${this._humanize(key)}'s `}</b> values</p>)
+                //add remove
+                ret.push(<span key={"remove-" + each} onClick={() => {
+                    selected[key].delete(each);
+                    this.setState({ selected });
+                } }>{`${each} x`}</span>)
+            });
+        return(ret)
+    }
+
+    /**
+     * Show:
+     * 1. If filtered sublist has been populated and it is
+     * above 5 (top 5)
+     * 2. If all has been filtered then show nothing
+     * 3. If 5 or less has been filtered show them
+     * 4. Otherwise just show sublist UNfiltered (top 5)
+     */
+    _geoJSONPropsOrValues(shownSublist, selected, key, sublist, n = 5) {
+        console.log(selected);
+        
+        if(!sublist) return null
+        if ((!shownSublist || shownSublist.length === 0) && 
+        (!selected || !selected[key] || selected[key].size === 0)) {            
+            return this._showTopn(sublist)
+        } else if (selected && selected[key] && selected[key].size === 
+            sublist.length) {
+            return null
+        } else if(shownSublist.length > n) {
+            return this._showTopn(shownSublist, n) 
+        }
+        return shownSublist
     }
 }
