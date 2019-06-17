@@ -51,8 +51,6 @@ export default class Variables extends Component {
                         Object.keys(feature.properties).forEach(property => 
                             property === key && 
                             !sublist.includes(feature.properties[key]) &&
-                            (!selected[key] || !selected[key]
-                                .has(feature.properties[key])) &&
                             sublist.push(
                                 feature.properties[key]
                             )
@@ -62,13 +60,13 @@ export default class Variables extends Component {
                         <span 
                             onClick={() => {
                                 //add each to the key
+                                let hidden = this.state.hidden || [];
                                 if(!selected.hasOwnProperty(key)) {
                                     selected[key] = new Set()
                                 }
-                                if(!selected[key].has(each)) {
-                                    selected[key].add(each);
-                                    this.setState({ selected })
-                                }
+                                selected[key].add(each);
+                                hidden.push(each);
+                                this.setState({ selected, hidden })
                             }}
                             className="sub" 
                             key={each}> {each} </span>)
@@ -94,30 +92,58 @@ export default class Variables extends Component {
     }
 
     render() {
-        const { list, sublist, key } = this.state;
-        console.log(this.state.selected);
-                                
+        const { list, sublist, key, hidden } = this.state;
+        // console.log(this.state.hidden);
+        const shownSublist = sublist && hidden && sublist.filter(each => !hidden.includes(parseInt(each.key)))
+        // console.log(shownSublist);
+                              
         return (
             <div 
             className="tagcloud">
                 Dataset variables:
-                <p>
+                <div>
                 {
                     key ? <span
                     onClick={() => this.setState({
                         sublist: null,
+                        hidden: null,
                         key: null
                     })}>{`${this._humanize(key)} x`}</span> : list
                 }
                 {
-                    sublist && sublist.length > 5 ? 
-                    <>
-                        { sublist.slice(0,5) } 
-                        <i>Showing 5 out of {sublist.length}</i>
-                    </>: sublist
+                    shownSublist && shownSublist.length > 5 ? 
+                    this._showTopn(shownSublist): hidden && hidden.length === shownSublist && shownSublist.length ?
+                    null : shownSublist && shownSublist.length <= 5 ? shownSublist : sublist && this._showTopn(sublist)
                 }
-                </p>
+                {
+                    hidden && hidden.length > 0 &&
+                    <p>Chosen key > values</p>
+                }
+                {
+                    hidden && hidden.length > 0 &&
+                    hidden.map(each => {
+                        //add remove
+                        return(
+                            <span
+                                key={"remove-" + each}
+                                onClick={() => {
+                                    let newHidden = [...hidden];
+                                    const index = newHidden.indexOf(each);
+                                    if (index !== -1) newHidden.splice(index, 1);
+                                    this.setState({hidden: newHidden})
+                                }}>{`${each} x`}</span>
+                        )
+                    })
+                }
+                </div>
             </div>
         )
+    }
+
+    _showTopn(shownSublist) {
+        return <>
+            {shownSublist.slice(0, 5)}
+            <i>Showing 5 out of {shownSublist.length}</i>
+        </>;
     }
 }
