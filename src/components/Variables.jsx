@@ -1,5 +1,18 @@
 /**
  * eAtlas code
+ *  
+ * React component which takes a GeoJSON object. Loops through its
+ * properties and show the list to start with. Each property 
+ * can show all avialable values. Each value can be selected/deselected.
+ *
+ * Current code can deal with only one GeoJSON property's keys.
+ * 
+ * Next is handling multiple GeoJSON key value pairs.
+ * Next will be replacing current "hard" code in the parent code,
+ * so that all key values can be dynamically filtered.
+ * 
+ * This should be generalizeable to any GeoJSON file, or that is the
+ * aim.
  */
 import React, { Component } from 'react';
 
@@ -103,6 +116,7 @@ export default class Variables extends Component {
                 Dataset variables:
                 <div>
                 {
+                    //show main GeoJSON key if there is one chosen
                     key ? <span
                     onClick={() => this.setState({
                         sublist: null,
@@ -111,6 +125,15 @@ export default class Variables extends Component {
                     })}>{`${this._humanize(key)} x`}</span> : list
                 }
                 {
+                    /**
+                     * Show:
+                     * 1. If filtered sublist has been populated and it is
+                     * above 5 (top 5)
+                     * 2. If all has been filtered then show nothing
+                     * 3. If 5 or less has been filtered show them
+                     * 4. Otherwise just show sublist UNfiltered (top 5)
+                     */
+                    //better if/else is needed.
                     shownSublist && shownSublist.length > 5 ? 
                     this._showTopn(shownSublist): hidden && hidden.length === shownSublist && shownSublist.length ?
                     null : shownSublist && shownSublist.length <= 5 ? shownSublist : sublist && this._showTopn(sublist)
@@ -120,6 +143,8 @@ export default class Variables extends Component {
                     <p>Chosen key > values</p>
                 }
                 {
+                    // simplest logic
+                    // if you click me, I will remove myself from the list
                     hidden && hidden.length > 0 &&
                     hidden.map(each => {
                         //add remove
