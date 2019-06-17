@@ -35,14 +35,6 @@ export default class Variables extends Component {
         if(!data || data.length === 0) return(null);
         this._processData(data);
     }
-    
-    _processData(data) {
-        const properties = data[0].properties;
-        const list = this._generateList(properties);
-        this.setState({
-            list
-        });
-    }
 
     componentDidUpdate(prevProps) {
         const { data } = this.props;
@@ -52,6 +44,15 @@ export default class Variables extends Component {
         }
     }
 
+    /**
+     * The main function in this clase.
+     * 
+     * Loops through properties of a GeoJSON object, 
+     * generates both properties and their available values.
+     * Uses Set to avaoid duplicates for each property values set.
+     * 
+     * @param {*} properties 
+     */
     _generateList(properties) {
         const {data} = this.props;
         const selected  = this.state.selected;
@@ -78,7 +79,7 @@ export default class Variables extends Component {
                                     selected[key] = new Set()
                                 }
                                 selected[key].add(each);
-                                hidden.push(each);
+                                hidden.push(each+""); // do not add ints
                                 this.setState({ selected, hidden })
                             }}
                             className="sub" 
@@ -96,6 +97,10 @@ export default class Variables extends Component {
         return(list) 
     }
 
+    /**
+     * Helper to convert key_values to "Key Values"
+     * @param {*} str 
+     */
     _humanize(str) {
         let frags = str.split('_');
         for (let i = 0; i < frags.length; i++) {
@@ -104,10 +109,35 @@ export default class Variables extends Component {
         return frags.join(' ');
     }
 
+    /**
+     * As state changes regenerate key/vlaues
+     * @param {*} data 
+     */
+    _processData(data) {
+        const properties = data[0].properties;
+        const list = this._generateList(properties);
+        this.setState({
+            list
+        });
+    }
+
+    /**
+     * 
+     * @param {*} shownSublist 
+     * @param {*} n 
+     */
+    _showTopn(shownSublist, n = 5) {
+        return <>
+            {shownSublist.slice(0, n)}
+            <i>Showing {n} out of {shownSublist.length}</i>
+        </>;
+    }
+
     render() {
         const { list, sublist, key, hidden } = this.state;
         // console.log(this.state.hidden);
-        const shownSublist = sublist && hidden && sublist.filter(each => !hidden.includes(parseInt(each.key)))
+        const shownSublist = sublist && hidden && 
+        sublist.filter(each => !hidden.includes(each.key))
         // console.log(shownSublist);
                               
         return (
@@ -163,12 +193,5 @@ export default class Variables extends Component {
                 </div>
             </div>
         )
-    }
-
-    _showTopn(shownSublist) {
-        return <>
-            {shownSublist.slice(0, 5)}
-            <i>Showing 5 out of {shownSublist.length}</i>
-        </>;
     }
 }
