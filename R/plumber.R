@@ -1,3 +1,15 @@
+packages <- c("sf", "geojsonsf", "osmdata")
+main.file <- "ac_joined_wy_2009-2017.Rds"
+if(!file.exists(main.file)) {
+  packages <- c(packages, "piggyback")
+}
+
+if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
+  install.packages(setdiff(packages, rownames(installed.packages())),repos='http://cran.us.r-project.org')
+}
+
+lapply(packages, library, character.only = TRUE)
+
 # Enable CORS -------------------------------------------------------------
 #' CORS enabled for now. See docs of plumber
 #' for disabling it for any endpoint we want in future
@@ -27,16 +39,6 @@ swagger <- function(req, res){
   plumber::include_html(fname, res)
 }
 
-packages <- c("sf", "geojsonsf")
-
-if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
-  install.packages(setdiff(packages, rownames(installed.packages())),repos='http://cran.us.r-project.org')
-}
-# devtools::install_github("ITSLeeds/stats19")
-packages <- c(packages, "stats19")
-lapply(packages, library, character.only = TRUE)
-
-
 # get data ----------------------------------------------------------------
 # #' @examples
 # #' find_csv_name(2009:2017, "accidents")
@@ -50,12 +52,13 @@ lapply(packages, library, character.only = TRUE)
 #   file.path(z_dir, z_csv)
 # }
 
-if(!file.exists("ac_joined_wy_2009-2017.Rds")) {
-  stop("ac_joined_wy_2009-2017.Rds")
+if(!file.exists(main.file)) {
+  piggyback::pb_download(main.file)
+  # stop("ac_joined_wy_2009-2017.Rds")
 }
 accidents <- NULL
 read_downloaded <- function() {
-  accidents <<- readRDS("ac_joined_wy_2009-2017.Rds")
+  accidents <<- readRDS(main.file)
   accidents <<- sf::st_transform(accidents, 4326)
   # Leeds bbox
   bb <- osmdata::getbb("leeds")
