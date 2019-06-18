@@ -26,8 +26,12 @@ export default class Variables extends Component {
             drill: false,
             selected: {}
         }
-        this._generateList = this._generateList.bind(this)
-        this._humanize = this._humanize.bind(this)
+        this._generateList = this._generateList.bind(this);
+        this._geoJSONPropsOrValues = this._geoJSONPropsOrValues.bind(this);
+        this._humanize = this._humanize.bind(this);
+        this._processData = this._processData.bind(this);
+        this._showSelectedVars = this._showSelectedVars.bind(this);
+        this._showTopn = this._showTopn.bind(this);
     }
 
     componentDidMount() {
@@ -54,7 +58,7 @@ export default class Variables extends Component {
      * @param {*} properties 
      */
     _generateList(properties) {
-        const {data} = this.props;
+        const { data, onSelectCallback} = this.props;
         const selected  = this.state.selected;
         const list = Object.keys(properties).map(key =>
             <span
@@ -76,10 +80,10 @@ export default class Variables extends Component {
                                 //add each to the key
                                 if(!selected.hasOwnProperty(key)) {
                                     selected[key] = new Set()
-                                }
-                                console.log(each);
-                                
+                                }                                
                                 selected[key].add(each + "");
+                                typeof(onSelectCallback) === 'function' &&
+                                onSelectCallback(selected)
                                 this.setState({ selected })
                             }}
                             className="sub" 
@@ -133,15 +137,62 @@ export default class Variables extends Component {
         </>;
     }
 
-    render() {
-        const { list, sublist, key, selected } = this.state;
-        console.log(selected[key]);
+    /**
+     * Word cloud of all values for a particular key.
+     * 
+     * @param {*} selected 
+     * @param {*} key 
+     */
+    _showSelectedVars(selected, key) {
+        const { onSelectCallback } = this.props;
+        let ret = []
+        selected && selected[key] && selected[key].size > 0 &&
+            selected[key].forEach(each => {
+                if(ret.length === 0) ret.push(<p key="chosen-label">
+                    <b>{` ${this._humanize(key)}'s `}</b> values</p>)
+                //add remove
+                ret.push(<span key={"remove-" + each} onClick={() => {
+                    selected[key].delete(each);
+                    if(selected[key].size === 0) delete selected[key]
+                    console.log(selected);
+                    
+                    typeof(onSelectCallback) === 'function' &&
+                    onSelectCallback(selected)
+                    this.setState({ selected });
+                } }>{`${each} x`}</span>)
+            });
+        return(ret)
+    }
+
+    /**
+     * Show:
+     * 1. If filtered sublist has been populated and it is
+     * above 5 (top 5)
+     * 2. If all has been filtered then show nothing
+     * 3. If 5 or less has been filtered show them
+     * 4. Otherwise just show sublist UNfiltered (top 5)
+     */
+    _geoJSONPropsOrValues(shownSublist, selected, key, sublist, n = 5) {
+        // console.log(selected);
         
+        if(!sublist) return null
+        if ((!shownSublist || shownSublist.length === 0) && 
+        (!selected || !selected[key] || selected[key].size === 0)) {            
+            return this._showTopn(sublist)
+        } else if (selected && selected[key] && selected[key].size === 
+            sublist.length) {
+            return null
+        } else if(shownSublist.length > n) {
+            return this._showTopn(shownSublist, n) 
+        }
+        return shownSublist
+    }
+
+    render() {
+        const { list, sublist, key, selected } = this.state;        
         const shownSublist = sublist && selected && key &&
-        sublist.filter(each => {
-            console.log(each);
-            
-            return selected[key] && !selected[key].has(each.key)})
+        sublist.filter(each => {            
+            return selected[key] && each && !selected[key].has(each.key)})
         // console.log(shownSublist);
                               
         return (
@@ -173,43 +224,5 @@ export default class Variables extends Component {
                 </div>
             </div>
         )
-    }
-    _showSelectedVars(selected, key) {
-        let ret = []
-        selected && selected[key] && selected[key].size > 0 &&
-            selected[key].forEach(each => {
-                if(ret.length === 0) ret.push(<p key="chosen-label">
-                    <b>{` ${this._humanize(key)}'s `}</b> values</p>)
-                //add remove
-                ret.push(<span key={"remove-" + each} onClick={() => {
-                    selected[key].delete(each);
-                    this.setState({ selected });
-                } }>{`${each} x`}</span>)
-            });
-        return(ret)
-    }
-
-    /**
-     * Show:
-     * 1. If filtered sublist has been populated and it is
-     * above 5 (top 5)
-     * 2. If all has been filtered then show nothing
-     * 3. If 5 or less has been filtered show them
-     * 4. Otherwise just show sublist UNfiltered (top 5)
-     */
-    _geoJSONPropsOrValues(shownSublist, selected, key, sublist, n = 5) {
-        console.log(selected);
-        
-        if(!sublist) return null
-        if ((!shownSublist || shownSublist.length === 0) && 
-        (!selected || !selected[key] || selected[key].size === 0)) {            
-            return this._showTopn(sublist)
-        } else if (selected && selected[key] && selected[key].size === 
-            sublist.length) {
-            return null
-        } else if(shownSublist.length > n) {
-            return this._showTopn(shownSublist, n) 
-        }
-        return shownSublist
     }
 }

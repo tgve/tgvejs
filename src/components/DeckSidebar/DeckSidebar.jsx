@@ -163,7 +163,17 @@ export default class DeckSidebar extends React.Component {
                                     <i style={{ fontSize: '2rem' }}
                                         className="fa fa-info" />
                                 }>
-                                    {data && data.length > 0 && <Variables data={data} />}
+                                    {
+                                        data && data.length > 0 && 
+                                        <Variables 
+                                            onSelectCallback={(multiVarSelect) => 
+                                                typeof (onSelectCallback) === 'function' &&
+                                                onSelectCallback(
+                                                    Object.keys(multiVarSelect).length === 0 ?
+                                                    {what: ''} : { selected: multiVarSelect, what: 'multi' })
+                                            }
+                                            data={data} />
+                                    }
                                     {plot_data && plot_data.length > 1 && <XYPlot 
                                         xType="ordinal"
                                         animation={{ duration: 1 }}

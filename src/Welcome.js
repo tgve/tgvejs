@@ -124,7 +124,7 @@ export default class App extends React.Component {
         if (!data) return;
         //if resetting a value
         if (filter && filter.selected !== "") {
-            data = data.filter(
+            data = data.slice(0,50).filter(
                 d => {
                     if (filter.what === 'road_type') {
                         return (match(d.properties.road_type) === filter.selected)
@@ -132,6 +132,19 @@ export default class App extends React.Component {
                         return (d.properties.accident_severity === filter.selected)
                     } else if (filter.what === 'year') {
                         return (d.properties.date.split("/")[2] === filter.selected)
+                    } else if (filter.what === 'multi') {
+                        // go through each selection
+                        const selected = filter.selected;                        
+                        // selected.var > Set()
+                        let multiCheck = false;
+                        for(let each of Object.keys(selected)) {
+                            if(selected[each].has(d.properties[each] + "")) {                                        
+                                multiCheck = true
+                                continue;
+                            }
+                            multiCheck = false
+                        }                     
+                        return multiCheck;
                     }
                     return (true)
                 }
