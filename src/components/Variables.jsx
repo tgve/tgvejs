@@ -81,7 +81,7 @@ export default class Variables extends Component {
                                 if(!selected.hasOwnProperty(key)) {
                                     selected[key] = new Set()
                                 }                                
-                                selected[key].add(each + "");
+                                selected[key].add(each + ""); // make sure it is string
                                 typeof(onSelectCallback) === 'function' &&
                                 onSelectCallback(selected)
                                 this.setState({ selected })

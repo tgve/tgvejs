@@ -1,5 +1,8 @@
 import React from 'react';
 import {XYPlot, LineSeries, VerticalBarSeries, XAxis, YAxis, } from 'react-vis';
+const WIDTH = 300;
+const BAR_HEIGHT = 100;
+
 export default class Tooltip extends React.Component {
 
     render() {
@@ -59,9 +62,9 @@ export default class Tooltip extends React.Component {
             <div
                 className="xyz" style={{ 
                     top: crashes_data.length > 1 && 
-                    topy + 300 > y ? topy - 300 : topy, 
+                    topy + WIDTH > y ? topy - WIDTH : topy, 
                     left: crashes_data.length > 1 && 
-                    topx + 300 > w ? topx - 300 : topx }}>
+                    topx + WIDTH > w ? topx - WIDTH : topx }}>
                 <div>
                     <b>Total:{type_feature ? 1 : hoveredObject.points.length}</b>
                 </div>
@@ -74,7 +77,7 @@ export default class Tooltip extends React.Component {
                         crashes_data.length > 1 &&
                         <XYPlot 
                         animation={{duration: 0.8}}
-                        height={300} width={300}>
+                        height={WIDTH} width={WIDTH}>
                             <XAxis 
                                 tickLabelAngle={-45}
                                 tickFormat={v => v + ""}
@@ -96,7 +99,7 @@ export default class Tooltip extends React.Component {
                         severity_data.length > 1 &&
                         <XYPlot 
                         xType="ordinal" 
-                            width={300} height={100}>
+                            width={WIDTH} height={BAR_HEIGHT}>
                             <XAxis 
                                 tickLabelAngle={-45}
                                 tickFormat={v => v + ""}

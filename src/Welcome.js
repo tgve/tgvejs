@@ -32,7 +32,7 @@ const LIGHT_SETTINGS = {
     numberOfLights: 2
 };
 
-export default class App extends React.Component {
+export default class Welcome extends React.Component {
     constructor(props) {
         super(props)
         const init = {
@@ -140,9 +140,9 @@ export default class App extends React.Component {
                         for(let each of Object.keys(selected)) {
                             if(selected[each].has(d.properties[each] + "")) {                                        
                                 multiCheck = true
-                                continue;
+                            } else {
+                                multiCheck = false
                             }
-                            multiCheck = false
                         }                     
                         return multiCheck;
                     }
