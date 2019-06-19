@@ -16,7 +16,8 @@ export default class DeckSidebar extends React.Component {
             radius: 100,
             elevation: 4,
             open: true,
-            road_types: ["All", "Single carriageway", "Dual carriageway", "Roundabout", "Unknown", "Slip road", "One way street"],
+            // must match the order in plumber.R
+            road_types: ["All", "Dual carriageway", "Single carriageway", "Roundabout", "Unknown", "Slip road", "One way street"],
             year: "",
             minAge: 18,
             maxAge: 24
@@ -142,7 +143,10 @@ export default class DeckSidebar extends React.Component {
                                     this.setState({ road_type: selected === "All" ? "" : selected })
                                     onSelectCallback &&
                                         onSelectCallback({
-                                            selected: selected === "All" ? "" : selected,
+                                            selected: selected === "All" ? 
+                                                // starts at 1 but 
+                                                // road_types has All at 0
+                                                "" : road_types.indexOf(selected),
                                             what: 'road_type'
                                         })
                                 }} />

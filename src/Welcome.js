@@ -103,31 +103,16 @@ export default class Welcome extends React.Component {
     }
 
     _recalculateLayers(radius, elevation, filter) {
-        function match(value) {
-            switch(value) {
-                case '1':
-                    return("Dual carriageway")
-                case '2':
-                    return("Single carriageway")
-                case '3':
-                    return("One way street")
-                case '4':
-                    return("Roundabout")
-                case '5':
-                    return("Slip road")
-                default:
-                    return("Unknown")
-            }
-        }
         let { data } = this.state
         const { year, road_type, severity } = this.state;
         if (!data) return;
         //if resetting a value
         if (filter && filter.selected !== "") {
-            data = data.slice(0,50).filter(
+            data = data.filter(
                 d => {
                     if (filter.what === 'road_type') {
-                        return (match(d.properties.road_type) === filter.selected)
+                        // loose compare on purpose
+                        return (d.properties.road_type == filter.selected)
                     } else if (filter.what === 'severity') {
                         return (d.properties.accident_severity === filter.selected)
                     } else if (filter.what === 'year') {
