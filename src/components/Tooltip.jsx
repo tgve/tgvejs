@@ -58,8 +58,10 @@ export default class Tooltip extends React.Component {
         const tooltip =
             <div
                 className="xyz" style={{ 
-                    top: topy + 300 > y ? topy - 300 : topy, 
-                    left: topx + 300 > w ? topx - 300 : topx }}>
+                    top: crashes_data.length > 1 && 
+                    topy + 300 > y ? topy - 300 : topy, 
+                    left: crashes_data.length > 1 && 
+                    topx + 300 > w ? topx - 300 : topx }}>
                 <div>
                     <b>Total:{type_feature ? 1 : hoveredObject.points.length}</b>
                 </div>
