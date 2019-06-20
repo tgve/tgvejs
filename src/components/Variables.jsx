@@ -58,7 +58,8 @@ export default class Variables extends Component {
      * @param {*} properties 
      */
     _generateList(properties) {
-        const { data, onSelectCallback, style, subStyle } = this.props;
+        const { data, onSelectCallback, style, subStyle,
+            propertyValuesCallback } = this.props;
         const selected = this.state.selected;
         const list = Object.keys(properties).map(key =>
             <span
