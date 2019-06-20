@@ -2,8 +2,10 @@ import React from 'react';
 import DeckGL from 'deck.gl';
 import MapGL, { NavigationControl } from 'react-map-gl';
 
-import { fetchData, generateDeckLayer, 
-    getParamsFromSearch, getBbx} from './utils';
+import {
+    fetchData, generateDeckLayer,
+    getParamsFromSearch, getBbx
+} from './utils';
 import Constants from './Constants';
 import DeckSidebar from './components/DeckSidebar/DeckSidebar';
 import history from './history';
@@ -43,11 +45,11 @@ export default class Welcome extends React.Component {
             bearing: 0
         }
         const param = getParamsFromSearch(props.location.search);
-        if(param) {
+        if (param) {
             //lat=53.814&lng=-1.534&zoom=11.05&bea=0&pit=55&alt=1.5
             Object.keys(param).forEach(key => {
                 Object.keys(init).forEach(iKey => {
-                    if(iKey.startsWith(key)) {
+                    if (iKey.startsWith(key)) {
                         init[key] = param[key]
                     }
                 })
@@ -61,7 +63,7 @@ export default class Welcome extends React.Component {
             radius: 100,
             elevation: 4,
             mapStyle: "mapbox://styles/mapbox/dark-v9",
-            initialViewState: init, 
+            initialViewState: init,
             subsetBoundsChange: false,
             lastViewPortChange: new Date(),
         }
@@ -119,16 +121,16 @@ export default class Welcome extends React.Component {
                         return (d.properties.date.split("/")[2] === filter.selected)
                     } else if (filter.what === 'multi') {
                         // go through each selection
-                        const selected = filter.selected;                        
+                        const selected = filter.selected;
                         // selected.var > Set()
                         let multiCheck = false;
-                        for(let each of Object.keys(selected)) {
-                            if(selected[each].has(d.properties[each] + "")) {                                        
+                        for (let each of Object.keys(selected)) {
+                            if (selected[each].has(d.properties[each] + "")) {
                                 multiCheck = true
                             } else {
                                 multiCheck = false
                             }
-                        }                     
+                        }
                         return multiCheck;
                     }
                     return (true)
@@ -185,7 +187,7 @@ export default class Welcome extends React.Component {
         this.setState({
             tooltip:
                 // react did not like x and y props.
-                <Tooltip topx={x} topy={y} hoveredObject={hoveredObject}/>
+                <Tooltip topx={x} topy={y} hoveredObject={hoveredObject} />
         })
     }
 
@@ -195,7 +197,7 @@ export default class Welcome extends React.Component {
 
         //if we do history.replace/push 100 times in less than 30 secs 
         // browser will crash
-        if(new Date() - lastViewPortChange > 1000) {
+        if (new Date() - lastViewPortChange > 1000) {
             history.push(
                 `/?lat=${latitude.toFixed(3)}` +
                 `&lng=${longitude.toFixed(3)}` +
@@ -204,40 +206,42 @@ export default class Welcome extends React.Component {
                 `&pit=${pitch}` +
                 `&alt=${altitude}`
             )
-            this.setState({lastViewPortChange: new Date()})
+            this.setState({ lastViewPortChange: new Date() })
         }
         const bounds = this.map && this.map.getBounds()
-        if(bounds && subsetBoundsChange) {
+        if (bounds && subsetBoundsChange) {
             const box = getBbx(bounds)
             // console.log("bounds", box);
-            const {xmin, ymin, xmax, ymax} = box; 
+            const { xmin, ymin, xmax, ymax } = box;
             fetchData(url + "/api/stats19/" + xmin + "/" +
-            ymin + "/" + xmax + "/" + ymax, 
-            (data, error) => {
-                if (!error) {
-                    // console.log(data.features);
-                    this.setState({
-                        data: data.features,
-                    })
-                    this._recalculateLayers()
-                } else {
-                    //network error?
-                }
-            })
+                ymin + "/" + xmax + "/" + ymax,
+                (data, error) => {
+                    if (!error) {
+                        // console.log(data.features);
+                        this.setState({
+                            data: data.features,
+                        })
+                        this._recalculateLayers()
+                    } else {
+                        //network error?
+                    }
+                })
         }
-                
+
     }
 
     render() {
         const { tooltip, viewport, initialViewState,
-        loading, mapStyle } = this.state;
+            loading, mapStyle } = this.state;
         // let {viewState} = this.props;
         // console.log(mapStyle.endsWith("No map-v9"))
         return (
             <div>
                 {/* just a little catch to hide the loader when no basemap is presetn */}
-                <div className="loader" style={{ zIndex: loading ? 999 : 0, 
-                visibility: mapStyle.endsWith("No map-v9") ? 'hidden' : 'visible' }} />
+                <div className="loader" style={{
+                    zIndex: loading ? 999 : 0,
+                    visibility: mapStyle.endsWith("No map-v9") ? 'hidden' : 'visible'
+                }} />
                 <MapGL
                     // key={height+width} //causes layer to disappear
                     onLoad={this._onMapLoad}
@@ -269,7 +273,7 @@ export default class Welcome extends React.Component {
                         initialViewState={initialViewState}
                         layers={this.state.layers}
                     >
-                    {tooltip}
+                        {tooltip}
                     </DeckGL>
                 </MapGL>
                 <DeckSidebar

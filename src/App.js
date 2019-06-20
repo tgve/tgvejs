@@ -6,12 +6,24 @@ import { Switch, Route } from 'react-router-dom';
 
 import Welcome from './Welcome';
 import Header from './components/Header';
-import Scenarios from './components/Scenarios';
 import About from './About';
-import RailShowcase from './components/RailShowcase';
+import DynamicImport from './components/DynamicImport';
 
 import './App.css';
 
+/**
+ * Code splitting.
+ * @param {*} props 
+ */
+const FUI = (props) => (
+  <DynamicImport load={() => import('./components/FUI')}>
+    {
+      (Component) => Component === null
+      ? <div className="loader" style={{ zIndex: 999}} />
+      : <Component {...props} />
+    }
+  </DynamicImport>
+)
 
 /**
  * Separate the Header and the main content.
@@ -24,8 +36,7 @@ class App extends Component {
         <Header />
         <Switch>
           <Route exact path="/" component={Welcome} />
-          <Route exact path="/rail" component={RailShowcase} />
-          <Route exacg path="/scenarios" component={Scenarios} />
+          <Route exact path="/fui" component={FUI} />
           <Route exact path="/about" component={About} />
         </Switch>
       </main>
