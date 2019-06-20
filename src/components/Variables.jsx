@@ -22,7 +22,7 @@ export default class Variables extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            list:null,
+            list: null,
             drill: false,
             selected: {}
         }
@@ -36,14 +36,14 @@ export default class Variables extends Component {
 
     componentDidMount() {
         const { data } = this.props;
-        if(!data || data.length === 0) return(null);
+        if (!data || data.length === 0) return (null);
         this._processData(data);
     }
 
     componentDidUpdate(prevProps) {
         const { data } = this.props;
-        if(!data || data.length === 0) return;
-        if(data.length !== prevProps.data.length) {
+        if (!data || data.length === 0) return;
+        if (data.length !== prevProps.data.length) {
             this._processData(data);
         }
     }
@@ -58,37 +58,39 @@ export default class Variables extends Component {
      * @param {*} properties 
      */
     _generateList(properties) {
-        const { data, onSelectCallback} = this.props;
-        const selected  = this.state.selected;
+        const { data, onSelectCallback, style, subStyle } = this.props;
+        const selected = this.state.selected;
         const list = Object.keys(properties).map(key =>
             <span
+                style={style}
                 onClick={() => {
-                    if(key === "date") return;
+                    if (key === "date") return;
                     let sublist = [];
-                    data.forEach(feature => 
-                        Object.keys(feature.properties).forEach(property => 
-                            property === key && 
+                    data.forEach(feature =>
+                        Object.keys(feature.properties).forEach(property =>
+                            property === key &&
                             !sublist.includes(feature.properties[key]) &&
                             sublist.push(
                                 feature.properties[key]
                             )
                         )
                     )
-                    sublist = sublist.map(each => each && 
-                        <span 
+                    sublist = sublist.map(each => each &&
+                        <span
+                            style={subStyle}
                             onClick={() => {
                                 //add each to the key
-                                if(!selected.hasOwnProperty(key)) {
+                                if (!selected.hasOwnProperty(key)) {
                                     selected[key] = new Set()
-                                }                                
+                                }
                                 selected[key].add(each + ""); // make sure it is string
-                                typeof(onSelectCallback) === 'function' &&
-                                onSelectCallback(selected)
+                                typeof (onSelectCallback) === 'function' &&
+                                    onSelectCallback(selected)
                                 this.setState({ selected })
                             }}
-                            className="sub" 
+                            className="sub"
                             key={each + ""}> {each} </span>)
-                    
+
                     this.setState({
                         sublist: sublist,
                         key
@@ -97,8 +99,8 @@ export default class Variables extends Component {
                 key={key}>
                 {this._humanize(key)}
             </span>
-        ) 
-        return(list) 
+        )
+        return (list)
     }
 
     /**
@@ -148,20 +150,20 @@ export default class Variables extends Component {
         let ret = []
         selected && selected[key] && selected[key].size > 0 &&
             selected[key].forEach(each => {
-                if(ret.length === 0) ret.push(<p key="chosen-label">
+                if (ret.length === 0) ret.push(<p key="chosen-label">
                     <b>{` ${this._humanize(key)}'s `}</b> values</p>)
                 //add remove
-                ret.push(<span key={"remove-" + each} onClick={() => {
-                    selected[key].delete(each);
-                    if(selected[key].size === 0) delete selected[key]
-                    console.log(selected);
-                    
-                    typeof(onSelectCallback) === 'function' &&
-                    onSelectCallback(selected)
-                    this.setState({ selected });
-                } }>{`${each} x`}</span>)
+                ret.push(<span
+                    style={this.props.subStyle}
+                    key={"remove-" + each} onClick={() => {
+                        selected[key].delete(each);
+                        if (selected[key].size === 0) delete selected[key]
+                        typeof (onSelectCallback) === 'function' &&
+                            onSelectCallback(selected)
+                        this.setState({ selected });
+                    }}>{`${each} x`}</span>)
             });
-        return(ret)
+        return (ret)
     }
 
     /**
@@ -174,27 +176,28 @@ export default class Variables extends Component {
      */
     _geoJSONPropsOrValues(shownSublist, selected, key, sublist, n = 5) {
         // console.log(selected);
-        
-        if(!sublist) return null
-        if ((!shownSublist || shownSublist.length === 0) && 
-        (!selected || !selected[key] || selected[key].size === 0)) {            
+
+        if (!sublist) return null
+        if ((!shownSublist || shownSublist.length === 0) &&
+            (!selected || !selected[key] || selected[key].size === 0)) {
             return this._showTopn(sublist)
-        } else if (selected && selected[key] && selected[key].size === 
+        } else if (selected && selected[key] && selected[key].size ===
             sublist.length) {
             return null
-        } else if(shownSublist.length > n) {
-            return this._showTopn(shownSublist, n) 
+        } else if (shownSublist.length > n) {
+            return this._showTopn(shownSublist, n)
         }
         return shownSublist
     }
 
     render() {
-        const { list, sublist, key, selected } = this.state;        
+        const { list, sublist, key, selected } = this.state;
         const shownSublist = sublist && selected && key &&
-        sublist.filter(each => {            
-            return selected[key] && each && !selected[key].has(each.key)})
+            sublist.filter(each => {
+                return selected[key] && each && !selected[key].has(each.key)
+            })
         // console.log(shownSublist);
-                              
+
         return (
             <div >
                 Dataset variables:
@@ -203,6 +206,7 @@ export default class Variables extends Component {
                         {
                             //show main GeoJSON key if there is one chosen
                             key ? <span
+                                style={this.props.style}
                                 onClick={() => this.setState({
                                     sublist: null,
                                     key: null
