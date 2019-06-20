@@ -19,8 +19,8 @@ const FUI = (props) => (
   <DynamicImport load={() => import('./components/FUI')}>
     {
       (Component) => Component === null
-      ? <div className="loader" style={{ zIndex: 999}} />
-      : <Component {...props} />
+        ? <div className="loader" style={{ zIndex: 999 }} />
+        : <Component {...props} />
     }
   </DynamicImport>
 )
