@@ -1,4 +1,11 @@
-packages <- c("sf", "geojsonsf", "osmdata")
+if(is.null(curl::nslookup("r-project.org", error = FALSE))) {
+  stop(message(
+    "No connection",
+    "To save space on the repo files need to be downloaded.",
+    "Please re-run when you are connected."
+  ))
+}
+packages <- c("sf", "geojsonsf", "osmdata", "curl")
 main.file <- "ac_joined_wy_2009-2017.Rds"
 if(!file.exists(main.file)) {
   packages <- c(packages, "piggyback")
@@ -60,7 +67,8 @@ accidents <- NULL
 read_downloaded <- function() {
   accidents <<- readRDS(main.file)
   accidents <<- sf::st_transform(accidents, 4326)
-  # Leeds bbox
+  # v <- c(53.698968, -1.800421, 53.945872, -1.290352)
+  # Leeds bbox in case of future offline mode
   bb <- osmdata::getbb("leeds")
   bb_str <- osmdata::bbox_to_string(bb)
   v <- as.double(unlist(strsplit(bb_str, ",")))
@@ -142,6 +150,8 @@ max.trips = max(as.numeric(sapply(csv[,names(csv)[2:24]], max, na.rm = TRUE)))
 min.trips = min(as.numeric(sapply(csv[,names(csv)[2:24]], min, na.rm = TRUE)))
 # regions including scotland
 # https://opendata.arcgis.com/datasets/bafeb380d7e34f04a3cdf1628752d5c3_0.geojson
+# download.file("https://raw.githubusercontent.com/martinjc/UK-GeoJSON/master/json/eurostat/ew/nuts1.json",
+              # destfile = file.path("R/nuts1.json"))
 json = geojsonsf::geojson_sf("https://raw.githubusercontent.com/martinjc/UK-GeoJSON/master/json/eurostat/ew/nuts1.json")
 json = json[order(json$NUTS112NM),]
 csv$Between.North.East.and[match("Wales - Cymru", csv$Between.North.East.and)] = "Wales"
