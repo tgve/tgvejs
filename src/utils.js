@@ -4,6 +4,7 @@ import {
 } from 'deck.gl';
 import mapping from './location-icon-mapping.json';
 import qs from 'qs'; // warning: importing it otherways would cause minificatino issue.
+import Constants from './Constants';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -237,9 +238,26 @@ const getBbx = (bounds) => {
     return({xmin, ymin, xmax, ymax})
 }
 
+const suggestUIforNumber = (number) => {
+    const UI_LIST = Constants.UI_LIST;
+    if(!number) return UI_LIST[1];
+    if (key === 1) {
+        return UI_LIST[0];
+    } else if ( key > 3 && key < 6) {
+        return UI_LIST[1];
+    } else if (key === 2 || key === 3) {
+        return UI_LIST[2];
+    } else if (key > 9) {
+        return UI_LIST[3];
+    } else {
+        return UI_LIST[4]; // slider
+    }
+}
+
 export {
     getResultsFromGoogleMaps,
     getParamsFromSearch,
+    suggestUIforNumber,
     generateDeckLayer,
     summariseByYear,
     convertRange,
