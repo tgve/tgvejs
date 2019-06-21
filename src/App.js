@@ -15,8 +15,8 @@ import './App.css';
  * Code splitting.
  * @param {*} props 
  */
-const FUI = (props) => (
-  <DynamicImport load={() => import('./components/FUI')}>
+const DUI = (props) => (
+  <DynamicImport load={() => import('./components/DUI')}>
     {
       (Component) => Component === null
         ? <div className="loader" style={{ zIndex: 999 }} />
@@ -36,7 +36,7 @@ class App extends Component {
         <Header />
         <Switch>
           <Route exact path="/" component={Welcome} />
-          <Route exact path="/fui" component={FUI} />
+          <Route exact path="/fui" component={DUI} />
           <Route exact path="/about" component={About} />
         </Switch>
       </main>

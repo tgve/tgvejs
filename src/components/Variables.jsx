@@ -90,8 +90,11 @@ export default class Variables extends Component {
                                 this.setState({ selected })
                             }}
                             className="sub"
-                            key={each + ""}> {each} </span>)
-
+                            key={each + ""}> {each}
+                        </span>
+                    )
+                    typeof (propertyValuesCallback) === 'function' &&
+                        propertyValuesCallback({ key, sublist })
                     this.setState({
                         sublist: sublist,
                         key

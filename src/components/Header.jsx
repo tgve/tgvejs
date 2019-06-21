@@ -9,7 +9,7 @@ const navs = [
     {
         key: 1,
         to: "fui",
-        title: "FUI"
+        title: "DUI"
     },
     {
         key: 2,
@@ -20,7 +20,7 @@ const navs = [
 
 class Header extends React.Component {
 
-    render () {
+    render() {
         return (
             <Navbar inverse collapseOnSelect>
                 <Navbar.Header>
@@ -33,11 +33,11 @@ class Header extends React.Component {
                     <Nav>
                         {
                             navs.map((item, i) => {
-                                return(
+                                return (
                                     <NavItem
-                                    key={i}
-                                    eventKey={item.key}
-                                    onClick={() => this.props.history.push(item.to)}>
+                                        key={i}
+                                        eventKey={item.key}
+                                        onClick={() => this.props.history.push(item.to)}>
                                         {item.title}
                                     </NavItem>
                                 )
