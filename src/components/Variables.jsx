@@ -69,13 +69,17 @@ export default class Variables extends Component {
                     let sublist = [];
                     data.forEach(feature =>
                         Object.keys(feature.properties).forEach(property =>
-                            property === key &&
+                            property === key && feature.properties[key] &&
                             !sublist.includes(feature.properties[key]) &&
                             sublist.push(
                                 feature.properties[key]
                             )
                         )
                     )
+                    // before turning them into spans
+                    typeof (propertyValuesCallback) === 'function' &&
+                        propertyValuesCallback({ key, sublist })
+
                     sublist = sublist.map(each => each &&
                         <span
                             style={subStyle}
@@ -93,8 +97,6 @@ export default class Variables extends Component {
                             key={each + ""}> {each}
                         </span>
                     )
-                    typeof (propertyValuesCallback) === 'function' &&
-                        propertyValuesCallback({ key, sublist })
                     this.setState({
                         sublist: sublist,
                         key

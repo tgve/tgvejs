@@ -8,10 +8,11 @@ import { Button } from 'baseui/button';
 import { StatefulButtonGroup } from 'baseui/button-group';
 
 import {
-  fetchData
+  fetchData, suggestUIforNumber
 } from '../utils';
 import Variables from './Variables';
 import Constants from '../Constants';
+import RBDropDown from './RBDropdownComponent';
 
 const engine = new Styletron();
 const url = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
@@ -23,7 +24,73 @@ export default class DUI extends React.Component {
       value: [50],
       checked: false
     }
-    this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this)
+    this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
+    this._generateUI = this._generateUI.bind(this);
+  }
+
+  _generateUI(key, sublist) {
+    if (!key || !sublist || sublist.length === 0) return null;
+    const { dropDownSelected } = this.state;
+    const ui_name = suggestUIforNumber(sublist.length)
+    if (ui_name === "checkbox") {
+      return (
+        <>
+          {
+            sublist.map(each =>
+              // deal with each checked!
+              <Checkbox checked={this.state.checked}
+                onChange={() =>
+                  this.setState({ checked: !this.state.checked })}>
+                {key}
+              </Checkbox>
+            )
+          }
+        </>
+      )
+    } else if (ui_name === "slider" && parseInt(sublist[0])) {
+      const s = sublist;
+      s.sort((a, b) => { return (a - b) })
+      return (
+        <Slider
+          value={this.state.value}
+          min={parseInt(s[0])}
+          max={parseInt(s[s.length - 1])}
+          step={1} //something
+          onChange={({ value }) => this.setState({ value })}
+        />
+      )
+    } else if (ui_name === "buttongroups") {
+      return (
+        <>
+          Checkbox Mode StatefulButtonGroup
+          <StatefulButtonGroup mode="checkbox"
+            initialState={{ selected: [0] }}
+          >
+            {
+              sublist.map((each, i) =>
+                <Button
+                  key={each + "-" + i}
+                  value={each}
+                  onClick={(e) => console.log(e.target.value)}>
+                  {each}
+                </Button>
+              )
+            }
+          </StatefulButtonGroup>
+        </>
+      )
+    } else {
+      return (
+        <RBDropDown
+          title={dropDownSelected || "Select one"}
+          menuitems={sublist}
+          onSelectCallback={(selected) => {
+            this.setState({
+              dropDownSelected: selected
+            })
+          }} />
+      )
+    }
   }
 
   _fetchAndUpdateState() {
@@ -46,9 +113,9 @@ export default class DUI extends React.Component {
     this._fetchAndUpdateState()
   }
 
-  componentDidUpdate() {
-    this._fetchAndUpdateState()
-  }
+  // componentDidUpdate(prevProps) {
+  // this._fetchAndUpdateState()
+  // }
 
   render() {
     const { data, key, sublist } = this.state;
@@ -63,39 +130,20 @@ export default class DUI extends React.Component {
               style={{ background: 'lightblue' }}
               propertyValuesCallback={({ key, sublist }) => this.setState({ key, sublist })} />
           }
-          {
-            key && sublist && <div>
-              <p>Key: {key}</p>
-              {
-                sublist.map((each, i) => <p key={each + i + ""}>{each}</p>)
-              }
-            </div>
-          }
+          <hr />
           <BaseProvider theme={DarkTheme}>
-            Slider
-          <Slider
-              value={this.state.value}
-              min={-300}
-              max={300}
-              step={50}
-              onChange={({ value }) => this.setState({ value })}
-            />
-            Checkbox
-            <Checkbox checked={this.state.checked} onChange={() =>
-              this.setState({ checked: !this.state.checked })}>
-              click me
-            </Checkbox>
-            <br />
-            Checkbox Mode StatefulButtonGroup
-            <StatefulButtonGroup mode="checkbox"
-              initialState={{ selected: [0] }}
-            >
-              <Button
-                value="foo"
-                onClick={(e) => console.log(e.target.value)}>Slight</Button>
-              <Button value="">Serious</Button>
-              <Button>Killed</Button>
-            </StatefulButtonGroup>
+            {
+              this._generateUI(key, sublist)
+            }
+
+            {/* {
+              key && sublist && <div>
+                <p>Key: {key}</p>
+                {
+                  sublist.map((each, i) => <p key={each + "-" + i}>{each}</p>)
+                }
+              </div>
+            } */}
           </BaseProvider>
         </StyletronProvider>
       </div>

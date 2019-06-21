@@ -98,7 +98,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
             onHover: renderTooltip
         }
         addOptionsToObject(options, hexObj)
-        return(new HexagonLayer(hexObj))
+        return (new HexagonLayer(hexObj))
     } else if (name === 'hex') {
         const scatterObj = {
             id: 'scatterplot-layer',
@@ -114,7 +114,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
             onHover: renderTooltip
         }
         addOptionsToObject(options, scatterObj)
-        return(new ScatterplotLayer(scatterObj))
+        return (new ScatterplotLayer(scatterObj))
     } else if (name === 'geojson') {
         const geojsonObj = {
             id: 'geojson-layer',
@@ -133,10 +133,10 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
             onHover: renderTooltip
         }
         addOptionsToObject(options, geojsonObj)
-        return(new GeoJsonLayer(geojsonObj))
+        return (new GeoJsonLayer(geojsonObj))
     } else if (name === 'icon') {
         // console.log(data);
-        
+
         //icon from https://github.com/uber/deck.gl/blob/8d5b4df9e4ad41eaa1d06240c5fddb922576ee21/website/src/static/images/icon-atlas.png
         const iconObj = {
             id: 'icon-layer',
@@ -152,8 +152,8 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
             onHover: renderTooltip
         }
         addOptionsToObject(options, iconObj)
-        return(new IconLayer(iconObj))
-    } else if(name === 'sgrid') {
+        return (new IconLayer(iconObj))
+    } else if (name === 'sgrid') {
         const sgridObject = {
             id: 'screen_grid',
             data,
@@ -165,8 +165,8 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
             onHover: renderTooltip
         }
         addOptionsToObject(options, sgridObject)
-        return(new ScreenGridLayer(sgridObject))
-    } else if(name === 'grid') {
+        return (new ScreenGridLayer(sgridObject))
+    } else if (name === 'grid') {
         const gridObject = {
             id: 'screen_grid',
             data,
@@ -178,9 +178,9 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
             onHover: renderTooltip
         }
         addOptionsToObject(options, gridObject)
-        return(new GridLayer(gridObject))
+        return (new GridLayer(gridObject))
     }
-    return(null)
+    return (null)
 }
 
 const getCentroid = (coords) => {
@@ -191,13 +191,15 @@ const getCentroid = (coords) => {
     return center;
 }
 
-const convertRange = (oldValue = 2, values = {oldMax: 10, oldMin: 1,
-    newMax: 1, newMin: 0}) => {
-        // thanks to https://stackoverflow.com/a/929107/2332101
-        // OldRange = (OldMax - OldMin)  
-        // NewRange = (NewMax - NewMin)  
-        // NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
-        return (((oldValue - values.oldMin) * (values.newMax - values.newMin)) / (values.oldMax - values.oldMin)) + values.newMin
+const convertRange = (oldValue = 2, values = {
+    oldMax: 10, oldMin: 1,
+    newMax: 1, newMin: 0
+}) => {
+    // thanks to https://stackoverflow.com/a/929107/2332101
+    // OldRange = (OldMax - OldMin)  
+    // NewRange = (NewMax - NewMin)  
+    // NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
+    return (((oldValue - values.oldMin) * (values.newMax - values.newMin)) / (values.oldMax - values.oldMin)) + values.newMin
 }
 
 const getParamsFromSearch = (search) => {
@@ -218,7 +220,7 @@ const getParamsFromSearch = (search) => {
 };
 
 const getBbx = (bounds) => {
-    if(!bounds) return null;
+    if (!bounds) return null;
     // xmin = -1.6449
     // ymin = 53.82925
     // xmax = -1.6270
@@ -227,27 +229,32 @@ const getBbx = (bounds) => {
     let xmax = bounds._ne.lng;
     let ymin = bounds._sw.lat;
     let ymax = bounds._ne.lat;
-    if(xmin > xmax) {
+    if (xmin > xmax) {
         xmax = bounds._sw.lng;
         xmin = bounds._ne.lng;
     }
-    if(ymin > ymax) {
+    if (ymin > ymax) {
         ymax = bounds._sw.lat;
         ymin = bounds._ne.lat;
     }
-    return({xmin, ymin, xmax, ymax})
+    return ({ xmin, ymin, xmax, ymax })
 }
 
 const suggestUIforNumber = (number) => {
-    const UI_LIST = Constants.UI_LIST;
-    if(!number) return UI_LIST[1];
-    if (key === 1) {
+    // "checkbox",     
+    // "radio",        
+    // "buttongroups", 
+    // "dropdown",     
+    // "slider"])      
+    const { UI_LIST } = Constants;
+    if (!number) return UI_LIST[1];
+    if (number === 1) {
         return UI_LIST[0];
-    } else if ( key > 3 && key < 6) {
+    } else if (number > 3 && number <= 6) {
         return UI_LIST[1];
-    } else if (key === 2 || key === 3) {
+    } else if (number === 2 || number === 3) {
         return UI_LIST[2];
-    } else if (key > 9) {
+    } else if (number > 9 && number < 15) {
         return UI_LIST[3];
     } else {
         return UI_LIST[4]; // slider
