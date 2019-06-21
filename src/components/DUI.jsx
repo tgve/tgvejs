@@ -18,13 +18,14 @@ import { Slider } from 'baseui/slider';
 import { Checkbox } from 'baseui/checkbox';
 import { Button } from 'baseui/button';
 import { StatefulButtonGroup } from 'baseui/button-group';
+import {StatefulSelect, TYPE} from 'baseui/select';
 
 import {
   fetchData, suggestUIforNumber
 } from '../utils';
 import Variables from './Variables';
 import Constants from '../Constants';
-import RBDropDown from './RBDropdownComponent';
+import File from './File';
 
 const engine = new Styletron();
 const url = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
@@ -33,7 +34,7 @@ export default class DUI extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: [50],
+      value: [1],
       checked: false
     }
     this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
@@ -93,14 +94,15 @@ export default class DUI extends React.Component {
       )
     } else {
       return (
-        <RBDropDown
-          title={dropDownSelected || "Select one"}
-          menuitems={sublist}
-          onSelectCallback={(selected) => {
-            this.setState({
-              dropDownSelected: selected
-            })
-          }} />
+        <StatefulSelect
+          options={sublist.map(each => ({id: each}))}
+          labelKey="id"
+          valueKey="color"
+          placeholder="Choose a color"
+          maxDropdownHeight="300px"
+          type={TYPE.search}
+          onChange={event => console.log(event)}
+        />
       )
     }
   }
@@ -132,8 +134,12 @@ export default class DUI extends React.Component {
   render() {
     const { data, key, sublist } = this.state;
     return (
-      <div className="content" style={{ maxWidth: '60%', padding: 20 }}>
+      <div className="content" style={{ margin: 'auto', maxWidth: '60%', padding: 20 }}>
         <StyletronProvider value={engine}>
+          <File contentCallback={(text) => {
+            const json = JSON.parse(text)            
+            this.setState({data: json.features})
+          }}/>
           {
             data && data.length > 0 &&
             <Variables
