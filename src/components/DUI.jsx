@@ -16,7 +16,7 @@ import Constants from '../Constants';
 const engine = new Styletron();
 const url = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 
-export default class FUI extends React.Component {
+export default class DUI extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -29,12 +29,10 @@ export default class FUI extends React.Component {
   _fetchAndUpdateState() {
     fetchData(url + "/api/stats19", (data, error) => {
       if (!error) {
-        console.log(data.features);
         this.setState({
           loading: false,
           data: data.features,
         })
-        this._recalculateLayers()
       } else {
         this.setState({
           loading: true,
@@ -47,8 +45,13 @@ export default class FUI extends React.Component {
   componentDidMount() {
     this._fetchAndUpdateState()
   }
+
+  componentDidUpdate() {
+    this._fetchAndUpdateState()
+  }
+
   render() {
-    const { data } = this.state;
+    const { data, key, sublist } = this.state;
     return (
       <div className="content" style={{ maxWidth: '60%', padding: 20 }}>
         <StyletronProvider value={engine}>
@@ -57,7 +60,16 @@ export default class FUI extends React.Component {
             <Variables
               data={data}
               subStyle={{ background: 'darkblue', color: 'white' }}
-              style={{ background: 'lightblue' }} />
+              style={{ background: 'lightblue' }}
+              propertyValuesCallback={({ key, sublist }) => this.setState({ key, sublist })} />
+          }
+          {
+            key && sublist && <div>
+              <p>Key: {key}</p>
+              {
+                sublist.map((each, i) => <p key={each + i + ""}>{each}</p>)
+              }
+            </div>
           }
           <BaseProvider theme={DarkTheme}>
             Slider

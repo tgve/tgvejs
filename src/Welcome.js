@@ -113,8 +113,7 @@ export default class Welcome extends React.Component {
             data = data.filter(
                 d => {
                     if (filter.what === 'road_type') {
-                        // loose compare on purpose
-                        return (d.properties.road_type == filter.selected)
+                        return (d.properties.road_type === filter.selected)
                     } else if (filter.what === 'severity') {
                         return (d.properties.accident_severity === filter.selected)
                     } else if (filter.what === 'year') {
