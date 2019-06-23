@@ -48,7 +48,7 @@ export default class Tooltip extends React.Component {
             // list severity and year counts
             Array.from(map.keys()).forEach(key => {
                 // console.log(key, [ ...map.keys() ]);
-                if(parseInt(key)) {
+                if(parseInt(key)) { // is it year?
                     crashes_data.push({x: key, y: map.get(key)})
                 } else {
                     severity_data.push({x: key, y: map.get(key)})

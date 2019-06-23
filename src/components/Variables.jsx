@@ -17,6 +17,7 @@
 import React, { Component } from 'react';
 
 import './style.css';
+import { humanize } from '../utils';
 
 export default class Variables extends Component {
     constructor(props) {
@@ -28,7 +29,6 @@ export default class Variables extends Component {
         }
         this._generateList = this._generateList.bind(this);
         this._geoJSONPropsOrValues = this._geoJSONPropsOrValues.bind(this);
-        this._humanize = this._humanize.bind(this);
         this._processData = this._processData.bind(this);
         this._showSelectedVars = this._showSelectedVars.bind(this);
         this._showTopn = this._showTopn.bind(this);
@@ -103,22 +103,10 @@ export default class Variables extends Component {
                     })
                 }}
                 key={key}>
-                {this._humanize(key)}
+                {humanize(key)}
             </span>
         )
         return (list)
-    }
-
-    /**
-     * Helper to convert key_values to "Key Values"
-     * @param {*} str 
-     */
-    _humanize(str) {
-        let frags = str.split('_');
-        for (let i = 0; i < frags.length; i++) {
-            frags[i] = frags[i].charAt(0).toUpperCase() + frags[i].slice(1);
-        }
-        return frags.join(' ');
     }
 
     /**
@@ -157,7 +145,7 @@ export default class Variables extends Component {
         selected && selected[key] && selected[key].size > 0 &&
             selected[key].forEach(each => {
                 if (ret.length === 0) ret.push(<p key="chosen-label">
-                    <b>{` ${this._humanize(key)}'s `}</b> values</p>)
+                    <b>{` ${humanize(key)}'s `}</b> values</p>)
                 //add remove
                 ret.push(<span
                     style={this.props.subStyle}
@@ -216,7 +204,7 @@ export default class Variables extends Component {
                                 onClick={() => this.setState({
                                     sublist: null,
                                     key: null
-                                })}>{`${this._humanize(key)} x`}</span> : list
+                                })}>{`${humanize(key)} x`}</span> : list
                         }
                     </div>
                     <div className="tagcloud">

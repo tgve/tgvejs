@@ -8,7 +8,7 @@ export default class Uploader extends React.Component {
     const { contentCallback } = this.props;
     const textType = /text.*/;
     const file = acceptedFiles[0]
-    console.log(file);
+    // console.log(file);
     if (!file.type || file.type.match(textType)) {
         const reader = new FileReader();
         reader.onload = (e) => {

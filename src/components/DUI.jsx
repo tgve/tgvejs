@@ -19,14 +19,17 @@ import { Checkbox } from 'baseui/checkbox';
 import { Button } from 'baseui/button';
 import { StatefulButtonGroup } from 'baseui/button-group';
 import {StatefulSelect, TYPE} from 'baseui/select';
+import {XYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
 
 import {
-  fetchData, suggestUIforNumber
+  fetchData, suggestUIforNumber, humanize
 } from '../utils';
 import Variables from './Variables';
 import Constants from '../Constants';
 import File from './File';
 
+const WIDTH = '400';
+const BAR_HEIGHT = 320;
 const engine = new Styletron();
 const url = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 
@@ -39,11 +42,11 @@ export default class DUI extends React.Component {
     }
     this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
     this._generateUI = this._generateUI.bind(this);
+    this._generateBarChart = this._generateBarChart.bind(this);
   }
 
   _generateUI(key, sublist) {
     if (!key || !sublist || sublist.length === 0) return null;
-    const { dropDownSelected } = this.state;
     const ui_name = suggestUIforNumber(sublist.length)
     if (ui_name === "checkbox") {
       return (
@@ -62,7 +65,6 @@ export default class DUI extends React.Component {
       )
     } else if (ui_name === "slider" && parseInt(sublist[0])) {
       const s = sublist;
-      s.sort((a, b) => { return (a - b) })
       return (
         <Slider
           value={this.state.value}
@@ -98,13 +100,62 @@ export default class DUI extends React.Component {
           options={sublist.map(each => ({id: each}))}
           labelKey="id"
           valueKey="color"
-          placeholder="Choose a color"
+          placeholder={"Choose " + humanize(key)}
           maxDropdownHeight="300px"
           type={TYPE.search}
           onChange={event => console.log(event)}
         />
       )
     }
+  }
+
+  _generateBarChart(key, sublist) {
+    const { data } = this.state;
+    if(!key || !sublist) return;
+    let bars = sublist;
+    if(sublist.length > 10) {
+      bars = bars.slice(0,10)
+    }
+    console.log(bars, data.length);
+    
+    let sub_data = []; // match it with sublist
+    data.forEach(feature => {
+      Object.keys(feature.properties).forEach(each => {
+        if(each === key) {
+          const i = bars.indexOf(feature.properties[each]);
+          console.log(i, feature.properties[each])
+          if (sub_data[i] && 
+            sub_data[i].x === feature.properties[each]) {
+            sub_data[i].y += 1;
+          } else {
+            sub_data[i] = { x: feature.properties[each], y: 1 };
+          }
+        }
+      })
+    })
+    console.log(sub_data);
+    
+    return(
+      <XYPlot
+        title={humanize(key)}
+        xType="ordinal"
+        width={WIDTH} height={BAR_HEIGHT}
+        style={{
+          background: 'white'
+        }}>
+        <YAxis
+          tickPadding={10}
+          tickLabelAngle={-45}
+          tickFormat={v => v.toFixed(0)} />
+        <XAxis
+          tickLabelAngle={-45}
+          tickFormat={v => v + ""}
+          />
+        <VerticalBarSeries
+          // color={v => v === "Fatal" ? 1 : v === "Slight" ? 0 : null}
+          data={sub_data} />
+      </XYPlot>
+    )
   }
 
   _fetchAndUpdateState() {
@@ -136,24 +187,39 @@ export default class DUI extends React.Component {
     return (
       <div className="content" style={{ margin: 'auto', maxWidth: '60%', padding: 20 }}>
         <StyletronProvider value={engine}>
-          <File contentCallback={(text) => {
-            const json = JSON.parse(text)            
-            this.setState({data: json.features})
-          }}/>
-          {
-            data && data.length > 0 &&
-            <Variables
-              data={data}
-              subStyle={{ background: 'darkblue', color: 'white' }}
-              style={{ background: 'lightblue' }}
-              propertyValuesCallback={({ key, sublist }) => this.setState({ key, sublist })} />
-          }
-          <hr />
           <BaseProvider theme={DarkTheme}>
+            <File contentCallback={(text) => {
+              const json = JSON.parse(text)            
+              this.setState({data: json.features})
+            }}/>
             {
-              this._generateUI(key, sublist)
+              data && <h3>There are {` ${data.length} `} features in this geojson.</h3>
             }
-
+            {
+              data && data.length > 0 &&
+              <Variables
+                data={data}
+                style={{color: 'lightgray'}}
+                subStyle={{color: 'lightgray'}}
+                propertyValuesCallback={({ key, sublist }) => 
+                this.setState({ 
+                  key, 
+                  sublist: sublist.sort((a, b) => { return (a - b) })})} />
+            }
+            {
+              key && sublist && 
+              <>
+                <hr />
+                {this._generateBarChart(key, sublist)}
+              </>
+            }
+            {
+              key && sublist && 
+              <>
+                <hr />
+                {this._generateUI(key, sublist)}
+              </>
+            }
             {/* {
               key && sublist && <div>
                 <p>Key: {key}</p>
