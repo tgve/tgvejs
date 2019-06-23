@@ -19,7 +19,7 @@ import { Checkbox } from 'baseui/checkbox';
 import { Button } from 'baseui/button';
 import { StatefulButtonGroup } from 'baseui/button-group';
 import {StatefulSelect, TYPE} from 'baseui/select';
-import {XYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
+import {FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
 
 import {
   fetchData, suggestUIforNumber, humanize
@@ -115,15 +115,12 @@ export default class DUI extends React.Component {
     let bars = sublist;
     if(sublist.length > 10) {
       bars = bars.slice(0,10)
-    }
-    console.log(bars, data.length);
-    
+    }    
     let sub_data = []; // match it with sublist
     data.forEach(feature => {
       Object.keys(feature.properties).forEach(each => {
         if(each === key) {
           const i = bars.indexOf(feature.properties[each]);
-          console.log(i, feature.properties[each])
           if (sub_data[i] && 
             sub_data[i].x === feature.properties[each]) {
             sub_data[i].y += 1;
@@ -132,11 +129,9 @@ export default class DUI extends React.Component {
           }
         }
       })
-    })
-    console.log(sub_data);
-    
+    })    
     return(
-      <XYPlot
+      <FlexibleXYPlot
         title={humanize(key)}
         xType="ordinal"
         width={WIDTH} height={BAR_HEIGHT}
@@ -154,7 +149,7 @@ export default class DUI extends React.Component {
         <VerticalBarSeries
           // color={v => v === "Fatal" ? 1 : v === "Slight" ? 0 : null}
           data={sub_data} />
-      </XYPlot>
+      </FlexibleXYPlot>
     )
   }
 
@@ -185,7 +180,9 @@ export default class DUI extends React.Component {
   render() {
     const { data, key, sublist } = this.state;
     return (
-      <div className="content" style={{ margin: 'auto', maxWidth: '60%', padding: 20 }}>
+      <div className="content" style={{ 
+        margin: 'auto', maxWidth: '60%', 
+        padding: 20 }}>
         <StyletronProvider value={engine}>
           <BaseProvider theme={DarkTheme}>
             <File contentCallback={(text) => {
@@ -208,10 +205,10 @@ export default class DUI extends React.Component {
             }
             {
               key && sublist && 
-              <>
+              <center>
                 <hr />
                 {this._generateBarChart(key, sublist)}
-              </>
+              </center>
             }
             {
               key && sublist && 
