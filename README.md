@@ -1,5 +1,6 @@
 eAtlas
 ================
+<img width="100%" alt="Screenshot gif" src="https://user-images.githubusercontent.com/408568/60017431-9f0e3700-9680-11e9-8ec5-2973883a1681.gif"/>
 
 <img width="100%" alt="Screenshot 2019-06-12 at 22 53 36" src="https://user-images.githubusercontent.com/408568/59395062-fefc0800-8d79-11e9-91b8-6216ab292615.png">
 

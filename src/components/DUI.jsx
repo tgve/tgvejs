@@ -136,13 +136,15 @@ export default class DUI extends React.Component {
         xType="ordinal"
         width={WIDTH} height={BAR_HEIGHT}
         style={{
-          background: 'white'
+          padding: 10,
         }}>
         <YAxis
+          style={{text: { fill: '#fff'}}}
           tickPadding={10}
           tickLabelAngle={-45}
           tickFormat={v => v.toFixed(0)} />
         <XAxis
+          style={{ text: { fill: '#fff' } }}
           tickLabelAngle={-45}
           tickFormat={v => v + ""}
           />
@@ -159,6 +161,7 @@ export default class DUI extends React.Component {
         this.setState({
           loading: false,
           data: data.features,
+          name: "/api/stats19"
         })
       } else {
         this.setState({
@@ -178,19 +181,23 @@ export default class DUI extends React.Component {
   // }
 
   render() {
-    const { data, key, sublist } = this.state;
+    const { data, key, sublist, name } = this.state;
     return (
       <div className="content" style={{ 
         margin: 'auto', maxWidth: '60%', 
         padding: 20 }}>
         <StyletronProvider value={engine}>
           <BaseProvider theme={DarkTheme}>
-            <File contentCallback={(text) => {
+            <File contentCallback={({text, name}) => {
               const json = JSON.parse(text)            
-              this.setState({data: json.features})
+              this.setState({
+                name,
+                data: json.features})
             }}/>
             {
-              data && <h3>There are {` ${data.length} `} features in this geojson.</h3>
+              data && <h3 style={{color: 'white'}}>
+                There are {` ${data.length} `} features in this ({`${name}`}) resource.
+              </h3>
             }
             {
               data && data.length > 0 &&

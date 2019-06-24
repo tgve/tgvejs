@@ -16,7 +16,7 @@ export default class Uploader extends React.Component {
             this.reset();
             const text = reader.result;
             typeof(contentCallback) === 'function' &&
-            contentCallback(text)
+            contentCallback({text, name: file.name})
             // console.log(text)        
         }
         reader.readAsText(file);

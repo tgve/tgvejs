@@ -193,14 +193,13 @@ export default class Variables extends Component {
         // console.log(shownSublist);
 
         return (
-            <div >
+            <div style={this.props.style}>
                 Dataset variables:
                 <div>
                     <div className="tagcloud">
                         {
                             //show main GeoJSON key if there is one chosen
                             key ? <span
-                                style={this.props.style}
                                 onClick={() => this.setState({
                                     sublist: null,
                                     key: null
