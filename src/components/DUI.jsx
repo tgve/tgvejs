@@ -14,7 +14,7 @@ import React from 'react';
 import { FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
 
 import {
-  shortenName,
+  shortenName, propertyCount,
   fetchData, humanize
 } from '../utils';
 import Variables from './Variables';
@@ -44,20 +44,7 @@ export default class DUI extends React.Component {
     if (sublist.length > 10) {
       bars = bars.slice(0, 10)
     }
-    let sub_data = []; // match it with sublist
-    data.forEach(feature => {
-      Object.keys(feature.properties).forEach(each => {
-        if (each === key) {
-          const i = bars.indexOf(feature.properties[each]);
-          if (sub_data[i] &&
-            sub_data[i].x === feature.properties[each]) {
-            sub_data[i].y += 1;
-          } else {
-            sub_data[i] = { x: feature.properties[each], y: 1 };
-          }
-        }
-      })
-    })
+    let sub_data = propertyCount(data, key, bars);
     return (
       <FlexibleXYPlot
         title={humanize(key)}

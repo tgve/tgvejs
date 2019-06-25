@@ -86,7 +86,6 @@ export default class UI extends React.Component {
         labelKey="id"
         valueKey="color"
         placeholder={"Choose " + humanize(title)}
-        maxDropdownHeight="300px"
         type={TYPE.search}
         onChange={event => 
           console.log(event && event.value[0] && event.value[0].id)

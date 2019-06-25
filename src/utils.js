@@ -1,3 +1,4 @@
+import React from 'react';
 import {
     ScatterplotLayer, HexagonLayer, GeoJsonLayer,
     IconLayer, ScreenGridLayer, GridLayer
@@ -276,15 +277,65 @@ const shortenName = (name) => {
     shorten.replace(extension, "");
     return(shorten.substring(0,10) + "..." + extension);
 }
+
+const percentDiv = (title, left, cb) => {
+    return (
+        <div
+            key={title}
+            onClick={() => typeof(cb) === 'function' && cb()}
+            style={{
+                cursor: 'pointer',
+                textAlign: 'center',
+                position: 'relative',
+                float: 'left',
+                width: '30%',
+                color: 'white',
+                margin: '10px 2px',
+                border: '1px solid gray',
+            }}> 
+                <span style={{position: 'absolute', left: '10%'}}>
+                    {title}
+                </span>
+                <div style={{
+                    width: left + '%',
+                    height: 20,
+                    background: 'rgb(200,120,0)',
+                }}>
+                </div>
+            </div>
+    )
+}
+
+const propertyCount = (data, key, list) => {
+  let sub_data = []; // match it with list
+  data.forEach(feature => {
+    Object.keys(feature.properties).forEach(each => {
+      if (each === key) {
+        const i = list.indexOf(feature.properties[each]);
+        if (sub_data[i] &&
+          sub_data[i].x === feature.properties[each]) {
+          sub_data[i].y += 1;
+        }
+        else {
+          sub_data[i] = { x: feature.properties[each], y: 1 };
+        }
+      }
+    });
+  });
+  return sub_data;
+}
+
 export {
     getResultsFromGoogleMaps,
     getParamsFromSearch,
     suggestUIforNumber,
     generateDeckLayer,
     summariseByYear,
+    propertyCount,
     convertRange,
     getCentroid,
     shortenName,
+    percentDiv,
     fetchData,
     humanize,
     getBbx,

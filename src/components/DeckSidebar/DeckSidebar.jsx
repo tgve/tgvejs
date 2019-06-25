@@ -7,7 +7,7 @@ import {
 import './DeckSidebar.css';
 import RBDropDown from '../RBDropdownComponent';
 import MapboxBaseLayers from '../MapboxBaseLayers';
-import { summariseByYear } from '../../utils';
+import { summariseByYear, percentDiv, propertyCount } from '../../utils';
 import { XYPlot, LineSeries, XAxis, YAxis, } from 'react-vis';
 import Variables from '../Variables';
 
@@ -28,23 +28,6 @@ export default class DeckSidebar extends React.Component {
         }
     }
 
-    // static getDerivedStateFromProps(props, state) {
-    //     if (props.data) { 
-    //         // console.log(props.data.features.length);
-    //         let menuitems = []
-    //         props.data.features.forEach(feature =>{
-    //             if(!menuitems.includes(feature.properties.road_type)){
-    //                 menuitems.push(feature.properties.road_type)
-    //             }
-    //         })
-    //         return {
-    //             menuitems,
-    //             data: props.data
-    //         }
-    //     }
-    //     return null
-    // }
-
     shouldComponentUpdate(nextProps, nextState) {
         const { data } = this.props;
         if (this.state.open !== nextState.open) return true;
@@ -62,8 +45,11 @@ export default class DeckSidebar extends React.Component {
         const { onChangeRadius, onChangeElevation,
             onSelectCallback, data,
             toggleSubsetBoundsChange } = this.props;
-        console.log(open);
+        // console.log(open);
+        if(!data || data.length === 0) return(null)
         const plot_data = summariseByYear(data);
+        const severity_data = propertyCount(data, "accident_severity", ['Slight', 'Serious', 'Fatal'])
+        
         return (
             <div className="side-panel-container"
                 style={{ marginLeft: !open ? '-320px' : '0px' }}>
@@ -106,20 +92,6 @@ export default class DeckSidebar extends React.Component {
                                 } 
                             />
                             {/* <GenerateUI title="Test" sublist={["one", "two"]} suggested="checkbox" /> */}
-                            <GenerateUI title="Road Type(All)" 
-                                sublist={road_types} 
-                                onChange={(selected) => {
-                                    this.setState({ road_type: selected === "All" ? "" : selected })
-                                    onSelectCallback &&
-                                        onSelectCallback({
-                                            selected: selected === "All" ?
-                                                // starts at 1 but 
-                                                // road_types has All at 0
-                                                "" : road_types.indexOf(selected),
-                                            what: 'road_type'
-                                        })
-                                }}
-                            />
                             <RBDropDown
                                 title={road_type ? road_type : "Road Type(All)"}
                                 menuitems={road_types}
@@ -134,18 +106,19 @@ export default class DeckSidebar extends React.Component {
                                             what: 'road_type'
                                         })
                                 }} />
-                            <RBDropDown
-                                title={severity ? severity : "Severity(All)"}
-                                menuitems={['All', 'Slight', 'Serious', 'Fatal']}
-                                onSelectCallback={(selected) => {
-                                    this.setState({ severity: selected === "All" ? "" : selected })
+                            <br/>
+                            {
+                                severity_data.map(each => 
+                                percentDiv(each.x, 100 * each.y/data.length, () => {                                    
+                                    this.setState({ severity: each.x === this.state.severity ? "" : each.x })
                                     onSelectCallback &&
                                         onSelectCallback({
-                                            selected: selected === "All" ? "" : selected,
+                                            selected: each.x === this.state.severity ? "" : each.x,
                                             what: 'severity'
                                         })
-                                }} />
-                            <hr />
+                                }))
+                            }
+                            <hr style={{clear: 'both'}}/>
                             <Tabs defaultActiveKey="1" id="main-tabs">
                                 <Tab eventKey="1" title={
                                     <i style={{ fontSize: '2rem' }}

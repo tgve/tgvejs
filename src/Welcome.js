@@ -138,6 +138,7 @@ export default class Welcome extends React.Component {
                 }
             )
         }
+        console.log(data.length);
         data = data.filter(
             d => {
                 if (road_type && (!filter || filter.what !== 'road_type')) {
@@ -150,7 +151,7 @@ export default class Welcome extends React.Component {
                 return (true)
             }
         )
-        // console.log(data.length);
+        console.log(data.length);
         let layer_style = 'grid';
         if (data.length < 100) layer_style = 'icon'
         const alayer = generateDeckLayer(

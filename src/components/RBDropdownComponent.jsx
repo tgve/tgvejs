@@ -21,10 +21,12 @@ export default class RBDropDown extends React.Component {
             }
             if ((!isArray && entry === "") ||
                 (isArray && key === "" && value === "")) {
-                return (<MenuItem key={i} divider />);
+                return (<MenuItem 
+                    className="mi-class" key={i} divider />);
             }
             else {
-                return (<MenuItem key={i} eventKey={entry // the object
+                return (<MenuItem 
+                    className="mi-class" key={i} eventKey={entry // the object
                 }>
                     {isArray ? value : entry}
                 </MenuItem>);
@@ -59,7 +61,8 @@ export default class RBDropDown extends React.Component {
         return (
             <DropdownButton
                 title={title}
-                className={classNames && classNames.length > 0 && [...classNames]}
+                className={typeof(classNames) === 'object' 
+                && classNames.length > 0 ? classNames.join(" ") : classNames}
                 id={typeof (size) === 'string' ? size : "dropdown-size-medium"}
                 onSelect={(event) => {
                     //update title
