@@ -14,19 +14,16 @@ import React from 'react';
 import { Client as Styletron } from 'styletron-engine-atomic';
 import { Provider as StyletronProvider } from 'styletron-react';
 import { BaseProvider, DarkTheme } from 'baseui';
-import { Slider } from 'baseui/slider';
-import { Checkbox } from 'baseui/checkbox';
-import { Button } from 'baseui/button';
-import { StatefulButtonGroup } from 'baseui/button-group';
-import {StatefulSelect, TYPE} from 'baseui/select';
-import {FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
+import { FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
 
-import { shortenName,
-  fetchData, suggestUIforNumber, humanize
+import {
+  shortenName,
+  fetchData, humanize
 } from '../utils';
 import Variables from './Variables';
 import Constants from '../Constants';
 import File from './File';
+import { generateUI } from './UI';
 
 const WIDTH = '400';
 const BAR_HEIGHT = 320;
@@ -38,90 +35,26 @@ export default class DUI extends React.Component {
     super(props)
     this.state = {
       value: [1],
-      checked: false
+      checked: false,
+      loading: true
     }
     this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
-    this._generateUI = this._generateUI.bind(this);
     this._generateBarChart = this._generateBarChart.bind(this);
-  }
-
-  _generateUI(key, sublist) {
-    if (!key || !sublist || sublist.length === 0) return null;
-    const ui_name = suggestUIforNumber(sublist.length)
-    if (ui_name === "checkbox") {
-      return (
-        <>
-          {
-            sublist.map(each =>
-              // deal with each checked!
-              <Checkbox checked={this.state.checked}
-                onChange={() =>
-                  this.setState({ checked: !this.state.checked })}>
-                {key}
-              </Checkbox>
-            )
-          }
-        </>
-      )
-    } else if (ui_name === "slider" && parseInt(sublist[0])) {
-      const s = sublist;
-      return (
-        <Slider
-          value={this.state.value}
-          min={parseInt(s[0])}
-          max={parseInt(s[s.length - 1])}
-          step={1} //something
-          onChange={({ value }) => this.setState({ value })}
-        />
-      )
-    } else if (ui_name === "buttongroups") {
-      return (
-        <>
-          Checkbox Mode StatefulButtonGroup
-          <StatefulButtonGroup mode="checkbox"
-            initialState={{ selected: [0] }}
-          >
-            {
-              sublist.map((each, i) =>
-                <Button
-                  key={each + "-" + i}
-                  value={each}
-                  onClick={(e) => console.log(e.target.value)}>
-                  {each}
-                </Button>
-              )
-            }
-          </StatefulButtonGroup>
-        </>
-      )
-    } else {
-      return (
-        <StatefulSelect
-          options={sublist.map(each => ({id: each}))}
-          labelKey="id"
-          valueKey="color"
-          placeholder={"Choose " + humanize(key)}
-          maxDropdownHeight="300px"
-          type={TYPE.search}
-          onChange={event => console.log(event)}
-        />
-      )
-    }
   }
 
   _generateBarChart(key, sublist) {
     const { data } = this.state;
-    if(!key || !sublist) return;
+    if (!key || !sublist) return;
     let bars = sublist;
-    if(sublist.length > 10) {
-      bars = bars.slice(0,10)
-    }    
+    if (sublist.length > 10) {
+      bars = bars.slice(0, 10)
+    }
     let sub_data = []; // match it with sublist
     data.forEach(feature => {
       Object.keys(feature.properties).forEach(each => {
-        if(each === key) {
+        if (each === key) {
           const i = bars.indexOf(feature.properties[each]);
-          if (sub_data[i] && 
+          if (sub_data[i] &&
             sub_data[i].x === feature.properties[each]) {
             sub_data[i].y += 1;
           } else {
@@ -129,8 +62,8 @@ export default class DUI extends React.Component {
           }
         }
       })
-    })    
-    return(
+    })
+    return (
       <FlexibleXYPlot
         title={humanize(key)}
         xType="ordinal"
@@ -139,7 +72,7 @@ export default class DUI extends React.Component {
           padding: 10,
         }}>
         <YAxis
-          style={{text: { fill: '#fff'}}}
+          style={{ text: { fill: '#fff' } }}
           tickPadding={10}
           tickLabelAngle={-45}
           tickFormat={v => v.toFixed(0)} />
@@ -147,7 +80,7 @@ export default class DUI extends React.Component {
           style={{ text: { fill: '#fff' } }}
           tickLabelAngle={-45}
           tickFormat={v => v + ""}
-          />
+        />
         <VerticalBarSeries
           // color={v => v === "Fatal" ? 1 : v === "Slight" ? 0 : null}
           data={sub_data} />
@@ -165,7 +98,7 @@ export default class DUI extends React.Component {
         })
       } else {
         this.setState({
-          loading: true,
+          loading: false,
         })
         //network error?
       }
@@ -181,22 +114,25 @@ export default class DUI extends React.Component {
   // }
 
   render() {
-    const { data, key, sublist, name } = this.state;    
+    const { data, key, sublist, name, loading } = this.state;
     return (
-      <div className="content" style={{ 
-        margin: 'auto', maxWidth: '60%', 
-        padding: 20 }}>
+      <div className="content" style={{
+        margin: 'auto', maxWidth: '60%',
+        padding: 20
+      }}>
         <StyletronProvider value={engine}>
           <BaseProvider theme={DarkTheme}>
-            <File contentCallback={({text, name}) => {
-              const json = JSON.parse(text)            
+            <File contentCallback={({ text, name }) => {
+              const json = JSON.parse(text)
               this.setState({
                 name,
-                data: json.features})
-            }}/>
+                data: json.features
+              })
+            }} />
+            {loading && <div id="loading"></div>}
             {
-              data && <h3 style={{color: 'white'}}>
-                There are {` ${data.length} `} features in this 
+              data && <h3 style={{ color: 'white' }}>
+                There are {` ${data.length} `} features in this
                 ({shortenName(name)}) resource.
               </h3>
             }
@@ -204,25 +140,29 @@ export default class DUI extends React.Component {
               data && data.length > 0 &&
               <Variables
                 data={data}
-                style={{color: 'lightgray'}}
-                subStyle={{color: 'lightgray'}}
-                propertyValuesCallback={({ key, sublist }) => 
-                this.setState({ 
-                  key, 
-                  sublist: sublist.sort((a, b) => { return (a - b) })})} />
+                style={{ color: 'lightgray' }}
+                subStyle={{ color: 'lightgray' }}
+                propertyValuesCallback={({ key, sublist }) =>
+                  this.setState({
+                    key,
+                    sublist: sublist.sort((a, b) => { return (a - b) })
+                  })} />
             }
             {
-              key && sublist && 
+              key && sublist &&
               <center>
+                <h5 style={{ color: 'white' }}>
+                  For ({key}) and its variables:
+                </h5>
                 <hr />
                 {this._generateBarChart(key, sublist)}
               </center>
             }
             {
-              key && sublist && 
+              key && sublist &&
               <>
                 <hr />
-                {this._generateUI(key, sublist)}
+                {generateUI(key, sublist)}
               </>
             }
             {/* {

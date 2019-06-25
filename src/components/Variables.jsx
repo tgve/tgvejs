@@ -194,7 +194,7 @@ export default class Variables extends Component {
 
         return (
             <div style={this.props.style}>
-                Dataset variables:
+                Dataset:
                 <div>
                     <div className="tagcloud">
                         {
