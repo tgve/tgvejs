@@ -21,7 +21,7 @@ import { StatefulButtonGroup } from 'baseui/button-group';
 import {StatefulSelect, TYPE} from 'baseui/select';
 import {FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
 
-import {
+import { shortenName,
   fetchData, suggestUIforNumber, humanize
 } from '../utils';
 import Variables from './Variables';
@@ -181,7 +181,7 @@ export default class DUI extends React.Component {
   // }
 
   render() {
-    const { data, key, sublist, name } = this.state;
+    const { data, key, sublist, name } = this.state;    
     return (
       <div className="content" style={{ 
         margin: 'auto', maxWidth: '60%', 
@@ -196,7 +196,8 @@ export default class DUI extends React.Component {
             }}/>
             {
               data && <h3 style={{color: 'white'}}>
-                There are {` ${data.length} `} features in this ({`${name}`}) resource.
+                There are {` ${data.length} `} features in this 
+                ({shortenName(name)}) resource.
               </h3>
             }
             {

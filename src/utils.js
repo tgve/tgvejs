@@ -269,6 +269,13 @@ const humanize = (str) => {
     return frags.join(' ');
 }
 
+const shortenName = (name) => {
+    if(!name || name.length <= 26) return name;
+    const extension = name.split('.').pop();
+    let shorten = name;
+    shorten.replace(extension, "");
+    return(shorten.substring(0,10) + "..." + extension);
+}
 export {
     getResultsFromGoogleMaps,
     getParamsFromSearch,
@@ -277,6 +284,7 @@ export {
     summariseByYear,
     convertRange,
     getCentroid,
+    shortenName,
     fetchData,
     humanize,
     getBbx,
