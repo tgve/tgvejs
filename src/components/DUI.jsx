@@ -11,9 +11,6 @@
  * 
  */
 import React from 'react';
-import { Client as Styletron } from 'styletron-engine-atomic';
-import { Provider as StyletronProvider } from 'styletron-react';
-import { BaseProvider, DarkTheme } from 'baseui';
 import { FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
 
 import {
@@ -23,18 +20,16 @@ import {
 import Variables from './Variables';
 import Constants from '../Constants';
 import File from './File';
-import { generateUI } from './UI';
+import GenerateUI from './UI';
 
 const WIDTH = '400';
 const BAR_HEIGHT = 320;
-const engine = new Styletron();
 const url = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 
 export default class DUI extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: [1],
       checked: false,
       loading: true
     }
@@ -120,52 +115,51 @@ export default class DUI extends React.Component {
         margin: 'auto', maxWidth: '60%',
         padding: 20
       }}>
-        <StyletronProvider value={engine}>
-          <BaseProvider theme={DarkTheme}>
-            <File contentCallback={({ text, name }) => {
-              const json = JSON.parse(text)
-              this.setState({
-                name,
-                data: json.features
-              })
-            }} />
-            {loading && <div id="loading"></div>}
-            {
-              data && <h3 style={{ color: 'white' }}>
-                There are {` ${data.length} `} features in this
+
+        <File contentCallback={({ text, name }) => {
+          const json = JSON.parse(text)
+          this.setState({
+            name,
+            data: json.features
+          })
+        }} />
+        {loading && <div id="loading"></div>}
+        {
+          data && <h3 style={{ color: 'white' }}>
+            There are {` ${data.length} `} features in this
                 ({shortenName(name)}) resource.
               </h3>
-            }
-            {
-              data && data.length > 0 &&
-              <Variables
-                data={data}
-                style={{ color: 'lightgray' }}
-                subStyle={{ color: 'lightgray' }}
-                propertyValuesCallback={({ key, sublist }) =>
-                  this.setState({
-                    key,
-                    sublist: sublist.sort((a, b) => { return (a - b) })
-                  })} />
-            }
-            {
-              key && sublist &&
-              <center>
-                <h5 style={{ color: 'white' }}>
-                  For ({key}) and its variables:
+        }
+        {
+          data && data.length > 0 &&
+          <Variables
+            data={data}
+            style={{ color: 'lightgray' }}
+            subStyle={{ color: 'lightgray' }}
+            propertyValuesCallback={({ key, sublist }) =>
+              this.setState({
+                key,
+                sublist: sublist.sort((a, b) => { return (a - b) })
+              })} />
+        }
+        {
+          key && sublist &&
+          <center>
+            <h5 style={{ color: 'white' }}>
+              For ({key}) and its variables:
                 </h5>
-                <hr />
-                {this._generateBarChart(key, sublist)}
-              </center>
-            }
-            {
-              key && sublist &&
-              <>
-                <hr />
-                {generateUI(key, sublist)}
-              </>
-            }
-            {/* {
+            <hr />
+            {this._generateBarChart(key, sublist)}
+          </center>
+        }
+        {
+          key && sublist &&
+          <>
+            <hr />
+            <GenerateUI title={key} sublist={sublist} />
+          </>
+        }
+        {/* {
               key && sublist && <div>
                 <p>Key: {key}</p>
                 {
@@ -173,8 +167,7 @@ export default class DUI extends React.Component {
                 }
               </div>
             } */}
-          </BaseProvider>
-        </StyletronProvider>
+
       </div>
     );
   }

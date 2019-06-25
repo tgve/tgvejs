@@ -1,13 +1,17 @@
 import React from 'react';
-import { Tabs, Tab, FormGroup, InputGroup, 
-    FormControl, Glyphicon, Checkbox } from 'react-bootstrap';
+import {
+    Tabs, Tab, FormGroup, InputGroup,
+    FormControl, Glyphicon, Checkbox
+} from 'react-bootstrap';
 
 import './DeckSidebar.css';
 import RBDropDown from '../RBDropdownComponent';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import { summariseByYear } from '../../utils';
-import {XYPlot, LineSeries, XAxis, YAxis, } from 'react-vis';
+import { XYPlot, LineSeries, XAxis, YAxis, } from 'react-vis';
 import Variables from '../Variables';
+
+import GenerateUI from '../UI';
 
 export default class DeckSidebar extends React.Component {
     constructor(props) {
@@ -43,21 +47,31 @@ export default class DeckSidebar extends React.Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         const { data } = this.props;
-        if(data && nextProps && nextProps.data && 
+        // if (this.state.year !== nextState.year) return true;
+        if (data && nextProps && nextProps.data &&
             data.length === nextProps.data.length) {
             return false
         }
         return true;
     }
 
+    _sliderCallback(value) {
+        const { onSelectCallback } = this.props;
+        this.setState({
+            year: value
+        })
+        typeof (onSelectCallback) === 'function' &&
+            onSelectCallback({ selected: value + "", what: 'year' })
+    }
+
     render() {
         const { hide, open, elevation, road_type, severity,
-            radius, road_types, year, minAge, maxAge, 
+            radius, road_types, year, minAge, maxAge,
             subsetBoundsChange } = this.state;
-        const { onChangeRadius, onChangeElevation, 
+        const { onChangeRadius, onChangeElevation,
             onSelectCallback, data,
             toggleSubsetBoundsChange } = this.props;
-        // console.log("render");
+        // console.log(year);
         const plot_data = summariseByYear(data);
         return (
             <div className="side-panel-container"
@@ -65,77 +79,33 @@ export default class DeckSidebar extends React.Component {
                 <div
                     className="side-panel">
                     <div className="side-pane-header">
-                        <h2>{data && data.length ? 
-                            (data.length === 1 ? data.length + " crash." : data.length + " crashes.") 
+                        <h2>{data && data.length ?
+                            (data.length === 1 ? data.length + " crash." : data.length + " crashes.")
                             : "Nothing to show"}
                         </h2>
-                        </div>
+                    </div>
                     <div className="side-panel-body">
                         <div className="side-panel-body-content">
-                        {/* range of two values slider is not native html */}
-                        <input
-                                type="range"
-                                id="min-age"
-                                min={18}
-                                max={100}
-                                step={1}
-                                value={minAge}
-                                onChange={(e) => {
-                                    const min  = e.target.value;
-                                    if(min > maxAge) return
-                                    this.setState({
-                                        minAge: min
-                                    })
-                                    // typeof (onChangeElevation) === 'function' && onChangeElevation(e.target.value)
-                                }}
-                            />
-                            <h5>Min age: {minAge}.</h5>
-                            <input
-                                type="range"
-                                id="max-age"
-                                min={18}
-                                max={100}
-                                step={1}
-                                value={maxAge}
-                                onChange={(e) => {
-                                    const max  = e.target.value;
-                                    if(max < minAge) return
-                                    this.setState({
-                                        maxAge: max
-                                    })
-                                    // typeof (onChangeElevation) === 'function' && onChangeElevation(e.target.value)
-                                }}
-                            />
-                            <h5>Max age: {maxAge}.</h5>
-
-                            <input
-                                type="range"
-                                id="year"
-                                min={2009}
-                                max={2017}
-                                step={1}
-                                value={year}
-                                onChange={(e) => {
-                                    this.setState({
-                                        year: e.target.value
-                                    })
-                                    typeof (onSelectCallback) === 'function' &&
-                                        onSelectCallback({ selected: e.target.value, what: 'year' })
-                                }}
-                            />
-                            <h5>Year(s): {year ? year : "2009 - 2017"}.
-                            {
-                                    year &&
-                                    <i style={{ fontSize: '2rem' }}
-                                        className="fa fa-trash"
-                                        onClick={() => {
-                                        typeof (onSelectCallback) === 'function' &&
-                                            onSelectCallback({ selected: "", what: 'year' })
-                                            this.setState({ year: "" })
-                                        }} />
+                            {/* range of two values slider is not native html */}
+                            <GenerateUI
+                                title={
+                                    <h5>Year(s): {year ? year : "2009 - 2017"}.
+                                        {
+                                            year &&
+                                            <i style={{ fontSize: '2rem' }}
+                                                className="fa fa-trash"
+                                                onClick={() => {
+                                                    typeof (onSelectCallback) === 'function' &&
+                                                        onSelectCallback({ selected: "", what: 'year' })
+                                                    this.setState({ year: "" })
+                                                }} />
+                                        }
+                                    </h5>
                                 }
-                            </h5>
-
+                                sublist={[2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017]}
+                                suggested="slider"
+                                onChange={this._sliderCallback.bind(this)} />
+                            {/* <GenerateUI title="Test" sublist={["one", "two"]} suggested="checkbox" /> */}
                             <RBDropDown
                                 title={road_type ? road_type : "Road Type(All)"}
                                 menuitems={road_types}
@@ -143,7 +113,7 @@ export default class DeckSidebar extends React.Component {
                                     this.setState({ road_type: selected === "All" ? "" : selected })
                                     onSelectCallback &&
                                         onSelectCallback({
-                                            selected: selected === "All" ? 
+                                            selected: selected === "All" ?
                                                 // starts at 1 but 
                                                 // road_types has All at 0
                                                 "" : road_types.indexOf(selected),
@@ -168,17 +138,17 @@ export default class DeckSidebar extends React.Component {
                                         className="fa fa-info" />
                                 }>
                                     {
-                                        data && data.length > 0 && 
-                                        <Variables 
-                                            onSelectCallback={(multiVarSelect) => 
+                                        data && data.length > 0 &&
+                                        <Variables
+                                            onSelectCallback={(multiVarSelect) =>
                                                 typeof (onSelectCallback) === 'function' &&
                                                 onSelectCallback(
                                                     Object.keys(multiVarSelect).length === 0 ?
-                                                    {what: ''} : { selected: multiVarSelect, what: 'multi' })
+                                                        { what: '' } : { selected: multiVarSelect, what: 'multi' })
                                             }
                                             data={data} />
                                     }
-                                    {plot_data && plot_data.length > 1 && <XYPlot 
+                                    {plot_data && plot_data.length > 1 && <XYPlot
                                         xType="ordinal"
                                         animation={{ duration: 1 }}
                                         height={250} width={250}>
@@ -190,16 +160,16 @@ export default class DeckSidebar extends React.Component {
                                             }} />
                                         <YAxis
                                             tickLabelAngle={-45}
-                                            tickFormat={v => v > 1000 ? v/1000 + "K" : v}
+                                            tickFormat={v => v > 1000 ? v / 1000 + "K" : v}
                                             style={{
-                                                title: {fill: '#fff'},
+                                                title: { fill: '#fff' },
                                                 text: { fill: '#fff', fontWeight: 400 }
                                             }}
                                             position="start"
                                             title="Crashes" />
                                         <LineSeries
-                                            onSeriesMouseOver={(event)=>{
-                                                
+                                            onSeriesMouseOver={(event) => {
+
                                             }}
                                             style={{ fill: 'none' }}
                                             data={plot_data} />
@@ -254,7 +224,7 @@ export default class DeckSidebar extends React.Component {
                                     <Checkbox
                                         onChange={() => {
                                             this.setState({ subsetBoundsChange: !subsetBoundsChange })
-                                            if (toggleSubsetBoundsChange && typeof(toggleSubsetBoundsChange) === 'function') {
+                                            if (toggleSubsetBoundsChange && typeof (toggleSubsetBoundsChange) === 'function') {
                                                 toggleSubsetBoundsChange(!subsetBoundsChange) //starts with false
                                             }
                                         }}
@@ -269,12 +239,12 @@ export default class DeckSidebar extends React.Component {
                             </Tabs>
                         </div>
                         <form className="search-form">
-                            <FormGroup> 
+                            <FormGroup>
                                 <InputGroup>
-                                <FormControl placeholder="fly to..." type="text" />
-                                <InputGroup.Addon>
-                                    <Glyphicon glyph="search" />
-                                </InputGroup.Addon>
+                                    <FormControl placeholder="fly to..." type="text" />
+                                    <InputGroup.Addon>
+                                        <Glyphicon glyph="search" />
+                                    </InputGroup.Addon>
                                 </InputGroup>
                             </FormGroup>
                         </form>
