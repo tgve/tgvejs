@@ -109,11 +109,13 @@ export default class Welcome extends React.Component {
         const { year, road_type, severity } = this.state;
         if (!data) return;
         //if resetting a value
+        console.log(filter);
+        
         if (filter && filter.selected !== "") {
             data = data.filter(
                 d => {
                     if (filter.what === 'road_type') {
-                        return (d.properties.road_type === filter.selected)
+                        return (d.properties.road_type === filter.selected + "")
                     } else if (filter.what === 'severity') {
                         return (d.properties.accident_severity === filter.selected)
                     } else if (filter.what === 'year') {
