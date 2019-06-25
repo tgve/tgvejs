@@ -55,6 +55,7 @@
 .close-button {
     -webkit-transition: left 250ms, right 250ms;
     transition: left 250ms, right 250ms;
+    color: white
 }
 
 .side-panel .btn,

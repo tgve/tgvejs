@@ -47,7 +47,7 @@ export default class DeckSidebar extends React.Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         const { data } = this.props;
-        // if (this.state.year !== nextState.year) return true;
+        if (this.state.open !== nextState.open) return true;
         if (data && nextProps && nextProps.data &&
             data.length === nextProps.data.length) {
             return false
@@ -55,27 +55,18 @@ export default class DeckSidebar extends React.Component {
         return true;
     }
 
-    _sliderCallback(value) {
-        const { onSelectCallback } = this.props;
-        this.setState({
-            year: value
-        })
-        typeof (onSelectCallback) === 'function' &&
-            onSelectCallback({ selected: value + "", what: 'year' })
-    }
-
     render() {
-        const { hide, open, elevation, road_type, severity,
+        const { open, elevation, road_type, severity,
             radius, road_types, year, minAge, maxAge,
             subsetBoundsChange } = this.state;
         const { onChangeRadius, onChangeElevation,
             onSelectCallback, data,
             toggleSubsetBoundsChange } = this.props;
-        // console.log(year);
+        console.log(open);
         const plot_data = summariseByYear(data);
         return (
             <div className="side-panel-container"
-                style={{ marginLeft: hide ? '-320px' : '0px' }}>
+                style={{ marginLeft: !open ? '-320px' : '0px' }}>
                 <div
                     className="side-panel">
                     <div className="side-pane-header">
@@ -104,8 +95,31 @@ export default class DeckSidebar extends React.Component {
                                 }
                                 sublist={[2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017]}
                                 suggested="slider"
-                                onChange={this._sliderCallback.bind(this)} />
+                                onChange={(value) => {
+                                    const { onSelectCallback } = this.props;
+                                    this.setState({
+                                        year: value
+                                    })
+                                    typeof (onSelectCallback) === 'function' &&
+                                        onSelectCallback({ selected: value + "", what: 'year' })
+                                    }
+                                } 
+                            />
                             {/* <GenerateUI title="Test" sublist={["one", "two"]} suggested="checkbox" /> */}
+                            <GenerateUI title="Road Type(All)" 
+                                sublist={road_types} 
+                                onChange={(selected) => {
+                                    this.setState({ road_type: selected === "All" ? "" : selected })
+                                    onSelectCallback &&
+                                        onSelectCallback({
+                                            selected: selected === "All" ?
+                                                // starts at 1 but 
+                                                // road_types has All at 0
+                                                "" : road_types.indexOf(selected),
+                                            what: 'road_type'
+                                        })
+                                }}
+                            />
                             <RBDropDown
                                 title={road_type ? road_type : "Road Type(All)"}
                                 menuitems={road_types}
@@ -254,13 +268,12 @@ export default class DeckSidebar extends React.Component {
                     className="close-button"
                     onClick={() =>
                         this.setState({
-                            hide: !hide,
                             open: !open
                         })}
                     style={{ color: 'white' }}>
                     <div style={{ backgroundColor: '#242730' }}>
                         <i
-                            style={{ fontSize: '2rem' }}
+                            style={{ fontSize: '2rem', color: 'white !important'}}
                             className={open ? "fa fa-arrow-circle-left" :
                                 "fa fa-arrow-circle-right"} />
                     </div>
