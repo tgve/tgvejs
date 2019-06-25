@@ -9,7 +9,13 @@ import Header from './components/Header';
 import About from './About';
 import DynamicImport from './components/DynamicImport';
 
+import { Provider as StyletronProvider } from 'styletron-react';
+import { BaseProvider, DarkTheme } from 'baseui';
+import { Client as Styletron } from 'styletron-engine-atomic';
+
 import './App.css';
+
+const engine = new Styletron();
 
 /**
  * Code splitting.
@@ -34,11 +40,15 @@ class App extends Component {
     return (
       <main>
         <Header />
-        <Switch>
-          <Route exact path="/" component={Welcome} />
-          <Route exact path="/fui" component={DUI} />
-          <Route exact path="/about" component={About} />
-        </Switch>
+        <StyletronProvider value={engine}>
+          <BaseProvider theme={DarkTheme}>
+            <Switch>
+              <Route exact path="/" component={Welcome} />
+              <Route exact path="/fui" component={DUI} />
+              <Route exact path="/about" component={About} />
+            </Switch>
+          </BaseProvider>
+        </StyletronProvider>
       </main>
     )
   }

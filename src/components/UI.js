@@ -1,18 +1,14 @@
 import React from 'react';
 
-import { Provider as StyletronProvider } from 'styletron-react';
-import { BaseProvider, DarkTheme } from 'baseui';
 import { Slider } from 'baseui/slider';
 import { Checkbox } from 'baseui/checkbox';
 import { Button } from 'baseui/button';
 import { StatefulButtonGroup } from 'baseui/button-group';
 import { StatefulSelect, TYPE } from 'baseui/select';
+
 import {
   suggestUIforNumber, humanize
 } from '../utils';
-import { Client as Styletron } from 'styletron-engine-atomic';
-
-const engine = new Styletron();
 
 export default class UI extends React.Component {
   constructor(props) {
@@ -96,11 +92,7 @@ export default class UI extends React.Component {
       />
     }
     return (
-      <StyletronProvider value={engine}>
-        <BaseProvider theme={DarkTheme}>
-          {ui_returned}
-        </BaseProvider>
-      </StyletronProvider>
+      ui_returned
     )
   }
 }

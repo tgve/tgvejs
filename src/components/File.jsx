@@ -49,15 +49,17 @@ export default class Uploader extends React.Component {
 
   render() {
     return (
-      <FileUploader
-        onCancel={this.reset}
-        onDrop={this.handleDrop}
-        progressAmount={this.state.progressAmount}
-        progressMessage={
-          this.state.progressAmount &&
-          `Uploading... ${this.state.progressAmount}% of 100%`
-        }
-      />
+      <center className="file-upload">
+        <FileUploader
+          onCancel={this.reset}
+          onDrop={this.handleDrop}
+          progressAmount={this.state.progressAmount}
+          progressMessage={
+            this.state.progressAmount &&
+            `Uploading... ${this.state.progressAmount}% of 100%`
+          }
+        />
+      </center>
     );
   }
 }
