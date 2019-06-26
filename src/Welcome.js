@@ -118,6 +118,8 @@ export default class Welcome extends React.Component {
     if (!data) return;
     //if resetting a value
     // console.log(filter);
+    // console.log(year, road_type, severity);
+
 
     if (filter && filter.selected !== "") {
       data = data.filter(
@@ -150,7 +152,7 @@ export default class Welcome extends React.Component {
     data = data.filter(
       d => {
         if (road_type && (!filter || filter.what !== 'road_type')) {
-          return (d.properties.road_type === road_type)
+          return (d.properties.road_type === road_type + "")
         } else if (severity && (!filter || filter.what !== 'severity')) {
           return (d.properties.accident_severity === severity)
         } else if (year && (!filter || filter.what !== 'year')) {
@@ -159,7 +161,7 @@ export default class Welcome extends React.Component {
         return (true)
       }
     )
-    // console.log(data.length);
+    console.log(data.length);
     let layer_style = 'grid';
     if (data.length < 100) layer_style = 'icon'
     const alayer = generateDeckLayer(

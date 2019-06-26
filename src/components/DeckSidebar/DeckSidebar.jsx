@@ -52,7 +52,7 @@ export default class DeckSidebar extends React.Component {
       onSelectCallback, data,
       toggleSubsetBoundsChange } = this.props;
     // console.log(open);
-    if (!data || data.length === 0) return (null)
+    if ((!data || data.length === 0) && (!road_type || !severity)) return (null)
     const plot_data = summariseByYear(data);
     const severity_data = propertyCount(data, "accident_severity", ['Slight', 'Serious', 'Fatal'])
 
