@@ -32,7 +32,11 @@ export default class DeckSidebar extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const { data } = this.props;
-    if (this.state.open !== nextState.open) return true;
+    const { elevation, radius } = this.state;
+    //TODO:  a more functional way is needed
+    if (this.state.open !== nextState.open ||
+      elevation !== nextState.elevation ||
+      radius !== nextState.elevation) return true;
     if (data && nextProps && nextProps.data &&
       data.length === nextProps.data.length) {
       return false
