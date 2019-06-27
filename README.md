@@ -1,8 +1,10 @@
 eAtlas
 ================
-<img width="100%" alt="Screenshot gif" src="https://user-images.githubusercontent.com/408568/60017431-9f0e3700-9680-11e9-8ec5-2973883a1681.gif"/>
 
-<img width="100%" alt="Screenshot 2019-06-12 at 22 53 36" src="https://user-images.githubusercontent.com/408568/59395062-fefc0800-8d79-11e9-91b8-6216ab292615.png">
+# eAtlas · [![Build Status](https://travis-ci.org/layik/eAtlas.svg)](https://travis-ci.org/layik/eAtlas) [![Project Status: WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#)
+
+<img width="100%" alt="Screenshot gif" src="https://user-images.githubusercontent.com/408568/60017431-9f0e3700-9680-11e9-8ec5-2973883a1681.gif"/>
+<img width="100%" alt="Screenshot 2019-06-11 at 17 22 02" src="https://user-images.githubusercontent.com/408568/59289239-7b54f500-8c6d-11e9-8419-7eeae5c795d7.png">
 
 Currently this is just a “WIP” as we explore and gather requirements of
 the project. There are some
