@@ -44,6 +44,13 @@ class Header extends React.Component {
                             })
                         }
                     </Nav>
+                    <Nav>
+                        <NavItem>
+                        <Link to="https://github.com/layik/eAtlas">
+                            <i style={{fontSize: '1.5em'}} className="fa fa-github"></i>
+                        </Link>
+                        </NavItem>
+                    </Nav>
                 </Navbar.Collapse>
             </Navbar>
         )
