@@ -8,7 +8,7 @@ import './DeckSidebar.css';
 import RBDropDown from '../RBDropdownComponent';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import { summariseByYear, percentDiv, propertyCount } from '../../utils';
-import { XYPlot, LineSeries, XAxis, YAxis, } from 'react-vis';
+import { XYPlot, LineSeries, XAxis, YAxis, HorizontalBarSeries, } from 'react-vis';
 import Variables from '../Variables';
 
 import GenerateUI from '../UI';
@@ -55,6 +55,8 @@ export default class DeckSidebar extends React.Component {
     if ((!data || data.length === 0) && (!road_type || !severity)) return (null)
     const plot_data = summariseByYear(data);
     const severity_data = propertyCount(data, "accident_severity", ['Slight', 'Serious', 'Fatal'])
+    const road_type_data = propertyCount(data, "road_type", ['1', '2', '3', '4', '5', '6', '7'])
+    console.log(road_type_data);
 
     return (
       <div className="side-panel-container"
