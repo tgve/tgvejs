@@ -99,8 +99,7 @@ export default class DUI extends React.Component {
     const { data, key, sublist, name, loading } = this.state;
     return (
       <div className="content" style={{
-        margin: 'auto', maxWidth: '60%',
-        padding: 20
+        margin: 'auto', padding: '5%',
       }}>
 
         <File contentCallback={({ text, name }) => {
