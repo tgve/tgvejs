@@ -5,6 +5,7 @@ import {
 } from 'react-bootstrap';
 
 import './DeckSidebar.css';
+import URL from '../URL';
 import RBDropDown from '../RBDropdownComponent';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import { summariseByYear, percentDiv, propertyCount } from '../../utils';
@@ -72,6 +73,7 @@ export default class DeckSidebar extends React.Component {
               : "Nothing to show"}
             </h2>
           </div>
+          <URL urlCallback={(url) => console.log(url)} />
           <div className="side-panel-body">
             <div className="side-panel-body-content">
               {/* range of two values slider is not native html */}
