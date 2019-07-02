@@ -44,15 +44,18 @@ export default class DeckSidebar extends React.Component {
     return true;
   }
 
+  /**
+   * Render the sidebar empty if no data is loaded.
+   * Partly because we like to load from a URL.
+   */
   render() {
-    const { open, elevation, road_type, severity,
+    const { open, elevation, road_type,
       radius, road_types, year, minAge, maxAge,
       subsetBoundsChange } = this.state;
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data,
       toggleSubsetBoundsChange } = this.props;
     // console.log(open);
-    if ((!data || data.length === 0) && (!road_type || !severity)) return (null)
     const plot_data = summariseByYear(data);
     const severity_data = propertyCount(data, "accident_severity", ['Slight', 'Serious', 'Fatal'])
     const road_type_data = propertyCount(data, "road_type", ['1', '2', '3', '4', '5', '6', '7'])
@@ -117,7 +120,7 @@ export default class DeckSidebar extends React.Component {
               <br />
               {/* TODO: generate this declaritively too */}
               {
-                severity_data.map(each =>
+                severity_data && severity_data.map(each =>
                   percentDiv(each.x, 100 * each.y / data.length, () => {
                     this.setState({ severity: each.x === this.state.severity ? "" : each.x })
                     onSelectCallback &&

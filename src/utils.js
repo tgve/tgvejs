@@ -308,6 +308,7 @@ const percentDiv = (title, left, cb) => {
 }
 
 const propertyCount = (data, key, list) => {
+  if (!data) return;
   let sub_data = []; // match it with list
   data.forEach(feature => {
     Object.keys(feature.properties).forEach(each => {

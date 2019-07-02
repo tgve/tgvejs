@@ -88,7 +88,7 @@ export default class Welcome extends React.Component {
         this._recalculateLayers()
       } else {
         this.setState({
-          loading: true,
+          loading: false,
         })
         //network error?
       }
