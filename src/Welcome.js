@@ -69,7 +69,6 @@ export default class Welcome extends React.Component {
     }
     this._recalculateLayers = this._recalculateLayers.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
-    this._onMapLoad = this._onMapLoad.bind(this);
     this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this)
   }
 
@@ -93,15 +92,6 @@ export default class Welcome extends React.Component {
         //network error?
       }
     })
-  }
-  // placed below function next to componentDidMount
-  // to be noticed for conusion with standard React.componentDidMount
-  _onMapLoad() {
-    // console.log(this.map.getBounds());
-    //update initialViewState
-    // below crashes with some n[r] weird error. See this:
-    // https://uber.github.io/react-map-gl/#/Documentation/advanced/viewport-transition?section=transition-and-the-onviewportchange-callback
-    // this.map.once('zoomend', console.log("ping"))
   }
 
   /**
