@@ -13,7 +13,7 @@ import history from './history';
 import './App.css';
 import Tooltip from './components/Tooltip';
 
-const url = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
+const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.MAPBOX_ACCESS_TOKEN;
@@ -76,8 +76,13 @@ export default class Welcome extends React.Component {
     this._fetchAndUpdateState()
   }
 
-  _fetchAndUpdateState() {
-    fetchData(url + "/api/stats19", (data, error) => {
+  _fetchAndUpdateState(aURL) {
+    // TODO: more sanity checks?
+    const fullURL = aURL ? 
+    URL + "/api/url?q=" + aURL : // get the server to parse it 
+    URL + "/api/stats19";
+
+    fetchData(fullURL, (data, error) => {      
       if (!error) {
         // console.log(data.features);
         this.setState({
@@ -107,10 +112,6 @@ export default class Welcome extends React.Component {
     const { year, road_type, severity } = this.state;
     if (!data) return;
     //if resetting a value
-    // console.log(filter);
-    // console.log(year, road_type, severity);
-
-
     if (filter && filter.selected !== "") {
       data = data.filter(
         d => {
@@ -151,7 +152,7 @@ export default class Welcome extends React.Component {
         return (true)
       }
     )
-    console.log(data.length);
+    // console.log(data.length);
     let layer_style = 'grid';
     if (data.length < 100) layer_style = 'icon'
     const alayer = generateDeckLayer(
@@ -215,7 +216,7 @@ export default class Welcome extends React.Component {
       const box = getBbx(bounds)
       // console.log("bounds", box);
       const { xmin, ymin, xmax, ymax } = box;
-      fetchData(url + "/api/stats19/" + xmin + "/" +
+      fetchData(URL + "/api/stats19/" + xmin + "/" +
         ymin + "/" + xmax + "/" + ymax,
         (data, error) => {
           if (!error) {
@@ -281,6 +282,12 @@ export default class Welcome extends React.Component {
         <DeckSidebar
           key={1234}
           data={this.state.filtered}
+          urlCallback={(url_returned) => {
+            this.setState({
+              loading: true,
+            })
+            this._fetchAndUpdateState(url_returned);
+          }}
           onSelectCallback={(selected) => this._recalculateLayers(undefined, undefined, selected)}
           onChangeRadius={(value) => this._recalculateLayers(value)}
           onChangeElevation={(value) => this._recalculateLayers(undefined, value)}

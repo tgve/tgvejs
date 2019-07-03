@@ -55,12 +55,19 @@ export default class DeckSidebar extends React.Component {
       subsetBoundsChange } = this.state;
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data,
-      toggleSubsetBoundsChange } = this.props;
+      toggleSubsetBoundsChange, urlCallback } = this.props;
     // console.log(open);
-    const plot_data = summariseByYear(data);
+    let plot_data = [];
+    if(data && data.length > 1) {
+        Object.keys(data[1].properties).forEach(each => {
+            if(each.match(/date|datetime|datestamp|timestamp/g)) {
+                plot_data = summariseByYear(data)
+            }
+        })
+    }
     const severity_data = propertyCount(data, "accident_severity", ['Slight', 'Serious', 'Fatal'])
-    const road_type_data = propertyCount(data, "road_type", ['1', '2', '3', '4', '5', '6', '7'])
-    console.log(road_type_data);
+    // const road_type_data = propertyCount(data, "road_type", ['1', '2', '3', '4', '5', '6', '7'])
+    // console.log(road_type_data);
 
     return (
       <div className="side-panel-container"
@@ -69,11 +76,12 @@ export default class DeckSidebar extends React.Component {
           className="side-panel">
           <div className="side-pane-header">
             <h2>{data && data.length ?
-              (data.length === 1 ? data.length + " crash." : data.length + " crashes.")
+              (data.length === 1 ? data.length + " crash." : data.length + " rows.")
               : "Nothing to show"}
             </h2>
           </div>
-          <URL urlCallback={(url) => console.log(url)} />
+          <URL urlCallback={(url) => typeof(urlCallback) === 'function' 
+          && urlCallback(url)} />
           <div className="side-panel-body">
             <div className="side-panel-body-content">
               {/* range of two values slider is not native html */}

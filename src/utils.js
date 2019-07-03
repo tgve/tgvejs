@@ -42,12 +42,12 @@ const getResultsFromGoogleMaps = (string, callback) => {
 
 const fetchData = (url, callback) => {
   fetch(url) // [0] => "", [1] => roads and [2] => qfactor
-    .then((response) => response.json())
-    .then((responseJson) => {
+    .then((response) => response.text())
+    .then((response) => {      
       try {
-        // const json = JSON.parse(responseJson);
+        const json = JSON.parse(response);
         // console.log(json);
-        callback(responseJson)
+        callback(json)
       } catch (error) {
         console.error(error);
       }
@@ -327,6 +327,16 @@ const propertyCount = (data, key, list) => {
   return sub_data;
 }
 
+/**
+ * Thanks to https://stackoverflow.com/a/34695026/2332101
+ * @param {*} str 
+ */
+const isURL = (str) => {
+  var a = document.createElement('a');
+  a.href = str;
+  return (a.host && a.host != window.location.host);
+}
+
 export {
   getResultsFromGoogleMaps,
   getParamsFromSearch,
@@ -341,4 +351,5 @@ export {
   fetchData,
   humanize,
   getBbx,
+  isURL,
 }

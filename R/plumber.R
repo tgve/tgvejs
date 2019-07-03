@@ -140,6 +140,15 @@ subs_geojson <- function(res, xmin, ymin, xmax, ymax){
   }
   res
 }
+
+#' Get geojson from URL and pass it to client
+#' @get /api/url
+parse_url <- function(res, q = "") {
+  res$headers$`Content-type` <- "application/json"
+  res$body <- readLines(q)
+  res
+}
+
 #' start wip/play.R
 #' 
 csv = read.csv("wip/ne-other.csv", stringsAsFactors=FALSE)

@@ -127,6 +127,7 @@ export default class Variables extends Component {
      * @param {*} n 
      */
     _showTopn(shownSublist, n = 5) {
+        if(shownSublist.length < n) n = shownSublist.length
         return <>
             {shownSublist.slice(0, n)}
             <i>Showing {n} out of {shownSublist.length}</i>
