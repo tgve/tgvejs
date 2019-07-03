@@ -49,7 +49,7 @@ const fetchData = (url, callback) => {
         // console.log(json);
         callback(json)
       } catch (error) {
-        console.error(error);
+        callback(undefined, error)
       }
     })
     .catch((error) => {

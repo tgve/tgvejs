@@ -12,8 +12,14 @@ export default function URL(props) {
 
   return (
     <form
+      onKeyPress={(event) => {
+          if (event.which === 13 /* Enter */) {
+            event.preventDefault();
+          }
+      }}
       className="search-form"
       onChange={(e) => {
+        if(e.keyCode === 13) e.preventDefault()
         const { value } = e.target;
         setUrl(value)
         // console.log(isURL(value))

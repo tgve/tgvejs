@@ -145,8 +145,15 @@ subs_geojson <- function(res, xmin, ymin, xmax, ymax){
 #' @get /api/url
 parse_url <- function(res, q = "") {
   res$headers$`Content-type` <- "application/json"
-  res$body <- readLines(q)
-  res
+  er <- try(res$body <- readLines(q), silent = TRUE)
+  if(class(res) == "try-error") {
+    msg <- paste0("Failed to read the URL: ", q)
+    res$status <- 400 # Bad request
+    list(error=jsonlite::unbox(msg))
+  } else {
+    return(res)
+  }
+  
 }
 
 #' start wip/play.R

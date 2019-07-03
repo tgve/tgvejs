@@ -82,7 +82,9 @@ export default class Welcome extends React.Component {
     URL + "/api/url?q=" + aURL : // get the server to parse it 
     URL + "/api/stats19";
 
-    fetchData(fullURL, (data, error) => {      
+    fetchData(fullURL, (data, error) => { 
+      console.log(error);
+           
       if (!error) {
         // console.log(data.features);
         this.setState({
@@ -91,6 +93,8 @@ export default class Welcome extends React.Component {
         })
         this._recalculateLayers()
       } else {
+        console.log(error);
+        
         this.setState({
           loading: false,
         })
