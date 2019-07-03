@@ -21,6 +21,7 @@ import Variables from './Variables';
 import Constants from '../Constants';
 import File from './File';
 import GenerateUI from './UI';
+import URL from './URL';
 
 const WIDTH = '400';
 const BAR_HEIGHT = 320;
@@ -70,13 +71,18 @@ export default class DUI extends React.Component {
     )
   }
 
-  _fetchAndUpdateState() {
-    fetchData(url + "/api/stats19", (data, error) => {
+  _fetchAndUpdateState(aURL) {
+    // TODO: more sanity checks?
+    const fullURL = aURL ? 
+    url + "/api/url?q=" + aURL : // get the server to parse it 
+    url + "/api/stats19";
+
+    fetchData(fullURL, (data, error) => {
       if (!error) {
         this.setState({
           loading: false,
           data: data.features,
-          name: "/api/stats19"
+          name: aURL || url
         })
       } else {
         this.setState({
@@ -109,6 +115,11 @@ export default class DUI extends React.Component {
             data: json.features
           })
         }} />
+        <center>
+          <URL urlCallback={(url) => {
+            this._fetchAndUpdateState(url)
+          }}/>
+        </center>
         {loading && <div id="loading"></div>}
         {
           data && <h3 style={{ color: 'white' }}>
