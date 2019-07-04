@@ -9,10 +9,10 @@ import URL from '../URL';
 import RBDropDown from '../RBDropdownComponent';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import { summariseByYear, percentDiv, propertyCount } from '../../utils';
-import { XYPlot, LineSeries, XAxis, YAxis, HorizontalBarSeries, } from 'react-vis';
+import { XYPlot, LineSeries, XAxis, YAxis, } from 'react-vis';
 import Variables from '../Variables';
-
 import GenerateUI from '../UI';
+import RBAlert from '../RBAlert';
 
 export default class DeckSidebar extends React.Component {
   constructor(props) {
@@ -32,12 +32,13 @@ export default class DeckSidebar extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { data } = this.props;
+    const { data, alert } = this.props;
     const { elevation, radius } = this.state;
     //TODO:  a more functional way is needed
     if (this.state.open !== nextState.open ||
       elevation !== nextState.elevation ||
-      radius !== nextState.elevation) return true;
+      radius !== nextState.elevation ||
+      alert !== nextProps.alert) return true;
     if (data && nextProps && nextProps.data &&
       data.length === nextProps.data.length) {
       return false
@@ -51,19 +52,18 @@ export default class DeckSidebar extends React.Component {
    */
   render() {
     const { open, elevation, road_type,
-      radius, road_types, year, minAge, maxAge,
+      radius, road_types, year,
       subsetBoundsChange } = this.state;
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data,
-      toggleSubsetBoundsChange, urlCallback } = this.props;
-    // console.log(open);
+      toggleSubsetBoundsChange, urlCallback, alert } = this.props;
     let plot_data = [];
-    if(data && data.length > 1) {
-        Object.keys(data[1].properties).forEach(each => {
-            if(each.match(/date|datetime|datestamp|timestamp/g)) {
-                plot_data = summariseByYear(data)
-            }
-        })
+    if (data && data.length > 1) {
+      Object.keys(data[1].properties).forEach(each => {
+        if (each.match(/date|datetime|datestamp|timestamp/g)) {
+          plot_data = summariseByYear(data)
+        }
+      })
     }
     const severity_data = propertyCount(data, "accident_severity", ['Slight', 'Serious', 'Fatal'])
     // const road_type_data = propertyCount(data, "road_type", ['1', '2', '3', '4', '5', '6', '7'])
@@ -74,14 +74,15 @@ export default class DeckSidebar extends React.Component {
         style={{ marginLeft: !open ? '-320px' : '0px' }}>
         <div
           className="side-panel">
+          <RBAlert alert={alert} />
           <div className="side-pane-header">
             <h2>{data && data.length ?
               (data.length === 1 ? data.length + " crash." : data.length + " rows.")
               : "Nothing to show"}
             </h2>
           </div>
-          <URL urlCallback={(url) => typeof(urlCallback) === 'function' 
-          && urlCallback(url)} />
+          <URL urlCallback={(url) => typeof (urlCallback) === 'function'
+            && urlCallback(url)} />
           <div className="side-panel-body">
             <div className="side-panel-body-content">
               {/* range of two values slider is not native html */}

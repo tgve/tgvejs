@@ -43,7 +43,7 @@ const getResultsFromGoogleMaps = (string, callback) => {
 const fetchData = (url, callback) => {
   fetch(url) // [0] => "", [1] => roads and [2] => qfactor
     .then((response) => response.text())
-    .then((response) => {      
+    .then((response) => {
       try {
         const json = JSON.parse(response);
         // console.log(json);
@@ -334,7 +334,7 @@ const propertyCount = (data, key, list) => {
 const isURL = (str) => {
   var a = document.createElement('a');
   a.href = str;
-  return (a.host && a.host != window.location.host);
+  return (a.host && a.host !== window.location.host);
 }
 
 export {

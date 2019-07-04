@@ -78,25 +78,25 @@ export default class Welcome extends React.Component {
 
   _fetchAndUpdateState(aURL) {
     // TODO: more sanity checks?
-    const fullURL = aURL ? 
-    URL + "/api/url?q=" + aURL : // get the server to parse it 
-    URL + "/api/stats19";
+    const fullURL = aURL ?
+      URL + "/api/url?q=" + aURL : // get the server to parse it 
+      URL + "/api/stats19";
 
-    fetchData(fullURL, (data, error) => { 
-      console.log(error);
-           
+    fetchData(fullURL, (data, error) => {
       if (!error) {
         // console.log(data.features);
         this.setState({
           loading: false,
           data: data.features,
+          alert: null
         })
         this._recalculateLayers()
       } else {
         console.log(error);
-        
+
         this.setState({
           loading: false,
+          alert: { content: 'Could not reach: ' + fullURL }
         })
         //network error?
       }
@@ -239,9 +239,8 @@ export default class Welcome extends React.Component {
 
   render() {
     const { tooltip, viewport, initialViewState,
-      loading, mapStyle } = this.state;
+      loading, mapStyle, alert } = this.state;
     // let {viewState} = this.props;
-    // console.log(mapStyle.endsWith("No map-v9"))
     return (
       <div>
         {/* just a little catch to hide the loader when no basemap is presetn */}
@@ -285,6 +284,7 @@ export default class Welcome extends React.Component {
         </MapGL>
         <DeckSidebar
           key={1234}
+          alert={alert}
           data={this.state.filtered}
           urlCallback={(url_returned) => {
             this.setState({
