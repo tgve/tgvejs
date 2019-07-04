@@ -307,26 +307,6 @@ const percentDiv = (title, left, cb) => {
   )
 }
 
-const propertyCount = (data, key, list) => {
-  if (!data) return;
-  let sub_data = []; // match it with list
-  data.forEach(feature => {
-    Object.keys(feature.properties).forEach(each => {
-      if (each === key) {
-        const i = list.indexOf(feature.properties[each]);
-        if (sub_data[i] &&
-          sub_data[i].x === feature.properties[each]) {
-          sub_data[i].y += 1;
-        }
-        else {
-          sub_data[i] = { x: feature.properties[each], y: 1 };
-        }
-      }
-    });
-  });
-  return sub_data;
-}
-
 /**
  * Thanks to https://stackoverflow.com/a/34695026/2332101
  * @param {*} str 
@@ -343,7 +323,6 @@ export {
   suggestUIforNumber,
   generateDeckLayer,
   summariseByYear,
-  propertyCount,
   convertRange,
   getCentroid,
   shortenName,

@@ -244,6 +244,7 @@ export default class Welcome extends React.Component {
     const { tooltip, viewport, initialViewState,
       loading, mapStyle, alert } = this.state;
     // let {viewState} = this.props;
+    
     return (
       <div>
         {/* just a little catch to hide the loader when no basemap is presetn */}

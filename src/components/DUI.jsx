@@ -14,7 +14,7 @@ import React from 'react';
 import { FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
 
 import {
-  shortenName, propertyCount,
+  shortenName,
   fetchData, humanize
 } from '../utils';
 import Variables from './Variables';
@@ -22,6 +22,7 @@ import Constants from '../Constants';
 import File from './File';
 import GenerateUI from './UI';
 import URL from './URL';
+import { propertyCount } from './geojsonutils/geojsonutils';
 
 const WIDTH = '400';
 const BAR_HEIGHT = 320;
