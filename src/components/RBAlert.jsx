@@ -15,7 +15,12 @@ class ToastAlert extends Component {
 
   // lifeCycles
   //-----------------------------------------------
+  componentWillUnmount() {
+    if (this.dismissTimeoutId) clearTimeout(this.dismissTimeoutId)
+  }
+
   componentWillReceiveProps(nextProps) {
+    if (!nextProps.alert) return;
     const oldId = this.props.alert;
     const newId = nextProps.alert;
     if (oldId !== newId) {
@@ -24,7 +29,7 @@ class ToastAlert extends Component {
         timeDuration: Boolean(alert)
       },
         () => {
-          setTimeout(() => this.setState({ timeDuration: false }),
+          this.dismissTimeout = setTimeout(() => this.setState({ timeDuration: false }),
             time || 3000)
         });
     }
@@ -37,7 +42,7 @@ class ToastAlert extends Component {
     const { alert } = this.props;
     const { timeDuration } = this.state;
 
-    if (!timeDuration)
+    if (!timeDuration || !alert || !alert.content)
       return null;
 
     else {

@@ -79,7 +79,9 @@ export default class Welcome extends React.Component {
   _fetchAndUpdateState(aURL) {
     // TODO: more sanity checks?
     const fullURL = aURL ?
-      URL + "/api/url?q=" + aURL : // get the server to parse it 
+      // TODO: decide which is better.
+      // URL + "/api/url?q=" + aURL : // get the server to parse it 
+      aURL : // do not get the server to parse it 
       URL + "/api/stats19";
 
     fetchData(fullURL, (data, error) => {
@@ -174,6 +176,7 @@ export default class Welcome extends React.Component {
       tooltip: "",
       filtered: data,
       layers: [alayer],
+      viewport: alayer.context,
       radius: radius ? radius : this.state.radius,
       elevation: elevation ? elevation : this.state.elevation,
       road_type: filter && filter.what === 'road_type' ? filter.selected : this.state.road_type,
