@@ -13,7 +13,7 @@ import { XYPlot, LineSeries, XAxis, YAxis, } from 'react-vis';
 import Variables from '../Variables';
 import GenerateUI from '../UI';
 import RBAlert from '../RBAlert';
-import gju from '../geojsonutils/geojsonutils';
+import {propertyCount} from '../../geojsonutils';
 
 export default class DeckSidebar extends React.Component {
   constructor(props) {
@@ -66,7 +66,7 @@ export default class DeckSidebar extends React.Component {
         }
       })
     }
-    const severity_data = gju.propertyCount(data, "accident_severity", ['Slight', 'Serious', 'Fatal'])
+    const severity_data = propertyCount(data, "accident_severity", ['Slight', 'Serious', 'Fatal'])
     // const road_type_data = propertyCount(data, "road_type", ['1', '2', '3', '4', '5', '6', '7'])
     // console.log(road_type_data);
 

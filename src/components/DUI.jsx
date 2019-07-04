@@ -22,7 +22,7 @@ import Constants from '../Constants';
 import File from './File';
 import GenerateUI from './UI';
 import URL from './URL';
-import { propertyCount } from './geojsonutils/geojsonutils';
+import { propertyCount } from '../geojsonutils';
 
 const WIDTH = '400';
 const BAR_HEIGHT = 320;

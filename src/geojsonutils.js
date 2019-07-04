@@ -1,16 +1,10 @@
-var gju = this.gju = {};
-
-// Export the geojson object for **CommonJS**
-if (typeof module !== 'undefined' && module.exports) {  
-  module.exports = gju;
-}
-gju.properties = function (geojson) {  
+const properties = (geojson) => {  
   if (!geojson || !geojson.features) return null;  
   var properties = geojson.features[0].properties;
   return Object.keys(properties);
 }
 
-gju.propertyCount = (data, key, list) => {
+const propertyCount = (data, key, list) => {
   if (!data) return;
   let sub_data = []; // match it with list
   data.forEach(feature => {
@@ -28,4 +22,9 @@ gju.propertyCount = (data, key, list) => {
     });
   });
   return sub_data;
+}
+
+export {
+  propertyCount,
+  properties
 }
