@@ -241,6 +241,12 @@ const getBbx = (bounds) => {
   return ({ xmin, ymin, xmax, ymax })
 }
 
+const suggestDeckLayer = (geojson) => {
+  // basic version should suggest a layer
+  // based on the geojson data types
+  // go through each feature? in case of features.
+  
+}
 const suggestUIforNumber = (number) => {
   // "checkbox",     
   // "radio",        
@@ -322,6 +328,7 @@ export {
   getParamsFromSearch,
   suggestUIforNumber,
   generateDeckLayer,
+  suggestDeckLayer,
   summariseByYear,
   convertRange,
   getCentroid,

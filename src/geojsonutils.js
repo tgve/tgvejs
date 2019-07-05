@@ -1,4 +1,5 @@
 // thanks turfjs
+//http://wiki.geojson.org/GeoJSON_draft_version_6
 const sfType = (geojson) => {
   if (geojson.type === "FeatureCollection") { return "FeatureCollection"; }
   if (geojson.type === "GeometryCollection") { return "GeometryCollection"; }
