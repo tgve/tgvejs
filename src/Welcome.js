@@ -160,7 +160,7 @@ export default class Welcome extends React.Component {
       }
     )
     // console.log(data.length);
-    let layer_style = 'geojson';
+    let layer_style = 'grid';
     if (data.length < 100) layer_style = 'icon'
     const alayer = generateDeckLayer(
       layer_style, data, this._renderTooltip,
