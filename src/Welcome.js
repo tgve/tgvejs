@@ -1,6 +1,7 @@
 import React from 'react';
 import DeckGL from 'deck.gl';
 import MapGL, { NavigationControl } from 'react-map-gl';
+import bbox from '@turf/bbox';
 
 import {
   fetchData, generateDeckLayer,
@@ -86,10 +87,10 @@ export default class Welcome extends React.Component {
 
     fetchData(fullURL, (data, error) => {
       if (!error) {
-        // console.log(data.features);
+        // this._updateURL(viewport)
         this.setState({
           loading: false,
-          data: data.features,
+          data: data,
           alert: null
         })
         this._recalculateLayers()
@@ -114,7 +115,7 @@ export default class Welcome extends React.Component {
    * @param {*} filter multivariate filter of properties
    */
   _recalculateLayers(radius, elevation, filter) {
-    let { data } = this.state
+    let data = this.state.data.features
     const { year, road_type, severity } = this.state;
     if (!data) return;
     //if resetting a value
@@ -159,7 +160,7 @@ export default class Welcome extends React.Component {
       }
     )
     // console.log(data.length);
-    let layer_style = 'grid';
+    let layer_style = 'geojson';
     if (data.length < 100) layer_style = 'icon'
     const alayer = generateDeckLayer(
       layer_style, data, this._renderTooltip,
@@ -170,13 +171,16 @@ export default class Welcome extends React.Component {
         lightSettings: LIGHT_SETTINGS
       }
     )
+    //TODO: update URL and do it via viewport
+    // is called after mounds
+    var bounds = bbox(this.state.data);
+    this.map.fitBounds(bounds, { padding: 20 });
 
     this.setState({
       mapStyle: filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
       tooltip: "",
       filtered: data,
       layers: [alayer],
-      viewport: alayer.context,
       radius: radius ? radius : this.state.radius,
       elevation: elevation ? elevation : this.state.elevation,
       road_type: filter && filter.what === 'road_type' ? filter.selected : this.state.road_type,

@@ -1,5 +1,13 @@
-const properties = (geojson) => {  
-  if (!geojson || !geojson.features) return null;  
+// thanks turfjs
+const sfType = (geojson) => {
+  if (geojson.type === "FeatureCollection") { return "FeatureCollection"; }
+  if (geojson.type === "GeometryCollection") { return "GeometryCollection"; }
+  if (geojson.type === "Feature" && geojson.geometry !== null) { return geojson.geometry.type; }
+  return geojson.type;
+}
+
+const properties = (geojson) => {
+  if (!geojson || !geojson.features) return null;
   var properties = geojson.features[0].properties;
   return Object.keys(properties);
 }
@@ -26,5 +34,6 @@ const propertyCount = (data, key, list) => {
 
 export {
   propertyCount,
-  properties
+  properties,
+  sfType
 }

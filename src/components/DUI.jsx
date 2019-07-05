@@ -23,6 +23,7 @@ import File from './File';
 import GenerateUI from './UI';
 import URL from './URL';
 import { propertyCount } from '../geojsonutils';
+import GeomExplore from './GeomExplore';
 
 const WIDTH = '400';
 const BAR_HEIGHT = 320;
@@ -139,6 +140,11 @@ export default class DUI extends React.Component {
                 key,
                 sublist: sublist.sort((a, b) => { return (a - b) })
               })} />
+        }
+        {
+          //geometry explore
+          data && data.length > 0 && 
+          <GeomExplore data={data}/>
         }
         {
           key && sublist &&
