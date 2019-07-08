@@ -46,19 +46,6 @@ swagger <- function(req, res){
   plumber::include_html(fname, res)
 }
 
-# get data ----------------------------------------------------------------
-# #' @examples
-# #' find_csv_name(2009:2017, "accidents")
-# find_csv_name = function(years, type) {
-#   z = find_file_name(years = years, type = type)
-#   z = gsub("dftRoadSafetyData_Accidents_2017.zip", "Acc.zip", z)
-#   z = gsub("RoadSafetyData_Accidents_2015.zip", "Accidents_2015.zip", z)
-#   # z = gsub("Accidents7904.zip", "whatever.zip")
-#   z_dir = gsub(pattern = ".zip", replacement = "", x = z)
-#   z_csv = gsub(pattern = ".zip", replacement = ".csv", x = z)
-#   file.path(z_dir, z_csv)
-# }
-
 if(!file.exists(main.file)) {
   piggyback::pb_download(main.file)
   # stop("ac_joined_wy_2009-2017.Rds")

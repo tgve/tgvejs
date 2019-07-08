@@ -5,7 +5,8 @@ import bbox from '@turf/bbox';
 
 import {
   fetchData, generateDeckLayer,
-  getParamsFromSearch, getBbx
+  getParamsFromSearch, getBbx,
+  isMobile
 } from './utils';
 import Constants from './Constants';
 import DeckSidebar from './components/DeckSidebar/DeckSidebar';
@@ -43,7 +44,8 @@ export default class Welcome extends React.Component {
       latitude: 53.8321,
       zoom: 10,
       pitch: 55,
-      bearing: 0
+      bearing: 0,
+      isMobile: isMobile()
     }
     const param = getParamsFromSearch(props.location.search);
     if (param) {
@@ -201,7 +203,9 @@ export default class Welcome extends React.Component {
     this.setState({
       tooltip:
         // react did not like x and y props.
-        <Tooltip topx={x} topy={y} hoveredObject={hoveredObject} />
+        <Tooltip 
+        isMobile={ this.state.isMobile }
+        topx={x} topy={y} hoveredObject={hoveredObject} />
     })
   }
 
@@ -246,7 +250,7 @@ export default class Welcome extends React.Component {
 
   render() {
     const { tooltip, viewport, initialViewState,
-      loading, mapStyle, alert } = this.state;
+      loading, mapStyle, alert, isMobile } = this.state;
     // let {viewState} = this.props;
     
     return (
@@ -291,6 +295,7 @@ export default class Welcome extends React.Component {
           </DeckGL>
         </MapGL>
         <DeckSidebar
+          isMobile={isMobile}
           key={1234}
           alert={alert}
           data={this.state.filtered}

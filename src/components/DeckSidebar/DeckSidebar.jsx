@@ -13,7 +13,7 @@ import { XYPlot, LineSeries, XAxis, YAxis, } from 'react-vis';
 import Variables from '../Variables';
 import GenerateUI from '../UI';
 import RBAlert from '../RBAlert';
-import {propertyCount} from '../../geojsonutils';
+import { propertyCount } from '../../geojsonutils';
 
 export default class DeckSidebar extends React.Component {
   constructor(props) {
