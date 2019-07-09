@@ -38,13 +38,13 @@ var isDate = function(d) {
   }
 }
 
-var isRealmObject = function(x) {
-    return x !== null && x !== undefined && x.constructor === Realm.Object
-}
+// var isRealmObject = function(x) {
+//     return x !== null && x !== undefined && x.constructor === Realm.Object
+// }
 
-var isRealmList = function(x) {
-    return x !== null && x !== undefined && x.constructor === Realm.List
-}
+// var isRealmList = function(x) {
+//     return x !== null && x !== undefined && x.constructor === Realm.List
+// }
 
 var sanitizeFloat = function(number) {
     if (isNumber(number)) {
@@ -118,8 +118,8 @@ exports.isBoolean = isBoolean;
 exports.isObject = isObject;
 exports.isArray = isArray;
 exports.isDate = isDate;
-exports.isRealmObject = isRealmObject;
-exports.isRealmList = isRealmList;
+// exports.isRealmObject = isRealmObject;
+// exports.isRealmList = isRealmList;
 exports.sanitizeFloat = sanitizeFloat;
 exports.sanitizeInt = sanitizeInt;
 exports.sanitizeString = sanitizeString;

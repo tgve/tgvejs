@@ -17,18 +17,18 @@ export default function URL(props) {
             event.preventDefault();
           }
       }}
-      className="search-form"
-      onChange={(e) => {
-        if(e.keyCode === 13) e.preventDefault()
-        const { value } = e.target;
-        setUrl(value)
-        // console.log(isURL(value))
-        isURL(value) && typeof (urlCallback) === 'function' &&
-          urlCallback(value)
-      }}>
+      className="search-form">
       <FormGroup>
         <InputGroup>
-          <FormControl 
+          <FormControl
+          onChange={(e) => {
+            if(e.keyCode === 13) e.preventDefault()
+            const { value } = e.target;
+            setUrl(value)
+            // console.log(isURL(value))
+            isURL(value) && typeof (urlCallback) === 'function' &&
+              urlCallback(value)
+          }} 
           value={url}
           placeholder={url} type="text" />
           <InputGroup.Addon>

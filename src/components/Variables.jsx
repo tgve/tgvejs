@@ -18,6 +18,7 @@ import React, { Component } from 'react';
 
 import './style.css';
 import { humanize } from '../utils';
+import { describeGeojson } from '../geojsonutils';
 
 export default class Variables extends Component {
     constructor(props) {
@@ -32,6 +33,7 @@ export default class Variables extends Component {
         this._processData = this._processData.bind(this);
         this._showSelectedVars = this._showSelectedVars.bind(this);
         this._showTopn = this._showTopn.bind(this);
+        this._shorten = this._shorten.bind(this);
     }
 
     componentDidMount() {
@@ -61,6 +63,7 @@ export default class Variables extends Component {
         const { data, onSelectCallback, style, subStyle,
             propertyValuesCallback } = this.props;
         const selected = this.state.selected;
+        const description = describeGeojson(data[0]); // describe first feature
         const list = Object.keys(properties).map(key =>
             <span
                 style={style}
@@ -94,7 +97,9 @@ export default class Variables extends Component {
                                 this.setState({ selected })
                             }}
                             className="sub"
-                            key={each + ""}> {each}
+                            key={each + ""}
+                        > 
+                            {this._shorten(each, 20)}
                         </span>
                     )
                     this.setState({
@@ -103,21 +108,30 @@ export default class Variables extends Component {
                     })
                 }}
                 key={key}>
-                {humanize(key)}
+                {this._shorten(key)}
+                {' '}
+                <i className="data-type">
+                    ({description[key].name.substring(0, 3)})
+                </i>
             </span>
         )
         return (list)
+    }
+
+    _shorten(key, n = 10) {
+        return key.length < n ? humanize(key) :
+            humanize(key).substring(0, n) + "...";
     }
 
     /**
      * As state changes regenerate key/vlaues
      * @param {*} data 
      */
-    _processData(data) {
+    _processData(data) {     
         const properties = data[0].properties;
         const list = this._generateList(properties);
         this.setState({
-            list
+            list,
         });
     }
 

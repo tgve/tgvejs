@@ -2,7 +2,7 @@
  * geoplumber R package code.
  */
 import React from 'react';
-import { Navbar, Nav, NavItem, MenuItem } from 'react-bootstrap';
+import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
 
 const navs = [
@@ -53,9 +53,9 @@ class Header extends React.Component {
             </li>
           </div> */}
           <Nav pullRight>
-            <MenuItem href="https://github.com/layik/eAtlas">
+            <NavItem href="https://github.com/layik/eAtlas">
               <i style={{ fontSize: '1.5em' }} className="fa fa-github"></i>
-            </MenuItem>
+            </NavItem>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

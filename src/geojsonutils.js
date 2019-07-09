@@ -1,3 +1,5 @@
+import {isNumber, isBoolean, isObject} from './JSUtils';
+
 // thanks turfjs
 //http://wiki.geojson.org/GeoJSON_draft_version_6
 const sfType = (geojson) => {
@@ -11,6 +13,30 @@ const properties = (geojson) => {
   if (!geojson || !geojson.features) return null;
   var properties = geojson.features[0].properties;
   return Object.keys(properties);
+}
+
+/**
+ * {some: data, another: value}
+ * turn it into {some: type, another: type}
+ * @param {*} feature 
+ */
+const describeGeojson = (feature) => {
+  if(!feature || feature.type !== 'Feature') return null;
+  const description = {};
+  
+  Object.keys(feature.properties).forEach(key => {
+    let v_type = String;
+    const value = feature.properties[key];
+    if(isNumber(value)) {
+      v_type = Number
+    } else if(isBoolean(value)) {
+      v_type = Boolean
+    } else if(isObject(value)) {
+      v_type = Object 
+    }
+    description[key] = v_type;
+  })  
+  return(description) 
 }
 
 const propertyCount = (data, key, list) => {
@@ -34,6 +60,7 @@ const propertyCount = (data, key, list) => {
 }
 
 export {
+  describeGeojson,
   propertyCount,
   properties,
   sfType

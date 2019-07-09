@@ -2,6 +2,10 @@ main {
 	background-color: #242730;
 }
 
+.data-type {
+	font-size: 0.8em
+}
+
 .ticks {
     position: absolute;
     background-color: lightgrey;
