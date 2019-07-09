@@ -76,8 +76,7 @@ export default class DUI extends React.Component {
   _fetchAndUpdateState(aURL) {
     // TODO: more sanity checks?
     const fullURL = aURL ? 
-    url + "/api/url?q=" + aURL : // get the server to parse it 
-    url + "/api/stats19";
+    aURL : url + "/api/stats19";
 
     fetchData(fullURL, (data, error) => {
       if (!error) {
@@ -119,6 +118,8 @@ export default class DUI extends React.Component {
         }} />
         <center>
           <URL urlCallback={(url) => {
+            console.log(url);
+            
             this._fetchAndUpdateState(url)
           }}/>
         </center>

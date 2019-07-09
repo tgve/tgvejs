@@ -64,7 +64,7 @@ export default class Variables extends Component {
             propertyValuesCallback } = this.props;
         const selected = this.state.selected;
         const description = describeGeojson(data[0]); // describe first feature
-        const list = Object.keys(properties).map(key =>
+        const list = Object.keys(properties).slice(0,10).map(key =>
             <span
                 style={style}
                 onClick={() => {
@@ -202,6 +202,7 @@ export default class Variables extends Component {
 
     render() {
         const { list, sublist, key, selected } = this.state;
+        const { data } = this.props;
         const shownSublist = sublist && selected && key &&
             sublist.filter(each => {
                 return selected[key] && each && !selected[key].has(each.key)
@@ -219,7 +220,13 @@ export default class Variables extends Component {
                                 onClick={() => this.setState({
                                     sublist: null,
                                     key: null
-                                })}>{`${humanize(key)} x`}</span> : list
+                                })}>{`${humanize(key)} x`}</span> : 
+                                data && data.length > 1 && 
+                                Object.keys(data[0].properties).length > 10 ? 
+                                <>
+                                  First (10) of {Object.keys(data[0].properties).length}:
+                                  {list}
+                                </> : list
                         }
                     </div>
                     <div className="tagcloud">

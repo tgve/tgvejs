@@ -66,7 +66,8 @@ export default class DeckSidebar extends React.Component {
         }
       })
     }
-    const severity_data = propertyCount(data, "accident_severity", ['Slight', 'Serious', 'Fatal'])
+    const severity_data = propertyCount(data, "accident_severity", 
+    ['Slight', 'Serious', 'Fatal'])
     // const road_type_data = propertyCount(data, "road_type", ['1', '2', '3', '4', '5', '6', '7'])
     // console.log(road_type_data);
 
@@ -86,11 +87,11 @@ export default class DeckSidebar extends React.Component {
             && urlCallback(url)} />
           <div className="side-panel-body">
             <div className="side-panel-body-content">
-              {/* range of two values slider is not native html */}
-              <GenerateUI
+              {/* range of two values slider is not native html */
+              plot_data && plot_data.length > 1 && <GenerateUI
                 title={
                   <h5>Year(s): {year ? year : "2009 - 2017"}.
-                                        {
+                    {
                       year &&
                       <i style={{ fontSize: '2rem' }}
                         className="fa fa-trash"
@@ -114,7 +115,10 @@ export default class DeckSidebar extends React.Component {
                 }
                 }
               />
-              {/* <GenerateUI title="Test" sublist={["one", "two"]} suggested="checkbox" /> */}
+              }
+              {/* <GenerateUI title="Test" sublist={["one", "two"]} suggested="checkbox" /> */
+              //only if there is such a property
+              data && data.length > 1 && data[0].properties.road_type &&
               <RBDropDown
                 title={road_type ? road_type : "Road Type(All)"}
                 menuitems={road_types}
@@ -129,6 +133,7 @@ export default class DeckSidebar extends React.Component {
                       what: 'road_type'
                     })
                 }} />
+              }
               <br />
               {/* TODO: generate this declaritively too */}
               {
