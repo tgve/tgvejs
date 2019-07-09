@@ -119,6 +119,7 @@ export default class Variables extends Component {
     }
 
     _shorten(key, n = 10) {
+        if(typeof(key) !== 'string') return key
         return key.length < n ? humanize(key) :
             humanize(key).substring(0, n) + "...";
     }
