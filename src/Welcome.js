@@ -1,6 +1,6 @@
 import React from 'react';
 import DeckGL from 'deck.gl';
-import MapGL, { NavigationControl, FlyToInterpolator } from 'react-map-gl';
+import MapGL, { NavigationControl } from 'react-map-gl';
 import bbox from '@turf/bbox';
 
 import {

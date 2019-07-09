@@ -3,7 +3,7 @@ import { sfType } from '../geojsonutils';
 
 export default function GeomExplore(props) {
   const [data, setData] = useState(props.data)
-  console.log(data[1]);
+  // console.log(data[1]);
   useEffect(() => {
       setData(props.data);
   }, [props.data])

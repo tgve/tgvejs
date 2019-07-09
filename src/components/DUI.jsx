@@ -117,9 +117,7 @@ export default class DUI extends React.Component {
           })
         }} />
         <center>
-          <URL urlCallback={(url) => {
-            console.log(url);
-            
+          <URL urlCallback={(url) => {            
             this._fetchAndUpdateState(url)
           }}/>
         </center>
