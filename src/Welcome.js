@@ -1,6 +1,6 @@
 import React from 'react';
 import DeckGL from 'deck.gl';
-import MapGL, { NavigationControl } from 'react-map-gl';
+import MapGL, { NavigationControl, FlyToInterpolator } from 'react-map-gl';
 import bbox from '@turf/bbox';
 
 import {
@@ -179,9 +179,8 @@ export default class Welcome extends React.Component {
     )
     //TODO: update URL and do it via viewport
     // is called after mounds
-    var bounds = bbox(this.state.data);
+    const bounds = bbox(this.state.data);
     this.map.fitBounds(bounds, { padding: 20 });
-
     this.setState({
       mapStyle: filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
       tooltip: "",
