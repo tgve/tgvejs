@@ -95,7 +95,9 @@ export default class Tooltip extends React.Component {
                 </div>
                 <div>
                     <div>
-                        Road speed: {type_feature ? hoveredObject.properties.speed_limit : hoveredObject.points[0].properties.speed_limit}
+                        Road speed: {type_feature ? 
+                        hoveredObject.properties.speed_limit :
+                        hoveredObject.points[0].properties.speed_limit}
                     </div>
                     {
                         // react-vis cannot generate plot for single value

@@ -14,6 +14,7 @@ import history from './history';
 
 import './App.css';
 import Tooltip from './components/Tooltip';
+import { sfType } from './geojsonutils';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 
@@ -120,6 +121,7 @@ export default class Welcome extends React.Component {
     let data = this.state.data.features
     const { year, road_type, severity } = this.state;
     if (!data) return;
+    const geomType = sfType(data[0]).toLowerCase();
     //if resetting a value
     if (filter && filter.selected !== "") {
       data = data.filter(
@@ -163,7 +165,9 @@ export default class Welcome extends React.Component {
     )
     // console.log(data.length);
     let layer_style = 'grid';
-    if (data.length < 100) layer_style = 'icon'
+    if(geomType !== "point") layer_style = "geojson"
+    if (data.length < 100 && geomType === "point") layer_style = 'icon'
+    console.log(geomType)
     const alayer = generateDeckLayer(
       layer_style, data, this._renderTooltip,
       {
