@@ -5,7 +5,7 @@ import {
 } from 'react-bootstrap';
 
 import './DeckSidebar.css';
-import URL from '../URL';
+import DataInput from '../DataInput';
 import RBDropDown from '../RBDropdownComponent';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import { summariseByYear, percentDiv } from '../../utils';
@@ -66,8 +66,8 @@ export default class DeckSidebar extends React.Component {
         }
       })
     }
-    const severity_data = propertyCount(data, "accident_severity", 
-    ['Slight', 'Serious', 'Fatal'])
+    const severity_data = propertyCount(data, "accident_severity",
+      ['Slight', 'Serious', 'Fatal'])
     // const road_type_data = propertyCount(data, "road_type", ['1', '2', '3', '4', '5', '6', '7'])
     // console.log(road_type_data);
 
@@ -83,56 +83,64 @@ export default class DeckSidebar extends React.Component {
               : "Nothing to show"}
             </h2>
           </div>
-          <URL urlCallback={(url) => typeof (urlCallback) === 'function'
-            && urlCallback(url)} />
+          <div onClick={() => this.setState({ open: false })}>
+            <DataInput
+              onClose={() => this.setState({ open: true })}
+              urlCallback={(url) => {
+                this.setState({ open: true })
+                typeof (urlCallback) === 'function'
+                  && urlCallback(url)
+              }
+              } />
+          </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
               {/* range of two values slider is not native html */
-              plot_data && plot_data.length > 1 && <GenerateUI
-                title={
-                  <h5>Year(s): {year ? year : "2009 - 2017"}.
+                plot_data && plot_data.length > 1 && <GenerateUI
+                  title={
+                    <h5>Year(s): {year ? year : "2009 - 2017"}.
                     {
-                      year &&
-                      <i style={{ fontSize: '2rem' }}
-                        className="fa fa-trash"
-                        onClick={() => {
-                          typeof (onSelectCallback) === 'function' &&
-                            onSelectCallback({ selected: "", what: 'year' })
-                          this.setState({ year: "" })
-                        }} />
-                    }
-                  </h5>
-                }
-                sublist={[2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017]}
-                suggested="slider"
-                onChange={(value) => {
-                  const { onSelectCallback } = this.props;
-                  this.setState({
-                    year: value
-                  })
-                  typeof (onSelectCallback) === 'function' &&
-                    onSelectCallback({ selected: value + "", what: 'year' })
-                }
-                }
-              />
+                        year &&
+                        <i style={{ fontSize: '2rem' }}
+                          className="fa fa-trash"
+                          onClick={() => {
+                            typeof (onSelectCallback) === 'function' &&
+                              onSelectCallback({ selected: "", what: 'year' })
+                            this.setState({ year: "" })
+                          }} />
+                      }
+                    </h5>
+                  }
+                  sublist={[2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017]}
+                  suggested="slider"
+                  onChange={(value) => {
+                    const { onSelectCallback } = this.props;
+                    this.setState({
+                      year: value
+                    })
+                    typeof (onSelectCallback) === 'function' &&
+                      onSelectCallback({ selected: value + "", what: 'year' })
+                  }
+                  }
+                />
               }
               {/* <GenerateUI title="Test" sublist={["one", "two"]} suggested="checkbox" /> */
-              //only if there is such a property
-              data && data.length > 1 && data[0].properties.road_type &&
-              <RBDropDown
-                title={road_type ? road_type : "Road Type(All)"}
-                menuitems={road_types}
-                onSelectCallback={(selected) => {
-                  this.setState({ road_type: selected === "All" ? "" : selected })
-                  onSelectCallback &&
-                    onSelectCallback({
-                      selected: selected === "All" ?
-                        // starts at 1 but 
-                        // road_types has All at 0
-                        "" : road_types.indexOf(selected),
-                      what: 'road_type'
-                    })
-                }} />
+                //only if there is such a property
+                data && data.length > 1 && data[0].properties.road_type &&
+                <RBDropDown
+                  title={road_type ? road_type : "Road Type(All)"}
+                  menuitems={road_types}
+                  onSelectCallback={(selected) => {
+                    this.setState({ road_type: selected === "All" ? "" : selected })
+                    onSelectCallback &&
+                      onSelectCallback({
+                        selected: selected === "All" ?
+                          // starts at 1 but 
+                          // road_types has All at 0
+                          "" : road_types.indexOf(selected),
+                        what: 'road_type'
+                      })
+                  }} />
               }
               <br />
               {/* TODO: generate this declaritively too */}
@@ -148,7 +156,7 @@ export default class DeckSidebar extends React.Component {
                   }))
               }
               <hr style={{ clear: 'both' }} />
-              <Tabs defaultActiveKey="1" id="main-tabs">
+              <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
@@ -251,7 +259,7 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-tasks" />
                 }>
                   Tab 3
-                            </Tab>
+                </Tab>
               </Tabs>
             </div>
             <form className="search-form">

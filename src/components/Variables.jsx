@@ -47,7 +47,7 @@ export default class Variables extends Component {
     const { data } = this.props;
     if (!data || data.length === 0) return;
     if (data.length !== prevProps.data.length ||
-      this.state.showAll != prevState.showAll) {
+      this.state.showAll !== prevState.showAll) {
       this._processData(data);
     }
   }
