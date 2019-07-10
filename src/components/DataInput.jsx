@@ -28,15 +28,15 @@ export default function (props) {
         }
         }
         isOpen={isOpen}>
-        <FocusOnce>
           <ModalHeader>Add Data</ModalHeader>
-        </FocusOnce>
         <ModalBody>
-          <URL urlCallback={(url) => {
-            setOpen(false)
-            typeof (urlCallback) === 'function'
-              && urlCallback(url)
-          }} />
+          <FocusOnce>
+            <URL urlCallback={(url) => {
+                setOpen(false)
+                typeof (urlCallback) === 'function'
+                  && urlCallback(url)
+              }} />
+          </FocusOnce>
         </ModalBody>
         <ModalFooter>
           <ModalButton onClick={() => setOpen(false)}>Close</ModalButton>

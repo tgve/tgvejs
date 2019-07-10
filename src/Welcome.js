@@ -1,6 +1,6 @@
 import React from 'react';
-import DeckGL from 'deck.gl';
-import MapGL, { NavigationControl } from 'react-map-gl';
+import DeckGL, { WebMercatorViewport } from 'deck.gl';
+import MapGL, { NavigationControl, FlyToInterpolator } from 'react-map-gl';
 import bbox from '@turf/bbox';
 
 import {
@@ -181,7 +181,18 @@ export default class Welcome extends React.Component {
     // is called after mounds
     const bounds = bbox(this.state.data);
     this.map.fitBounds(bounds, { padding: 20 });
+    const {longitude, latitude, zoom } = new WebMercatorViewport(this.state.viewport)
+    .fitBounds([[bounds[0], bounds[1]], [bounds[2], bounds[3]]], {padding: 20});
+    const viewport = {
+      ...this.state.viewport,
+      longitude,
+      latitude,
+      zoom,
+      transitionDuration: 2000,
+      transitionInterpolator: new FlyToInterpolator()
+    }
     this.setState({
+      viewport,
       mapStyle: filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
       tooltip: "",
       filtered: data,

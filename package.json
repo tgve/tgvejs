@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@turf/bbox": "^6.0.1",
+    "@turf/bezier-spline": "^6.0.3",
     "baseui": "^7.5.0",
     "d3-array": "^2.2.0",
     "d3-scale": "^3.0.0",
