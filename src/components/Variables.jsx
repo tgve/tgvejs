@@ -19,7 +19,7 @@ import React, { Component } from 'react';
 import './style.css';
 import { humanize } from '../utils';
 import { describeGeojson } from '../geojsonutils';
-import { Button } from 'react-bootstrap';
+import { Button, SIZE, KIND } from 'baseui/button';
 
 export default class Variables extends Component {
   constructor(props) {
@@ -234,21 +234,13 @@ export default class Variables extends Component {
                     First (10) of {
                       Object.keys(data[0].properties).length}:
                       {/* TODO: swap once theme is active */}
-                    <Button variant="dark" onClick={() => {
-                      this.setState({
-                        showAll: !showAll
-                      })
-                    }}>Show all</Button>
+                    {this._button(showAll)}
                     {list}
                   </> :
                   <>
                     {
                       Object.keys(data[0].properties).length > 10 &&
-                      <Button variant="dark" onClick={() => {
-                        this.setState({
-                          showAll: !showAll
-                        })
-                      }}>Less</Button>
+                      this._button(showAll, "Less")
                     }
                     {list}
                   </>
@@ -269,5 +261,14 @@ export default class Variables extends Component {
         </div>
       </div>
     )
+  }
+
+  _button(showAll, title = "Show all") {
+    return <Button size={SIZE.compact} kind={KIND.secondary}
+      onClick={() => {
+        this.setState({
+          showAll: !showAll
+        });
+      }}>{title}</Button>;
   }
 }
