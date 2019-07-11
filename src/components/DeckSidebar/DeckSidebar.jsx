@@ -96,7 +96,8 @@ export default class DeckSidebar extends React.Component {
           <div className="side-panel-body">
             <div className="side-panel-body-content">
               {/* range of two values slider is not native html */
-                plot_data && plot_data.length > 1 && <GenerateUI
+                data && data.length > 1 && data[0].properties.date &&
+                <GenerateUI
                   title={
                     <h5>Year(s): {year ? year : "2009 - 2017"}.
                     {

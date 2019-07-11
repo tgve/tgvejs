@@ -71,13 +71,22 @@ export default class Welcome extends React.Component {
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
     }
-    this._recalculateLayers = this._recalculateLayers.bind(this)
+    this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
-    this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this)
+    this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
+    this._fitViewport = this._fitViewport.bind(this);
   }
 
   componentDidMount() {
     this._fetchAndUpdateState()
+  }
+
+  _onMapLoad() {
+    this._fitViewport()
+    //update initialViewState
+    // below crashes with some n[r] weird error. See this:
+    // https://uber.github.io/react-map-gl/#/Documentation/advanced/viewport-transition?section=transition-and-the-onviewportchange-callback
+    // this.map.once('zoomend', console.log("ping"))
   }
 
   _fetchAndUpdateState(aURL) {
@@ -96,7 +105,7 @@ export default class Welcome extends React.Component {
           data: data,
           alert: null
         })
-        this._recalculateLayers()
+        this._generateLayer()
       } else {
         console.log(error);
 
@@ -117,7 +126,7 @@ export default class Welcome extends React.Component {
    * @param {*} elevation specific to changing geoms
    * @param {*} filter multivariate filter of properties
    */
-  _recalculateLayers(radius, elevation, filter) {
+  _generateLayer(radius, elevation, filter) {
     let data = this.state.data.features
     const { year, road_type, severity } = this.state;
     if (!data) return;
@@ -165,7 +174,7 @@ export default class Welcome extends React.Component {
     )
     // console.log(data.length);
     let layer_style = 'grid';
-    if(geomType !== "point") layer_style = "geojson"
+    if (geomType !== "point") layer_style = "geojson"
     if (data.length < 100 && geomType === "point") layer_style = 'icon'
     console.log(geomType)
     const alayer = generateDeckLayer(
@@ -177,22 +186,8 @@ export default class Welcome extends React.Component {
         lightSettings: LIGHT_SETTINGS
       }
     )
-    //TODO: update URL and do it via viewport
-    // is called after mounds
-    const bounds = bbox(this.state.data);
-    this.map.fitBounds(bounds, { padding: 20 });
-    const {longitude, latitude, zoom } = new WebMercatorViewport(this.state.viewport)
-    .fitBounds([[bounds[0], bounds[1]], [bounds[2], bounds[3]]], {padding: 20});
-    const viewport = {
-      ...this.state.viewport,
-      longitude,
-      latitude,
-      zoom,
-      transitionDuration: 2000,
-      transitionInterpolator: new FlyToInterpolator()
-    }
+
     this.setState({
-      viewport,
       mapStyle: filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
       tooltip: "",
       filtered: data,
@@ -203,6 +198,25 @@ export default class Welcome extends React.Component {
       year: filter && filter.what === 'year' ? filter.selected : this.state.year,
       severity: filter && filter.what === 'severity' ? filter.selected : this.state.severity,
     })
+  }
+
+  _fitViewport() {
+    // is called after mounds
+    const bounds = bbox(this.state.data);
+    console.log(bounds);
+
+    this.map.fitBounds(bounds, { padding: 20 });
+    const { longitude, latitude, zoom } = new WebMercatorViewport(this.state.viewport)
+      .fitBounds([[bounds[0], bounds[1]], [bounds[2], bounds[3]]], { padding: 20 });
+    const viewport = {
+      ...this.state.viewport,
+      longitude,
+      latitude,
+      zoom,
+      transitionDuration: 2000,
+      transitionInterpolator: new FlyToInterpolator()
+    }
+    this.setState({ viewport })
   }
 
   _renderTooltip({ x, y, object }) {
@@ -217,9 +231,9 @@ export default class Welcome extends React.Component {
     this.setState({
       tooltip:
         // react did not like x and y props.
-        <Tooltip 
-        isMobile={ this.state.isMobile }
-        topx={x} topy={y} hoveredObject={hoveredObject} />
+        <Tooltip
+          isMobile={this.state.isMobile}
+          topx={x} topy={y} hoveredObject={hoveredObject} />
     })
   }
 
@@ -253,7 +267,7 @@ export default class Welcome extends React.Component {
             this.setState({
               data: data.features,
             })
-            this._recalculateLayers()
+            this._generateLayer()
           } else {
             //network error?
           }
@@ -266,7 +280,7 @@ export default class Welcome extends React.Component {
     const { tooltip, viewport, initialViewState,
       loading, mapStyle, alert, isMobile } = this.state;
     // let {viewState} = this.props;
-    
+
     return (
       <div>
         {/* just a little catch to hide the loader when no basemap is presetn */}
@@ -276,7 +290,7 @@ export default class Welcome extends React.Component {
         }} />
         <MapGL
           // key={height+width} //causes layer to disappear
-          onLoad={this._onMapLoad}
+          onLoad={this._onMapLoad.bind(this)}
           ref={ref => {
             // save a reference to the mapboxgl.Map instance
             this.map = ref && ref.getMap();
@@ -318,10 +332,11 @@ export default class Welcome extends React.Component {
               loading: true,
             })
             this._fetchAndUpdateState(url_returned);
+            this._fitViewport();
           }}
-          onSelectCallback={(selected) => this._recalculateLayers(undefined, undefined, selected)}
-          onChangeRadius={(value) => this._recalculateLayers(value)}
-          onChangeElevation={(value) => this._recalculateLayers(undefined, value)}
+          onSelectCallback={(selected) => this._generateLayer(undefined, undefined, selected)}
+          onChangeRadius={(value) => this._generateLayer(value)}
+          onChangeElevation={(value) => this._generateLayer(undefined, value)}
           toggleSubsetBoundsChange={(value) => {
             this.setState({
               loading: true,
