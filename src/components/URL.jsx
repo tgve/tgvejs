@@ -15,19 +15,18 @@ export default function URL(props) {
       onKeyPress={(event) => {
           if (event.which === 13 /* Enter */) {
             event.preventDefault();
+            isURL(url) && typeof (urlCallback) === 'function' &&
+              urlCallback(url)
           }
       }}
       className="search-form">
       <FormGroup>
         <InputGroup>
           <FormControl
-          onChange={(e) => {
-            if(e.keyCode === 13) e.preventDefault()
+          onChange={(e) => {            
             const { value } = e.target;
             setUrl(value)
             // console.log(isURL(value))
-            isURL(value) && typeof (urlCallback) === 'function' &&
-              urlCallback(value)
           }} 
           value={url}
           placeholder={url} type="text" />
