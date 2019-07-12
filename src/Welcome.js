@@ -202,9 +202,9 @@ export default class Welcome extends React.Component {
 
   _fitViewport() {
     // is called after mounds
+    const { data } = this.state;
+    if(!data || data.length === 0) return;
     const bounds = bbox(this.state.data);
-    console.log(bounds);
-
     this.map.fitBounds(bounds, { padding: 20 });
     const { longitude, latitude, zoom } = new WebMercatorViewport(this.state.viewport)
       .fitBounds([[bounds[0], bounds[1]], [bounds[2], bounds[3]]], { padding: 20 });
