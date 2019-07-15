@@ -76,15 +76,16 @@ export default class Tooltip extends React.Component {
                     severity_data.push({ x: key, y: map.get(key) })
                 }
             })
-        }
-
+        }        
         const w = window.innerWidth;
         const y = window.innerHeight;
         const n_topy = isMobile ? 10 : 
         topy + (WIDTH + BAR_HEIGHT) > y ? topy - WIDTH : topy;
         const n_left = isMobile ? 10 :
         topx + WIDTH > w ? topx - WIDTH : topx;
-        const tooltip =
+        const firstPointProperties = hoveredObject.points &&
+        hoveredObject.points[0].properties && hoveredObject.points[0].properties;
+        const tooltip = 
             <div
                 className="xyz" style={{
                     top: crashes_data.length > 1 ? n_topy : topy,
@@ -94,11 +95,17 @@ export default class Tooltip extends React.Component {
                     <b>Total:{type_feature ? 1 : hoveredObject.points.length}</b>
                 </div>
                 <div>
-                    <div>
+                    {
+                    hoveredObject.properties.speed_limit ||
+                    ( firstPointProperties && firstPointProperties.speed_limit) ? <div>
                         Road speed: {type_feature ? 
                         hoveredObject.properties.speed_limit :
-                        hoveredObject.points[0].properties.speed_limit}
-                    </div>
+                        firstPointProperties.speed_limit}
+                    </div> : 
+                    Object.values(hoveredObject.properties)[0] || 
+                    (firstPointProperties && 
+                      Object.values(firstPointProperties)[0])
+                    }
                     {
                         // react-vis cannot generate plot for single value
                         crashes_data.length > 1 &&

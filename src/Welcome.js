@@ -97,7 +97,7 @@ export default class Welcome extends React.Component {
       aURL : // do not get the server to parse it 
       URL + "/api/stats19";
 
-    fetchData('https://datahub.io/core/geo-admin1-us/r/admin1-us.geojson', (data, error) => {
+    fetchData(fullURL, (data, error) => {
       if (!error) {
         // this._updateURL(viewport)
         this.setState({
