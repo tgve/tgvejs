@@ -59,13 +59,13 @@ export default class DeckSidebar extends React.Component {
       onSelectCallback, data,
       toggleSubsetBoundsChange, urlCallback, alert } = this.props;
     let plot_data = [];
-    if (data && data.length > 1) {
-      Object.keys(data[1].properties).forEach(each => {
-        if (each.match(/date|datetime|datestamp|timestamp/g)) {
-          plot_data = summariseByYear(data)
-        }
-      })
-    }
+    // if (data && data.length > 1) {
+    //   Object.keys(data[1].properties).forEach(each => {
+    //     if (each.match(/date|datetime|datestamp|timestamp/g)) {
+    //       plot_data = summariseByYear(data)
+    //     }
+    //   })
+    // }
     const severity_data = propertyCount(data, "accident_severity",
       ['Slight', 'Serious', 'Fatal'])
     // const road_type_data = propertyCount(data, "road_type", ['1', '2', '3', '4', '5', '6', '7'])
@@ -86,10 +86,10 @@ export default class DeckSidebar extends React.Component {
           <div onClick={() => this.setState({ open: false })}>
             <DataInput
               onClose={() => this.setState({ open: true })}
-              urlCallback={(url) => {
+              urlCallback={(url, geojson) => {
                 this.setState({ open: true })
                 typeof (urlCallback) === 'function'
-                  && urlCallback(url)
+                  && urlCallback(url, geojson)
               }
               } />
           </div>

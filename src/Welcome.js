@@ -176,7 +176,6 @@ export default class Welcome extends React.Component {
     let layer_style = 'grid';
     if (geomType !== "point") layer_style = "geojson"
     if (data.length < 100 && geomType === "point") layer_style = 'icon'
-    console.log(geomType)
     const options = {
       radius: radius ? radius : this.state.radius,
       cellSize: radius ? radius : this.state.radius,
@@ -329,11 +328,18 @@ export default class Welcome extends React.Component {
           key={1234}
           alert={alert}
           data={this.state.filtered}
-          urlCallback={(url_returned) => {
-            this.setState({
-              loading: true,
-            })
-            this._fetchAndUpdateState(url_returned);
+          urlCallback={(url_returned, geojson_returned) => {
+            if(geojson_returned) {                            
+              this.setState({
+                data: geojson_returned
+              })
+              this._generateLayer()
+            } else {
+              this.setState({
+                loading: true,
+              })
+              this._fetchAndUpdateState(url_returned);
+            }
             this._fitViewport();
           }}
           onSelectCallback={(selected) => this._generateLayer(undefined, undefined, selected)}

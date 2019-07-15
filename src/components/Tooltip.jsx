@@ -70,7 +70,7 @@ export default class Tooltip extends React.Component {
             // list severity and year counts
             Array.from(map.keys()).forEach(key => {
                 // console.log(key, [ ...map.keys() ]);
-                if (parseInt(key)) { // is it year?
+                if (parseInt(key)) { // TODO: replace with moment check - is it year?
                     crashes_data.push({ x: key, y: map.get(key) })
                 } else {
                     severity_data.push({ x: key, y: map.get(key) })
@@ -84,7 +84,7 @@ export default class Tooltip extends React.Component {
         const n_left = isMobile ? 10 :
         topx + WIDTH > w ? topx - WIDTH : topx;
         const firstPointProperties = hoveredObject.points &&
-        hoveredObject.points[0].properties && hoveredObject.points[0].properties;
+        hoveredObject.points[0].properties && hoveredObject.points[0].properties;        
         const tooltip = 
             <div
                 className="xyz" style={{
@@ -96,15 +96,14 @@ export default class Tooltip extends React.Component {
                 </div>
                 <div>
                     {
-                    hoveredObject.properties.speed_limit ||
-                    ( firstPointProperties && firstPointProperties.speed_limit) ? <div>
+                    hoveredObject.properties && hoveredObject.properties.speed_limit ||
+                    ( firstPointProperties && firstPointProperties.hasOwnProperty("speed_limit")) ? <div>
                         Road speed: {type_feature ? 
                         hoveredObject.properties.speed_limit :
                         firstPointProperties.speed_limit}
                     </div> : 
-                    Object.values(hoveredObject.properties)[0] || 
-                    (firstPointProperties && 
-                      Object.values(firstPointProperties)[0])
+                    hoveredObject.properties ? Object.values(hoveredObject.properties)[0] : 
+                    Object.values(firstPointProperties)[0]
                     }
                     {
                         // react-vis cannot generate plot for single value

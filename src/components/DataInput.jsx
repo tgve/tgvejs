@@ -9,7 +9,9 @@ import {
   FocusOnce,
 } from 'baseui/modal';
 
+import File from './File'
 import URL from './URL';
+const csv2geojson = require('csv2geojson');
 
 export default function (props) {
   const [isOpen, setOpen] = React.useState(false);
@@ -37,6 +39,16 @@ export default function (props) {
                   && urlCallback(url)
               }} />
           </FocusOnce>
+          <File contentCallback={({ text, name }) => {
+            csv2geojson.csv2geojson(text, (err, data) => {
+              // err has any parsing errors
+              // data is the data.
+              if(!err) {
+                typeof (urlCallback) === 'function'
+                    && urlCallback(null, data)
+              }
+            });
+          }} />
         </ModalBody>
         <ModalFooter>
           <ModalButton onClick={() => setOpen(false)}>Close</ModalButton>
