@@ -30,6 +30,6 @@ gp_plumb()
 visit `localhost:8000`
 
 or just run the front using: `npm i & npm start`
-
+<img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/61232570-8694b800-a726-11e9-9fd0-eb0baa523c87.gif">
 ## deploy with docker
 Repo contains Dockerfile for production.
