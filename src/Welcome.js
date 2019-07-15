@@ -6,7 +6,7 @@ import bbox from '@turf/bbox';
 import {
   fetchData, generateDeckLayer,
   getParamsFromSearch, getBbx,
-  isMobile
+  isMobile, colorScale
 } from './utils';
 import Constants from './Constants';
 import DeckSidebar from './components/DeckSidebar/DeckSidebar';
@@ -97,7 +97,7 @@ export default class Welcome extends React.Component {
       aURL : // do not get the server to parse it 
       URL + "/api/stats19";
 
-    fetchData(fullURL, (data, error) => {
+    fetchData('https://datahub.io/core/geo-admin1-us/r/admin1-us.geojson', (data, error) => {
       if (!error) {
         // this._updateURL(viewport)
         this.setState({
@@ -177,15 +177,17 @@ export default class Welcome extends React.Component {
     if (geomType !== "point") layer_style = "geojson"
     if (data.length < 100 && geomType === "point") layer_style = 'icon'
     console.log(geomType)
+    const options = {
+      radius: radius ? radius : this.state.radius,
+      cellSize: radius ? radius : this.state.radius,
+      elevationScale: elevation ? elevation : this.state.elevation,
+      lightSettings: LIGHT_SETTINGS
+    };
+    if(layer_style === 'geojson') {
+      options.getFillColor = (d) => colorScale(d, data) //first prop
+    }
     const alayer = generateDeckLayer(
-      layer_style, data, this._renderTooltip,
-      {
-        radius: radius ? radius : this.state.radius,
-        cellSize: radius ? radius : this.state.radius,
-        elevationScale: elevation ? elevation : this.state.elevation,
-        lightSettings: LIGHT_SETTINGS
-      }
-    )
+      layer_style, data, this._renderTooltip, options)
 
     this.setState({
       mapStyle: filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,

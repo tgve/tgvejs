@@ -3,6 +3,7 @@ import {
   ScatterplotLayer, HexagonLayer, GeoJsonLayer,
   IconLayer, ScreenGridLayer, GridLayer
 } from 'deck.gl';
+import { interpolateSinebow } from 'd3-scale-chromatic';
 
 import mapping from './location-icon-mapping.json';
 import qs from 'qs'; // warning: importing it otherways would cause minificatino issue.
@@ -331,6 +332,18 @@ const isMobile = function () {
   return check;
 };
 
+const colorScale = (d, features) => {
+  if(!d || !features || features.length === 0) return null;  
+  const x = Object.keys(d.properties)[0];
+  let domain = features.map(feature => feature.properties[x])
+  domain = Array.from(new Set(domain))
+  // console.log(d, d.properties[x], domain);
+  const index = domain.indexOf(d.properties[x])
+  const col = interpolateSinebow(index/domain.length);
+  return col.substring(4, col.length-1)
+  .replace(/ /g, '')
+  .split(',');
+}
 
 export {
   getResultsFromGoogleMaps,
@@ -343,6 +356,7 @@ export {
   getCentroid,
   shortenName,
   percentDiv,
+  colorScale,
   fetchData,
   humanize,
   isMobile,
