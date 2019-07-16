@@ -96,7 +96,7 @@ export default class Tooltip extends React.Component {
                 </div>
                 <div>
                     {
-                    hoveredObject.properties && hoveredObject.properties.speed_limit ||
+                    (hoveredObject.properties && hoveredObject.properties.speed_limit) ||
                     ( firstPointProperties && firstPointProperties.hasOwnProperty("speed_limit")) ? <div>
                         Road speed: {type_feature ? 
                         hoveredObject.properties.speed_limit :

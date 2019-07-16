@@ -40,8 +40,8 @@ export default function (props) {
               }} />
           </FocusOnce>
           <File contentCallback={({ text, name }) => {            
-            if(name && name.split(".")[1].match(/geo/) //test.json
-            || name.split(".")[1].match(/json/)) {
+            if(name && (name.split(".")[1].match(/geo/) //test.json
+            || name.split(".")[1].match(/json/))) {
               try {
                   const json = JSON.parse(text);
                   typeof (urlCallback) === 'function'
