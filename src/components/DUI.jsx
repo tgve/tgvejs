@@ -14,7 +14,7 @@ import React from 'react';
 import { FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
 
 import {
-  shortenName,
+  shortenName, 
   fetchData, humanize
 } from '../utils';
 import Variables from './Variables';
@@ -50,6 +50,7 @@ export default class DUI extends React.Component {
     let sub_data = propertyCount(data, key, bars);
     return (
       <FlexibleXYPlot
+        margin={{left: 100, bottom: 100}}
         title={humanize(key)}
         xType="ordinal"
         width={WIDTH} height={BAR_HEIGHT}
@@ -64,7 +65,7 @@ export default class DUI extends React.Component {
         <XAxis
           style={{ text: { fill: '#fff' } }}
           tickLabelAngle={-45}
-          tickFormat={v => v + ""}
+          tickFormat={v => (v + "").length > 15 ? (v + "").substring(0,8) + "..." : v}
         />
         <VerticalBarSeries
           // color={v => v === "Fatal" ? 1 : v === "Slight" ? 0 : null}
@@ -75,8 +76,8 @@ export default class DUI extends React.Component {
 
   _fetchAndUpdateState(aURL) {
     // TODO: more sanity checks?
-    const fullURL = aURL ? 
-    aURL : url + "/api/stats19";
+    const fullURL = aURL ?
+      aURL : url + "/api/stats19";
 
     fetchData(fullURL, (data, error) => {
       if (!error) {
@@ -104,9 +105,10 @@ export default class DUI extends React.Component {
 
   render() {
     const { data, key, sublist, name, loading } = this.state;
+    
     return (
       <div className="content" style={{
-        margin: 'auto', padding: '5%',
+        margin: 'auto', padding: '5%', color: '#a3a5a8'
       }}>
 
         <File contentCallback={({ text, name }) => {
@@ -117,9 +119,9 @@ export default class DUI extends React.Component {
           })
         }} />
         <center>
-          <URL urlCallback={(url) => {            
+          <URL urlCallback={(url) => {
             this._fetchAndUpdateState(url)
-          }}/>
+          }} />
         </center>
         {loading && <div id="loading"></div>}
         {
@@ -142,25 +144,25 @@ export default class DUI extends React.Component {
         }
         {
           //geometry explore
-          data && data.length > 0 && 
-          <GeomExplore data={data}/>
-        }
-        {
-          key && sublist &&
-          <center>
-            <h5 style={{ color: 'white' }}>
-              For ({key}) and its variables:
-                </h5>
-            <hr />
-            {this._generateBarChart(key, sublist)}
-          </center>
+          data && data.length > 0 &&
+          <GeomExplore data={data} />
         }
         {
           key && sublist &&
           <>
             <hr />
-            <GenerateUI title={key} sublist={sublist} />
+            <GenerateUI title={humanize(key)} sublist={sublist} />
           </>
+        }
+        {
+          key && sublist &&
+          <center>
+            <h5 style={{ color: 'white' }}>
+              For ({humanize(key)}) and its variables:
+                </h5>
+            <hr />
+            {this._generateBarChart(key, sublist)}
+          </center>
         }
         {/* {
               key && sublist && <div>

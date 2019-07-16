@@ -1,8 +1,8 @@
 import React from 'react';
 import { XYPlot, LineSeries, VerticalBarSeries, XAxis, YAxis, } from 'react-vis';
 
-const WIDTH = 300;
-const BAR_HEIGHT = 100;
+const WIDTH = 220;
+const BAR_HEIGHT = 80;
 
 export default class Tooltip extends React.Component {
     constructor(props) {
@@ -115,11 +115,11 @@ export default class Tooltip extends React.Component {
                                 tickLabelAngle={-45}
                                 tickFormat={v => v + ""}
                                 style={{
-                                    text: { fill: '#fff', fontWeight: 400 }
+                                    text: { fill: '#fff' }
                                 }} />
                             <YAxis
                                 style={{
-                                    text: { fill: '#fff', fontWeight: 400 }
+                                    text: { fill: '#fff' }
                                 }}
                                 title="Crashes" />
                             <LineSeries
@@ -137,7 +137,7 @@ export default class Tooltip extends React.Component {
                                 tickLabelAngle={-45}
                                 tickFormat={v => v + ""}
                                 style={{
-                                    text: { fill: '#fff', fontWeight: 400 }
+                                    text: { fill: '#fff' }
                                 }} />
                             <VerticalBarSeries
                                 // color={v => v === "Fatal" ? 1 : v === "Slight" ? 0 : null}
