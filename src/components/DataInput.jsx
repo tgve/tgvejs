@@ -39,15 +39,25 @@ export default function (props) {
                   && urlCallback(url)
               }} />
           </FocusOnce>
-          <File contentCallback={({ text, name }) => {
-            csv2geojson.csv2geojson(text, (err, data) => {
-              // err has any parsing errors
-              // data is the data.
-              if(!err) {
-                typeof (urlCallback) === 'function'
-                    && urlCallback(null, data)
+          <File contentCallback={({ text, name }) => {            
+            if(name && name.split(".")[1].match(/geo/) //test.json
+            || name.split(".")[1].match(/json/)) {
+              try {
+                  const json = JSON.parse(text);
+                  typeof (urlCallback) === 'function'
+                  && urlCallback(null, json)
+              } catch (e) {
+                  console.log(e);
               }
-            });
+            } else {
+              // err has any parsing errors
+              csv2geojson.csv2geojson(text, (err, data) => {
+                if(!err) {
+                  typeof (urlCallback) === 'function'
+                      && urlCallback(null, data)
+                }
+              });
+            }
           }} />
         </ModalBody>
         <ModalFooter>
