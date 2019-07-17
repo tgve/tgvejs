@@ -3,6 +3,7 @@ import {
   Tabs, Tab, FormGroup, InputGroup,
   FormControl, Glyphicon, Checkbox
 } from 'react-bootstrap';
+import {format} from 'd3-format';
 
 import './DeckSidebar.css';
 import DataInput from '../DataInput';
@@ -185,7 +186,7 @@ export default class DeckSidebar extends React.Component {
                       }} />
                     <YAxis
                       tickLabelAngle={-45}
-                      tickFormat={v => v > 1000 ? v / 1000 + "K" : v}
+                      tickFormat={v => format(".2s")(v)}
                       style={{
                         title: { fill: '#fff' },
                         text: { fill: '#fff', fontWeight: 400 }

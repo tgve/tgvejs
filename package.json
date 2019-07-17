@@ -8,6 +8,7 @@
     "baseui": "^7.5.0",
     "csv2geojson": "^5.1.1",
     "d3-array": "^2.2.0",
+    "d3-format": "^1.3.2",
     "d3-scale": "^3.0.0",
     "d3-scale-chromatic": "^1.3.3",
     "d3-shape": "^1.3.5",

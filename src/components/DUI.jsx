@@ -12,6 +12,7 @@
  */
 import React from 'react';
 import { FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
+import {format} from 'd3-format';
 
 import {
   shortenName, 
@@ -61,7 +62,7 @@ export default class DUI extends React.Component {
           style={{ text: { fill: '#fff' } }}
           tickPadding={10}
           tickLabelAngle={-45}
-          tickFormat={v => v.toFixed(0)} />
+          tickFormat={v => format(".2s")(v)} />
         <XAxis
           style={{ text: { fill: '#fff' } }}
           tickLabelAngle={-45}
