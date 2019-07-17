@@ -325,7 +325,7 @@ export default class Welcome extends React.Component {
         </MapGL>
         <DeckSidebar
           isMobile={isMobile}
-          key={1234}
+          key="decksidebar"
           alert={alert}
           data={this.state.filtered}
           urlCallback={(url_returned, geojson_returned) => {

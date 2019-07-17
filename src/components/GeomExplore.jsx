@@ -7,10 +7,13 @@ export default function GeomExplore(props) {
   useEffect(() => {
       setData(props.data);
   }, [props.data])
+  const geom = data[0].geometry && data[0].geometry.coordinates.join(' - ');
   return (
     <div style={{ color: 'white' }}>
       First row is: {' '} {sfType(data[0])}
-      <p>{data[0].geometry && data[0].geometry.coordinates.join(' - ')}</p>
+      <p style={{wordBreak: 'break-all'}}>
+        {geom.length > 50 ? geom.substring(0, 50) + " ... " + geom.length + " characters long." : geom}
+      </p>
     </div>
   )
 }

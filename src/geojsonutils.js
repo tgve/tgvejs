@@ -42,30 +42,38 @@ const describeGeojson = (feature) => {
 /**
  * This function takes a geojson object and optionally a property
  * it returns a set (in array) object of all values for that property.
- * If no property is given it will take the first property from 
- * the first feature using `properties()` function.
+ * 
+ * If no property is given it gets all properties from
+ * the `properties()` function and add all values for each.
  * 
  * @param {*} geojson 
  * @param {*} property 
  */
 const getPropertyValues = (geojson, property) => {
   if (!geojson || !geojson.features) return null;
-  if(!property) { // get first property's values
-    property = properties(geojson)[0]
-  }
-  const values = new Set();
+  const all = {}
+  let values = new Set();
   geojson.features.forEach(feature => {
-    Object.keys(feature.properties).forEach(each => {
-      if (each === property) {
+    Object.keys(feature.properties).forEach((each, i) => {
+      if (property && property === each) {
+        // if the right property, 
+        // add it to the value to be returnd
         values.add(feature.properties[each])
+      } else {
+        if(typeof(all[each]) === 'object') { // a set
+          all[each].add(feature.properties[each])
+        } else {
+          all[each] = new Set();
+          all[each].add(feature.properties[each])
+        }
       }
     })
   })
-  return Array.from(values);
+  return property ? Array.from(values) : all;
 }
 
 const propertyCount = (data, key, list) => {
-  if (!data) return;
+  if (!data || !key || !list) return;
   let sub_data = []; // match it with list
   data.forEach(feature => {
     Object.keys(feature.properties).forEach(each => {

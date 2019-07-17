@@ -24,8 +24,6 @@ export default function (props) {
       <Modal
         onClose={() => {
           typeof (props.onClose) === 'function' && props.onClose()
-          console.log(props.onClose);
-
           setOpen(false)
         }
         }

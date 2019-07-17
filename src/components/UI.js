@@ -84,7 +84,6 @@ export default class UI extends React.Component {
       ui_returned = <StatefulSelect
         options={sublist.map(each => ({ id: each }))}
         labelKey="id"
-        valueKey="color"
         placeholder={"Choose " + humanize(title)}
         type={TYPE.search}
         onChange={event => 

@@ -113,11 +113,15 @@ export default class DUI extends React.Component {
       }}>
 
         <File contentCallback={({ text, name }) => {
-          const json = JSON.parse(text)
-          this.setState({
-            name,
-            data: json.features
-          })
+          try {
+            const json = JSON.parse(text)
+            this.setState({
+              name,
+              data: json.features
+            })
+          } catch (error) {
+            // log?
+          }
         }} />
         <center>
           <URL urlCallback={(url) => {

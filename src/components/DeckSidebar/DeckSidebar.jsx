@@ -4,6 +4,7 @@ import {
   FormControl, Glyphicon, Checkbox
 } from 'react-bootstrap';
 import {format} from 'd3-format';
+import { Button, KIND, SIZE } from 'baseui/button';
 
 import './DeckSidebar.css';
 import DataInput from '../DataInput';
@@ -15,6 +16,9 @@ import Variables from '../Variables';
 import GenerateUI from '../UI';
 import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
+import Constants from '../../Constants';
+
+const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 
 export default class DeckSidebar extends React.Component {
   constructor(props) {
@@ -28,23 +32,23 @@ export default class DeckSidebar extends React.Component {
         "Single carriageway", "Roundabout", "Unknown",
         "Slip road", "One way street"],
       year: "",
-      minAge: 18,
-      maxAge: 24
+      reset: false
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     const { data, alert } = this.props;
-    const { elevation, radius } = this.state;
+    const { elevation, radius, reset, open } = this.state;
+    if (open !== nextState.open ||
+      reset !== nextState.reset) return true;
     //TODO:  a more functional way is needed
-    if (this.state.open !== nextState.open ||
-      elevation !== nextState.elevation ||
-      radius !== nextState.elevation ||
-      alert !== nextProps.alert) return true;
     if (data && nextProps && nextProps.data &&
       data.length === nextProps.data.length) {
       return false
     }
+    if (elevation !== nextState.elevation ||
+      radius !== nextState.elevation ||
+      alert !== nextProps.alert) return true;
     return true;
   }
 
@@ -52,7 +56,7 @@ export default class DeckSidebar extends React.Component {
    * Render the sidebar empty if no data is loaded.
    * Partly because we like to load from a URL.
    */
-  render() {
+  render() {    
     const { open, elevation, road_type,
       radius, road_types, year,
       subsetBoundsChange } = this.state;
@@ -62,7 +66,8 @@ export default class DeckSidebar extends React.Component {
     let plot_data = [];
     if (data && data.length > 1) {
       Object.keys(data[1].properties).forEach(each => {
-        if (each.match(/date|datetime|datestamp|timestamp/g)) {
+        if (each.match(/date|datetime|datestamp|timestamp/g) && 
+        each.split("/")[2]) {
           plot_data = summariseByYear(data)
         }
       })
@@ -70,7 +75,7 @@ export default class DeckSidebar extends React.Component {
     const severity_data = propertyCount(data, "accident_severity",
       ['Slight', 'Serious', 'Fatal'])
     // const road_type_data = propertyCount(data, "road_type", ['1', '2', '3', '4', '5', '6', '7'])
-    // console.log(road_type_data);
+    // console.log(severity_data);
 
     return (
       <div className="side-panel-container"
@@ -88,11 +93,21 @@ export default class DeckSidebar extends React.Component {
             <DataInput
               onClose={() => this.setState({ open: true })}
               urlCallback={(url, geojson) => {
-                this.setState({ open: true })
+                this.setState({ open: true, reset: true })
                 typeof (urlCallback) === 'function'
                   && urlCallback(url, geojson)
               }
               } />
+          {
+            this.state.reset &&
+            <Button
+            kind={KIND.secondary} size={SIZE.compact}
+            onClick={() =>{ 
+              this.setState({ reset: false })
+              typeof (urlCallback) === 'function'
+                  && urlCallback(URL + "/api/stats19")
+            }}>Reset</Button>
+          }
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
