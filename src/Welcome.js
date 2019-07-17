@@ -81,14 +81,6 @@ export default class Welcome extends React.Component {
     this._fetchAndUpdateState()
   }
 
-  _onMapLoad() {
-    this._fitViewport()
-    //update initialViewState
-    // below crashes with some n[r] weird error. See this:
-    // https://uber.github.io/react-map-gl/#/Documentation/advanced/viewport-transition?section=transition-and-the-onviewportchange-callback
-    // this.map.once('zoomend', console.log("ping"))
-  }
-
   _fetchAndUpdateState(aURL) {
     // TODO: more sanity checks?
     const fullURL = aURL ?
@@ -291,7 +283,6 @@ export default class Welcome extends React.Component {
         }} />
         <MapGL
           // key={height+width} //causes layer to disappear
-          onLoad={this._onMapLoad.bind(this)}
           ref={ref => {
             // save a reference to the mapboxgl.Map instance
             this.map = ref && ref.getMap();
@@ -329,15 +320,18 @@ export default class Welcome extends React.Component {
           alert={alert}
           data={this.state.filtered}
           urlCallback={(url_returned, geojson_returned) => {
+            this.setState({
+              tooltip: "",
+              road_type: "",
+              year: "",
+              severity: "",
+            })
             if(geojson_returned) {                            
               this.setState({
                 data: geojson_returned
               })
               this._generateLayer()
             } else {
-              this.setState({
-                loading: true,
-              })
               this._fetchAndUpdateState(url_returned);
             }
             this._fitViewport();

@@ -41,7 +41,7 @@ export default class DeckSidebar extends React.Component {
     const { elevation, radius, reset, open } = this.state;
     if (open !== nextState.open ||
       reset !== nextState.reset) return true;
-    //TODO:  a more functional way is needed
+    //TODO:  a more functional way is needed        
     if (data && nextProps && nextProps.data &&
       data.length === nextProps.data.length) {
       return false
