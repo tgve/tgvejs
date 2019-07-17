@@ -63,11 +63,12 @@ export default class DeckSidebar extends React.Component {
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data,
       toggleSubsetBoundsChange, urlCallback, alert } = this.props;
-    let plot_data = [];
+    let plot_data = [];    
     if (data && data.length > 1) {
       Object.keys(data[1].properties).forEach(each => {
-        if (each.match(/date|datetime|datestamp|timestamp/g) && 
-        each.split("/")[2]) {
+        if (each.match(/date|datetime|datestamp|timestamp/g) &&
+        typeof(data[1].properties[each]) === 'string' && 
+        data[1].properties[each].split("/")[2]) { //date in 09/01/2019 HARDCODE
           plot_data = summariseByYear(data)
         }
       })
