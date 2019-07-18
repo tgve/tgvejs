@@ -279,7 +279,8 @@ export default class Welcome extends React.Component {
         {/* just a little catch to hide the loader when no basemap is presetn */}
         <div className="loader" style={{
           zIndex: loading ? 999 : 0,
-          visibility: mapStyle.endsWith("No map-v9") ? 'hidden' : 'visible'
+          visibility: !MAPBOX_ACCESS_TOKEN || 
+          mapStyle.endsWith("No map-v9") ? 'hidden' : 'visible'
         }} />
         <MapGL
           // key={height+width} //causes layer to disappear
