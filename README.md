@@ -1,11 +1,15 @@
 
 # eAtlas · [![Build Status](https://travis-ci.org/layik/eAtlas.svg)](https://travis-ci.org/layik/eAtlas) [![Project Status: WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#)
 
-<img width="100%" alt="Screenshot gif" src="https://user-images.githubusercontent.com/408568/60017431-9f0e3700-9680-11e9-8ec5-2973883a1681.gif"/>
-<img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/61215554-2f312080-a703-11e9-9801-6fd744a7647d.png">
-
 Currently this is just a “WIP” as we explore and gather requirements of
-the project. There are some
+the project. The idea of an eAtlas is one by Sir Alan Wilson (Turing
+Institute):
+
+> A key message from the Foresight Future of Cities Project is the
+> importance of interdependence: between urban subsystems and between
+> associated planning and policy challenges
+
+There are some
 [notes](https://github.com/layik/eAtlas/blob/master/notes/project_planning.md)
 to read.
 
@@ -34,9 +38,12 @@ gp_plumb()
 
 visit `localhost:8000`
 
-or just run the front using: `npm i & npm start`
+or just run the front using (without any data loaded from local server):
+`npm i & npm start`
 <img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/61232570-8694b800-a726-11e9-9fd0-eb0baa523c87.gif">
+\#\# deploy with docker Repo contains Dockerfile for production.
 
-## deploy with docker
+## Screenshots/gif’s
 
-Repo contains Dockerfile for production.
+<img width="100%" alt="Screenshot gif" src="https://user-images.githubusercontent.com/408568/60017431-9f0e3700-9680-11e9-8ec5-2973883a1681.gif"/>
+<img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/61215554-2f312080-a703-11e9-9801-6fd744a7647d.png">
