@@ -40,10 +40,25 @@ visit `localhost:8000`
 
 or just run the front using (without any data loaded from local server):
 `npm i & npm start`
-<img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/61232570-8694b800-a726-11e9-9fd0-eb0baa523c87.gif">
-\#\# deploy with docker Repo contains Dockerfile for production.
+
+## deploy with docker
+
+Repo contains Dockerfile for production. This is again WIP. So you need
+to build the `npm` first, so for now you would typically:
+
+``` sh
+npm i # install packages
+npm run build # create-react-app will create production ready bundle
+# remove the node_modules
+rm -rf node_modules
+# ready to go
+docker build -t eatlas .
+# then bind plumber's default 8000 port to any of your choice
+docker run -d -p 8000:8001 --name eatlas eatlas
+```
 
 ## Screenshots/gif’s
 
+<img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/61232570-8694b800-a726-11e9-9fd0-eb0baa523c87.gif">
 <img width="100%" alt="Screenshot gif" src="https://user-images.githubusercontent.com/408568/60017431-9f0e3700-9680-11e9-8ec5-2973883a1681.gif"/>
 <img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/61215554-2f312080-a703-11e9-9801-6fd744a7647d.png">
