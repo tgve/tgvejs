@@ -15,6 +15,9 @@ We discussed some of the characteristics of an e-atlas. Here are some examples (
 
 ### Examples
 
+#### Australia's AURIN
+Available at [www.aurin.org.au](https://aurin.org.au/about-aurin/the-aurin-journey/). We will add some more notes about AURIN as we learn more about it. For now [here](https://vimeo.com/aurin) is a video from their website. Thanks to Dr Robin Lovelace for mentioning this.
+
 #### NCIN's UK Cancer e-Atlas
 
 Available at [www.ncin.org](http://www.ncin.org.uk/cancer_information_tools/eatlas/pct/atlas.html?select=Eav&indicator=i0). Displays cancer incidence by LAD.
