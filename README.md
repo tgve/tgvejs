@@ -7,15 +7,18 @@ Institute):
 
 > A key message from the Foresight Future of Cities Project is the
 > importance of interdependence: between urban subsystems and between
-> associated planning and policy challenges
+> associated planning and policy challenges. \~ Sir Alan Wilson.
 
 There are some
 [notes](https://github.com/layik/eAtlas/blob/master/notes/project_planning.md)
-to read.
+to read. These are thoughts and background reading material as we take
+steps towards understanding what an “interdependent” eAtlas might be.
+Would it be “Turing Geovisualization Engine”?
 
-This is a [geopumber](https://github.com/ATFutures/geoplumber) app. That
-means it is an R powered backend API (think Flask in Python) and a
-ReactJS front end.
+This source code is a
+[geopumber](https://github.com/ATFutures/geoplumber) app. That means it
+is an R powered backend API (think Flask in Python) and a ReactJS front
+end.
 
 To build, from an R console:
 
