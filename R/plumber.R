@@ -50,51 +50,55 @@ if(!file.exists(main.file)) {
   piggyback::pb_download(main.file)
   # stop("ac_joined_wy_2009-2017.Rds")
 }
-accidents <- NULL
-read_downloaded <- function() {
-  accidents <<- readRDS(main.file)
-  accidents <<- sf::st_transform(accidents, 4326)
-  # v <- c(53.698968, -1.800421, 53.945872, -1.290352)
-  # Leeds bbox in case of future offline mode
-  bb <- osmdata::getbb("leeds")
-  bb_str <- osmdata::bbox_to_string(bb)
-  v <- as.double(unlist(strsplit(bb_str, ",")))
-  bbx <- c(
-    xmin = v[2],
-    ymin = v[1],
-    xmax = v[4],
-    ymax = v[3]
-  )
-  accidents <<- sf::st_crop(accidents, bbx) # Leeds only
-  accidents <<- accidents[c(
-    "speed_limit",
-    "date",
-    "road_type",
-    "number_of_casualties",
-    "accident_severity",
-    "casualty_type",
-    "age_of_casualty",
-    "age_band_of_casualty",
-    "vehicle_types"
-  )]
-  # saving memory
-  accidents$road_type[accidents$road_type == "Dual carriageway"] = 1
-  accidents$road_type[accidents$road_type == "Single carriageway"] = 2
-  accidents$road_type[accidents$road_type == "One way street"] = 3
-  accidents$road_type[accidents$road_type == "Roundabout"] = 4
-  accidents$road_type[accidents$road_type == "Slip road"] = 5
-  accidents$road_type[accidents$road_type == "Unknown"] = 6
-  
-  # replace casualty_type too
-  # ct <- 1:length(levels(factor(accidents$casualty_type)))
-  # names(ct) <- levels(factor(accidents$casualty_type))
-  # accidents$casualty_type <- vapply(accidents$casualty_type, 2, FUN = function(x) ct[[x]])
-  # 
-  message("Converting them to geojson")
-  geojsonsf::sf_geojson(accidents)
-}
 
-accidents_geojson <- read_downloaded()
+accidents <- readRDS(main.file)
+accidents <- sf::st_transform(accidents, 4326)
+# v <- c(53.698968, -1.800421, 53.945872, -1.290352)
+# Leeds bbox in case of future offline mode
+bb <- osmdata::getbb("leeds")
+bb_str <- osmdata::bbox_to_string(bb)
+v <- as.double(unlist(strsplit(bb_str, ",")))
+bbx <- c(
+  xmin = v[2],
+  ymin = v[1],
+  xmax = v[4],
+  ymax = v[3]
+)
+accidents <- sf::st_crop(accidents, bbx) # Leeds only
+accidents <- accidents[c(
+  "speed_limit",
+  "date",
+  "road_type",
+  "number_of_casualties",
+  "accident_severity",
+  "casualty_type",
+  "age_of_casualty",
+  "age_band_of_casualty",
+  "vehicle_types"
+)]
+# saving memory
+encode <- function(column_name) {
+  cts <- 1:length(levels(factor(accidents[[column_name]])))
+  names(cts) <- levels(factor(accidents[[column_name]]))
+  accidents[[column_name]] <- vapply(accidents[[column_name]], 2, FUN = function(x) cts[[x]])
+  cts
+}
+# TODO: find a way to detect encode'able columns
+rt <- encode("road_type")
+ct <- encode("casualty_type")
+accidents_vector <- unname(unlist(accidents))
+
+# message("Converting to geojson")
+accidents_geojson <- geojsonsf::sf_geojson(accidents)
+
+#' @get /api/vector
+#' @serializer unboxedJSON
+all_vector <- function(){
+  list(data=accidents_vector, 
+       road_type = names(rt), # hardcode
+       casualty_type = names(ct) # hardcode
+       )
+}
 
 # print(accidents)
 #' @get /api/stats19
