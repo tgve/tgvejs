@@ -17,6 +17,13 @@ if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
 
 lapply(packages, library, character.only = TRUE)
 
+if(!file.exists(main.file)) {
+  piggyback::pb_download(main.file)
+  # stop("ac_joined_wy_2009-2017.Rds")
+}
+
+print("downloaded ac_joined_wy_2009-2017.Rds")
+
 # Enable CORS -------------------------------------------------------------
 #' CORS enabled for now. See docs of plumber
 #' for disabling it for any endpoint we want in future
@@ -44,11 +51,6 @@ function(msg="nothing given"){
 swagger <- function(req, res){
   fname <- system.file("swagger-ui/index.html", package = "plumber") # serve the swagger page.
   plumber::include_html(fname, res)
-}
-
-if(!file.exists(main.file)) {
-  piggyback::pb_download(main.file)
-  # stop("ac_joined_wy_2009-2017.Rds")
 }
 
 accidents <- readRDS(main.file)
