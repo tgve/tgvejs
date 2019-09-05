@@ -71,6 +71,16 @@ RUN apt-get install -y --no-install-recommends \
 RUN R -e 'install.packages(c("geojsonsf", dependencies=T))'
 # RUN R -e 'devtools::install_github("ATFutures/geoplumber")'
 
+# add node/npm
+RUN apt-get -y install curl gnupg
+RUN curl -sL https://deb.nodesource.com/setup_11.x  | bash -
+RUN apt-get -y install nodejs
+
+# build
+RUN npm install
+RUN npm install create-react-app
+RUN npm run build
+
 ADD . /app
 
 EXPOSE 8000
