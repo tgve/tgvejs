@@ -50,7 +50,6 @@ RUN apt-get update \
     libglu1-mesa-dev \
     libhdf4-alt-dev \
     libhdf5-dev \
-    libjq-dev \
     liblwgeom-dev \
     libproj-dev \
     libprotobuf-dev \
@@ -76,12 +75,14 @@ RUN apt-get -y install curl gnupg
 RUN curl -sL https://deb.nodesource.com/setup_11.x  | bash -
 RUN apt-get -y install nodejs
 
+ADD . /app
+
 # build
+WORKDIR /app
 RUN npm install
 RUN npm install create-react-app
 RUN npm run build
-
-ADD . /app
+RUN rm -rf node_modules
 
 EXPOSE 8000
 
