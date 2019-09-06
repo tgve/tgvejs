@@ -7,15 +7,17 @@ if(is.null(curl::nslookup("r-project.org", error = FALSE))) {
 }
 packages <- c("sf", "geojsonsf", "osmdata", "curl")
 main.file <- "ac_joined_wy_2009-2017.Rds"
-if(!file.exists(main.file)) {
-  packages <- c(packages, "piggyback")
-}
 
 if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
   install.packages(setdiff(packages, rownames(installed.packages())),repos='http://cran.us.r-project.org')
 }
 
 lapply(packages, library, character.only = TRUE)
+
+if(!file.exists(main.file)) {
+  download.file(paste0("https://github.com/layik/eAtlas/releases/download/0.0.1/", main.file), 
+                destfile = "ac_joined_wy_2009-2017.Rds")
+}
 
 # Enable CORS -------------------------------------------------------------
 #' CORS enabled for now. See docs of plumber
@@ -28,27 +30,14 @@ cors <- function(res) {
 }
 # TODO: option to remove above CORS
 
-#'
-#' @param msg The message to echo
-#' @get /api/helloworld
-#' @get /api/helloworld/
-function(msg="nothing given"){
-  list(msg = paste0("The message is: '", msg, "'"))
-}
-
 #' @section TODO:
-#' The plugger endpoint should not be there. Currently mapping React build to /
+#' The plumber endpoint should not be there. Currently mapping React build to /
 #' at assets causes the swagger endpoint to be 404. Support is limited.
 #'
 #' @get /__swagger__/
 swagger <- function(req, res){
   fname <- system.file("swagger-ui/index.html", package = "plumber") # serve the swagger page.
   plumber::include_html(fname, res)
-}
-
-if(!file.exists(main.file)) {
-  piggyback::pb_download(main.file)
-  # stop("ac_joined_wy_2009-2017.Rds")
 }
 
 accidents <- readRDS(main.file)
@@ -76,6 +65,7 @@ accidents <- accidents[c(
   "age_band_of_casualty",
   "vehicle_types"
 )]
+
 # saving memory
 encode <- function(column_name) {
   cts <- 1:length(levels(factor(accidents[[column_name]])))
