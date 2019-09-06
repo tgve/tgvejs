@@ -56,6 +56,6 @@ docker run -d -p 8000:8001 --name eatlas eatlas
 ## Current deployment
 The project has been given an Azure account from Turing. The deployment model is as follows for now:
 
-![eatlas-production](https://user-images.githubusercontent.com/408568/64242151-ede81080-cefc-11e9-8bcc-9657b3f2b2f3.png)
+![eatlas-production](https://user-images.githubusercontent.com/408568/64371799-62b06d00-d019-11e9-90b2-0951c3b14c3a.png)
 
 Please let us know if you think of a better model.
