@@ -34,18 +34,16 @@ or just run the front using (without any data loaded from local server): `npm i 
 
 ## deploy with docker
 
-Repo contains Dockerfile for production. This is again WIP. So you need to build the `npm` first, so for now you would typically:
+Repo contains Dockerfile for production. This is again WIP. 
 
 ```{sh, eval= FALSE}
-npm i # install packages
-npm run build # create-react-app will create production ready bundle
-# remove the node_modules
-rm -rf node_modules
-# ready to go
+# Dockerfile manages your npm/React build steps
+# REACT_APP_MAPBOX_ACCESS_TOKEN is required but app should run
 docker build -t eatlas .
 # then bind plumber's default 8000 port to any of your choice
 docker run -d -p 8000:8001 --name eatlas eatlas
 ````
+Use your favourite document server (nginx for example) to proxy requets (more later hopefully).
 
 ## Screenshots/gif's
 
