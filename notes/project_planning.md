@@ -146,11 +146,15 @@ Could this instead be a more *research-focussed* activity aimed at developing an
 
 * Generate slide deck with 'case' / ambition for e-Atlas : RB
 * Present case/ambition for e-Atlas at Turing : RB, NL, LH
-* Prototype 1 design ideas : RB, LH
+* Prototype 1 design ideas : RB, LH (Done)
 
-### Aug 2019
+### Aug 2019 (break)
 
+### Sep 2019
+
+* WIP deployed on Turing Azure space (Done).
 * Prototype 1 implemented : RB, LH
+* Determine the direction of contribution: NL, RB, LH
 
 ## Prototype 1 / making a 'case' : a thought on picking a domain (SPENCER data)
 
