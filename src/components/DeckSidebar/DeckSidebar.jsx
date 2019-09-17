@@ -62,7 +62,7 @@ export default class DeckSidebar extends React.Component {
       radius, road_types, year,
       subsetBoundsChange } = this.state;
     const { onChangeRadius, onChangeElevation,
-      onSelectCallback, data, colourCallback,
+      onSelectCallback, data, colourCallback, layerStyle,
       toggleSubsetBoundsChange, urlCallback, alert } = this.props;
     let plot_data = [];
     if (data && data.length > 1) {
@@ -223,9 +223,13 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-sliders" />
                 }>
                   {data && data.length > 1 &&
-                    <div><ColorPicker colourCallback={(color) =>
-                      typeof colourCallback === 'function' &&
-                      colourCallback(color)} />
+                    <div>
+                      {
+                        layerStyle === "grid" &&
+                        <ColorPicker colourCallback={(color) =>
+                          typeof colourCallback === 'function' &&
+                          colourCallback(color)} />
+                      }
                       <input
                         type="range"
                         id="radius"

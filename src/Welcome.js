@@ -188,9 +188,9 @@ export default class Welcome extends React.Component {
       }
     )
     // console.log(data.length);
-    let layer_style = 'grid';
-    if (geomType !== "point") layer_style = "geojson"
-    if (data.length < 100 && geomType === "point") layer_style = 'icon'
+    let layerStyle = 'grid';
+    if (geomType !== "point") layerStyle = "geojson"
+    if (data.length < 100 && geomType === "point") layerStyle = 'icon'
     const options = {
       radius: radius ? radius : this.state.radius,
       cellSize: radius ? radius : this.state.radius,
@@ -198,13 +198,14 @@ export default class Welcome extends React.Component {
       lightSettings: LIGHT_SETTINGS,
       colorRange: colorRanges(cn || colourName)
     };
-    if (layer_style === 'geojson') {
+    if (layerStyle === 'geojson') {
       options.getFillColor = (d) => colorScale(d, data) //first prop
     }
     const alayer = generateDeckLayer(
-      layer_style, data, this._renderTooltip, options)
+      layerStyle, data, this._renderTooltip, options)
 
     this.setState({
+      layerStyle,
       mapStyle: !MAPBOX_ACCESS_TOKEN ? osmtiles :
         filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
       tooltip: "",
@@ -300,7 +301,8 @@ export default class Welcome extends React.Component {
 
   render() {
     const { tooltip, viewport, initialViewState,
-      loading, mapStyle, alert, isMobile } = this.state;
+      loading, mapStyle, alert, isMobile, 
+      layerStyle } = this.state;
     // let {viewState} = this.props;
     return (
       <div>
@@ -345,6 +347,7 @@ export default class Welcome extends React.Component {
           </DeckGL>
         </MapGL>
         <DeckSidebar
+          layerStyle={layerStyle}
           isMobile={isMobile}
           key="decksidebar"
           alert={alert}
