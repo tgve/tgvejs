@@ -333,16 +333,55 @@ const isMobile = function () {
 };
 
 const colorScale = (d, features) => {
-  if(!d || !features || features.length === 0) return null;  
+  if (!d || !features || features.length === 0) return null;
   const x = Object.keys(d.properties)[0];
   let domain = features.map(feature => feature.properties[x])
   domain = Array.from(new Set(domain))
   // console.log(d, d.properties[x], domain);
   const index = domain.indexOf(d.properties[x])
-  const col = interpolateSinebow(index/domain.length);
-  return col.substring(4, col.length-1)
-  .replace(/ /g, '')
-  .split(',');
+  const col = interpolateSinebow(index / domain.length);
+  return col.substring(4, col.length - 1)
+    .replace(/ /g, '')
+    .split(',');
+}
+
+const colorRanges = (name) => {
+  if (!name) return
+  const colors = {
+    yellowblue: [
+      [255, 255, 204],
+      [199, 233, 180],
+      [127, 205, 187],
+      [65, 182, 196],
+      [44, 127, 184],
+      [37, 52, 148]
+    ],
+    greens: [
+      [237, 248, 233],
+      [199, 233, 192],
+      [161, 217, 155],
+      [116, 196, 118],
+      [49, 163, 84],
+      [0, 109, 44],
+    ],
+    oranges: [
+      [254, 237, 222],
+      [253, 208, 162],
+      [253, 174, 107],
+      [253, 141, 60],
+      [230, 85, 13],
+      [166, 54, 3],
+    ],
+    diverge: [
+      [140, 81, 10],
+      [216, 179, 101],
+      [246, 232, 195],
+      [199, 234, 229],
+      [90, 180, 172],
+      [1, 102, 94]
+    ]
+  }
+  return (colors[name])
 }
 
 export {
@@ -355,6 +394,7 @@ export {
   convertRange,
   getCentroid,
   shortenName,
+  colorRanges,
   percentDiv,
   colorScale,
   fetchData,

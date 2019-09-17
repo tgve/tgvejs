@@ -6,7 +6,8 @@ import bbox from '@turf/bbox';
 import {
   fetchData, generateDeckLayer,
   getParamsFromSearch, getBbx,
-  isMobile, colorScale
+  isMobile, colorScale,
+  // colorRanges
 } from './utils';
 import Constants from './Constants';
 import DeckSidebar from './components/DeckSidebar/DeckSidebar';
@@ -16,10 +17,29 @@ import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
 
+const osmtiles = {
+  "version": 8,
+  "sources": {
+    "simple-tiles": {
+      "type": "raster",
+      "tiles": [
+        // "http://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        // "http://b.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        "http://tile.stamen.com/toner/{z}/{x}/{y}.png"
+      ],
+      "tileSize": 256
+    }
+  },
+  "layers": [{
+    "id": "simple-tiles",
+    "type": "raster",
+    "source": "simple-tiles",
+  }]
+};
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 
 // Set your mapbox access token here
-const MAPBOX_ACCESS_TOKEN = process.env.MAPBOX_ACCESS_TOKEN;
+const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
 const gradient = {
   height: '200px',
@@ -66,7 +86,7 @@ export default class Welcome extends React.Component {
       backgroundImage: gradient.backgroundImage,
       radius: 100,
       elevation: 4,
-      mapStyle: "mapbox://styles/mapbox/dark-v9",
+      mapStyle: MAPBOX_ACCESS_TOKEN ? "mapbox://styles/mapbox/dark-v9" : osmtiles,
       initialViewState: init,
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
@@ -119,7 +139,7 @@ export default class Welcome extends React.Component {
    * @param {*} filter multivariate filter of properties
    */
   _generateLayer(radius, elevation, filter) {
-    let data = this.state.data.features
+    let data = this.state.data && this.state.data.features
     const { year, road_type, severity } = this.state;
     if (!data) return;
     const geomType = sfType(data[0]).toLowerCase();
@@ -172,16 +192,18 @@ export default class Welcome extends React.Component {
       radius: radius ? radius : this.state.radius,
       cellSize: radius ? radius : this.state.radius,
       elevationScale: elevation ? elevation : this.state.elevation,
-      lightSettings: LIGHT_SETTINGS
+      lightSettings: LIGHT_SETTINGS,
+      // colorRange: colorRanges('greens')
     };
-    if(layer_style === 'geojson') {
+    if (layer_style === 'geojson') {
       options.getFillColor = (d) => colorScale(d, data) //first prop
     }
     const alayer = generateDeckLayer(
       layer_style, data, this._renderTooltip, options)
 
     this.setState({
-      mapStyle: filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
+      mapStyle: !MAPBOX_ACCESS_TOKEN ? osmtiles :
+        filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
       tooltip: "",
       filtered: data,
       layers: [alayer],
@@ -196,7 +218,7 @@ export default class Welcome extends React.Component {
   _fitViewport() {
     // is called after mounds
     const { data } = this.state;
-    if(!data || data.length === 0) return;
+    if (!data || data.length === 0) return;
     const bounds = bbox(this.state.data);
     this.map.fitBounds(bounds, { padding: 20 });
     const { longitude, latitude, zoom } = new WebMercatorViewport(this.state.viewport)
@@ -273,14 +295,15 @@ export default class Welcome extends React.Component {
     const { tooltip, viewport, initialViewState,
       loading, mapStyle, alert, isMobile } = this.state;
     // let {viewState} = this.props;
+    console.log(MAPBOX_ACCESS_TOKEN);
 
     return (
       <div>
         {/* just a little catch to hide the loader when no basemap is presetn */}
         <div className="loader" style={{
           zIndex: loading ? 999 : 0,
-          visibility: !MAPBOX_ACCESS_TOKEN || 
-          mapStyle.endsWith("No map-v9") ? 'hidden' : 'visible'
+          visibility: typeof mapStyle === 'string' &&
+            mapStyle.endsWith("No map-v9") ? 'hidden' : 'visible'
         }} />
         <MapGL
           // key={height+width} //causes layer to disappear
@@ -297,7 +320,7 @@ export default class Welcome extends React.Component {
           width={window.innerWidth + 'px'}
           //crucial bit below
           viewState={viewport ? viewport : initialViewState}
-          mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
+        // mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
         >
           <div className='mapboxgl-ctrl-top-right' style={{
             zIndex: 9
@@ -327,7 +350,7 @@ export default class Welcome extends React.Component {
               year: "",
               severity: "",
             })
-            if(geojson_returned) {                            
+            if (geojson_returned) {
               this.setState({
                 data: geojson_returned
               })
