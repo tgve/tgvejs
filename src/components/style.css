@@ -39,3 +39,16 @@ main, .content {
 	color: white;
 	transform: scale(1.1);
 }
+
+.color-picker-container {
+  margin-bottom: 15px;
+  height: 50px;
+}
+.color-box {
+  width: 16px;
+  height: 16px;
+  float: left;
+  margin: 5px;
+  border: 1px solid white;
+  cursor: pointer;
+}

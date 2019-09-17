@@ -7,7 +7,7 @@ import {
   fetchData, generateDeckLayer,
   getParamsFromSearch, getBbx,
   isMobile, colorScale,
-  // colorRanges
+  colorRanges
 } from './utils';
 import Constants from './Constants';
 import DeckSidebar from './components/DeckSidebar/DeckSidebar';
@@ -90,6 +90,7 @@ export default class Welcome extends React.Component {
       initialViewState: init,
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
+      colourName: 'default'
     }
     this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
@@ -137,10 +138,12 @@ export default class Welcome extends React.Component {
    * @param {*} radius specific to changing geoms
    * @param {*} elevation specific to changing geoms
    * @param {*} filter multivariate filter of properties
+   * @param {*} cn short for colorName passed from callback
    */
-  _generateLayer(radius, elevation, filter) {
+  _generateLayer(radius, elevation, filter, cn) {
     let data = this.state.data && this.state.data.features
-    const { year, road_type, severity } = this.state;
+    const { year, road_type, severity, colourName } = this.state;
+    
     if (!data) return;
     const geomType = sfType(data[0]).toLowerCase();
     //if resetting a value
@@ -193,7 +196,7 @@ export default class Welcome extends React.Component {
       cellSize: radius ? radius : this.state.radius,
       elevationScale: elevation ? elevation : this.state.elevation,
       lightSettings: LIGHT_SETTINGS,
-      // colorRange: colorRanges('greens')
+      colorRange: colorRanges(cn || colourName)
     };
     if (layer_style === 'geojson') {
       options.getFillColor = (d) => colorScale(d, data) //first prop
@@ -209,9 +212,13 @@ export default class Welcome extends React.Component {
       layers: [alayer],
       radius: radius ? radius : this.state.radius,
       elevation: elevation ? elevation : this.state.elevation,
-      road_type: filter && filter.what === 'road_type' ? filter.selected : this.state.road_type,
-      year: filter && filter.what === 'year' ? filter.selected : this.state.year,
-      severity: filter && filter.what === 'severity' ? filter.selected : this.state.severity,
+      road_type: filter && filter.what === 'road_type' ? filter.selected : 
+      this.state.road_type,
+      year: filter && filter.what === 'year' ? filter.selected : 
+      this.state.year,
+      severity: filter && filter.what === 'severity' ? filter.selected : 
+      this.state.severity,
+      colourName: cn || colourName
     })
   }
 
@@ -295,11 +302,10 @@ export default class Welcome extends React.Component {
     const { tooltip, viewport, initialViewState,
       loading, mapStyle, alert, isMobile } = this.state;
     // let {viewState} = this.props;
-    console.log(MAPBOX_ACCESS_TOKEN);
-
     return (
       <div>
-        {/* just a little catch to hide the loader when no basemap is presetn */}
+        {/* just a little catch to hide the loader 
+        when no basemap is presetn */}
         <div className="loader" style={{
           zIndex: loading ? 999 : 0,
           visibility: typeof mapStyle === 'string' &&
@@ -343,6 +349,10 @@ export default class Welcome extends React.Component {
           key="decksidebar"
           alert={alert}
           data={this.state.filtered}
+          colourCallback={(colourName) => 
+            this._generateLayer(undefined, undefined, undefined, 
+              colourName)
+          }
           urlCallback={(url_returned, geojson_returned) => {
             this.setState({
               tooltip: "",

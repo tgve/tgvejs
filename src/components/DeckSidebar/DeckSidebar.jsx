@@ -3,7 +3,7 @@ import {
   Tabs, Tab, FormGroup, InputGroup,
   FormControl, Glyphicon, Checkbox
 } from 'react-bootstrap';
-import {format} from 'd3-format';
+import { format } from 'd3-format';
 import { Button, KIND, SIZE } from 'baseui/button';
 
 import './DeckSidebar.css';
@@ -17,6 +17,7 @@ import GenerateUI from '../UI';
 import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
 import Constants from '../../Constants';
+import ColorPicker from '../ColourPicker';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 
@@ -40,15 +41,15 @@ export default class DeckSidebar extends React.Component {
     const { data, alert } = this.props;
     const { elevation, radius, reset, open } = this.state;
     if (open !== nextState.open ||
-      reset !== nextState.reset) return true;
+      reset !== nextState.reset ||
+      elevation !== nextState.elevation ||
+      radius !== nextState.radius ||
+      alert !== nextProps.alert) return true;
     //TODO:  a more functional way is needed        
     if (data && nextProps && nextProps.data &&
       data.length === nextProps.data.length) {
       return false
     }
-    if (elevation !== nextState.elevation ||
-      radius !== nextState.elevation ||
-      alert !== nextProps.alert) return true;
     return true;
   }
 
@@ -56,19 +57,19 @@ export default class DeckSidebar extends React.Component {
    * Render the sidebar empty if no data is loaded.
    * Partly because we like to load from a URL.
    */
-  render() {    
+  render() {
     const { open, elevation, road_type,
       radius, road_types, year,
       subsetBoundsChange } = this.state;
     const { onChangeRadius, onChangeElevation,
-      onSelectCallback, data,
+      onSelectCallback, data, colourCallback,
       toggleSubsetBoundsChange, urlCallback, alert } = this.props;
-    let plot_data = [];    
+    let plot_data = [];
     if (data && data.length > 1) {
       Object.keys(data[1].properties).forEach(each => {
         if (each.match(/date|datetime|datestamp|timestamp/g) &&
-        typeof(data[1].properties[each]) === 'string' && 
-        data[1].properties[each].split("/")[2]) { //date in 09/01/2019 HARDCODE
+          typeof (data[1].properties[each]) === 'string' &&
+          data[1].properties[each].split("/")[2]) { //date in 09/01/2019 HARDCODE
           plot_data = summariseByYear(data)
         }
       })
@@ -99,16 +100,16 @@ export default class DeckSidebar extends React.Component {
                   && urlCallback(url, geojson)
               }
               } />
-          {
-            this.state.reset &&
-            <Button
-            kind={KIND.secondary} size={SIZE.compact}
-            onClick={() =>{ 
-              this.setState({ reset: false })
-              typeof (urlCallback) === 'function'
-                  && urlCallback(URL + "/api/stats19")
-            }}>Reset</Button>
-          }
+            {
+              this.state.reset &&
+              <Button
+                kind={KIND.secondary} size={SIZE.compact}
+                onClick={() => {
+                  this.setState({ reset: false })
+                  typeof (urlCallback) === 'function'
+                    && urlCallback(URL + "/api/stats19")
+                }}>Reset</Button>
+            }
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
@@ -221,37 +222,43 @@ export default class DeckSidebar extends React.Component {
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-sliders" />
                 }>
-                  <input
-                    type="range"
-                    id="radius"
-                    min={50}
-                    max={500}
-                    step={50}
-                    value={radius}
-                    onChange={(e) => {
-                      this.setState({
-                        radius: e.target.value,
-                      })
-                      typeof (onChangeRadius) === 'function' && onChangeRadius(e.target.value)
-                    }}
-                  />
-                  <h5>Radius: {radius}.</h5>
-                  <input
-                    type="range"
-                    id="elevation"
-                    min={2}
-                    max={8}
-                    step={2}
-                    value={elevation}
-                    onChange={(e) => {
-                      this.setState({
-                        elevation: e.target.value
-                      })
-                      typeof (onChangeElevation) === 'function' && onChangeElevation(e.target.value)
-                    }}
-                  />
-                  <h5>Elevation: {elevation}.</h5>
-
+                  {data && data.length > 1 &&
+                    <div><ColorPicker colourCallback={(color) =>
+                      typeof colourCallback === 'function' &&
+                      colourCallback(color)} />
+                      <input
+                        type="range"
+                        id="radius"
+                        min={50}
+                        max={500}
+                        step={50}
+                        value={radius}
+                        onChange={(e) => {
+                          this.setState({
+                            radius: e.target.value,
+                          })
+                          typeof (onChangeRadius) === 'function' &&
+                            onChangeRadius(e.target.value)
+                        }}
+                      />
+                      <h5>Radius: {radius}.</h5>
+                      <input
+                        type="range"
+                        id="elevation"
+                        min={2}
+                        max={8}
+                        step={2}
+                        value={elevation}
+                        onChange={(e) => {
+                          this.setState({
+                            elevation: e.target.value
+                          })
+                          typeof (onChangeElevation) === 'function' &&
+                            onChangeElevation(e.target.value)
+                        }}
+                      />
+                      <h5>Elevation: {elevation}.</h5>
+                    </div>}
                   Map Styles
                                     <br />
                   <MapboxBaseLayers

@@ -345,6 +345,9 @@ const colorScale = (d, features) => {
     .split(',');
 }
 
+const colorRangeNames = ['inverseDefault', 'yellowblue', 'greens',
+'oranges', 'diverge', 'default'];
+
 const colorRanges = (name) => {
   if (!name) return
   const colors = {
@@ -387,6 +390,14 @@ const colorRanges = (name) => {
       [254, 178, 76],
       [254, 217, 118],
       [255, 255, 178]
+    ],
+    default: [
+      [255, 255, 178],
+      [254, 217, 118],
+      [254, 178, 76],
+      [253, 141, 60],
+      [240, 59, 32],
+      [189, 0, 38],
     ]
   }
   return (colors[name])
@@ -399,6 +410,7 @@ export {
   generateDeckLayer,
   suggestDeckLayer,
   summariseByYear,
+  colorRangeNames,
   convertRange,
   getCentroid,
   shortenName,
