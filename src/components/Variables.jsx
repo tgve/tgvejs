@@ -117,8 +117,10 @@ export default class Variables extends Component {
           key={key}>
           {this._shorten(key)}
           {' '}
-          <i className="data-type">
-            ({description[key].name.substring(0, 3)})
+          <i
+            style={{ color: 'orange' }}
+            className="data-type">
+            [{description[key].name.substring(0, 3)}]
                 </i>
         </span>
       )
@@ -152,7 +154,7 @@ export default class Variables extends Component {
     if (shownSublist.length < n) n = shownSublist.length
     return <>
       {shownSublist.slice(0, n)}
-      <i>Showing {n} out of {shownSublist.length}</i>
+      <p>Showing {n} out of {shownSublist.length}</p>
     </>;
   }
 
@@ -170,7 +172,8 @@ export default class Variables extends Component {
         if (ret.length === 0) ret.push(<p key="chosen-label">
           <b>{` ${humanize(key)}'s `}</b> values</p>)
         //add remove
-        ret.push(<span
+        ret.push(<i
+          className="active-variable"
           style={this.props.subStyle}
           key={"remove-" + each} onClick={() => {
             selected[key].delete(each);
@@ -178,7 +181,9 @@ export default class Variables extends Component {
             typeof (onSelectCallback) === 'function' &&
               onSelectCallback(selected)
             this.setState({ selected });
-          }}>{`${each} x`}</span>)
+          }}>{`${each} `}<span
+            style={{ borderRadius: '50%' }}
+            className="unselect-variable">x</span></i>)
       });
     return (ret)
   }
@@ -222,11 +227,17 @@ export default class Variables extends Component {
           <div className="tagcloud">
             {
               //show main GeoJSON key if there is one chosen
-              key ? <span
-                onClick={() => this.setState({
-                  sublist: null,
-                  key: null
-                })}>{`${humanize(key)} x`}</span> :
+              key ?
+                <>
+                  <i>{`${humanize(key)}`}</i>
+                  <span
+                    onClick={() => this.setState({
+                      sublist: null,
+                      key: null
+                    })}
+                    style={{ borderRadius: '50%' }}
+                    className="unselect-variable">x</span>
+                </> :
                 data && data.length > 1 &&
                   Object.keys(data[0].properties).length > 10 &&
                   !showAll ?

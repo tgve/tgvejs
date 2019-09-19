@@ -1,4 +1,9 @@
-import {isNumber, isBoolean, isObject} from './JSUtils';
+import {
+  isNumber, isBoolean, isObject,
+  isDate
+} from './JSUtils';
+
+const { DateTime } = require("luxon");
 
 // thanks turfjs
 //http://wiki.geojson.org/GeoJSON_draft_version_6
@@ -27,7 +32,18 @@ const describeGeojson = (feature) => {
   Object.keys(feature.properties).forEach(key => {
     let v_type = String;
     const value = feature.properties[key];
-    if(isNumber(value)) {
+
+    if(isDate(value) || 
+    DateTime.fromFormat(value + '', 'MMMM dd yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'MMMM d yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'MMM d yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'MMM dd yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'dd/MM/yyyy').isValid ||
+    DateTime.fromISO(value).isValid || // "19-2-1999"
+    DateTime.fromHTTP(value).isValid ||
+    (typeof value === Number && DateTime.fromMillis(value).isValid)) {
+      v_type = Date
+    } else if(isNumber(value)) {
       v_type = Number
     } else if(isBoolean(value)) {
       v_type = Boolean

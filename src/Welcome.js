@@ -202,7 +202,8 @@ export default class Welcome extends React.Component {
       options.getFillColor = (d) => colorScale(d, data) //first prop
     }
     const alayer = generateDeckLayer(
-      layerStyle, data, this._renderTooltip, options)
+      layerStyle, data, this._renderTooltip, options
+    )
 
     this.setState({
       layerStyle,

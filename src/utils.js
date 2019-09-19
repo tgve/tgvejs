@@ -403,6 +403,25 @@ const colorRanges = (name) => {
   return (colors[name])
 }
 
+const iconJSType = (dataType) => {
+  // describeGeojson in geojsonutils
+  // String, Number, Boolean and Object
+  if(!dataType) return(null)  
+  switch(dataType) {
+    case "String":
+      dataType = "fa fa-globe";
+      break;
+    case "Number":
+      dataType = "fa fa-list";
+      break;
+    case "Object":
+      dataType = "fa fa-sack";
+      break;
+    default:
+      dataType = "fa fa-question-circle";
+  }
+  return dataType
+}
 export {
   getResultsFromGoogleMaps,
   getParamsFromSearch,
@@ -416,6 +435,7 @@ export {
   shortenName,
   colorRanges,
   percentDiv,
+  iconJSType,
   colorScale,
   fetchData,
   humanize,

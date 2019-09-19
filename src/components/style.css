@@ -19,22 +19,25 @@ main, .content {
 	align-items: center;
 }
 
-.tagcloud span {
+.tagcloud span,
+.tagcloud > i {
 	display: inline-block;
 	margin: 0.125rem;
 	padding: 0.4375rem;
 	background: #29323C;
 	border: 1px solid rgb(72, 87, 104);
-    transition: all 0.1s ease-in-out;
-    border-radius: 1rem;
+  transition: all 0.1s ease-in-out;
+  border-radius: 1rem;
 }
 
 .tagcloud .sub {
 	background: rgb(3, 4, 5);
 }
 
-.tagcloud span:hover,
-.tagcloud span:focus {
+.tagcloud > span:hover,
+.tagcloud > span:focus,
+.unselect-variable:hover,
+.unselect-variable:focus {
 	background: rgb(33, 47, 63);
 	color: white;
 	transform: scale(1.1);
@@ -51,4 +54,13 @@ main, .content {
   margin: 5px;
   border: 1px solid white;
   cursor: pointer;
+}
+
+.tagcloud > i {
+  border: none
+}
+
+.unselect-variable {
+  width: 30px; 
+  text-align: center;
 }
