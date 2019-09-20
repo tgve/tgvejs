@@ -160,15 +160,15 @@ export default class Welcome extends React.Component {
             // go through each selection
             const selected = filter.selected;
             // selected.var > Set()
-            let multiCheck = false;
-            for (let each of Object.keys(selected)) {
-              if (selected[each].has(d.properties[each] + "")) {
-                multiCheck = true
-              } else {
-                multiCheck = false
-              }
+            let multiCheck = [];
+            for (let each of Object.keys(selected)) {              
+              const nextValue = each === "date" ? 
+              d.properties[each].split("/")[2] : d.properties[each] + "" 
+              // number of true must match keys to be true.
+              selected[each].has(nextValue) && 
+              multiCheck.push(true)
             }
-            return multiCheck;
+            return multiCheck.length === Object.keys(selected).length;
           }
           return (true)
         }

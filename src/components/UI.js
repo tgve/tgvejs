@@ -91,8 +91,6 @@ export default class UI extends React.Component {
         }
       />
     }
-    return (
-      ui_returned
-    )
+    return ui_returned
   }
 }

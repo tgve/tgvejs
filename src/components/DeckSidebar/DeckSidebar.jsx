@@ -33,7 +33,8 @@ export default class DeckSidebar extends React.Component {
         "Single carriageway", "Roundabout", "Unknown",
         "Slip road", "One way street"],
       year: "",
-      reset: false
+      reset: false,
+      multiVarSelect: {}
     }
   }
 
@@ -60,7 +61,7 @@ export default class DeckSidebar extends React.Component {
   render() {
     const { open, elevation, road_type,
       radius, road_types, year,
-      subsetBoundsChange } = this.state;
+      subsetBoundsChange, multiVarSelect } = this.state;
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data, colourCallback, layerStyle,
       toggleSubsetBoundsChange, urlCallback, alert } = this.props;
@@ -122,25 +123,30 @@ export default class DeckSidebar extends React.Component {
                         year &&
                         <i style={{ fontSize: '2rem' }}
                           className="fa fa-trash"
-                          onClick={() => {
+                          onClick={() => {                            
+                            delete multiVarSelect.date;
                             typeof (onSelectCallback) === 'function' &&
-                              onSelectCallback({ selected: "", what: 'year' })
-                            this.setState({ year: "" })
+                              onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
+                                { what: '' } : { what: 'multi', selected: multiVarSelect })
+                            this.setState({
+                              year: "",
+                              multiVarSelect
+                            })
                           }} />
                       }
                     </h5>
                   }
                   sublist={[2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017]}
                   suggested="slider"
-                  onChange={(value) => {
-                    const { onSelectCallback } = this.props;
+                  onChange={(value) => {                    
+                    multiVarSelect.date = new Set([value+""]);
                     this.setState({
-                      year: value
+                      year: value,
+                      multiVarSelect
                     })
                     typeof (onSelectCallback) === 'function' &&
-                      onSelectCallback({ selected: value + "", what: 'year' })
-                  }
-                  }
+                      onSelectCallback({ selected: multiVarSelect, what: 'multi' })
+                  }}
                 />
               }
               {/* <GenerateUI title="Test" sublist={["one", "two"]} suggested="checkbox" /> */
@@ -166,12 +172,14 @@ export default class DeckSidebar extends React.Component {
               {
                 severity_data && severity_data.map(each =>
                   percentDiv(each.x, 100 * each.y / data.length, () => {
-                    this.setState({ severity: each.x === this.state.severity ? "" : each.x })
+                    multiVarSelect['accident_severity'] && 
+                    multiVarSelect['accident_severity'].has(each.x) ?
+                    delete multiVarSelect['accident_severity'] : 
+                    multiVarSelect['accident_severity'] = new Set([each.x]);
+                    this.setState({ multiVarSelect })
                     onSelectCallback &&
-                      onSelectCallback({
-                        selected: each.x === this.state.severity ? "" : each.x,
-                        what: 'severity'
-                      })
+                      onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
+                      {what: ''} : { what: 'multi', selected: multiVarSelect})
                   }))
               }
               <hr style={{ clear: 'both' }} />
@@ -183,12 +191,14 @@ export default class DeckSidebar extends React.Component {
                   {
                     data && data.length > 0 &&
                     <Variables
-                      onSelectCallback={(multiVarSelect) =>
+                      onSelectCallback={(mvs) => {
+                        let newMultiVar = Object.assign(multiVarSelect, mvs);
                         typeof (onSelectCallback) === 'function' &&
-                        onSelectCallback(
-                          Object.keys(multiVarSelect).length === 0 ?
-                            { what: '' } : { selected: multiVarSelect, what: 'multi' })
-                      }
+                          onSelectCallback(
+                            Object.keys(newMultiVar).length === 0 ?
+                              { what: '' } : { what: 'multi', selected: newMultiVar })
+                        this.setState({multiVarSelect: newMultiVar})
+                      }}
                       data={data} />
                   }
                   {plot_data && plot_data.length > 1 && <XYPlot
