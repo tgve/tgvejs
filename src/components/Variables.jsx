@@ -27,7 +27,7 @@ export default class Variables extends Component {
     this.state = {
       list: null,
       showAll: false,
-      selected: {}
+      selected: props.multiVarSelect || {}
     }
     this._generateList = this._generateList.bind(this);
     this._geoJSONPropsOrValues = this._geoJSONPropsOrValues.bind(this);
@@ -35,6 +35,12 @@ export default class Variables extends Component {
     this._showSelectedVars = this._showSelectedVars.bind(this);
     this._showTopn = this._showTopn.bind(this);
     this._shorten = this._shorten.bind(this);
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    return {
+      selected: nextProps.multiVarSelect
+    }
   }
 
   componentDidMount() {

@@ -191,13 +191,13 @@ export default class DeckSidebar extends React.Component {
                   {
                     data && data.length > 0 &&
                     <Variables
-                      onSelectCallback={(mvs) => {
-                        let newMultiVar = Object.assign(multiVarSelect, mvs);
+                      multiVarSelect={multiVarSelect}
+                      onSelectCallback={(mvs) => {                        
                         typeof (onSelectCallback) === 'function' &&
                           onSelectCallback(
-                            Object.keys(newMultiVar).length === 0 ?
-                              { what: '' } : { what: 'multi', selected: newMultiVar })
-                        this.setState({multiVarSelect: newMultiVar})
+                            Object.keys(mvs).length === 0 ?
+                              { what: '' } : { what: 'multi', selected: mvs })
+                        this.setState({multiVarSelect: mvs})
                       }}
                       data={data} />
                   }
