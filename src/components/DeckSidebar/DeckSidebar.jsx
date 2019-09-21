@@ -152,19 +152,24 @@ export default class DeckSidebar extends React.Component {
               {/* <GenerateUI title="Test" sublist={["one", "two"]} suggested="checkbox" /> */
                 //only if there is such a property
                 data && data.length > 1 && data[0].properties.road_type &&
+                // TODO: filter road_types accoridng to the data 
                 <RBDropDown
-                  title={road_type ? road_type : "Road Type(All)"}
+                  title={multiVarSelect.road_type ? multiVarSelect.road_type : "Road Type(All)"}
                   menuitems={road_types}
                   onSelectCallback={(selected) => {
-                    this.setState({ road_type: selected === "All" ? "" : selected })
+                    selected === "All" ? delete multiVarSelect.road_type : 
+                    multiVarSelect.road_type = new Set([selected])
+                    this.setState({ multiVarSelect })
                     onSelectCallback &&
-                      onSelectCallback({
-                        selected: selected === "All" ?
-                          // starts at 1 but 
-                          // road_types has All at 0
-                          "" : road_types.indexOf(selected),
-                        what: 'road_type'
-                      })
+                      // onSelectCallback({
+                      //   selected: selected === "All" ?
+                      //     // starts at 1 but 
+                      //     // road_types has All at 0
+                      //     "" : road_types.indexOf(selected),
+                      //   what: 'road_type'
+                      // })
+                      onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
+                      { what: '' } : { what: 'multi', selected: multiVarSelect })
                   }} />
               }
               <br />
