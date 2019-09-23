@@ -270,6 +270,12 @@ const suggestUIforNumber = (number) => {
   }
 }
 
+/**
+ * Changes a `_` separated `str` to space separated and
+ * camel cases all words
+ * 
+ * @param {*} str 
+ */
 const humanize = (str) => {
   if (!str) return str
   let frags = str.split('_');

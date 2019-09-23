@@ -18,6 +18,7 @@ import RBAlert from '../RBAlert';
 import { propertyCount, getPropertyValues } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
+import Modal from '../Modal';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 
@@ -102,6 +103,7 @@ export default class DeckSidebar extends React.Component {
                   && urlCallback(url, geojson)
               }
               } />
+            <Modal data={data} />
             {
               this.state.reset &&
               <Button

@@ -25,6 +25,7 @@ import GenerateUI from './UI';
 import URL from './URL';
 import { propertyCount } from '../geojsonutils';
 import GeomExplore from './GeomExplore';
+import Table from './Table';
 
 const WIDTH = '400';
 const BAR_HEIGHT = 320;
@@ -178,6 +179,8 @@ export default class DUI extends React.Component {
               </div>
             } */}
 
+        <p>Data preview:</p>
+        <Table data={data} />
       </div>
     );
   }
