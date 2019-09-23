@@ -15,7 +15,7 @@ import { XYPlot, LineSeries, XAxis, YAxis, } from 'react-vis';
 import Variables from '../Variables';
 import GenerateUI from '../UI';
 import RBAlert from '../RBAlert';
-import { propertyCount } from '../../geojsonutils';
+import { propertyCount, getPropertyValues } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 
@@ -29,7 +29,7 @@ export default class DeckSidebar extends React.Component {
       elevation: 4,
       open: true,
       // must match the order in plumber.R
-      road_types: ["All", "Dual carriageway",
+      all_road_types: ["All", "Dual carriageway",
         "Single carriageway", "Roundabout", "Unknown",
         "Slip road", "One way street"],
       year: "",
@@ -59,8 +59,8 @@ export default class DeckSidebar extends React.Component {
    * Partly because we like to load from a URL.
    */
   render() {
-    const { open, elevation, road_type,
-      radius, road_types, year,
+    const { open, elevation,
+      radius, all_road_types, year,
       subsetBoundsChange, multiVarSelect } = this.state;
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data, colourCallback, layerStyle,
@@ -77,9 +77,10 @@ export default class DeckSidebar extends React.Component {
     }
     const severity_data = propertyCount(data, "accident_severity",
       ['Slight', 'Serious', 'Fatal'])
-    // const road_type_data = propertyCount(data, "road_type", ['1', '2', '3', '4', '5', '6', '7'])
     // console.log(severity_data);
 
+    const curr_road_types = getPropertyValues({features: data}, "road_type");
+    
     return (
       <div className="side-panel-container"
         style={{ marginLeft: !open ? '-320px' : '0px' }}>
@@ -152,22 +153,16 @@ export default class DeckSidebar extends React.Component {
               {/* <GenerateUI title="Test" sublist={["one", "two"]} suggested="checkbox" /> */
                 //only if there is such a property
                 data && data.length > 1 && data[0].properties.road_type &&
-                // TODO: filter road_types accoridng to the data 
+                // TODO: filter all_road_types accoridng to the data 
                 <RBDropDown
                   title={multiVarSelect.road_type ? multiVarSelect.road_type : "Road Type(All)"}
-                  menuitems={road_types}
+                  menuitems={ curr_road_types ?
+                    ["All", ...curr_road_types] : all_road_types}
                   onSelectCallback={(selected) => {
                     selected === "All" ? delete multiVarSelect.road_type : 
                     multiVarSelect.road_type = new Set([selected])
                     this.setState({ multiVarSelect })
                     onSelectCallback &&
-                      // onSelectCallback({
-                      //   selected: selected === "All" ?
-                      //     // starts at 1 but 
-                      //     // road_types has All at 0
-                      //     "" : road_types.indexOf(selected),
-                      //   what: 'road_type'
-                      // })
                       onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
                       { what: '' } : { what: 'multi', selected: multiVarSelect })
                   }} />

@@ -59,8 +59,8 @@ const describeGeojson = (feature) => {
  * This function takes a geojson object and optionally a property
  * it returns a set (in array) object of all values for that property.
  * 
- * If no property is given it gets all properties from
- * the `properties()` function and add all values for each.
+ * If no property is given it gets all properties
+ * of each feature and adds unique values for each in a Set.
  * 
  * @param {*} geojson 
  * @param {*} property 
@@ -70,7 +70,7 @@ const getPropertyValues = (geojson, property) => {
   const all = {}
   let values = new Set();
   geojson.features.forEach(feature => {
-    Object.keys(feature.properties).forEach((each, i) => {
+    Object.keys(feature.properties).forEach((each) => {
       if (property && property === each) {
         // if the right property, 
         // add it to the value to be returnd

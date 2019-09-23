@@ -37,12 +37,6 @@ export default class Variables extends Component {
     this._shorten = this._shorten.bind(this);
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    return {
-      selected: nextProps.multiVarSelect
-    }
-  }
-
   componentDidMount() {
     const { data } = this.props;
     if (!data || data.length === 0) return (null);
@@ -52,6 +46,7 @@ export default class Variables extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { data } = this.props;
     if (!data || data.length === 0) return;
+    
     if (data.length !== prevProps.data.length ||
       this.state.showAll !== prevState.showAll) {
       this._processData(data);
@@ -65,14 +60,13 @@ export default class Variables extends Component {
    * generates both properties and their available values.
    * Uses Set to avaoid duplicates for each property values set.
    * 
-   * @param {*} properties 
    */
-  _generateList(properties) {
+  _generateList() {
     const { data, onSelectCallback, style, subStyle,
       propertyValuesCallback } = this.props;
     const selected = this.state.selected;
     const description = describeGeojson(data[0]); // describe first feature
-    const all = Object.keys(properties);
+    const all = Object.keys(data[0].properties);
     const limit = this.state.showAll ? all.length : 10;
     // console.log(limit);
 
@@ -144,10 +138,11 @@ export default class Variables extends Component {
    * @param {*} data 
    */
   _processData(data) {
-    const properties = data[0].properties;
-    const list = this._generateList(properties);
+    const list = this._generateList();
     this.setState({
       list,
+      key: null,    // reset sublist
+      sublist: null // reset sublist
     });
   }
 
