@@ -1,7 +1,8 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
-import { humanize } from '../utils';
 import {Pagination} from 'baseui/pagination';
+
+import { humanize } from '../../utils';
 
 export default function DataTable(props) {
   const [currentPage, setCurrentPage] = React.useState(1);

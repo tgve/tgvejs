@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { colorRangeNames} from '../utils';
 
 export default function ColorPicker(props) {

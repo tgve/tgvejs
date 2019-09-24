@@ -18,7 +18,7 @@ import RBAlert from '../RBAlert';
 import { propertyCount, getPropertyValues } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
-import Modal from '../Modal';
+import Modal from '../Table/Modal';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 

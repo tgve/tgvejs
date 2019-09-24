@@ -142,7 +142,7 @@ export default class Welcome extends React.Component {
    */
   _generateLayer(radius, elevation, filter, cn) {
     let data = this.state.data && this.state.data.features
-    const { year, road_type, severity, colourName } = this.state;
+    const { colourName } = this.state;
     
     if (!data) return;
     const geomType = sfType(data[0]).toLowerCase();

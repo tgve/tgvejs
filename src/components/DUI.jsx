@@ -25,7 +25,7 @@ import GenerateUI from './UI';
 import URL from './URL';
 import { propertyCount } from '../geojsonutils';
 import GeomExplore from './GeomExplore';
-import Table from './Table';
+import Table from './Table/Table';
 
 const WIDTH = '400';
 const BAR_HEIGHT = 320;
