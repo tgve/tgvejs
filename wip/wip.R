@@ -42,4 +42,18 @@ object.size(msoa)
 head(msoa$msoa11nmw, 20)
 head(msoa$msoa11nm, 20)
 # msoa = msoa[, c("msoa11cd", "msoa11nm")]
-head(dj)
+names(dj_sf)
+head(dj_sf$areakey)
+msoa_centroids = st_centroid(msoa[, "msoa11cd"])
+names(msoa_centroids)
+area_centroid = msoa_centroids$geometry[match(dj_sf$areakey, msoa_centroids$msoa11cd)]
+dj_sf$area_centroid = area_centroid
+# see how sf deals with second geometry
+area_coords = st_coordinates(area_centroid)
+rm(area_centroid)
+dj_sf$area_lon = area_coords[,1]
+dj_sf$area_lat = area_coords[,2]
+names(dj_sf)
+head(dj_sf)
+dj_file_name = "~/Downloads/DjDiff_area_xy.geojson"
+write(geojsonsf::sf_geojson(dj_sf), file = dj_file_name)
