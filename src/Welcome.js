@@ -154,7 +154,7 @@ export default class Welcome extends React.Component {
             // go through each selection
             const selected = filter.selected;
             // selected.var > Set()
-            for (let each of Object.keys(selected)) {              
+            for (let each of Object.keys(selected)) {                            
               const nextValue = each === "date" ? 
               d.properties[each].split("/")[2] : d.properties[each] + "" 
               // each from selected must be in d.properties
@@ -181,7 +181,7 @@ export default class Welcome extends React.Component {
     if (layerStyle === 'geojson') {
       options.getFillColor = (d) => colorScale(d, data) //first prop
     }
-    console.log(geomType);
+    // console.log(geomType);
     if(geomType === "polygon") {
       options.getElevation = d => 
       d.properties.diffall || d.properties.GVA

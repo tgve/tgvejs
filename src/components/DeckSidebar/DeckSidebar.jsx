@@ -118,7 +118,8 @@ export default class DeckSidebar extends React.Component {
           <div className="side-panel-body">
             <div className="side-panel-body-content">
               {/* range of two values slider is not native html */
-                data && data.length > 1 && data[0].properties.date &&
+                (data && data.length > 1) && 
+                (data[0].properties.date || data[0].properties['YEAR']) &&
                 <GenerateUI
                   title={
                     <h5>Year(s): {year ? year : "2009 - 2017"}.
@@ -139,10 +140,14 @@ export default class DeckSidebar extends React.Component {
                       }
                     </h5>
                   }
-                  sublist={[2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017]}
+                  sublist={data[0].properties.date ? 
+                    Array.apply(null, {length: 9}).map(Number.call, Number ).map(d => d+2009) :
+                    Array.apply(null, {length: 31}).map(Number.call, Number ).map(d => d+2020)
+                  }
                   suggested="slider"
                   onChange={(value) => {                    
-                    multiVarSelect.date = new Set([value+""]);
+                    multiVarSelect[data[0].properties.date ? 
+                    'date' : 'YEAR'] = new Set([value+""]);
                     this.setState({
                       year: value,
                       multiVarSelect
