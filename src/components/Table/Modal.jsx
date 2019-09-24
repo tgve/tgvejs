@@ -20,7 +20,7 @@ export default (props) => {
       style={{cursor: 'pointer', fontSize:'1.5em'}}
       onClick={() => setIsOpen(true)}
       className="fa fa-table"></i>
-      <Modal onClose={close} isOpen={isOpen}>
+      <Modal size="80%" onClose={close} isOpen={isOpen}>
         <ModalHeader>Data table</ModalHeader>
         <ModalBody>
           <DataTable data={props.data}/>

@@ -181,6 +181,19 @@ export default class Welcome extends React.Component {
     if (layerStyle === 'geojson') {
       options.getFillColor = (d) => colorScale(d, data) //first prop
     }
+    console.log(geomType);
+    if(geomType === "polygon") {
+      options.getElevation = d => 
+      d.properties.diffall || d.properties.GVA
+      options.getFillColor = (d) => colorScale(d, data, 1)
+    }
+    if (data.length === 7201) {
+      console.log("line");
+      options.getColor = d => [255, 255, 255]
+      options.getSourcePosition = d => 
+      [d.properties.area_lon, d.properties.area_lat];
+      options.getTargetPosition = d => d.geometry.coordinates;
+    }
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options
     )

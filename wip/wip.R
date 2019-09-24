@@ -57,3 +57,6 @@ names(dj_sf)
 head(dj_sf)
 dj_file_name = "~/Downloads/DjDiff_area_xy.geojson"
 write(geojsonsf::sf_geojson(dj_sf), file = dj_file_name)
+dj_sf_area = st_as_sf(dj, msoa$geometry)
+dj_file_name = "~/Downloads/DjDiff_area.geojson"
+write(geojsonsf::sf_geojson(dj_sf_area[1:1000,]), file = dj_file_name)

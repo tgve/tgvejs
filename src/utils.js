@@ -187,7 +187,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       id: 'line-layer',
       data,
       pickable: true,
-      getWidth: 50,
+      getWidth: 100,
       getPosition: d => d.geometry.coordinates,
       onHover: renderTooltip
     }
@@ -349,9 +349,9 @@ const isMobile = function () {
   return check;
 };
 
-const colorScale = (d, features) => {
+const colorScale = (d, features, p = 0) => {
   if (!d || !features || features.length === 0) return null;
-  const x = Object.keys(d.properties)[0];
+  const x = Object.keys(d.properties)[p];
   let domain = features.map(feature => feature.properties[x])
   domain = Array.from(new Set(domain))
   // console.log(d, d.properties[x], domain);

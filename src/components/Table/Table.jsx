@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'react-bootstrap';
+import { Table } from 'baseui/table';
 import {Pagination} from 'baseui/pagination';
 
 import { humanize } from '../../utils';
@@ -9,52 +9,44 @@ export default function DataTable(props) {
 
   const { data } = props;
   if (!data || data.length === 0) return null
-  console.log(data);
   const numPages = Math.floor(data.length / 10)
+
+  const columns = [];
+  const rows = [];
+  Object.keys(data[0].properties).forEach(each => 
+    columns.push(humanize(each)))
+  
+  data.slice(currentPage * 10, (currentPage * 10) + 10)
+    .forEach(feature => {
+      const row = [];
+      if (feature.type === 'Feature') {
+        Object.keys(feature.properties).forEach(e =>
+          row.push(feature.properties[e])
+        )
+        console.log(row);
+        rows.push(row)
+      }
+    })
+  console.log(rows);
+  
   return (
     <>
-<Pagination
-      numPages={numPages}
-      currentPage={currentPage}
-      onPageChange={({nextPage}) => {
-        setCurrentPage(Math.min(Math.max(nextPage, 1), numPages));
-      }}
-    />
-      {/* TODO: theme dependent */}
-      <Table responsive variant="dark">
-        <thead>
-          <tr>
-            {
-              Object.keys(data[0].properties).map(each =>
-                <th style={{ wordWrap: "break-word" }}
-                  key={each}>{humanize(each)}</th>
-              )
-            }
-          </tr>
-        </thead>
-        <tbody>
-          {
-            data.slice(currentPage * 10, (currentPage * 10) + 10)
-            .map((feature, i) => {
-              return (<tr key={"featurre" + i}>
-                {
-                  feature.type === 'Feature' &&
-                  Object.keys(feature.properties).map(e => {
-                    return (<td key={e}>{feature.properties[e]}</td>)
-                  })
-                }
-              </tr>)
-            })
-          }
-        </tbody>
-      </Table>
       <Pagination
-      numPages={numPages}
-      currentPage={currentPage}
-      onPageChange={({nextPage}) => {
-        setCurrentPage(Math.min(Math.max(nextPage, 1), numPages));
-      }}
-    />
+        numPages={numPages}
+        currentPage={currentPage}
+        onPageChange={({ nextPage }) => {
+          setCurrentPage(Math.min(Math.max(nextPage, 1), numPages));
+        }}
+      />
+      <Table columns={columns} data={rows} /> 
+      {/* // not nice 1000px */}
+      <Pagination
+        numPages={numPages}
+        currentPage={currentPage}
+        onPageChange={({ nextPage }) => {
+          setCurrentPage(Math.min(Math.max(nextPage, 1), numPages));
+        }}
+      />
     </>
   )
 }

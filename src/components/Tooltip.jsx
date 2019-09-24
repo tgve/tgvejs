@@ -1,5 +1,6 @@
 import React from 'react';
 import { XYPlot, LineSeries, VerticalBarSeries, XAxis, YAxis, } from 'react-vis';
+import { Table } from 'baseui/table';
 
 const WIDTH = 220;
 const BAR_HEIGHT = 80;
@@ -10,6 +11,7 @@ export default class Tooltip extends React.Component {
       this.state = {
         isMobile: props.isMobile,
       };
+      this._listPropsAndValues = this._listPropsAndValues.bind(this);
     }
 
     componentWillMount() {
@@ -97,12 +99,14 @@ export default class Tooltip extends React.Component {
                 <div>
                     {
                     (hoveredObject.properties && hoveredObject.properties.speed_limit) ||
-                    ( firstPointProperties && firstPointProperties.hasOwnProperty("speed_limit")) ? <div>
+                    ( firstPointProperties && firstPointProperties.hasOwnProperty("speed_limit")) ? 
+                    <div>
                         Road speed: {type_feature ? 
                         hoveredObject.properties.speed_limit :
                         firstPointProperties.speed_limit}
                     </div> : 
-                    hoveredObject.properties ? Object.values(hoveredObject.properties)[0] : 
+                    hoveredObject.properties ? 
+                    this._listPropsAndValues(hoveredObject) : 
                     Object.values(firstPointProperties)[0]
                     }
                     {
@@ -147,5 +151,16 @@ export default class Tooltip extends React.Component {
                 </div>
             </div>
         return (tooltip)
+    }
+
+    _listPropsAndValues(hoveredObject) {        
+        const COLUMNS = [];
+        const DATA = [];
+        Object.keys(hoveredObject.properties).forEach(p => {
+            COLUMNS.push(p)
+            DATA.push(hoveredObject.properties[p])
+        })
+        return <Table columns={COLUMNS} data={[DATA]} />
+
     }
 }
