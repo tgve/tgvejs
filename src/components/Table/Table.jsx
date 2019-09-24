@@ -23,11 +23,9 @@ export default function DataTable(props) {
         Object.keys(feature.properties).forEach(e =>
           row.push(feature.properties[e])
         )
-        console.log(row);
         rows.push(row)
       }
     })
-  console.log(rows);
   
   return (
     <>
