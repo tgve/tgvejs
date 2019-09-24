@@ -4,7 +4,6 @@ import { humanize } from '../utils';
 import {Pagination} from 'baseui/pagination';
 
 export default function DataTable(props) {
-  const [limit, setLimit] = React.useState(10);
   const [currentPage, setCurrentPage] = React.useState(1);
 
   const { data } = props;
@@ -20,15 +19,15 @@ export default function DataTable(props) {
         setCurrentPage(Math.min(Math.max(nextPage, 1), numPages));
       }}
     />
+      {/* TODO: theme dependent */}
       <Table responsive variant="dark">
         <thead>
           <tr>
             {
-              Object.keys(data[0].properties).
-                map(each =>
-                  <th style={{ wordWrap: "break-word" }}
-                    key={each}>{humanize(each)}</th>
-                )
+              Object.keys(data[0].properties).map(each =>
+                <th style={{ wordWrap: "break-word" }}
+                  key={each}>{humanize(each)}</th>
+              )
             }
           </tr>
         </thead>

@@ -150,13 +150,7 @@ export default class Welcome extends React.Component {
     if (filter && filter.selected !== "") {
       data = data.filter(
         d => {
-          if (filter.what === 'road_type') {
-            return (d.properties.road_type === filter.selected + "")
-          } else if (filter.what === 'severity') {
-            return (d.properties.accident_severity === filter.selected)
-          } else if (filter.what === 'year') {
-            return (d.properties.date.split("/")[2] === filter.selected)
-          } else if (filter.what === 'multi') {
+          if (filter.what === 'multi') {
             // go through each selection
             const selected = filter.selected;
             // selected.var > Set()
@@ -173,19 +167,6 @@ export default class Welcome extends React.Component {
         }
       )
     }
-    // console.log(data.length);
-    data = data.filter(
-      d => {
-        if (road_type && (!filter || filter.what !== 'road_type')) {
-          return (d.properties.road_type === road_type + "")
-        } else if (severity && (!filter || filter.what !== 'severity')) {
-          return (d.properties.accident_severity === severity)
-        } else if (year && (!filter || filter.what !== 'year')) {
-          return (d.properties.date.split("/")[2] === year)
-        }
-        return (true)
-      }
-    )
     // console.log(data.length);
     let layerStyle = 'grid';
     if (geomType !== "point") layerStyle = "geojson"

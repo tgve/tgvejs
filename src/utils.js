@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ScatterplotLayer, HexagonLayer, GeoJsonLayer,
-  IconLayer, ScreenGridLayer, GridLayer
+  IconLayer, ScreenGridLayer, GridLayer, LineLayer
 } from 'deck.gl';
 import { interpolateSinebow } from 'd3-scale-chromatic';
 
@@ -182,6 +182,17 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, gridObject)
     return (new GridLayer(gridObject))
+  } else if (name === 'line') {
+    const lineObject = {
+      id: 'line-layer',
+      data,
+      pickable: true,
+      getWidth: 50,
+      getPosition: d => d.geometry.coordinates,
+      onHover: renderTooltip
+    }
+    addOptionsToObject(options, lineObject)
+    return (new LineLayer(lineObject))
   }
   return (null)
 }
