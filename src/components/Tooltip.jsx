@@ -1,6 +1,7 @@
 import React from 'react';
 import { XYPlot, LineSeries, VerticalBarSeries, XAxis, YAxis, } from 'react-vis';
 import { Table } from 'baseui/table';
+import { humanize } from '../utils';
 
 const WIDTH = 220;
 const BAR_HEIGHT = 80;
@@ -153,12 +154,12 @@ export default class Tooltip extends React.Component {
         return (tooltip)
     }
 
-    _listPropsAndValues(hoveredObject) {        
-        const COLUMNS = [];
+    _listPropsAndValues(hoveredObject) {
         const DATA = [];
-        Object.keys(hoveredObject.properties).forEach(p => {
-            COLUMNS.push(p)
+        const COLUMNS = Object.keys(hoveredObject.properties)
+        .map(p => {
             DATA.push(hoveredObject.properties[p])
+            return(humanize(p))
         })
         return <Table columns={COLUMNS} data={[DATA]} />
 

@@ -5,6 +5,7 @@ import {
 } from 'react-bootstrap';
 import { format } from 'd3-format';
 import { Button, KIND, SIZE } from 'baseui/button';
+import { DateTime } from "luxon";
 
 import './DeckSidebar.css';
 import DataInput from '../DataInput';
@@ -118,8 +119,10 @@ export default class DeckSidebar extends React.Component {
           <div className="side-panel-body">
             <div className="side-panel-body-content">
               {/* range of two values slider is not native html */
-                (data && data.length > 1) && 
-                (data[0].properties.date || data[0].properties['YEAR']) &&
+                data && data.length > 1 && 
+                (data[0].properties.date || data[0].properties['YEAR']) && 
+                (DateTime.fromFormat(data[0].properties.date + '', 'dd/MM/yyyy').isValid ||
+                DateTime.fromFormat(data[0].properties['YEAR'] + '', 'dd/MM/yyyy').isValid) &&
                 <GenerateUI
                   title={
                     <h5>Year(s): {year ? year : "2009 - 2017"}.

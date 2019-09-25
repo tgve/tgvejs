@@ -184,7 +184,7 @@ export default class Welcome extends React.Component {
     // console.log(geomType);
     if(geomType === "polygon") {
       options.getElevation = d => 
-      d.properties.diffall || d.properties.GVA
+      d.properties.diffall || d.properties.GVA || null
       options.getFillColor = (d) => colorScale(d, data, 1)
     }
     if (data.length === 7201) {
