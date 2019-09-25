@@ -3,15 +3,13 @@ import {
   Tabs, Tab, FormGroup, InputGroup,
   FormControl, Glyphicon, Checkbox
 } from 'react-bootstrap';
-import { format } from 'd3-format';
 import { Button, KIND, SIZE } from 'baseui/button';
 
 import './DeckSidebar.css';
 import DataInput from '../DataInput';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import { xyObjectByProperty, percentDiv } from '../../utils';
-import { XYPlot, LineSeries, XAxis, YAxis,
-  VerticalBarSeries} from 'react-vis';
+import { LineSeries, VerticalBarSeries} from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
 import { propertyCount, getPropertyValues } from '../../geojsonutils';
@@ -19,6 +17,7 @@ import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
 import { timeSlider, dropdown } from '../Showcases/Widgets';
+import { seriesPlot } from '../Showcases/Plots';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 
@@ -85,7 +84,7 @@ export default class DeckSidebar extends React.Component {
     const curr_road_types = notEmpty && 
     Array.from(data_properties["road_type"])
 
-    const seriesProps = {
+    const rtPlot = {
       data: notEmpty ? xyObjectByProperty(data, "road_type") : [],
       opacity: 1,
       stroke: 'rgb(72, 87, 104)',
@@ -172,57 +171,18 @@ export default class DeckSidebar extends React.Component {
                       }}
                       data={data} />
                   }
-                  {plot_data && plot_data.length > 1 && <XYPlot
-                    xType="ordinal"
-                    animation={{ duration: 1 }}
-                    height={250} width={250}>
-                    <XAxis
-                      position="right"
-                      tickLabelAngle={-45}
-                      style={{
-                        text: { fill: '#fff', fontWeight: 400 }
-                      }} />
-                    <YAxis
-                      tickLabelAngle={-45}
-                      tickFormat={v => format(".2s")(v)}
-                      style={{
-                        title: { fill: '#fff' },
-                        text: { fill: '#fff', fontWeight: 400 }
-                      }}
-                      position="start"
-                      title="Crashes" />
-                    <LineSeries
-                      onSeriesMouseOver={(event) => {
-
-                      }}
-                      style={{ fill: 'none' }}
-                      data={plot_data} />
-                  </XYPlot>}
-                  <XYPlot
-                    xType="ordinal"
-                    margin={{bottom:150}}
-                    animation={{ duration: 1 }}
-                    height={350} width={250}>
-                    <YAxis
-                      tickLabelAngle={-45}
-                      tickFormat={v => format(".2s")(v)}
-                      style={{
-                        title: { fill: '#fff' },
-                        text: { fill: '#fff' }
-                      }}/>
-                    <XAxis
-                      position="right"
-                      tickLabelAngle={-75}
-                      style={{
-                        text: { fill: '#fff'}
-                      }} />
-                  {<VerticalBarSeries 
-                  onValueClick={(datapoint, event)=>{
-                    // console.log(datapoint);
-                    // {x: "Single carriageway", y: 2419}
-                  }}
-                  {...seriesProps} />}
-                  </XYPlot>
+                  {seriesPlot({data: plot_data, type: LineSeries, 
+                    title: "Crashes"})}
+                  {seriesPlot({data: rtPlot.data, type: VerticalBarSeries,
+                    onValueClick: (datapoint)=>{
+                      multiVarSelect.road_type = new Set([datapoint.x]);
+                      console.log(datapoint);
+                      this.setState({ multiVarSelect })
+                      onSelectCallback &&
+                        onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
+                          { what: '' } : { what: 'multi', selected: multiVarSelect })
+                      // {x: "Single carriageway", y: 2419}
+                    }, margin: 100})}
                 </Tab>
                 <Tab eventKey="2" title={
                   <i style={{ fontSize: '2rem' }}

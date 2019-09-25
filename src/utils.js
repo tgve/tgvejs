@@ -78,7 +78,6 @@ const xyObjectByProperty = (data, property) => {
   });
   const sortedMap = typeof Array.from(map.keys())[0] === 'number' ?
   Array.from(map.keys()).sort() : Array.from(map.keys())
-  console.log(sortedMap);
   
   return sortedMap.map(key => {
     return (
