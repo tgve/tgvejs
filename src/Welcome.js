@@ -217,11 +217,11 @@ export default class Welcome extends React.Component {
     })
   }
 
-  _fitViewport() {
+  _fitViewport(boundingbox) {
     // is called after mounds
     const { data } = this.state;
     if (!data || data.length === 0) return;
-    const bounds = bbox(this.state.data);
+    const bounds = boundingbox || bbox(this.state.data);    
     this.map.fitBounds(bounds, { padding: 20 });
     const { longitude, latitude, zoom } = new WebMercatorViewport(this.state.viewport)
       .fitBounds([[bounds[0], bounds[1]], [bounds[2], bounds[3]]], { padding: 20 });
@@ -376,6 +376,9 @@ export default class Welcome extends React.Component {
               subsetBoundsChange: value
             })
             this._fetchAndUpdateState();
+          }}
+          onlocationChange={(bbox) => {
+            this._fitViewport(bbox)
           }}
         />
       </div>

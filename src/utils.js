@@ -445,6 +445,14 @@ const iconJSType = (dataType) => {
   }
   return dataType
 }
+
+const searchNominatom = (location, callback) => {
+  const url = "https://nominatim.openstreetmap.org/search/" + 
+  location + "?format=json";
+  fetchData(url, (json) => {
+    typeof callback === 'function' && callback(json)
+  })
+}
 export {
   getResultsFromGoogleMaps,
   getParamsFromSearch,
@@ -453,6 +461,7 @@ export {
   suggestDeckLayer,
   xyObjectByProperty,
   colorRangeNames,
+  searchNominatom,
   convertRange,
   getCentroid,
   shortenName,

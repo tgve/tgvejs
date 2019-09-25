@@ -8,7 +8,8 @@ import { Button, KIND, SIZE } from 'baseui/button';
 import './DeckSidebar.css';
 import DataInput from '../DataInput';
 import MapboxBaseLayers from '../MapboxBaseLayers';
-import { xyObjectByProperty, percentDiv } from '../../utils';
+import { xyObjectByProperty, percentDiv, 
+  searchNominatom } from '../../utils';
 import { LineSeries, VerticalBarSeries} from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
@@ -64,7 +65,8 @@ export default class DeckSidebar extends React.Component {
       subsetBoundsChange, multiVarSelect } = this.state;
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data, colourCallback, layerStyle,
-      toggleSubsetBoundsChange, urlCallback, alert } = this.props;
+      toggleSubsetBoundsChange, urlCallback, alert,
+      onlocationChange } = this.props;
     let plot_data = [];
     const notEmpty = data && data.length > 1;
     if (notEmpty) {
@@ -81,7 +83,7 @@ export default class DeckSidebar extends React.Component {
     // console.log(severity_data);
 
     const data_properties = getPropertyValues({ features: data });    
-    const curr_road_types = notEmpty && 
+    const curr_road_types = notEmpty && data_properties["road_type"] &&
     Array.from(data_properties["road_type"])
 
     const rtPlot = {
@@ -257,10 +259,22 @@ export default class DeckSidebar extends React.Component {
                 </Tab>
               </Tabs>
             </div>
-            <form className="search-form">
+            <form className="search-form" onSubmit={(e) => {
+              e.preventDefault();
+              // console.log(this.state.search);
+              searchNominatom(this.state.search, (json) => {
+                // console.log(json && json.length > 0 && json[0].boundingbox);
+                let bbox = json && json.length > 0 && json[0].boundingbox;
+                bbox = bbox && bbox.map(num => +(num))
+                typeof onlocationChange === 'function' && bbox &&
+                onlocationChange(bbox)
+              })
+            }}>
               <FormGroup>
                 <InputGroup>
-                  <FormControl placeholder="fly to..." type="text" />
+                  <FormControl 
+                  onChange={(e) => this.setState({search: e.target.value})}
+                  placeholder="fly to..." type="text" />
                   <InputGroup.Addon>
                     <Glyphicon glyph="search" />
                   </InputGroup.Addon>
