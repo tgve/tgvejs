@@ -267,7 +267,8 @@ export default class DeckSidebar extends React.Component {
                 let bbox = json && json.length > 0 && json[0].boundingbox;
                 bbox = bbox && bbox.map(num => +(num))
                 typeof onlocationChange === 'function' && bbox &&
-                onlocationChange(bbox)
+                onlocationChange({bbox: bbox, 
+                  lon: +(json[0].lon), lat:+(json[0].lat)})
               })
             }}>
               <FormGroup>

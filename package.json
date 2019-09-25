@@ -5,6 +5,7 @@
   "dependencies": {
     "@turf/bbox": "^6.0.1",
     "@turf/bezier-spline": "^6.0.3",
+    "@turf/centroid": "^6.0.2",
     "baseui": "^7.5.0",
     "csv2geojson": "^5.1.1",
     "d3-array": "^2.2.0",

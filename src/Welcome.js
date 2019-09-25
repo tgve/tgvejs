@@ -1,6 +1,7 @@
 import React from 'react';
 import DeckGL, { WebMercatorViewport } from 'deck.gl';
 import MapGL, { NavigationControl, FlyToInterpolator } from 'react-map-gl';
+import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
 
 import {
@@ -217,22 +218,24 @@ export default class Welcome extends React.Component {
     })
   }
 
-  _fitViewport(boundingbox) {
+  _fitViewport(bboxLonLat) {
     // is called after mounds
     const { data } = this.state;
     if (!data || data.length === 0) return;
-    const bounds = boundingbox || bbox(this.state.data);    
-    this.map.fitBounds(bounds, { padding: 20 });
-    const { longitude, latitude, zoom } = new WebMercatorViewport(this.state.viewport)
-      .fitBounds([[bounds[0], bounds[1]], [bounds[2], bounds[3]]], { padding: 20 });
+    const center = centroid(this.state.data).geometry.coordinates; 
+    // console.log(center, bboxLonLat);
+    const bounds = bboxLonLat ? 
+    bboxLonLat.bbox : bbox(this.state.data)
+       
+    this.map.fitBounds(bounds)
     const viewport = {
       ...this.state.viewport,
-      longitude,
-      latitude,
-      zoom,
-      transitionDuration: 2000,
-      transitionInterpolator: new FlyToInterpolator()
-    }
+      longitude: bboxLonLat ? bboxLonLat.lon : center[0],
+      latitude: bboxLonLat ? bboxLonLat.lat : center[1],
+      transitionDuration: 500,
+      transitionInterpolator: new FlyToInterpolator(),
+      // transitionEasing: d3.easeCubic
+    };
     this.setState({ viewport })
   }
 
@@ -377,8 +380,8 @@ export default class Welcome extends React.Component {
             })
             this._fetchAndUpdateState();
           }}
-          onlocationChange={(bbox) => {
-            this._fitViewport(bbox)
+          onlocationChange={(bboxLonLat) => {
+            this._fitViewport(bboxLonLat)
           }}
         />
       </div>
