@@ -141,8 +141,9 @@ export default class Variables extends Component {
     const list = this._generateList();
     this.setState({
       list,
-      key: null,    // reset sublist
-      sublist: null // reset sublist
+      // if we do following, exploring variables becomes less useful
+      // key: null,    // reset sublist
+      // sublist: null // reset sublist
     });
   }
 

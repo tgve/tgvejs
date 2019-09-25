@@ -61,22 +61,29 @@ const fetchData = (url, callback) => {
 
 }
 
-const summariseByYear = (data) => {
-  if (!data) return;
+const xyObjectByProperty = (data, property) => {
+  if (!data || !property) return;
   //data = [{...data = 12/12/12}]       
   const map = new Map()
   data.forEach(feature => {
-    const year = feature.properties.date.split("/")[2]
-    if (map.get(year)) {
-      map.set(year, map.get(year) + 1)
+    let value = feature.properties[property];    
+    if(typeof(value) === 'string' && value.split("/")[2]) {
+      value = value.split("/")[2]
+    }
+    if (map.get(value)) {
+      map.set(value, map.get(value) + 1)
     } else {
-      map.set(year, 1)
+      map.set(value, 1)
     }
   });
-  return Array.from(map.keys()).sort().map(key => {
+  const sortedMap = typeof Array.from(map.keys())[0] === 'number' ?
+  Array.from(map.keys()).sort() : Array.from(map.keys())
+  console.log(sortedMap);
+  
+  return sortedMap.map(key => {
     return (
       {
-        x: +(key),
+        x: typeof key === 'number' ? +(key) : key,
         y: +(map.get(key))
       }
     )
@@ -445,7 +452,7 @@ export {
   suggestUIforNumber,
   generateDeckLayer,
   suggestDeckLayer,
-  summariseByYear,
+  xyObjectByProperty,
   colorRangeNames,
   convertRange,
   getCentroid,

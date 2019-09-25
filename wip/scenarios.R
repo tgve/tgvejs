@@ -8,6 +8,8 @@ scenarios_sfc = st_geometry(lads[match(scenario$GEOGRAPHY_CODE, lads$lad17cd),])
 scenarios_sf = st_sf(scenario, scenarios_sfc)
 plot(scenarios_sf[,"GEOGRAPHY_CODE"])
 names(scenario)
-spenser = "~/Downloads/spenser.geojson"
+spenser = "~/Downloads/spenser_2020.geojson"
 write(geojsonsf::sf_geojson(scenarios_sf[scenarios_sf$YEAR == 2020, ]), file = spenser)
 table(scenarios_sf$YEAR)
+spenser = "~/Downloads/spenser.geojson"
+write(geojsonsf::sf_geojson(scenarios_sf), file = spenser)

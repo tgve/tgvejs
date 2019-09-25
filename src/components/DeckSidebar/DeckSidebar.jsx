@@ -9,8 +9,9 @@ import { Button, KIND, SIZE } from 'baseui/button';
 import './DeckSidebar.css';
 import DataInput from '../DataInput';
 import MapboxBaseLayers from '../MapboxBaseLayers';
-import { summariseByYear, percentDiv } from '../../utils';
-import { XYPlot, LineSeries, XAxis, YAxis, } from 'react-vis';
+import { xyObjectByProperty, percentDiv } from '../../utils';
+import { XYPlot, LineSeries, XAxis, YAxis,
+  VerticalBarSeries} from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
 import { propertyCount, getPropertyValues } from '../../geojsonutils';
@@ -66,21 +67,33 @@ export default class DeckSidebar extends React.Component {
       onSelectCallback, data, colourCallback, layerStyle,
       toggleSubsetBoundsChange, urlCallback, alert } = this.props;
     let plot_data = [];
-    if (data && data.length > 1) {
+    const notEmpty = data && data.length > 1;
+    if (notEmpty) {
       Object.keys(data[1].properties).forEach(each => {
         if (each.match(/date|datetime|datestamp|timestamp/g) &&
           typeof (data[1].properties[each]) === 'string' &&
           data[1].properties[each].split("/")[2]) { //date in 09/01/2019 HARDCODE
-          plot_data = summariseByYear(data)
+          plot_data = xyObjectByProperty(data, "date")
         }
       })
-    }
+    }    
     const severity_data = propertyCount(data, "accident_severity",
       ['Slight', 'Serious', 'Fatal'])
     // console.log(severity_data);
 
-    const curr_road_types = getPropertyValues({ features: data }, "road_type");
+    const data_properties = getPropertyValues({ features: data });    
+    const curr_road_types = notEmpty && 
+    Array.from(data_properties["road_type"])
 
+    const seriesProps = {
+      data: notEmpty ? xyObjectByProperty(data, "road_type") : [],
+      opacity: 1,
+      stroke: 'rgb(72, 87, 104)',
+      fill: 'rgb(18, 147, 154)',
+    }
+
+    // console.log(seriesProps);
+    
     return (
       <div className="side-panel-container"
         style={{ marginLeft: !open ? '-320px' : '0px' }}>
@@ -185,12 +198,37 @@ export default class DeckSidebar extends React.Component {
                       style={{ fill: 'none' }}
                       data={plot_data} />
                   </XYPlot>}
+                  <XYPlot
+                    xType="ordinal"
+                    margin={{bottom:150}}
+                    animation={{ duration: 1 }}
+                    height={350} width={250}>
+                    <YAxis
+                      tickLabelAngle={-45}
+                      tickFormat={v => format(".2s")(v)}
+                      style={{
+                        title: { fill: '#fff' },
+                        text: { fill: '#fff' }
+                      }}/>
+                    <XAxis
+                      position="right"
+                      tickLabelAngle={-75}
+                      style={{
+                        text: { fill: '#fff'}
+                      }} />
+                  {<VerticalBarSeries 
+                  onValueClick={(datapoint, event)=>{
+                    // console.log(datapoint);
+                    // {x: "Single carriageway", y: 2419}
+                  }}
+                  {...seriesProps} />}
+                  </XYPlot>
                 </Tab>
                 <Tab eventKey="2" title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-sliders" />
                 }>
-                  {data && data.length > 1 &&
+                  {notEmpty &&
                     <div>
                       {
                         layerStyle === "grid" &&
