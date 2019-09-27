@@ -8,9 +8,11 @@ import { Button, KIND, SIZE } from 'baseui/button';
 import './DeckSidebar.css';
 import DataInput from '../DataInput';
 import MapboxBaseLayers from '../MapboxBaseLayers';
-import { xyObjectByProperty, percentDiv, 
-  searchNominatom } from '../../utils';
-import { LineSeries, VerticalBarSeries} from 'react-vis';
+import {
+  xyObjectByProperty, percentDiv,
+  searchNominatom
+} from '../../utils';
+import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
 import { propertyCount, getPropertyValues } from '../../geojsonutils';
@@ -40,13 +42,14 @@ export default class DeckSidebar extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { data, alert } = this.props;
+    const { data, alert, loading } = this.props;
     const { elevation, radius, reset, open } = this.state;
     if (open !== nextState.open ||
       reset !== nextState.reset ||
       elevation !== nextState.elevation ||
       radius !== nextState.radius ||
-      alert !== nextProps.alert) return true;
+      alert !== nextProps.alert,
+      loading !== nextProps.loading) return true;
     //TODO:  a more functional way is needed        
     if (data && nextProps && nextProps.data &&
       data.length === nextProps.data.length) {
@@ -77,14 +80,14 @@ export default class DeckSidebar extends React.Component {
           plot_data = xyObjectByProperty(data, "date")
         }
       })
-    }    
+    }
     const severity_data = propertyCount(data, "accident_severity",
       ['Slight', 'Serious', 'Fatal'])
     // console.log(severity_data);
 
-    const data_properties = getPropertyValues({ features: data });    
+    const data_properties = getPropertyValues({ features: data });
     const curr_road_types = notEmpty && data_properties["road_type"] &&
-    Array.from(data_properties["road_type"])
+      Array.from(data_properties["road_type"])
 
     const rtPlot = {
       data: notEmpty ? xyObjectByProperty(data, "road_type") : [],
@@ -94,7 +97,7 @@ export default class DeckSidebar extends React.Component {
     }
 
     // console.log(seriesProps);
-    
+
     return (
       <div className="side-panel-container"
         style={{ marginLeft: !open ? '-320px' : '0px' }}>
@@ -103,7 +106,7 @@ export default class DeckSidebar extends React.Component {
           <RBAlert alert={alert} />
           <div className="side-pane-header">
             <h2>{data && data.length ?
-              (data.length === 1 ? data.length + " crash." : data.length + " rows.")
+              data.length + " row" + (data.length > 1 ? "s" : "") + "."
               : "Nothing to show"}
             </h2>
           </div>
@@ -131,7 +134,7 @@ export default class DeckSidebar extends React.Component {
           <div className="side-panel-body">
             <div className="side-panel-body-content">
               {/* range of two values slider is not native html */
-                timeSlider(data, year, multiVarSelect, 
+                timeSlider(data, year, multiVarSelect,
                   onSelectCallback, (changes) => this.setState(changes))
               }
               {
@@ -160,23 +163,13 @@ export default class DeckSidebar extends React.Component {
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
                 }>
-                  {
-                    data && data.length > 0 &&
-                    <Variables
-                      multiVarSelect={multiVarSelect}
-                      onSelectCallback={(mvs) => {
-                        typeof (onSelectCallback) === 'function' &&
-                          onSelectCallback(
-                            Object.keys(mvs).length === 0 ?
-                              { what: '' } : { what: 'multi', selected: mvs })
-                        this.setState({ multiVarSelect: mvs })
-                      }}
-                      data={data} />
-                  }
-                  {seriesPlot({data: plot_data, type: LineSeries, 
-                    title: "Crashes"})}
-                  {seriesPlot({data: rtPlot.data, type: VerticalBarSeries,
-                    onValueClick: (datapoint)=>{
+                  {seriesPlot({
+                    data: plot_data, type: LineSeries,
+                    title: "Crashes"
+                  })}
+                  {seriesPlot({
+                    data: rtPlot.data, type: VerticalBarSeries,
+                    onValueClick: (datapoint) => {
                       multiVarSelect.road_type = new Set([datapoint.x]);
                       console.log(datapoint);
                       this.setState({ multiVarSelect })
@@ -184,7 +177,8 @@ export default class DeckSidebar extends React.Component {
                         onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
                           { what: '' } : { what: 'multi', selected: multiVarSelect })
                       // {x: "Single carriageway", y: 2419}
-                    }, margin: 100})}
+                    }, margin: 100
+                  })}
                 </Tab>
                 <Tab eventKey="2" title={
                   <i style={{ fontSize: '2rem' }}
@@ -251,11 +245,29 @@ export default class DeckSidebar extends React.Component {
                     }}
                   >Subset by map boundary</Checkbox>
                 </Tab>
-                <Tab eventKey="3" title={
+                {/* <Tab eventKey="3" title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-tasks" />
                 }>
                   Tab 3
+                </Tab> */}
+                <Tab eventKey="3" title={
+                  <i style={{ fontSize: '2rem' }}
+                    className="fa fa-filter" />
+                }>
+                  {
+                    data && data.length > 0 &&
+                    <Variables
+                      multiVarSelect={multiVarSelect}
+                      onSelectCallback={(mvs) => {
+                        typeof (onSelectCallback) === 'function' &&
+                          onSelectCallback(
+                            Object.keys(mvs).length === 0 ?
+                              { what: '' } : { what: 'multi', selected: mvs })
+                        this.setState({ multiVarSelect: mvs })
+                      }}
+                      data={data} />
+                  }
                 </Tab>
               </Tabs>
             </div>
@@ -267,15 +279,17 @@ export default class DeckSidebar extends React.Component {
                 let bbox = json && json.length > 0 && json[0].boundingbox;
                 bbox = bbox && bbox.map(num => +(num))
                 typeof onlocationChange === 'function' && bbox &&
-                onlocationChange({bbox: bbox, 
-                  lon: +(json[0].lon), lat:+(json[0].lat)})
+                  onlocationChange({
+                    bbox: bbox,
+                    lon: +(json[0].lon), lat: +(json[0].lat)
+                  })
               })
             }}>
               <FormGroup>
                 <InputGroup>
-                  <FormControl 
-                  onChange={(e) => this.setState({search: e.target.value})}
-                  placeholder="fly to..." type="text" />
+                  <FormControl
+                    onChange={(e) => this.setState({ search: e.target.value })}
+                    placeholder="fly to..." type="text" />
                   <InputGroup.Addon>
                     <Glyphicon glyph="search" />
                   </InputGroup.Addon>
