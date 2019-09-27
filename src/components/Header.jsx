@@ -1,7 +1,7 @@
 /**
  * geoplumber R package code.
  */
-import React from 'react';
+import React, {useState} from 'react';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
 
@@ -18,49 +18,56 @@ const navs = [
   },
 ];
 
-class Header extends React.Component {
-
-  render() {
-    return (
-      <Navbar inverse collapseOnSelect>
-        <Navbar.Header>
-          <Navbar.Brand>
-            <Link to="/">eAtlas</Link>
-          </Navbar.Brand>
-          <Navbar.Toggle />
-        </Navbar.Header>
-        <Navbar.Collapse>
-          <Nav>
-            {
-              navs.map((item, i) => {
-                return (
-                  <NavItem
-                    key={i}
-                    eventKey={item.key}
-                    onClick={() => this.props.history.push(item.to)}>
-                    {item.title}
-                  </NavItem>
-                )
-              })
-            }
-          </Nav>
-          {/* trick RB with navbar-nav > li a but do it like following*/}
-          {/* <div className="nav navbar-nav">
+function Header(props) {
+  const [dark, setDark] = useState(props.dark)
+  return (
+    <Navbar inverse={dark} collapseOnSelect>
+      <Navbar.Header>
+        <Navbar.Brand>
+          <Link to="/">eAtlas</Link>
+        </Navbar.Brand>
+        <Navbar.Toggle />
+      </Navbar.Header>
+      <Navbar.Collapse>
+        <Nav>
+          {
+            navs.map((item, i) => {
+              return (
+                <NavItem
+                  key={i}
+                  eventKey={item.key}
+                  onClick={() => props.history.push(item.to)}>
+                  {item.title}
+                </NavItem>
+              )
+            })
+          }
+        </Nav>
+        {/* trick RB with navbar-nav > li a but do it like following*/}
+        {/* <div className="nav navbar-nav">
             <li>
               <a href="https://github.com/layik/eAtlas">
                 <i style={{ fontSize: '1.5em' }} className="fa fa-github"></i>
               </a>
             </li>
           </div> */}
-          <Nav pullRight>
-            <NavItem href="https://github.com/layik/eAtlas">
-              <i style={{ fontSize: '1.5em' }} className="fa fa-github"></i>
-            </NavItem>
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
-    )
-  }
+        <Nav pullRight>
+          <NavItem href="https://github.com/layik/eAtlas">
+            <i style={{ fontSize: '1.5em' }} className="fa fa-github"></i>
+          </NavItem>
+        </Nav>
+        <Nav pullRight>
+          <NavItem >
+            <i 
+            onClick={() => {
+              typeof props.toggleTheme === 'function' && props.toggleTheme()
+              setDark(!dark)}}
+            style={{ fontSize: '1.5em' }} className="fa fa-question"></i>
+          </NavItem>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
+  )
 }
 
 // thanks to https://stackoverflow.com/a/42124328/2332101

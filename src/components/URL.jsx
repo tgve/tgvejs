@@ -27,11 +27,20 @@ export default function URL(props) {
             const { value } = e.target;
             setUrl(value)
             // console.log(isURL(value))
-          }} 
+          }}
+          style={{
+            background: props.dark ? '#242730' : 'white',
+            color: props.dark ? 'white' : 'black'
+          }}
           value={url}
           placeholder={url} type="text" />
-          <InputGroup.Addon>
-            <Glyphicon glyph="globe" />
+          <InputGroup.Addon
+          style={{
+            background: props.dark ? '#242730' : 'white',
+            color: props.dark ? 'white' : 'black'
+          }}>
+            <Glyphicon 
+            glyph="globe" />
           </InputGroup.Addon>
         </InputGroup>
       </FormGroup>

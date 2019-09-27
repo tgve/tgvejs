@@ -298,6 +298,7 @@ export default class Welcome extends React.Component {
       loading, mapStyle, alert, isMobile, 
       layerStyle } = this.state;
     // let {viewState} = this.props;
+    
     return (
       <div>
         {/* just a little catch to hide the loader 
@@ -341,6 +342,7 @@ export default class Welcome extends React.Component {
           </DeckGL>
         </MapGL>
         <DeckSidebar
+          dark={this.props.dark}
           layerStyle={layerStyle}
           isMobile={isMobile}
           key="decksidebar"

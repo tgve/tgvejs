@@ -9,11 +9,11 @@ const seriesPlot = (options) => {
     margin={{bottom: options.margin || 40}} // default is 40
     animation={{ duration: 1 }} height={250} width={250}>
     <XAxis position="right" tickLabelAngle={-45} style={{
-      text: { fill: '#fff', fontWeight: 400 }
+      text: { fill: options.dark ? '#fff' : '#000', fontWeight: 400 }
     }} />
     <YAxis tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} style={{
-      title: { fill: '#fff' },
-      text: { fill: '#fff', fontWeight: 400 }
+      title: { fill: options.dark ? '#fff' : '#000' },
+      text: { fill: options.dark ? '#fff' : '#000', fontWeight: 400 }
     }} position="start" title={options.title} />
     <ReactSeries 
     onValueClick={options.onValueClick}

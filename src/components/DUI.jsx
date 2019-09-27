@@ -107,10 +107,12 @@ export default class DUI extends React.Component {
 
   render() {
     const { data, key, sublist, name, loading } = this.state;
-    
+    const { dark } = this.props;
+
     return (
       <div className="content" style={{
-        margin: 'auto', padding: '5%', color: '#a3a5a8'
+        background: dark ? '#242730' : 'white',
+        margin: 'auto', padding: '5%', color: dark ? '#a3a5a8' : 'black'
       }}>
 
         <File contentCallback={({ text, name }) => {
@@ -125,13 +127,15 @@ export default class DUI extends React.Component {
           }
         }} />
         <center>
-          <URL urlCallback={(url) => {
+          <URL 
+            dark={dark}
+            urlCallback={(url) => {
             this._fetchAndUpdateState(url)
           }} />
         </center>
         {loading && <div id="loading"></div>}
         {
-          data && <h3 style={{ color: 'white' }}>
+          data && <h3>
             There are {` ${data.length} `} features in this
                 ({shortenName(name)}) resource.
               </h3>
@@ -139,9 +143,8 @@ export default class DUI extends React.Component {
         {
           data && data.length > 0 &&
           <Variables
+            dark={this.props.dark}
             data={data}
-            style={{ color: 'lightgray' }}
-            subStyle={{ color: 'lightgray' }}
             propertyValuesCallback={({ key, sublist }) =>
               this.setState({
                 key,
@@ -163,7 +166,7 @@ export default class DUI extends React.Component {
         {
           key && sublist &&
           <center>
-            <h5 style={{ color: 'white' }}>
+            <h5>
               For ({humanize(key)}) and its variables:
                 </h5>
             <hr />

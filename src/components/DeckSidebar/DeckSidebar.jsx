@@ -66,7 +66,7 @@ export default class DeckSidebar extends React.Component {
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data, colourCallback, layerStyle,
       toggleSubsetBoundsChange, urlCallback, alert,
-      onlocationChange } = this.props;
+      onlocationChange, dark } = this.props;
     let plot_data = [];
     const notEmpty = data && data.length > 1;
     if (notEmpty) {
@@ -91,17 +91,23 @@ export default class DeckSidebar extends React.Component {
       opacity: 1,
       stroke: 'rgb(72, 87, 104)',
       fill: 'rgb(18, 147, 154)',
-    }
-
-    // console.log(seriesProps);
+    }    
     
     return (
       <div className="side-panel-container"
         style={{ marginLeft: !open ? '-320px' : '0px' }}>
         <div
+          style={{
+            color: dark ? "white" : "black",
+            background: dark ? "#242730" : "white"
+          }}
           className="side-panel">
           <RBAlert alert={alert} />
-          <div className="side-pane-header">
+          <div 
+          style={{
+            background: dark ? '#29323C' : '#eee'
+          }}
+          className="side-pane-header">
             <h2>{data && data.length ?
               (data.length === 1 ? data.length + " crash." : data.length + " rows.")
               : "Nothing to show"}
@@ -152,7 +158,7 @@ export default class DeckSidebar extends React.Component {
                     onSelectCallback &&
                       onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
                         { what: '' } : { what: 'multi', selected: multiVarSelect })
-                  }))
+                  }, dark))
               }
               <hr style={{ clear: 'both' }} />
               <Tabs defaultActiveKey={"1"} id="main-tabs">
@@ -163,6 +169,7 @@ export default class DeckSidebar extends React.Component {
                   {
                     data && data.length > 0 &&
                     <Variables
+                      dark={dark}
                       multiVarSelect={multiVarSelect}
                       onSelectCallback={(mvs) => {
                         typeof (onSelectCallback) === 'function' &&
@@ -174,7 +181,7 @@ export default class DeckSidebar extends React.Component {
                       data={data} />
                   }
                   {seriesPlot({data: plot_data, type: LineSeries, 
-                    title: "Crashes"})}
+                    title: "Crashes", dark: dark})}
                   {seriesPlot({data: rtPlot.data, type: VerticalBarSeries,
                     onValueClick: (datapoint)=>{
                       multiVarSelect.road_type = new Set([datapoint.x]);
@@ -184,7 +191,7 @@ export default class DeckSidebar extends React.Component {
                         onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
                           { what: '' } : { what: 'multi', selected: multiVarSelect })
                       // {x: "Single carriageway", y: 2419}
-                    }, margin: 100})}
+                    }, margin: 100, dark: dark})}
                 </Tab>
                 <Tab eventKey="2" title={
                   <i style={{ fontSize: '2rem' }}
@@ -272,10 +279,18 @@ export default class DeckSidebar extends React.Component {
             }}>
               <FormGroup>
                 <InputGroup>
-                  <FormControl 
+                  <FormControl
+                  style={{
+                    background: dark ? '#242730' : 'white',
+                    color: dark ? 'white' : 'black'
+                  }}
                   onChange={(e) => this.setState({search: e.target.value})}
                   placeholder="fly to..." type="text" />
-                  <InputGroup.Addon>
+                  <InputGroup.Addon
+                  style={{
+                    background: dark ? '#242730' : 'white',
+                    color: dark ? 'white' : 'black'
+                  }}>
                     <Glyphicon glyph="search" />
                   </InputGroup.Addon>
                 </InputGroup>

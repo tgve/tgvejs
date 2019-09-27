@@ -310,7 +310,7 @@ const shortenName = (name) => {
   return (shorten.substring(0, 10) + "..." + extension);
 }
 
-const percentDiv = (title, left, cb) => {
+const percentDiv = (title, left, cb, dark) => {
   return (
     <div
       key={title}
@@ -321,7 +321,7 @@ const percentDiv = (title, left, cb) => {
         position: 'relative',
         float: 'left',
         width: '30%',
-        color: 'white',
+        color: dark ? 'white' : 'black',
         margin: '10px 2px',
         border: '1px solid gray',
       }}>

@@ -5,7 +5,7 @@
   "dependencies": {
     "@turf/bbox": "^6.0.1",
     "@turf/bezier-spline": "^6.0.3",
-    "baseui": "^7.5.0",
+    "baseui": "^9.5.2",
     "csv2geojson": "^5.1.1",
     "d3-array": "^2.2.0",
     "d3-format": "^1.3.2",
@@ -27,8 +27,8 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "^3.0.1",
     "react-vis": "^1.11.7",
-    "styletron-engine-atomic": "^1.3.0",
-    "styletron-react": "^5.1.3",
+    "styletron-engine-atomic": "^1.4.1",
+    "styletron-react": "^5.2.1",
     "underscore": "^1.9.1"
   },
   "scripts": {

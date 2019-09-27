@@ -1,6 +1,6 @@
-main, .content {
+/* main, .content {
 	background-color: #242730;
-}
+} */
 
 .data-type {
 	font-size: 0.8em
@@ -8,7 +8,7 @@ main, .content {
 
 .ticks {
     position: absolute;
-    background-color: lightgrey;
+    /* background-color: lightgrey; */
     width: 1px;
     height: 10px;
     display: inline-block;
@@ -24,22 +24,22 @@ main, .content {
 	display: inline-block;
 	margin: 0.125rem;
 	padding: 0.4375rem;
-	background: #29323C;
+	/* background: #29323C; */
 	border: 1px solid rgb(72, 87, 104);
   transition: all 0.1s ease-in-out;
   border-radius: 1rem;
 }
 
 .tagcloud .sub {
-	background: rgb(3, 4, 5);
+	/* background: rgb(3, 4, 5); */
 }
 
 .tagcloud > span:hover,
 .tagcloud > span:focus,
 .unselect-variable:hover,
 .unselect-variable:focus {
-	background: rgb(33, 47, 63);
-	color: white;
+	/* background: rgb(33, 47, 63); */
+	/* color: white; */
 	transform: scale(1.1);
 }
 
