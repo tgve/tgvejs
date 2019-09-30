@@ -19,7 +19,7 @@ import { propertyCount, getPropertyValues } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
-import { timeSlider, dropdown } from '../Showcases/Widgets';
+import { timeSlider, drawDropdown } from '../Showcases/Widgets';
 import { seriesPlot } from '../Showcases/Plots';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
@@ -37,7 +37,8 @@ export default class DeckSidebar extends React.Component {
         "Slip road", "One way street"],
       year: "",
       reset: false,
-      multiVarSelect: {}
+      multiVarSelect: {},
+      barChartVariable: "road_type"
     }
   }
 
@@ -65,7 +66,7 @@ export default class DeckSidebar extends React.Component {
   render() {
     const { open, elevation,
       radius, all_road_types, year,
-      subsetBoundsChange, multiVarSelect } = this.state;
+      subsetBoundsChange, multiVarSelect, barChartVariable } = this.state;
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data, colourCallback, layerStyle,
       toggleSubsetBoundsChange, urlCallback, alert,
@@ -86,11 +87,11 @@ export default class DeckSidebar extends React.Component {
     // console.log(severity_data);
 
     const data_properties = getPropertyValues({ features: data });
-    const curr_road_types = notEmpty && data_properties["road_type"] &&
-      Array.from(data_properties["road_type"])
+    const curr_road_types = notEmpty && data_properties[barChartVariable] &&
+      Array.from(data_properties[barChartVariable])
 
     const rtPlot = {
-      data: notEmpty ? xyObjectByProperty(data, "road_type") : [],
+      data: notEmpty ? xyObjectByProperty(data, barChartVariable) : [],
       opacity: 1,
       stroke: 'rgb(72, 87, 104)',
       fill: 'rgb(18, 147, 154)',
@@ -139,8 +140,13 @@ export default class DeckSidebar extends React.Component {
               }
               {
                 //only if there is such a property
-                dropdown(data, multiVarSelect, curr_road_types, all_road_types,
-                  onSelectCallback, (changes) => this.setState(changes))
+                data && data.length > 1 && data[0].properties[barChartVariable] &&
+                drawDropdown({
+                  multiVarSelect, filter: barChartVariable,
+                  curr_list: curr_road_types, full_list: all_road_types,
+                  onSelectCallback,
+                  callback: (changes) => this.setState(changes)
+                })
               }
               <br />
               {/* TODO: generate this declaritively too */}
@@ -167,10 +173,11 @@ export default class DeckSidebar extends React.Component {
                     data: plot_data, type: LineSeries,
                     title: "Crashes"
                   })}
+                  {/* barChartVariable */}
                   {seriesPlot({
                     data: rtPlot.data, type: VerticalBarSeries,
                     onValueClick: (datapoint) => {
-                      multiVarSelect.road_type = new Set([datapoint.x]);
+                      multiVarSelect[barChartVariable] = new Set([datapoint.x]);
                       console.log(datapoint);
                       this.setState({ multiVarSelect })
                       onSelectCallback &&
