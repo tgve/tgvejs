@@ -1,6 +1,8 @@
 import React from 'react';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
 
+import { humanize } from '../utils';
+
 export default class RBDropDown extends React.Component {
   constructor(props) {
     super(props);
@@ -28,7 +30,7 @@ export default class RBDropDown extends React.Component {
         return (<MenuItem
           className="mi-class" key={i} eventKey={entry // the object
           }>
-          {isArray ? value : entry}
+          {humanize(isArray ? value : entry)}
         </MenuItem>);
       }
     });
@@ -60,7 +62,7 @@ export default class RBDropDown extends React.Component {
 
     return (
       <DropdownButton
-        style={{width:'100%'}}
+        style={{ width: '100%' }}
         title={title}
         className={typeof (classNames) === 'object'
           && classNames.length > 0 ? classNames.join(" ") : classNames}

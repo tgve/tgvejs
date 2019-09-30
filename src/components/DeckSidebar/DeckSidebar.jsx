@@ -10,7 +10,8 @@ import DataInput from '../DataInput';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   xyObjectByProperty, percentDiv,
-  searchNominatom
+  searchNominatom,
+  humanize
 } from '../../utils';
 import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
@@ -21,6 +22,7 @@ import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
 import { timeSlider, drawDropdown } from '../Showcases/Widgets';
 import { seriesPlot } from '../Showcases/Plots';
+import RBDropDown from '../RBDropdownComponent';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 
@@ -44,13 +46,15 @@ export default class DeckSidebar extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const { data, alert, loading } = this.props;
-    const { elevation, radius, reset, open } = this.state;
+    const { elevation, radius, reset, open,
+      barChartVariable } = this.state;
     if (open !== nextState.open ||
       reset !== nextState.reset ||
       elevation !== nextState.elevation ||
       radius !== nextState.radius ||
       alert !== nextProps.alert,
-      loading !== nextProps.loading) return true;
+      loading !== nextProps.loading ||
+      barChartVariable !== nextState.barChartVariable) return true;
     //TODO:  a more functional way is needed        
     if (data && nextProps && nextProps.data &&
       data.length === nextProps.data.length) {
@@ -87,8 +91,8 @@ export default class DeckSidebar extends React.Component {
     // console.log(severity_data);
 
     const data_properties = getPropertyValues({ features: data });
-    const curr_road_types = notEmpty && data_properties[barChartVariable] &&
-      Array.from(data_properties[barChartVariable])
+    const curr_road_types = notEmpty && data_properties['road_type'] &&
+      Array.from(data_properties['road_type'])
 
     const rtPlot = {
       data: notEmpty ? xyObjectByProperty(data, barChartVariable) : [],
@@ -140,9 +144,9 @@ export default class DeckSidebar extends React.Component {
               }
               {
                 //only if there is such a property
-                data && data.length > 1 && data[0].properties[barChartVariable] &&
+                data && data.length > 1 && data[0].properties['road_type'] &&
                 drawDropdown({
-                  multiVarSelect, filter: barChartVariable,
+                  multiVarSelect, filter: 'road_type',
                   curr_list: curr_road_types, full_list: all_road_types,
                   onSelectCallback,
                   callback: (changes) => this.setState(changes)
@@ -174,6 +178,16 @@ export default class DeckSidebar extends React.Component {
                     title: "Crashes"
                   })}
                   {/* barChartVariable */}
+                  {
+                    notEmpty &&
+                    <RBDropDown
+                      title={humanize(barChartVariable)}
+                      menuitems={Object.keys(data[0].properties)}
+                      onSelectCallback={(selected) => this.setState({
+                        barChartVariable: selected
+                      })
+                      } />
+                  }
                   {seriesPlot({
                     data: rtPlot.data, type: VerticalBarSeries,
                     onValueClick: (datapoint) => {
