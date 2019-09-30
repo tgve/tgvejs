@@ -1,6 +1,7 @@
 import React from 'react';
 import DeckGL, { WebMercatorViewport } from 'deck.gl';
 import MapGL, { NavigationControl, FlyToInterpolator } from 'react-map-gl';
+import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
 
 import {
@@ -86,7 +87,8 @@ export default class Welcome extends React.Component {
       backgroundImage: gradient.backgroundImage,
       radius: 100,
       elevation: 4,
-      mapStyle: MAPBOX_ACCESS_TOKEN ? "mapbox://styles/mapbox/dark-v9" : osmtiles,
+      mapStyle: MAPBOX_ACCESS_TOKEN ? ("mapbox://styles/mapbox/" +
+        (props.dark ? "dark" : "streets") + "-v9") : osmtiles,
       initialViewState: init,
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
@@ -120,8 +122,6 @@ export default class Welcome extends React.Component {
         })
         this._generateLayer()
       } else {
-        console.log(error);
-
         this.setState({
           loading: false,
           alert: { content: 'Could not reach: ' + fullURL }
@@ -143,7 +143,7 @@ export default class Welcome extends React.Component {
   _generateLayer(radius, elevation, filter, cn) {
     let data = this.state.data && this.state.data.features
     const { colourName } = this.state;
-    
+
     if (!data) return;
     const geomType = sfType(data[0]).toLowerCase();
     //if resetting a value
@@ -154,11 +154,11 @@ export default class Welcome extends React.Component {
             // go through each selection
             const selected = filter.selected;
             // selected.var > Set()
-            for (let each of Object.keys(selected)) {                            
-              const nextValue = each === "date" ? 
-              d.properties[each].split("/")[2] : d.properties[each] + "" 
+            for (let each of Object.keys(selected)) {
+              const nextValue = each === "date" ?
+                d.properties[each].split("/")[2] : d.properties[each] + ""
               // each from selected must be in d.properties
-              if(!selected[each].has(nextValue)) {
+              if (!selected[each].has(nextValue)) {
                 return false
               }
             }
@@ -182,16 +182,16 @@ export default class Welcome extends React.Component {
       options.getFillColor = (d) => colorScale(d, data) //first prop
     }
     // console.log(geomType);
-    if(geomType === "polygon") {
-      options.getElevation = d => 
-      d.properties.diffall || d.properties.GVA || null
+    if (geomType === "polygon") {
+      options.getElevation = d =>
+        d.properties.diffall || d.properties.GVA || null
       options.getFillColor = (d) => colorScale(d, data, 1)
     }
     if (data.length === 7201) {
       console.log("line");
       options.getColor = d => [255, 255, 255]
-      options.getSourcePosition = d => 
-      [d.properties.area_lon, d.properties.area_lat];
+      options.getSourcePosition = d =>
+        [d.properties.area_lon, d.properties.area_lat];
       options.getTargetPosition = d => d.geometry.coordinates;
     }
     const alayer = generateDeckLayer(
@@ -207,32 +207,34 @@ export default class Welcome extends React.Component {
       layers: [alayer],
       radius: radius ? radius : this.state.radius,
       elevation: elevation ? elevation : this.state.elevation,
-      road_type: filter && filter.what === 'road_type' ? filter.selected : 
-      this.state.road_type,
-      year: filter && filter.what === 'year' ? filter.selected : 
-      this.state.year,
-      severity: filter && filter.what === 'severity' ? filter.selected : 
-      this.state.severity,
+      road_type: filter && filter.what === 'road_type' ? filter.selected :
+        this.state.road_type,
+      year: filter && filter.what === 'year' ? filter.selected :
+        this.state.year,
+      severity: filter && filter.what === 'severity' ? filter.selected :
+        this.state.severity,
       colourName: cn || colourName
     })
   }
 
-  _fitViewport(boundingbox) {
+  _fitViewport(bboxLonLat) {
     // is called after mounds
     const { data } = this.state;
     if (!data || data.length === 0) return;
-    const bounds = boundingbox || bbox(this.state.data);    
-    this.map.fitBounds(bounds, { padding: 20 });
-    const { longitude, latitude, zoom } = new WebMercatorViewport(this.state.viewport)
-      .fitBounds([[bounds[0], bounds[1]], [bounds[2], bounds[3]]], { padding: 20 });
+    const center = centroid(this.state.data).geometry.coordinates;
+    // console.log(center, bboxLonLat);
+    const bounds = bboxLonLat ?
+      bboxLonLat.bbox : bbox(this.state.data)
+
+    this.map.fitBounds(bounds)
     const viewport = {
       ...this.state.viewport,
-      longitude,
-      latitude,
-      zoom,
-      transitionDuration: 2000,
-      transitionInterpolator: new FlyToInterpolator()
-    }
+      longitude: bboxLonLat ? bboxLonLat.lon : center[0],
+      latitude: bboxLonLat ? bboxLonLat.lat : center[1],
+      transitionDuration: 500,
+      transitionInterpolator: new FlyToInterpolator(),
+      // transitionEasing: d3.easeCubic
+    };
     this.setState({ viewport })
   }
 
@@ -295,10 +297,10 @@ export default class Welcome extends React.Component {
 
   render() {
     const { tooltip, viewport, initialViewState,
-      loading, mapStyle, alert, isMobile, 
+      loading, mapStyle, alert, isMobile,
       layerStyle } = this.state;
     // let {viewState} = this.props;
-    
+
     return (
       <div>
         {/* just a little catch to hide the loader 
@@ -348,8 +350,8 @@ export default class Welcome extends React.Component {
           key="decksidebar"
           alert={alert}
           data={this.state.filtered}
-          colourCallback={(colourName) => 
-            this._generateLayer(undefined, undefined, undefined, 
+          colourCallback={(colourName) =>
+            this._generateLayer(undefined, undefined, undefined,
               colourName)
           }
           urlCallback={(url_returned, geojson_returned) => {
@@ -379,8 +381,8 @@ export default class Welcome extends React.Component {
             })
             this._fetchAndUpdateState();
           }}
-          onlocationChange={(bbox) => {
-            this._fitViewport(bbox)
+          onlocationChange={(bboxLonLat) => {
+            this._fitViewport(bboxLonLat)
           }}
         />
       </div>
