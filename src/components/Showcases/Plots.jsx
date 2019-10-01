@@ -12,14 +12,19 @@ const seriesPlot = (options) => {
         <h4>Plotting first 10 values:</h4>}
       <XYPlot xType="ordinal"
         margin={{ bottom: options.margin || 40 }} // default is 40
-        animation={{ duration: 1 }} height={250} width={250}>
-        <XAxis position="right" tickLabelAngle={-45} style={{
-          text: { fill: '#fff', fontWeight: 400 }
-        }} />
-        <YAxis tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} style={{
-          title: { fill: '#fff' },
-          text: { fill: '#fff', fontWeight: 400 }
-        }} position="start" title={options.title} />
+        animation={{ duration: 1 }}
+        height={options.plotStyle && options.plotStyle.height || 250}
+        width={options.plotStyle && options.plotStyle.width || 250} >
+        {!options.noXAxis && // if provided dont
+          <XAxis position="right" tickLabelAngle={-45} style={{
+            text: { fill: '#fff', fontWeight: 400 }
+          }} />}
+        {!options.noYAxis && // if provided dont
+          <YAxis tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} style={{
+            title: { fill: '#fff' },
+            text: { fill: '#fff', fontWeight: 400 }
+          }} position="start" title={options.title} />
+        }
         <ReactSeries
           onValueClick={options.onValueClick}
           onSeriesMouseOver={(event) => {
