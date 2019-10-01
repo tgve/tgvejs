@@ -6,8 +6,11 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 
 import App from './App';
-// TODO: register/unregister needed?
+// brief about serviceworkers from CRA
+// https://stackoverflow.com/a/49314454/11101153
 import { unregister } from './registerServiceWorker';
+
+// keep leaflet for now in case.
 
 // *** Do NOT remove, it seems the location for icon is missing or something
 import L from 'leaflet';
@@ -18,16 +21,15 @@ L.Icon.Default.mergeOptions({
   iconUrl: require('leaflet/dist/images/marker-icon.png'),
   shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
-// ***end
 
 /**
- * Separating index.js and App.js has the benefit of
- * doing above like launch configs and keep App.js
- * clear for React application.
+ * Separating index.js and App.js:
+ * 1. doing above like launch configs here
+ * 2. keep App.js clear for React application.
  */
 ReactDOM.render(
-    <BrowserRouter>
-      <App />
+  <BrowserRouter>
+    <App />
   </BrowserRouter>, document.getElementById('root'));
 
 unregister();
