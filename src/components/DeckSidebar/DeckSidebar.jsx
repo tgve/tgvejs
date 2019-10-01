@@ -52,7 +52,7 @@ export default class DeckSidebar extends React.Component {
       reset !== nextState.reset ||
       elevation !== nextState.elevation ||
       radius !== nextState.radius ||
-      alert !== nextProps.alert,
+      alert !== nextProps.alert ||
       loading !== nextProps.loading ||
       barChartVariable !== nextState.barChartVariable) return true;
     //TODO:  a more functional way is needed        
@@ -195,7 +195,8 @@ export default class DeckSidebar extends React.Component {
                       } />
                   }
                   {seriesPlot({
-                    data: rtPlot.data, type: VerticalBarSeries,
+                    data: rtPlot.data, 
+                    type: VerticalBarSeries,
                     onValueClick: (datapoint) => {
                       multiVarSelect[barChartVariable] = new Set([datapoint.x]);
                       // console.log(datapoint);
