@@ -22,6 +22,7 @@ import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
 import { timeSlider, drawDropdown } from '../Showcases/Widgets';
 import { seriesPlot } from '../Showcases/Plots';
+import HexHeatmap from '../Showcases/HexHeatMap';
 import RBDropDown from '../RBDropdownComponent';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
@@ -173,6 +174,9 @@ export default class DeckSidebar extends React.Component {
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
                 }>
+                  {/* {
+                    notEmpty && <HexHeatmap data={data} />
+                  } */}
                   {seriesPlot({
                     data: plot_data, type: LineSeries,
                     title: "Crashes"
@@ -189,7 +193,7 @@ export default class DeckSidebar extends React.Component {
                       } />
                   }
                   {seriesPlot({
-                    data: rtPlot.data, 
+                    data: rtPlot.data,
                     type: VerticalBarSeries,
                     onValueClick: (datapoint) => {
                       multiVarSelect[barChartVariable] = new Set([datapoint.x]);
