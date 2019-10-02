@@ -9,6 +9,13 @@
   border-bottom: 2px solid #ddd;
 }
 
+.right-panel-container {
+  background-color: #242730;
+  bottom: 24px;
+  position: fixed;
+  right: 0
+}
+
 .side-panel-container {
   top: 44px;
   height: 95%;
@@ -75,14 +82,26 @@
   color: #242730;
 } */
 
+.space {
+  flex:1;
+}
+
 .search-form {
   margin: auto;
   padding-bottom: 0;
   width: 100%;
-  max-width: 600px;
+  max-width: 320px;
+}
+
+.search-form .form-group {
+  margin-bottom: 0;
 }
 
 /* .search-form .form-control, .search-form .input-group-addon {
   background-color: #242730;
   color: #a3a5a8;
+}
+
+/* #main-tabs {
+  background: white;
 } */

@@ -16,12 +16,13 @@ import {
 import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
-import { propertyCount, getPropertyValues } from '../../geojsonutils';
+import { propertyCount, getPropertyValues, coordsAsXY } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
 import { timeSlider, drawDropdown } from '../Showcases/Widgets';
 import { seriesPlot } from '../Showcases/Plots';
+import HexbinSeries from '../Showcases/HexbinSeries';
 import RBDropDown from '../RBDropdownComponent';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
@@ -174,6 +175,14 @@ export default class DeckSidebar extends React.Component {
                   }, dark))
               }
               <hr style={{ clear: 'both' }} />
+              {notEmpty && data[0].properties.type === 'POINT' &&
+                <div className="right-panel-container" >
+                  {
+                    notEmpty && <HexbinSeries data={coordsAsXY(
+                      { features: data }
+                    )} />
+                  }
+                </div>}
               <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
@@ -195,7 +204,7 @@ export default class DeckSidebar extends React.Component {
                       } />
                   }
                   {seriesPlot({
-                    data: rtPlot.data, 
+                    data: rtPlot.data,
                     type: VerticalBarSeries,
                     onValueClick: (datapoint) => {
                       multiVarSelect[barChartVariable] = new Set([datapoint.x]);
@@ -300,6 +309,7 @@ export default class DeckSidebar extends React.Component {
                 </Tab>
               </Tabs>
             </div>
+            <div className="space"></div>
             <form className="search-form" onSubmit={(e) => {
               e.preventDefault();
               // console.log(this.state.search);

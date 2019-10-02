@@ -26,33 +26,33 @@ const properties = (geojson) => {
  * @param {*} feature 
  */
 const describeGeojson = (feature) => {
-  if(!feature || feature.type !== 'Feature') return null;
+  if (!feature || feature.type !== 'Feature') return null;
   const description = {};
-  
+
   Object.keys(feature.properties).forEach(key => {
     let v_type = String;
     const value = feature.properties[key];
 
-    if(isDate(value) || 
-    DateTime.fromFormat(value + '', 'MMMM dd yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'MMMM d yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'MMM d yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'MMM dd yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'dd/MM/yyyy').isValid ||
-    DateTime.fromISO(value).isValid || // "19-2-1999"
-    DateTime.fromHTTP(value).isValid ||
-    (typeof value === Number && DateTime.fromMillis(value).isValid)) {
+    if (isDate(value) ||
+      DateTime.fromFormat(value + '', 'MMMM dd yyyy').isValid ||
+      DateTime.fromFormat(value + '', 'MMMM d yyyy').isValid ||
+      DateTime.fromFormat(value + '', 'MMM d yyyy').isValid ||
+      DateTime.fromFormat(value + '', 'MMM dd yyyy').isValid ||
+      DateTime.fromFormat(value + '', 'dd/MM/yyyy').isValid ||
+      DateTime.fromISO(value).isValid || // "19-2-1999"
+      DateTime.fromHTTP(value).isValid ||
+      (typeof value === Number && DateTime.fromMillis(value).isValid)) {
       v_type = Date
-    } else if(isNumber(value)) {
+    } else if (isNumber(value)) {
       v_type = Number
-    } else if(isBoolean(value)) {
+    } else if (isBoolean(value)) {
       v_type = Boolean
-    } else if(isObject(value)) {
-      v_type = Object 
+    } else if (isObject(value)) {
+      v_type = Object
     }
     description[key] = v_type;
-  })  
-  return(description) 
+  })
+  return (description)
 }
 
 /**
@@ -76,7 +76,7 @@ const getPropertyValues = (geojson, property) => {
         // add it to the value to be returnd
         values.add(feature.properties[each])
       } else {
-        if(typeof(all[each]) === 'object') { // a set
+        if (typeof (all[each]) === 'object') { // a set
           all[each].add(feature.properties[each])
         } else {
           all[each] = new Set();
@@ -110,10 +110,28 @@ const propertyCount = (data, key, list) => {
   return sub_data;
 }
 
+const coordsAsXY = (geojson, sizeProperty) => {
+  if (!geojson.features) return null;
+  return (
+    geojson.features.map(each => {
+      // lon lat please
+      const result = {
+        x: each.geometry.coordinates[1],
+        y: each.geometry.coordinates[0]
+      }
+      if (sizeProperty && each.properties[sizeProperty]) {
+        result.size = each.properties[sizeProperty]
+      }
+      return (result)
+    })
+  )
+}
+
 export {
   getPropertyValues,
   describeGeojson,
   propertyCount,
   properties,
+  coordsAsXY,
   sfType
 }
