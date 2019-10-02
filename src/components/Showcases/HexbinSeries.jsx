@@ -11,10 +11,11 @@ export default class HexHeatmap extends Component {
   render() {
     const { data, options } = this.props;
     const { radius, hoveredNode } = this.state;
-
+    if(!data || !data.length) return null
     return (
       <div className="centered-and-flexed">
         <XYPlot
+          margin={{ left: 50 }}
           height={options &&
             options.plotStyle && options.plotStyle.height || 250}
           width={options &&

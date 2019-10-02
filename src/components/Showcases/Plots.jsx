@@ -4,6 +4,7 @@ import { format } from 'd3-format';
 
 const seriesPlot = (options) => {
   const ReactSeries = options.type;
+  if(!ReactSeries) return null;
   const data = options.type !== MarkSeries &&
     options.data.length > 10 ? options.data.slice(0, 10)
     : options.data
