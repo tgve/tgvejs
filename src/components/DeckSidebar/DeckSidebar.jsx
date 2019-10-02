@@ -169,7 +169,7 @@ export default class DeckSidebar extends React.Component {
                   }))
               }
               <hr style={{ clear: 'both' }} />
-              {notEmpty && data[0].properties.type === 'POINT' &&
+              {notEmpty && data[0].geometry.type.toUpperCase() === 'POINT' &&
                 <div className="right-panel-container" >
                   {
                     notEmpty && <HexbinSeries data={coordsAsXY(
