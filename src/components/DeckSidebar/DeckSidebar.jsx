@@ -172,9 +172,11 @@ export default class DeckSidebar extends React.Component {
               {notEmpty && data[0].geometry.type.toUpperCase() === 'POINT' &&
                 <div className="right-panel-container" >
                   {
-                    notEmpty && <HexbinSeries data={coordsAsXY(
-                      { features: data }
-                    )} />
+                    notEmpty && 
+                    <HexbinSeries 
+                      data={coordsAsXY({ features: data })} 
+                      options={{noXAxis: true, noYAxis: true}}
+                      />
                   }
                 </div>}
               <Tabs defaultActiveKey={"1"} id="main-tabs">
