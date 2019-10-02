@@ -186,7 +186,8 @@ export default class Welcome extends React.Component {
     if(geomType === "polygon") {
       options.getElevation = d => 
       d.properties.diffall || d.properties.GVA || null
-      options.getFillColor = (d) => colorScale(d, data, 1)
+      // TODO: allow user to specify column.
+      options.getFillColor = (d) => colorScale(d, data, 0)
     }
     if (data.length === 7201) {
       console.log("line");
