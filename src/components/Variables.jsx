@@ -18,6 +18,7 @@ import React, { Component } from 'react';
 
 import './style.css';
 import { humanize } from '../utils';
+import { isEmptyOrSpaces } from '../JSUtils';
 import { describeGeojson } from '../geojsonutils';
 import { Button, SIZE, KIND } from 'baseui/button';
 
@@ -235,6 +236,12 @@ export default class Variables extends Component {
         return selected[key] && each && !selected[key].has(each.key)
       })
 
+    if(data && Object.keys(data[0].properties)
+    .filter(p => !isEmptyOrSpaces(p)).length === 0) {
+      return(
+        <h3>There are no columns to inspect or filter.</h3>
+      )
+    }
     return (
       <div style={this.props.style}>
         Dataset:

@@ -383,6 +383,7 @@ export default class Welcome extends React.Component {
             }
             this._fitViewport();
           }}
+          column={ this.state.column }
           onSelectCallback={(selected) => this._generateLayer(undefined, undefined, selected)}
           onChangeRadius={(value) => this._generateLayer(value)}
           onChangeElevation={(value) => this._generateLayer(undefined, value)}
