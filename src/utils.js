@@ -193,7 +193,6 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       id: 'line-layer',
       data,
       pickable: true,
-      getWidth: 5,
       onHover: renderTooltip
     }
     addOptionsToObject(options, lineObject)
@@ -218,7 +217,9 @@ const convertRange = (oldValue = 2, values = {
   // OldRange = (OldMax - OldMin)  
   // NewRange = (NewMax - NewMin)  
   // NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
-  return (((oldValue - values.oldMin) * (values.newMax - values.newMin)) / (values.oldMax - values.oldMin)) + values.newMin
+  let value = (((oldValue - values.oldMin) * (values.newMax - values.newMin))
+  / (values.oldMax - values.oldMin)) + values.newMin
+  return +value.toFixed(2)
 }
 
 const getParamsFromSearch = (search) => {

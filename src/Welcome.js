@@ -8,7 +8,8 @@ import {
   fetchData, generateDeckLayer,
   getParamsFromSearch, getBbx,
   isMobile, colorScale,
-  colorRanges
+  colorRanges,
+  convertRange
 } from './utils';
 import Constants from './Constants';
 import DeckSidebar from './components/DeckSidebar/DeckSidebar';
@@ -17,7 +18,7 @@ import history from './history';
 import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
-import { thisExpression } from '@babel/types';
+import { isNumber } from './JSUtils';
 
 const osmtiles = {
   "version": 8,
@@ -147,6 +148,9 @@ export default class Welcome extends React.Component {
     const { colourName, column } = this.state;
     
     if (!data) return;
+    if(filter && filter.what === "%") {
+      data = data.slice(0, filter.selected/100 * data.length)
+    }
     const geomType = sfType(data[0]).toLowerCase();
     //if resetting a value
     if (filter && filter.selected !== "") {
@@ -186,13 +190,25 @@ export default class Welcome extends React.Component {
     if (geomType === 'linestring') {
       layerStyle = "line"
       // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
-      options.getColor = d => [Math.sqrt(d.inbound + d.outbound), 140, 0]
+      options.getColor = d => [235, 170, 20]
       options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
       options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
       let columnNameOrIndex = 
       (filter && filter.what === 'column' && filter.selected) ||
       column || 1;
-      options.getWidth = d => d.properties[columnNameOrIndex]; // avoid id
+      if(isNumber(data[0].properties[columnNameOrIndex])) {
+        const colArray = data.map(f => f.properties[columnNameOrIndex])        
+        const max = Math.max(...colArray); 
+        const min = Math.min(...colArray)        
+        options.getWidth = d => {
+          const r = convertRange(
+            d.properties[columnNameOrIndex], {
+              oldMin: min, oldMax: max, newMax: 10, newMin: 0.1
+            }
+          )          
+          return r
+        }; // avoid id
+      }
     }
     if(geomType === "polygon") {
       options.getElevation = d => 

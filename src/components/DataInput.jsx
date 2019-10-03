@@ -15,16 +15,19 @@ const csv2geojson = require('csv2geojson');
 
 export default function (props) {
   const [isOpen, setOpen] = React.useState(false);
-  const { urlCallback } = props;
+  const { urlCallback, onOpen, onClose } = props;
   return (
     <React.Fragment>
       <Button
         kind={KIND.secondary} size={SIZE.compact}
-        onClick={() => setOpen(s => !s)}>Add data</Button>
+        onClick={() => {
+          setOpen(s => !s); // or s === isOpen
+          typeof onOpen === 'function' && onOpen()
+        }}>Add data</Button>
       <Modal
         onClose={() => {
-          typeof (props.onClose) === 'function' && props.onClose()
-          setOpen(false)
+          typeof (onClose) === 'function' && onClose()
+          setOpen(false);
         }
         }
         isOpen={isOpen}>
@@ -32,7 +35,7 @@ export default function (props) {
         <ModalBody>
           <FocusOnce>
             <URL urlCallback={(url) => {
-                setOpen(false)
+                setOpen(false);
                 typeof (urlCallback) === 'function'
                   && urlCallback(url)
               }} />
@@ -44,6 +47,7 @@ export default function (props) {
                   const json = JSON.parse(text);
                   typeof (urlCallback) === 'function'
                   && urlCallback(null, json)
+                  setOpen(false);
               } catch (e) {
                   console.log(e);
               }
@@ -59,7 +63,10 @@ export default function (props) {
           }} />
         </ModalBody>
         <ModalFooter>
-          <ModalButton onClick={() => setOpen(false)}>Close</ModalButton>
+          <ModalButton onClick={() => {
+            setOpen(false);
+            typeof (onClose) === 'function' && onClose();
+            }}>Close</ModalButton>
         </ModalFooter>
       </Modal>
     </React.Fragment>
