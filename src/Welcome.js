@@ -17,6 +17,7 @@ import history from './history';
 import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
+import { thisExpression } from '@babel/types';
 
 const osmtiles = {
   "version": 8,
@@ -141,9 +142,9 @@ export default class Welcome extends React.Component {
    * @param {*} cn short for colorName passed from callback
    */
   _generateLayer(radius, elevation, filter, cn) {
-    let data = this.state.data && this.state.data.features
-    const { colourName } = this.state;
-
+    let data = this.state.data && this.state.data.features;
+    const { colourName, column } = this.state;
+    
     if (!data) return;
     const geomType = sfType(data[0]).toLowerCase();
     //if resetting a value
@@ -181,14 +182,24 @@ export default class Welcome extends React.Component {
     if (layerStyle === 'geojson') {
       options.getFillColor = (d) => colorScale(d, data) //first prop
     }
-    // console.log(geomType);
-    if (geomType === "polygon") {
-      options.getElevation = d =>
-        d.properties.diffall || d.properties.GVA || null
-      options.getFillColor = (d) => colorScale(d, data, 1)
+    if (geomType === 'linestring') {
+      layerStyle = "line"
+      // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
+      options.getColor = d => [Math.sqrt(d.inbound + d.outbound), 140, 0]
+      options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
+      options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
+      let columnNameOrIndex = 
+      (filter && filter.what === 'column' && filter.selected) ||
+      column || 1;
+      options.getWidth = d => d.properties[columnNameOrIndex]; // avoid id
+    }
+    if(geomType === "polygon") {
+      options.getElevation = d => 
+      d.properties.diffall || d.properties.GVA || null
+      // TODO: allow user to specify column.
+      options.getFillColor = (d) => colorScale(d, data, 0)
     }
     if (data.length === 7201) {
-      console.log("line");
       options.getColor = d => [255, 255, 255]
       options.getSourcePosition = d =>
         [d.properties.area_lon, d.properties.area_lat];
@@ -207,13 +218,15 @@ export default class Welcome extends React.Component {
       layers: [alayer],
       radius: radius ? radius : this.state.radius,
       elevation: elevation ? elevation : this.state.elevation,
-      road_type: filter && filter.what === 'road_type' ? filter.selected :
-        this.state.road_type,
-      year: filter && filter.what === 'year' ? filter.selected :
-        this.state.year,
-      severity: filter && filter.what === 'severity' ? filter.selected :
-        this.state.severity,
-      colourName: cn || colourName
+      road_type: filter && filter.what === 'road_type' ? filter.selected : 
+      this.state.road_type,
+      year: filter && filter.what === 'year' ? filter.selected : 
+      this.state.year,
+      severity: filter && filter.what === 'severity' ? filter.selected : 
+      this.state.severity,
+      colourName: cn || colourName,
+      column: filter && filter.what === 'column' ? filter.selected : 
+      this.state.column,
     })
   }
 
@@ -371,6 +384,7 @@ export default class Welcome extends React.Component {
             }
             this._fitViewport();
           }}
+          column={ this.state.column }
           onSelectCallback={(selected) => this._generateLayer(undefined, undefined, selected)}
           onChangeRadius={(value) => this._generateLayer(value)}
           onChangeElevation={(value) => this._generateLayer(undefined, value)}

@@ -24,6 +24,7 @@ import { timeSlider, drawDropdown } from '../Showcases/Widgets';
 import { seriesPlot } from '../Showcases/Plots';
 import HexbinSeries from '../Showcases/HexbinSeries';
 import RBDropDown from '../RBDropdownComponent';
+import { isEmptyOrSpaces } from '../../JSUtils';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 
@@ -75,7 +76,7 @@ export default class DeckSidebar extends React.Component {
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data, colourCallback, layerStyle,
       toggleSubsetBoundsChange, urlCallback, alert,
-      onlocationChange, dark } = this.props;
+      onlocationChange, dark, column } = this.props;
     let plot_data = [];
     const notEmpty = data && data.length > 1;
     if (notEmpty) {
@@ -127,6 +128,8 @@ export default class DeckSidebar extends React.Component {
               onClose={() => this.setState({ open: true })}
               urlCallback={(url, geojson) => {
                 this.setState({ open: true, reset: true })
+                console.log(geojson.features[0]);
+                
                 typeof (urlCallback) === 'function'
                   && urlCallback(url, geojson)
               }
@@ -175,12 +178,14 @@ export default class DeckSidebar extends React.Component {
                   }, dark))
               }
               <hr style={{ clear: 'both' }} />
-              {notEmpty && data[0].properties.type === 'POINT' &&
+              {notEmpty && data[0].geometry.type.toUpperCase() === 'POINT' &&
                 <div className="right-panel-container" >
                   {
-                    notEmpty && <HexbinSeries data={coordsAsXY(
-                      { features: data }
-                    )} />
+                    notEmpty && 
+                    <HexbinSeries 
+                      data={coordsAsXY({ features: data })} 
+                      options={{noXAxis: true, noYAxis: true}}
+                      />
                   }
                 </div>}
               <Tabs defaultActiveKey={"1"} id="main-tabs">
@@ -194,14 +199,19 @@ export default class DeckSidebar extends React.Component {
                   })}
                   {/* barChartVariable */}
                   {
-                    notEmpty &&
+                    notEmpty && 
+                    Object.keys(data[0].properties)
+                    .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
                     <RBDropDown
-                      title={humanize(barChartVariable)}
+                      title={humanize(column) || "Choose Column"}
                       menuitems={Object.keys(data[0].properties)}
-                      onSelectCallback={(selected) => this.setState({
-                        barChartVariable: selected
-                      })
-                      } />
+                      onSelectCallback={(selected) => {
+                        this.setState({
+                          barChartVariable: selected
+                        });
+                      typeof onSelectCallback === 'function' &&
+                      onSelectCallback({what: 'column', selected});
+                      }} />
                   }
                   {seriesPlot({
                     data: rtPlot.data,

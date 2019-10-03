@@ -1,5 +1,5 @@
 import React from 'react';
-import { XYPlot, LineSeries, VerticalBarSeries, XAxis, YAxis, } from 'react-vis';
+import { LineSeries, VerticalBarSeries } from 'react-vis';
 import { Table } from 'baseui/table';
 import { humanize } from '../utils';
 import { seriesPlot } from './Showcases/Plots';
@@ -30,6 +30,11 @@ export default class Tooltip extends React.Component {
     this.forceUpdate()
   };
 
+  /**
+   * hoverdObject can be of two types so far:
+   * 1. collections of points with `.points` property
+   * 2. properties of `.type === 'Feature'`.
+   */
   render() {
     const { topx, topy, hoveredObject } = this.props;
     const { isMobile } = this.state;
@@ -37,7 +42,8 @@ export default class Tooltip extends React.Component {
 
     if (!hoveredObject) return null;
 
-    const type_feature = hoveredObject.type && hoveredObject.type === 'Feature';
+    const type_feature = hoveredObject.type && 
+    hoveredObject.type === 'Feature';
     let list;
     let crashes_data = [];
     let severity_data = [];
@@ -86,9 +92,7 @@ export default class Tooltip extends React.Component {
     const n_topy = isMobile ? 10 :
       topy + (WIDTH + BAR_HEIGHT) > y ? topy - WIDTH : topy;
     const n_left = isMobile ? 10 :
-      topx + WIDTH > w ? topx - WIDTH : topx;
-    const firstPointProperties = hoveredObject.points &&
-      hoveredObject.points[0].properties && hoveredObject.points[0].properties;
+      topx + WIDTH > w ? topx - WIDTH : topx;    
     const tooltip =
       <div
         className="xyz" style={{
@@ -100,16 +104,11 @@ export default class Tooltip extends React.Component {
         </div>
         <div>
           {
-            (hoveredObject.properties && hoveredObject.properties.speed_limit) ||
-              (firstPointProperties && firstPointProperties.hasOwnProperty("speed_limit")) ?
-              <div>
-                Road speed: {type_feature ?
-                  hoveredObject.properties.speed_limit :
-                  firstPointProperties.speed_limit}
-              </div> :
-              hoveredObject.properties ?
-                this._listPropsAndValues(hoveredObject) :
-                Object.values(firstPointProperties)[0]
+            // Simple logic, if points and less two points or less,
+            // or not poingts, hard to expect React-vis generating plot.
+            // so list the values of the non-point or list both points.
+            (type_feature || hoveredObject.points.length <= 2) &&
+            this._listPropsAndValues(hoveredObject)
           }
           {
             // react-vis cannot generate plot for single value
@@ -132,13 +131,32 @@ export default class Tooltip extends React.Component {
   }
 
   _listPropsAndValues(hoveredObject) {
-    const DATA = [];
-    const COLUMNS = Object.keys(hoveredObject.properties)
+    let DATA = []
+    const props = hoveredObject.properties;
+    if(props) {
+      DATA = Object.keys(props)
       .map(p => {
-        DATA.push(hoveredObject.properties[p])
-        return (humanize(p))
+        return([humanize(p), props[p]])
       })
-    return <Table columns={COLUMNS} data={[DATA]} />
+    } else { // two points passed go through first one
+      DATA = Object.keys(hoveredObject.points[0].properties)
+      .map(p => {
+        let points = [
+          humanize(p), 
+          hoveredObject.points[0].properties[p],
+        ]
+        if(hoveredObject.points[1]) {
+          points.push(hoveredObject.points[1].properties[p])
+        }
+        return(points)
+      })
+    }
+    return <Table style={{maxWidth: '320px'}} 
+    columns={
+      hoveredObject.points && 
+      hoveredObject.points.length === 2 ? 
+      ['Property', 'Value p1', 'Value p2'] : ['Property', 'Value'] 
+    } data={DATA} />
 
   }
 }

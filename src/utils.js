@@ -193,8 +193,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       id: 'line-layer',
       data,
       pickable: true,
-      getWidth: 100,
-      getPosition: d => d.geometry.coordinates,
+      getWidth: 5,
       onHover: renderTooltip
     }
     addOptionsToObject(options, lineObject)
