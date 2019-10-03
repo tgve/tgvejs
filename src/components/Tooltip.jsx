@@ -107,7 +107,7 @@ export default class Tooltip extends React.Component {
             // Simple logic, if points and less two points or less,
             // or not poingts, hard to expect React-vis generating plot.
             // so list the values of the non-point or list both points.
-            type_feature || hoveredObject.points.length <= 2 &&
+            (type_feature || hoveredObject.points.length <= 2) &&
             this._listPropsAndValues(hoveredObject)
           }
           {
@@ -153,6 +153,7 @@ export default class Tooltip extends React.Component {
     }
     return <Table style={{maxWidth: '320px'}} 
     columns={
+      hoveredObject.points && 
       hoveredObject.points.length === 2 ? 
       ['Property', 'Value p1', 'Value p2'] : ['Property', 'Value'] 
     } data={DATA} />

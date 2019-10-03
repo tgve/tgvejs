@@ -194,10 +194,13 @@ export default class DeckSidebar extends React.Component {
                     <RBDropDown
                       title={humanize(barChartVariable)}
                       menuitems={Object.keys(data[0].properties)}
-                      onSelectCallback={(selected) => this.setState({
-                        barChartVariable: selected
-                      })
-                      } />
+                      onSelectCallback={(selected) => {
+                        this.setState({
+                          barChartVariable: selected
+                        });
+                      typeof onSelectCallback === 'function' &&
+                      onSelectCallback({what: 'column', selected});
+                      }} />
                   }
                   {seriesPlot({
                     data: rtPlot.data,
