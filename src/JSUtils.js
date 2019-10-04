@@ -112,6 +112,10 @@ var sanitizeBool = function(bool) {
     }
 }
 
+function isEmptyOrSpaces(str){
+  return str === null || str.match(/^ *$/) !== null;
+}
+
 exports.isString = isString;
 exports.isNumber = isNumber;
 exports.isBoolean = isBoolean;
@@ -125,3 +129,4 @@ exports.sanitizeInt = sanitizeInt;
 exports.sanitizeString = sanitizeString;
 exports.sanitizeStringNonNull = sanitizeStringNonNull;
 exports.sanitizeBool = sanitizeBool;
+exports.isEmptyOrSpaces = isEmptyOrSpaces;

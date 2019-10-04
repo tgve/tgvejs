@@ -17,7 +17,10 @@ export default (props) => {
   return (
     <React.Fragment>
       <i 
-      style={{cursor: 'pointer', fontSize:'1.5em'}}
+      style={{
+        margin: 5,
+        cursor: 'pointer', 
+        fontSize:'1.5em'}}
       onClick={() => setIsOpen(true)}
       className="fa fa-table"></i>
       <Modal size="80%" onClose={close} isOpen={isOpen}>

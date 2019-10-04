@@ -18,16 +18,19 @@ import React, { Component } from 'react';
 
 import './style.css';
 import { humanize } from '../utils';
+import { isEmptyOrSpaces } from '../JSUtils';
 import { describeGeojson } from '../geojsonutils';
 import { Button, SIZE, KIND } from 'baseui/button';
 
+const SHOWN_ITEMS = 5;
 export default class Variables extends Component {
   constructor(props) {
     super(props);
     this.state = {
       list: null,
       showAll: false,
-      selected: props.multiVarSelect || {}
+      selected: props.multiVarSelect || {},
+      n: SHOWN_ITEMS
     }
     this._generateList = this._generateList.bind(this);
     this._geoJSONPropsOrValues = this._geoJSONPropsOrValues.bind(this);
@@ -35,6 +38,7 @@ export default class Variables extends Component {
     this._showSelectedVars = this._showSelectedVars.bind(this);
     this._showTopn = this._showTopn.bind(this);
     this._shorten = this._shorten.bind(this);
+    this._button = this._button.bind(this);
   }
 
   componentDidMount() {
@@ -149,12 +153,22 @@ export default class Variables extends Component {
 
   /**
    * 
-   * @param {*} shownSublist 
+   * @param {*} shownSublist array of spans class tagcloud
    * @param {*} n 
    */
-  _showTopn(shownSublist, n = 5) {
+  _showTopn(shownSublist) {
+    const { sublist, showAll } = this.state;
+    let n = this.state.n;
     if (shownSublist.length < n) n = shownSublist.length
     return <>
+      {shownSublist.length > SHOWN_ITEMS &&
+        <div style={{ width: '100%' }}>
+          {showAll ?
+            this._button(showAll, "Less", SHOWN_ITEMS) :
+            this._button(showAll, undefined, sublist.length)
+          }
+        </div>
+      }
       {shownSublist.slice(0, n)}
       <p>Showing {n} out of {shownSublist.length}</p>
     </>;
@@ -198,9 +212,9 @@ export default class Variables extends Component {
    * 3. If 5 or less has been filtered show them
    * 4. Otherwise just show sublist UNfiltered (top 5)
    */
-  _geoJSONPropsOrValues(shownSublist, selected, key, sublist, n = 5) {
+  _geoJSONPropsOrValues(shownSublist, selected, key, sublist) {
     // console.log(selected);
-
+    const { n } = this.state;
     if (!sublist) return null
     if ((!shownSublist || shownSublist.length === 0) &&
       (!selected || !selected[key] || selected[key].size === 0)) {
@@ -209,7 +223,7 @@ export default class Variables extends Component {
       sublist.length) {
       return null
     } else if (shownSublist.length > n) {
-      return this._showTopn(shownSublist, n)
+      return this._showTopn(shownSublist)
     }
     return shownSublist
   }
@@ -222,6 +236,12 @@ export default class Variables extends Component {
         return selected[key] && each && !selected[key].has(each.key)
       })
 
+    if(data && Object.keys(data[0].properties)
+    .filter(p => !isEmptyOrSpaces(p)).length === 0) {
+      return(
+        <h3>There are no columns to inspect or filter.</h3>
+      )
+    }
     return (
       <div style={this.props.style}>
         Dataset:
@@ -276,11 +296,12 @@ export default class Variables extends Component {
     )
   }
 
-  _button(showAll, title = "Show all") {
+  _button(showAll, title = "Show all", n) {
     return <Button size={SIZE.compact} kind={KIND.secondary}
       onClick={() => {
         this.setState({
-          showAll: !showAll
+          showAll: !showAll,
+          n: n ? n : this.state.n
         });
       }}>{title}</Button>;
   }

@@ -24,6 +24,8 @@ import { timeSlider, drawDropdown } from '../Showcases/Widgets';
 import { seriesPlot } from '../Showcases/Plots';
 import HexbinSeries from '../Showcases/HexbinSeries';
 import RBDropDown from '../RBDropdownComponent';
+import { isEmptyOrSpaces } from '../../JSUtils';
+// import GenerateUI from '../UI';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 
@@ -75,7 +77,7 @@ export default class DeckSidebar extends React.Component {
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data, colourCallback, layerStyle,
       toggleSubsetBoundsChange, urlCallback, alert,
-      onlocationChange, dark } = this.props;
+      onlocationChange, dark, column } = this.props;
     let plot_data = [];
     const notEmpty = data && data.length > 1;
     if (notEmpty) {
@@ -95,8 +97,8 @@ export default class DeckSidebar extends React.Component {
     const curr_road_types = notEmpty && data_properties['road_type'] &&
       Array.from(data_properties['road_type'])
 
-    const rtPlot = {
-      data: notEmpty ? xyObjectByProperty(data, barChartVariable) : [],
+    const columnPlot = {
+      data: notEmpty ? xyObjectByProperty(data, column || barChartVariable) : [],
       opacity: 1,
       stroke: 'rgb(72, 87, 104)',
       fill: 'rgb(18, 147, 154)',
@@ -122,8 +124,9 @@ export default class DeckSidebar extends React.Component {
               : "Nothing to show"}
             </h2>
           </div>
-          <div onClick={() => this.setState({ open: false })}>
+          <div>
             <DataInput
+              onOpen={() => this.setState({ open: false })}
               onClose={() => this.setState({ open: true })}
               urlCallback={(url, geojson) => {
                 this.setState({ open: true, reset: true })
@@ -145,6 +148,18 @@ export default class DeckSidebar extends React.Component {
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
+              {/* {
+                <GenerateUI 
+                  title={"showing %"}
+                  sublist={[10,20,30,40,50,60,70,80,90,100]}
+                  suggested="slider"
+                  steps={5}
+                  onChange={(value) => {
+                    typeof onSelectCallback === 'function' &&
+                      onSelectCallback({what: '%', selected: value});
+                  }}
+                />
+              } */}
               {/* range of two values slider is not native html */
                 timeSlider(data, year, multiVarSelect,
                   onSelectCallback, (changes) => this.setState(changes))
@@ -175,12 +190,14 @@ export default class DeckSidebar extends React.Component {
                   }, dark))
               }
               <hr style={{ clear: 'both' }} />
-              {notEmpty && data[0].properties.type === 'POINT' &&
+              {notEmpty && data[0].geometry.type.toUpperCase() === 'POINT' &&
                 <div className="right-panel-container" >
                   {
-                    notEmpty && <HexbinSeries data={coordsAsXY(
-                      { features: data }
-                    )} />
+                    notEmpty &&
+                    <HexbinSeries
+                      data={coordsAsXY({ features: data })}
+                      options={{ noXAxis: true, noYAxis: true }}
+                    />
                   }
                 </div>}
               <Tabs defaultActiveKey={"1"} id="main-tabs">
@@ -192,23 +209,28 @@ export default class DeckSidebar extends React.Component {
                     data: plot_data, type: LineSeries,
                     title: "Crashes", dark
                   })}
-                  {/* barChartVariable */}
+                  {/* pick a column */}
                   {
                     notEmpty &&
+                    Object.keys(data[0].properties)
+                      .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
                     <RBDropDown
-                      title={humanize(barChartVariable)}
+                      title={humanize(column) || humanize(barChartVariable) ||
+                        "Choose Column"}
                       menuitems={Object.keys(data[0].properties)}
-                      onSelectCallback={(selected) => this.setState({
-                        barChartVariable: selected
-                      })
-                      } />
+                      onSelectCallback={(selected) => {
+                        this.setState({
+                          barChartVariable: selected
+                        });
+                        typeof onSelectCallback === 'function' &&
+                          onSelectCallback({ what: 'column', selected });
+                      }} />
                   }
                   {seriesPlot({
-                    data: rtPlot.data,
+                    data: columnPlot.data,
                     type: VerticalBarSeries,
                     onValueClick: (datapoint) => {
-                      multiVarSelect[barChartVariable] = new Set([datapoint.x]);
-                      // console.log(datapoint);
+                      multiVarSelect[column] = new Set([datapoint.x]);
                       this.setState({ multiVarSelect })
                       onSelectCallback &&
                         onSelectCallback(Object.keys(multiVarSelect).length === 0 ?

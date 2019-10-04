@@ -116,8 +116,8 @@ const coordsAsXY = (geojson, sizeProperty) => {
     geojson.features.map(each => {
       // lon lat please
       const result = {
-        x: each.geometry.coordinates[1],
-        y: each.geometry.coordinates[0]
+        x: each.geometry.coordinates[0],
+        y: each.geometry.coordinates[1]
       }
       if (sizeProperty && each.properties[sizeProperty]) {
         result.size = each.properties[sizeProperty]
