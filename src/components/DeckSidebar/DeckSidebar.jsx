@@ -16,15 +16,15 @@ import {
 import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
-import { propertyCount, getPropertyValues, coordsAsXY } from '../../geojsonutils';
+import { propertyCount, getPropertyValues } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
 import { timeSlider, drawDropdown } from '../Showcases/Widgets';
 import { seriesPlot } from '../Showcases/Plots';
-import HexbinSeries from '../Showcases/HexbinSeries';
 import RBDropDown from '../RBDropdownComponent';
 import { isEmptyOrSpaces } from '../../JSUtils';
+import HexPlot from './HexPlot';
 // import GenerateUI from '../UI';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
@@ -35,7 +35,7 @@ export default class DeckSidebar extends React.Component {
     this.state = {
       radius: 100,
       elevation: 4,
-      open: true,
+      open: !props.isMobile,
       // must match the order in plumber.R
       all_road_types: ["All", "Dual carriageway",
         "Single carriageway", "Roundabout", "Unknown",
@@ -74,7 +74,7 @@ export default class DeckSidebar extends React.Component {
     const { open, elevation,
       radius, all_road_types, year,
       subsetBoundsChange, multiVarSelect, barChartVariable } = this.state;
-    const { onChangeRadius, onChangeElevation,
+    const { onChangeRadius, onChangeElevation, isMobile,
       onSelectCallback, data, colourCallback, layerStyle,
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, column } = this.props;
@@ -104,7 +104,7 @@ export default class DeckSidebar extends React.Component {
       fill: 'rgb(18, 147, 154)',
     }
 
-    // console.log(seriesProps);
+    console.log(open);
 
     return (
       <div className="side-panel-container"
@@ -120,10 +120,10 @@ export default class DeckSidebar extends React.Component {
           </div>
           <div>
             <DataInput
-              onOpen={() => this.setState({open: false})}
+              onOpen={() => this.setState({ open: false })}
               onClose={() => this.setState({ open: true })}
               urlCallback={(url, geojson) => {
-                this.setState({ open: true, reset: true })                
+                this.setState({ open: true, reset: true })
                 typeof (urlCallback) === 'function'
                   && urlCallback(url, geojson)
               }
@@ -184,16 +184,7 @@ export default class DeckSidebar extends React.Component {
                   }))
               }
               <hr style={{ clear: 'both' }} />
-              {notEmpty && data[0].geometry.type.toUpperCase() === 'POINT' &&
-                <div className="right-panel-container" >
-                  {
-                    notEmpty && 
-                    <HexbinSeries 
-                      data={coordsAsXY({ features: data })} 
-                      options={{noXAxis: true, noYAxis: true}}
-                      />
-                  }
-                </div>}
+              <HexPlot isMobile={isMobile} notEmpty={notEmpty} data={data} />
               <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
@@ -205,19 +196,19 @@ export default class DeckSidebar extends React.Component {
                   })}
                   {/* pick a column */}
                   {
-                    notEmpty && 
+                    notEmpty &&
                     Object.keys(data[0].properties)
-                    .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
+                      .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
                     <RBDropDown
-                      title={humanize(column) || humanize(barChartVariable) || 
+                      title={humanize(column) || humanize(barChartVariable) ||
                         "Choose Column"}
                       menuitems={Object.keys(data[0].properties)}
                       onSelectCallback={(selected) => {
                         this.setState({
                           barChartVariable: selected
                         });
-                      typeof onSelectCallback === 'function' &&
-                      onSelectCallback({what: 'column', selected});
+                        typeof onSelectCallback === 'function' &&
+                          onSelectCallback({ what: 'column', selected });
                       }} />
                   }
                   {seriesPlot({
@@ -371,5 +362,4 @@ export default class DeckSidebar extends React.Component {
     )
   }
 }
-
 

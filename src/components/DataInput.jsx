@@ -31,32 +31,32 @@ export default function (props) {
         }
         }
         isOpen={isOpen}>
-          <ModalHeader>Add Data</ModalHeader>
+        <ModalHeader>Add Data</ModalHeader>
         <ModalBody>
           <FocusOnce>
             <URL urlCallback={(url) => {
-                setOpen(false);
-                typeof (urlCallback) === 'function'
-                  && urlCallback(url)
-              }} />
+              setOpen(false);
+              typeof (urlCallback) === 'function'
+                && urlCallback(url)
+            }} />
           </FocusOnce>
-          <File contentCallback={({ text, name }) => {            
-            if(name && (name.split(".")[1].match(/geo/) //test.json
-            || name.split(".")[1].match(/json/))) {
+          <File contentCallback={({ text, name }) => {
+            if (name && (name.split(".")[1].match(/geo/) //test.json
+              || name.split(".")[1].match(/json/))) {
               try {
-                  const json = JSON.parse(text);
-                  typeof (urlCallback) === 'function'
+                const json = JSON.parse(text);
+                typeof (urlCallback) === 'function'
                   && urlCallback(null, json)
-                  setOpen(false);
+                setOpen(false);
               } catch (e) {
-                  console.log(e);
+                console.log(e);
               }
             } else {
               // err has any parsing errors
               csv2geojson.csv2geojson(text, (err, data) => {
-                if(!err) {
+                if (!err) {
                   typeof (urlCallback) === 'function'
-                      && urlCallback(null, data)
+                    && urlCallback(null, data)
                 }
               });
             }
@@ -66,7 +66,7 @@ export default function (props) {
           <ModalButton onClick={() => {
             setOpen(false);
             typeof (onClose) === 'function' && onClose();
-            }}>Close</ModalButton>
+          }}>Close</ModalButton>
         </ModalFooter>
       </Modal>
     </React.Fragment>

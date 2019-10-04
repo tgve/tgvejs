@@ -12,10 +12,10 @@
  */
 import React from 'react';
 import { FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
-import {format} from 'd3-format';
+import { format } from 'd3-format';
 
 import {
-  shortenName, 
+  shortenName,
   fetchData, humanize
 } from '../utils';
 import Variables from './Variables';
@@ -26,6 +26,7 @@ import URL from './URL';
 import { propertyCount } from '../geojsonutils';
 import GeomExplore from './GeomExplore';
 import Table from './Table/Table';
+import MultiSelect from './MultiSelect';
 
 const WIDTH = '400';
 const BAR_HEIGHT = 320;
@@ -52,7 +53,7 @@ export default class DUI extends React.Component {
     let sub_data = propertyCount(data, key, bars);
     return (
       <FlexibleXYPlot
-        margin={{left: 100, bottom: 100}}
+        margin={{ left: 100, bottom: 100 }}
         title={humanize(key)}
         xType="ordinal"
         width={WIDTH} height={BAR_HEIGHT}
@@ -67,7 +68,7 @@ export default class DUI extends React.Component {
         <XAxis
           style={{ text: { fill: '#fff' } }}
           tickLabelAngle={-45}
-          tickFormat={v => (v + "").length > 15 ? (v + "").substring(0,8) + "..." : v}
+          tickFormat={v => (v + "").length > 15 ? (v + "").substring(0, 8) + "..." : v}
         />
         <VerticalBarSeries
           // color={v => v === "Fatal" ? 1 : v === "Slight" ? 0 : null}
@@ -107,7 +108,7 @@ export default class DUI extends React.Component {
 
   render() {
     const { data, key, sublist, name, loading } = this.state;
-    
+
     return (
       <div className="content" style={{
         margin: 'auto', padding: '5%', color: '#a3a5a8'
