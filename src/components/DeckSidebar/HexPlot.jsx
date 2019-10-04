@@ -1,12 +1,15 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import HexbinSeries from '../Showcases/HexbinSeries';
 import MultiSelect from '../MultiSelect';
 
 import { coordsAsXY } from '../../geojsonutils';
 
 export default (props) => {
-  const [value, setValue] = React.useState([]);
-  const [open, setOpen] = React.useState(!props.isMobile);
+  // const [value, setValue] = useState([]);
+  const [open, setOpen] = useState(props.open === true);
+  useEffect(() => {
+    setOpen(props.open);
+  }, [props.open])
 
   const { notEmpty, data } = props;
 

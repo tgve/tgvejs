@@ -15,21 +15,20 @@ const csv2geojson = require('csv2geojson');
 
 export default function (props) {
   const [isOpen, setOpen] = React.useState(false);
-  const { urlCallback, onOpen, onClose } = props;
+  const { urlCallback, toggleOpen } = props;
   return (
     <React.Fragment>
       <Button
         kind={KIND.secondary} size={SIZE.compact}
         onClick={() => {
           setOpen(s => !s); // or s === isOpen
-          typeof onOpen === 'function' && onOpen()
+          typeof toggleOpen === 'function' && toggleOpen()
         }}>Add data</Button>
       <Modal
         onClose={() => {
-          typeof (onClose) === 'function' && onClose()
+          typeof (toggleOpen) === 'function' && toggleOpen()
           setOpen(false);
-        }
-        }
+        }}
         isOpen={isOpen}>
         <ModalHeader>Add Data</ModalHeader>
         <ModalBody>
@@ -65,7 +64,7 @@ export default function (props) {
         <ModalFooter>
           <ModalButton onClick={() => {
             setOpen(false);
-            typeof (onClose) === 'function' && onClose();
+            typeof (toggleOpen) === 'function' && toggleOpen();
           }}>Close</ModalButton>
         </ModalFooter>
       </Modal>
