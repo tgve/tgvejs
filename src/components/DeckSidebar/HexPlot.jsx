@@ -8,6 +8,9 @@ export default (props) => {
   // const [value, setValue] = useState([]);
   const [open, setOpen] = useState(props.open === true);
   useEffect(() => {
+    // if props.open change to true
+    // and if mobile, keep it shut.
+    if(props.open === true && props.isMobile === true) return;
     setOpen(props.open);
   }, [props.open])
 
