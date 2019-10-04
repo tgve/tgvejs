@@ -10,10 +10,16 @@
 }
 
 .right-panel-container {
-  background-color: #242730;
   bottom: 24px;
   position: fixed;
-  right: 0
+  right: 0;
+  display: flex;
+  -webkit-box-align: stretch;
+  -webkit-transition: margin 250ms;
+}
+
+.right-side-panel {
+  background-color: #242730;
 }
 
 .side-panel-container {

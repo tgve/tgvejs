@@ -69,7 +69,6 @@ export default class Welcome extends React.Component {
       zoom: 10,
       pitch: 55,
       bearing: 0,
-      isMobile: isMobile()
     }
     const param = getParamsFromSearch(props.location.search);
     if (param) {
@@ -280,7 +279,7 @@ export default class Welcome extends React.Component {
       tooltip:
         // react did not like x and y props.
         <Tooltip
-          isMobile={this.state.isMobile}
+          isMobile={isMobile()}
           topx={x} topy={y} hoveredObject={hoveredObject} />
     })
   }
@@ -326,10 +325,8 @@ export default class Welcome extends React.Component {
 
   render() {
     const { tooltip, viewport, initialViewState,
-      loading, mapStyle, alert, isMobile,
+      loading, mapStyle, alert,
       layerStyle } = this.state;
-    // let {viewState} = this.props;
-
     return (
       <div>
         {/* just a little catch to hide the loader 
@@ -375,7 +372,7 @@ export default class Welcome extends React.Component {
         <DeckSidebar
           dark={this.props.dark}
           layerStyle={layerStyle}
-          isMobile={isMobile}
+          isMobile={isMobile()}
           key="decksidebar"
           alert={alert}
           data={this.state.filtered}

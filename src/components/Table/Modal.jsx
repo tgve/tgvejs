@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button, KIND, SIZE } from 'baseui/button';
+import { Button, KIND, SIZE } from 'baseui/button';
 import {
   Modal,
   ModalHeader,
@@ -16,20 +16,21 @@ export default (props) => {
   }
   return (
     <React.Fragment>
-      <i 
-      style={{
-        margin: 5,
-        cursor: 'pointer', 
-        fontSize:'1.5em'}}
-      onClick={() => setIsOpen(true)}
-      className="fa fa-table"></i>
+      <i
+        style={{
+          margin: 5,
+          cursor: 'pointer',
+          fontSize: '1.5em'
+        }}
+        onClick={() => setIsOpen(true)}
+        className="fa fa-table"></i>
       <Modal size="80%" onClose={close} isOpen={isOpen}>
         <ModalHeader>Data table</ModalHeader>
         <ModalBody>
-          <DataTable data={props.data}/>
+          <DataTable data={props.data} />
         </ModalBody>
         <ModalFooter>
-          <Button 
+          <Button
             kind={KIND.secondary} size={SIZE.compact}
             onClick={close}>Okay</Button>
         </ModalFooter>

@@ -16,15 +16,15 @@ import {
 import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
-import { propertyCount, getPropertyValues, coordsAsXY } from '../../geojsonutils';
+import { propertyCount, getPropertyValues } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
 import { timeSlider, drawDropdown } from '../Showcases/Widgets';
 import { seriesPlot } from '../Showcases/Plots';
-import HexbinSeries from '../Showcases/HexbinSeries';
 import RBDropDown from '../RBDropdownComponent';
 import { isEmptyOrSpaces } from '../../JSUtils';
+import HexPlot from './HexPlot';
 // import GenerateUI from '../UI';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
@@ -35,7 +35,7 @@ export default class DeckSidebar extends React.Component {
     this.state = {
       radius: 100,
       elevation: 4,
-      open: true,
+      open: !props.isMobile,
       // must match the order in plumber.R
       all_road_types: ["All", "Dual carriageway",
         "Single carriageway", "Roundabout", "Unknown",
@@ -74,7 +74,7 @@ export default class DeckSidebar extends React.Component {
     const { open, elevation,
       radius, all_road_types, year,
       subsetBoundsChange, multiVarSelect, barChartVariable } = this.state;
-    const { onChangeRadius, onChangeElevation,
+    const { onChangeRadius, onChangeElevation, isMobile,
       onSelectCallback, data, colourCallback, layerStyle,
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, dark, column } = this.props;
@@ -190,16 +190,7 @@ export default class DeckSidebar extends React.Component {
                   }, dark))
               }
               <hr style={{ clear: 'both' }} />
-              {notEmpty && data[0].geometry.type.toUpperCase() === 'POINT' &&
-                <div className="right-panel-container" >
-                  {
-                    notEmpty &&
-                    <HexbinSeries
-                      data={coordsAsXY({ features: data })}
-                      options={{ noXAxis: true, noYAxis: true }}
-                    />
-                  }
-                </div>}
+              <HexPlot isMobile={isMobile} notEmpty={notEmpty} data={data} />
               <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
@@ -385,5 +376,4 @@ export default class DeckSidebar extends React.Component {
     )
   }
 }
-
 
