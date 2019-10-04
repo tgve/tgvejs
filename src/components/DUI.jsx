@@ -26,7 +26,6 @@ import URL from './URL';
 import { propertyCount } from '../geojsonutils';
 import GeomExplore from './GeomExplore';
 import Table from './Table/Table';
-import MultiSelect from './MultiSelect';
 
 const WIDTH = '400';
 const BAR_HEIGHT = 320;

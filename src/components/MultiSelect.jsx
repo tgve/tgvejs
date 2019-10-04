@@ -3,7 +3,6 @@ import { Select, TYPE } from 'baseui/select';
 
 export default (props) => {
   const [value, setValue] = React.useState([]);
-  console.log(value);
   const { selectedCallback, values } = props;
   if (!values || !values.length) return null
   return (

@@ -126,15 +126,16 @@ export default class DeckSidebar extends React.Component {
           </div>
           <div>
             <DataInput
-              onOpen={() => this.setState({ open: false })}
-              onClose={() => this.setState({ open: true })}
+              toggleOpen={() => this.setState({ open: !open })}
               urlCallback={(url, geojson) => {
                 this.setState({ open: true, reset: true })
                 typeof (urlCallback) === 'function'
                   && urlCallback(url, geojson)
               }
               } />
-            <Modal data={data} />
+            <Modal
+              toggleOpen={() => this.setState({ open: !open })}
+              data={data} />
             {
               this.state.reset &&
               <Button
@@ -190,7 +191,8 @@ export default class DeckSidebar extends React.Component {
                   }, dark))
               }
               <hr style={{ clear: 'both' }} />
-              <HexPlot isMobile={isMobile} notEmpty={notEmpty} data={data} />
+              <HexPlot open={open} isMobile={isMobile}
+                notEmpty={notEmpty} data={data} />
               <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}

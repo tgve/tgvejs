@@ -1,5 +1,5 @@
 import React from 'react';
-import DeckGL, { WebMercatorViewport } from 'deck.gl';
+import DeckGL from 'deck.gl';
 import MapGL, { NavigationControl, FlyToInterpolator } from 'react-map-gl';
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
