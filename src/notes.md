@@ -118,7 +118,7 @@ We aim to develop an online application. However, for the record, applications w
 #### Implementing above ideas
 Most of the interactions, components and other aspects of the "prototype" are feasible and achievable. Layik has already worked on STATS19 dataset and developed a basic "interaction dashboard" to explore STATS19 which does include elements from above/below mentioned ideas and work by Roger.
 
-<img style="width:80%" src="/images/stats19.png" alt="stats19 image"/>
+<img style="width:80%" src="https://user-images.githubusercontent.com/408568/66118004-44646f80-e5cd-11e9-98fa-c319c9b42bf3.png" alt="stats19 image"/>
 
 ## What is a Turing (geo)visualization toolkit?
 
