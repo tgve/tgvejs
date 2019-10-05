@@ -24,7 +24,9 @@ const timeSlider = (data, year, multiVarSelect, onSelectCallback, callback) => {
         }} />}
     </h5>} sublist={data[0].properties.date ?
       Array.apply(null, { length: 9 }).map(Number.call, Number).map(d => d + 2009) :
-      Array.apply(null, { length: 31 }).map(Number.call, Number).map(d => d + 2020)} suggested="slider" onChange={(value) => {
+      Array.apply(null, { length: 31 }).map(Number.call, Number).map(d => d + 2020)} 
+      suggested="slider" 
+      onChange={(value) => {
         multiVarSelect[data[0].properties.date ?
           'date' : 'YEAR'] = new Set([value + ""]);
         callback({

@@ -1,5 +1,5 @@
 import React from 'react';
-import DeckGL, { WebMercatorViewport } from 'deck.gl';
+import DeckGL from 'deck.gl';
 import MapGL, { NavigationControl, FlyToInterpolator } from 'react-map-gl';
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
@@ -8,7 +8,8 @@ import {
   fetchData, generateDeckLayer,
   getParamsFromSearch, getBbx,
   isMobile, colorScale,
-  colorRanges
+  colorRanges,
+  convertRange
 } from './utils';
 import Constants from './Constants';
 import DeckSidebar from './components/DeckSidebar/DeckSidebar';
@@ -17,7 +18,7 @@ import history from './history';
 import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
-import { thisExpression } from '@babel/types';
+import { isNumber } from './JSUtils';
 
 const osmtiles = {
   "version": 8,
@@ -68,7 +69,6 @@ export default class Welcome extends React.Component {
       zoom: 10,
       pitch: 55,
       bearing: 0,
-      isMobile: isMobile()
     }
     const param = getParamsFromSearch(props.location.search);
     if (param) {
@@ -142,10 +142,13 @@ export default class Welcome extends React.Component {
    * @param {*} cn short for colorName passed from callback
    */
   _generateLayer(radius, elevation, filter, cn) {
-    let data = this.state.data && this.state.data.features;
+    let data = this.state.data && this.state.data.features
     const { colourName, column } = this.state;
-    
+
     if (!data) return;
+    if (filter && filter.what === "%") {
+      data = data.slice(0, filter.selected / 100 * data.length)
+    }
     const geomType = sfType(data[0]).toLowerCase();
     //if resetting a value
     if (filter && filter.selected !== "") {
@@ -185,17 +188,29 @@ export default class Welcome extends React.Component {
     if (geomType === 'linestring') {
       layerStyle = "line"
       // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
-      options.getColor = d => [Math.sqrt(d.inbound + d.outbound), 140, 0]
+      options.getColor = d => [235, 170, 20]
       options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
       options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
-      let columnNameOrIndex = 
-      (filter && filter.what === 'column' && filter.selected) ||
-      column || 1;
-      options.getWidth = d => d.properties[columnNameOrIndex]; // avoid id
+      let columnNameOrIndex =
+        (filter && filter.what === 'column' && filter.selected) ||
+        column || 1;
+      if (isNumber(data[0].properties[columnNameOrIndex])) {
+        const colArray = data.map(f => f.properties[columnNameOrIndex])
+        const max = Math.max(...colArray);
+        const min = Math.min(...colArray)
+        options.getWidth = d => {
+          const r = convertRange(
+            d.properties[columnNameOrIndex], {
+            oldMin: min, oldMax: max, newMax: 10, newMin: 0.1
+          }
+          )
+          return r
+        }; // avoid id
+      }
     }
-    if(geomType === "polygon") {
-      options.getElevation = d => 
-      d.properties.diffall || d.properties.GVA || null
+    if (geomType === "polygon") {
+      options.getElevation = d =>
+        d.properties.diffall || d.properties.GVA || null
       // TODO: allow user to specify column.
       options.getFillColor = (d) => colorScale(d, data, 0)
     }
@@ -218,15 +233,15 @@ export default class Welcome extends React.Component {
       layers: [alayer],
       radius: radius ? radius : this.state.radius,
       elevation: elevation ? elevation : this.state.elevation,
-      road_type: filter && filter.what === 'road_type' ? filter.selected : 
-      this.state.road_type,
-      year: filter && filter.what === 'year' ? filter.selected : 
-      this.state.year,
-      severity: filter && filter.what === 'severity' ? filter.selected : 
-      this.state.severity,
+      road_type: filter && filter.what === 'road_type' ? filter.selected :
+        this.state.road_type,
+      year: filter && filter.what === 'year' ? filter.selected :
+        this.state.year,
+      severity: filter && filter.what === 'severity' ? filter.selected :
+        this.state.severity,
       colourName: cn || colourName,
-      column: filter && filter.what === 'column' ? filter.selected : 
-      this.state.column,
+      column: filter && filter.what === 'column' ? filter.selected :
+        this.state.column,
     })
   }
 
@@ -264,7 +279,7 @@ export default class Welcome extends React.Component {
       tooltip:
         // react did not like x and y props.
         <Tooltip
-          isMobile={this.state.isMobile}
+          isMobile={isMobile()}
           topx={x} topy={y} hoveredObject={hoveredObject} />
     })
   }
@@ -310,10 +325,8 @@ export default class Welcome extends React.Component {
 
   render() {
     const { tooltip, viewport, initialViewState,
-      loading, mapStyle, alert, isMobile,
+      loading, mapStyle, alert,
       layerStyle } = this.state;
-    // let {viewState} = this.props;
-
     return (
       <div>
         {/* just a little catch to hide the loader 
@@ -359,7 +372,7 @@ export default class Welcome extends React.Component {
         <DeckSidebar
           dark={this.props.dark}
           layerStyle={layerStyle}
-          isMobile={isMobile}
+          isMobile={isMobile()}
           key="decksidebar"
           alert={alert}
           data={this.state.filtered}
@@ -384,7 +397,7 @@ export default class Welcome extends React.Component {
             }
             this._fitViewport();
           }}
-          column={ this.state.column }
+          column={this.state.column}
           onSelectCallback={(selected) => this._generateLayer(undefined, undefined, selected)}
           onChangeRadius={(value) => this._generateLayer(value)}
           onChangeElevation={(value) => this._generateLayer(undefined, value)}

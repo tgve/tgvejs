@@ -15,9 +15,9 @@ export default function DataTable(props) {
     .map(each => humanize(each))
 
   const rows = data.slice(currentPage * 10, (currentPage * 10) + 10)
-    .map(feature => {
+    .forEach(feature => {
       if (feature.type === 'Feature') {
-        return(
+        return (
           Object.keys(feature.properties).map(e =>
             feature.properties[e])
         )

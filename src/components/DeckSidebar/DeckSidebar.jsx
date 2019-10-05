@@ -16,15 +16,16 @@ import {
 import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
-import { propertyCount, getPropertyValues, coordsAsXY } from '../../geojsonutils';
+import { propertyCount, getPropertyValues } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
 import { timeSlider, drawDropdown } from '../Showcases/Widgets';
 import { seriesPlot } from '../Showcases/Plots';
-import HexbinSeries from '../Showcases/HexbinSeries';
 import RBDropDown from '../RBDropdownComponent';
 import { isEmptyOrSpaces } from '../../JSUtils';
+import HexPlot from './HexPlot';
+// import GenerateUI from '../UI';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 
@@ -34,7 +35,7 @@ export default class DeckSidebar extends React.Component {
     this.state = {
       radius: 100,
       elevation: 4,
-      open: true,
+      open: !props.isMobile,
       // must match the order in plumber.R
       all_road_types: ["All", "Dual carriageway",
         "Single carriageway", "Roundabout", "Unknown",
@@ -73,7 +74,7 @@ export default class DeckSidebar extends React.Component {
     const { open, elevation,
       radius, all_road_types, year,
       subsetBoundsChange, multiVarSelect, barChartVariable } = this.state;
-    const { onChangeRadius, onChangeElevation,
+    const { onChangeRadius, onChangeElevation, isMobile,
       onSelectCallback, data, colourCallback, layerStyle,
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, dark, column } = this.props;
@@ -96,8 +97,8 @@ export default class DeckSidebar extends React.Component {
     const curr_road_types = notEmpty && data_properties['road_type'] &&
       Array.from(data_properties['road_type'])
 
-    const rtPlot = {
-      data: notEmpty ? xyObjectByProperty(data, barChartVariable) : [],
+    const columnPlot = {
+      data: notEmpty ? xyObjectByProperty(data, column || barChartVariable) : [],
       opacity: 1,
       stroke: 'rgb(72, 87, 104)',
       fill: 'rgb(18, 147, 154)',
@@ -123,18 +124,18 @@ export default class DeckSidebar extends React.Component {
               : "Nothing to show"}
             </h2>
           </div>
-          <div onClick={() => this.setState({ open: false })}>
+          <div>
             <DataInput
-              onClose={() => this.setState({ open: true })}
+              toggleOpen={() => this.setState({ open: !open })}
               urlCallback={(url, geojson) => {
                 this.setState({ open: true, reset: true })
-                console.log(geojson.features[0]);
-                
                 typeof (urlCallback) === 'function'
                   && urlCallback(url, geojson)
               }
               } />
-            <Modal data={data} />
+            <Modal
+              toggleOpen={() => this.setState({ open: !open })}
+              data={data} />
             {
               this.state.reset &&
               <Button
@@ -148,6 +149,18 @@ export default class DeckSidebar extends React.Component {
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
+              {/* {
+                <GenerateUI 
+                  title={"showing %"}
+                  sublist={[10,20,30,40,50,60,70,80,90,100]}
+                  suggested="slider"
+                  steps={5}
+                  onChange={(value) => {
+                    typeof onSelectCallback === 'function' &&
+                      onSelectCallback({what: '%', selected: value});
+                  }}
+                />
+              } */}
               {/* range of two values slider is not native html */
                 timeSlider(data, year, multiVarSelect,
                   onSelectCallback, (changes) => this.setState(changes))
@@ -178,16 +191,8 @@ export default class DeckSidebar extends React.Component {
                   }, dark))
               }
               <hr style={{ clear: 'both' }} />
-              {notEmpty && data[0].geometry.type.toUpperCase() === 'POINT' &&
-                <div className="right-panel-container" >
-                  {
-                    notEmpty && 
-                    <HexbinSeries 
-                      data={coordsAsXY({ features: data })} 
-                      options={{noXAxis: true, noYAxis: true}}
-                      />
-                  }
-                </div>}
+              <HexPlot open={open} isMobile={isMobile}
+                notEmpty={notEmpty} data={data} />
               <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
@@ -197,28 +202,28 @@ export default class DeckSidebar extends React.Component {
                     data: plot_data, type: LineSeries,
                     title: "Crashes", dark
                   })}
-                  {/* barChartVariable */}
+                  {/* pick a column */}
                   {
-                    notEmpty && 
+                    notEmpty &&
                     Object.keys(data[0].properties)
-                    .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
+                      .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
                     <RBDropDown
-                      title={humanize(column) || "Choose Column"}
+                      title={humanize(column) || humanize(barChartVariable) ||
+                        "Choose Column"}
                       menuitems={Object.keys(data[0].properties)}
                       onSelectCallback={(selected) => {
                         this.setState({
                           barChartVariable: selected
                         });
-                      typeof onSelectCallback === 'function' &&
-                      onSelectCallback({what: 'column', selected});
+                        typeof onSelectCallback === 'function' &&
+                          onSelectCallback({ what: 'column', selected });
                       }} />
                   }
                   {seriesPlot({
-                    data: rtPlot.data,
+                    data: columnPlot.data,
                     type: VerticalBarSeries,
                     onValueClick: (datapoint) => {
-                      multiVarSelect[barChartVariable] = new Set([datapoint.x]);
-                      // console.log(datapoint);
+                      multiVarSelect[column] = new Set([datapoint.x]);
                       this.setState({ multiVarSelect })
                       onSelectCallback &&
                         onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
@@ -373,5 +378,4 @@ export default class DeckSidebar extends React.Component {
     )
   }
 }
-
 

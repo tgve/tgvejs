@@ -15,51 +15,57 @@ const csv2geojson = require('csv2geojson');
 
 export default function (props) {
   const [isOpen, setOpen] = React.useState(false);
-  const { urlCallback } = props;
+  const { urlCallback, toggleOpen } = props;
   return (
     <React.Fragment>
       <Button
         kind={KIND.secondary} size={SIZE.compact}
-        onClick={() => setOpen(s => !s)}>Add data</Button>
+        onClick={() => {
+          setOpen(s => !s); // or s === isOpen
+          typeof toggleOpen === 'function' && toggleOpen()
+        }}>Add data</Button>
       <Modal
         onClose={() => {
-          typeof (props.onClose) === 'function' && props.onClose()
-          setOpen(false)
-        }
-        }
+          typeof (toggleOpen) === 'function' && toggleOpen()
+          setOpen(false);
+        }}
         isOpen={isOpen}>
-          <ModalHeader>Add Data</ModalHeader>
+        <ModalHeader>Add Data</ModalHeader>
         <ModalBody>
           <FocusOnce>
             <URL urlCallback={(url) => {
-                setOpen(false)
-                typeof (urlCallback) === 'function'
-                  && urlCallback(url)
-              }} />
+              setOpen(false);
+              typeof (urlCallback) === 'function'
+                && urlCallback(url)
+            }} />
           </FocusOnce>
-          <File contentCallback={({ text, name }) => {            
-            if(name && (name.split(".")[1].match(/geo/) //test.json
-            || name.split(".")[1].match(/json/))) {
+          <File contentCallback={({ text, name }) => {
+            if (name && (name.split(".")[1].match(/geo/) //test.json
+              || name.split(".")[1].match(/json/))) {
               try {
-                  const json = JSON.parse(text);
-                  typeof (urlCallback) === 'function'
+                const json = JSON.parse(text);
+                typeof (urlCallback) === 'function'
                   && urlCallback(null, json)
+                setOpen(false);
               } catch (e) {
-                  console.log(e);
+                console.log(e);
               }
             } else {
               // err has any parsing errors
               csv2geojson.csv2geojson(text, (err, data) => {
-                if(!err) {
+                if (!err) {
                   typeof (urlCallback) === 'function'
-                      && urlCallback(null, data)
+                    && urlCallback(null, data)
                 }
               });
             }
           }} />
         </ModalBody>
         <ModalFooter>
-          <ModalButton onClick={() => setOpen(false)}>Close</ModalButton>
+          <ModalButton onClick={() => {
+            setOpen(false);
+            typeof (toggleOpen) === 'function' && toggleOpen();
+          }}>Close</ModalButton>
         </ModalFooter>
       </Modal>
     </React.Fragment>

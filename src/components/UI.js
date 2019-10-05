@@ -20,7 +20,7 @@ export default class UI extends React.Component {
 
   render() {
     const {
-      title, sublist, suggested, onChange
+      title, sublist, suggested, onChange, steps
     } = this.props;
     if (!title || !sublist || sublist.length === 0) return null;
     const new_checks = this.state.checks;
@@ -54,7 +54,7 @@ export default class UI extends React.Component {
             value={this.state.value || [s[0]]}
             min={parseInt(s[0])}
             max={parseInt(s[s.length - 1])}
-            step={1} //something
+            step={steps || 1} //something
             onChange={({ value }) => {
               this.setState({ value });
               typeof (onChange) === 'function' && onChange(value[0])
