@@ -16,7 +16,7 @@ import {
 import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
-import { propertyCount, getPropertyValues } from '../../geojsonutils';
+import { propertyCount } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
@@ -93,9 +93,9 @@ export default class DeckSidebar extends React.Component {
       ['Slight', 'Serious', 'Fatal'])
     // console.log(severity_data);
 
-    const data_properties = getPropertyValues({ features: data });
-    const curr_road_types = notEmpty && data_properties['road_type'] &&
-      Array.from(data_properties['road_type'])
+    // const data_properties = getPropertyValues({ features: data });
+    // const curr_road_types = notEmpty && data_properties['road_type'] &&
+    //   Array.from(data_properties['road_type'])
 
     const columnPlot = {
       data: notEmpty ? xyObjectByProperty(data, column || barChartVariable) : [],
@@ -169,7 +169,7 @@ export default class DeckSidebar extends React.Component {
                     })
                   }}
                   // sync state
-                  value={multiVarSelect['road_type'] &&
+                  value={multiVarSelect && multiVarSelect['road_type'] &&
                     Array.from(multiVarSelect['road_type'])
                       .map(e => ({ id: e, value: e }))}
                 />
