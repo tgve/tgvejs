@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Select, TYPE } from 'baseui/select';
 
 export default (props) => {
@@ -15,7 +15,6 @@ export default (props) => {
       type={TYPE.search}
       multi={!single}
       onChange={({ value }) => {
-        // console.log(value);
         setValue(value);
         if (multiVarSelect) {
           Object.keys(value).length === 0 ? delete multiVarSelect[filter] :
