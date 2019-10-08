@@ -120,7 +120,12 @@ export default class DeckSidebar extends React.Component {
             <DataInput
               toggleOpen={() => this.setState({ open: !open })}
               urlCallback={(url, geojson) => {
-                this.setState({ open: true, reset: true })
+                this.setState({ 
+                  open: true, 
+                  reset: true,
+                  year: "",
+                  multiVarSelect: {},
+                })
                 typeof (urlCallback) === 'function'
                   && urlCallback(url, geojson)
               }
@@ -133,7 +138,11 @@ export default class DeckSidebar extends React.Component {
               <Button
                 kind={KIND.secondary} size={SIZE.compact}
                 onClick={() => {
-                  this.setState({ reset: false })
+                  this.setState({ 
+                    reset: false,
+                    year: "",
+                    multiVarSelect: {}, 
+                  })
                   typeof (urlCallback) === 'function'
                     && urlCallback(URL + "/api/stats19")
                 }}>Reset</Button>
@@ -205,14 +214,16 @@ export default class DeckSidebar extends React.Component {
                         Object.keys(data[0].properties).map(e => 
                           ({id:humanize(e), value:e}))
                       }
-                      onSelectCallback={(selected) => {
+                      onSelectCallback={(selected) => {                        
                         // array of seingle {id: , value: } object
+                        const newBarChartVar = (selected && selected[0]) ? 
+                        selected[0].value : barChartVariable;
                         this.setState({
-                          barChartVariable: selected[0].value
+                          barChartVariable: newBarChartVar
                         });
                         typeof onSelectCallback === 'function' &&
                           onSelectCallback({ 
-                            what: 'column', selected: selected[0].value 
+                            what: 'column', selected: newBarChartVar 
                           });
                       }}
                       />
@@ -221,10 +232,11 @@ export default class DeckSidebar extends React.Component {
                     data: columnPlot.data,
                     type: VerticalBarSeries,
                     onValueClick: (datapoint) => {
-                      console.log(datapoint);
-                      
-                      multiVarSelect[column] = new Set([datapoint.x]);
-                      console.log(datapoint);
+                      // console.log(datapoint, column);
+                      // convert back to string
+                      multiVarSelect[column || 
+                        barChartVariable ] = new Set([datapoint.x + ""]);
+                      // console.log(multiVarSelect);
                       this.setState({ multiVarSelect })
                       onSelectCallback &&
                         onSelectCallback({ what: 'multi', selected: multiVarSelect })
