@@ -20,6 +20,8 @@
 
 .right-side-panel {
   background-color: #242730;
+  /* max-width: 350px; defined in the component */
+  /* max-height: 350px; again defined in the component */
 }
 
 .side-panel-container {
@@ -32,12 +34,10 @@
   -webkit-box-align: stretch;
   -webkit-transition: margin 250ms;
   transition: margin 250ms cubic-bezier(0, 0, 0.5, 0.1);
-
   position: absolute;
   padding-top: 20px;
   padding-bottom: 30px;
   padding-left: 20px;
-  z-index: 1;
 }
 
 .side-panel {
