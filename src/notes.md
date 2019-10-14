@@ -15,11 +15,21 @@ We discussed some of the characteristics of an e-atlas. Here are some examples (
 
 ### Examples
 
+#### Australia Cancer Atlas
+This is a recent effort (officially released in September 2018). From their abouts page this is how they define the Atlas: "The Australian Cancer Atlas is the first online, interactive platform showing how cancer diagnosis and survival vary across small areas for many different cancer types."
+
+The application can be found [here](https://atlas.cancer.org.au/app).
+
+![Australia Cancer Atlas](https://user-images.githubusercontent.com/408568/66746949-2fb09300-ee7b-11e9-88a4-2ea1c03e2e30.png)
+
+#### Australia's AURIN
+Available at [www.aurin.org.au](https://aurin.org.au/about-aurin/the-aurin-journey/). We will add some more notes about AURIN as we learn more about it. For now [here](https://vimeo.com/aurin) is a video from their website. Thanks to Dr Robin Lovelace for mentioning this.
+
 #### NCIN's UK Cancer e-Atlas
 
 Available at [www.ncin.org](http://www.ncin.org.uk/cancer_information_tools/eatlas/pct/atlas.html?select=Eav&indicator=i0). Displays cancer incidence by LAD.
 
-<img style="width:100%" src="/images/eatlas_ncin.png" alt="NCIN" />
+![NCIN](./images/eatlas_ncin.png)
 
 **Components**
 
@@ -40,7 +50,7 @@ Available at [www.envhealthatlas.co.uk](http://www.envhealthatlas.co.uk/homepage
 
 Additional note : there are some data-related problems I've noticed here -- **base rate fallacy**. It is possible to generate risk ratios for obscure cancers that have extremely low frequency at small area-level -- e.g. the choropleth simply distinguishes presence or absence. Something to consider if we aim at a tool that supports analysis of a user-loaded dataset
 
-<img style="width:80%" src="/images/health_atlas.png" alt="health atlas" />
+![NCIN](./images/health_atlas.png)
 
 **Components**
 
@@ -59,7 +69,7 @@ Url no longer supported, but design published in this IJGIS paper: [Slingsby et 
 
 Displays results of large-sample public attitude survey, with results shown thematically and spatially at different levels of aggregation. Paper itself may be useful reference point as discusses design principles and interaction constraints that may be relevant for us.
 
-<img style="width:80%" src="/images/place_survey_all.png" alt="Place survey home view" />
+![Place survey home view](./images/place_survey_all.png)
 
 **Components**
 
@@ -75,7 +85,7 @@ Displays results of large-sample public attitude survey, with results shown them
 
 * *Linked views* : probably discussed in the paper, but I think brushing the map, highlights the demographic (right) and attitudinal (left) profile of those living in those areas.
 
-<img style="width:80%" src="/images/place_survey_hierarchy.png" alt="Place survey hierarchy" />
+![Place survey hierarchy](./images/place_survey_hierarchy.png)
 
 ### So, what is an e-Atlas?
 
@@ -118,7 +128,7 @@ We aim to develop an online application. However, for the record, applications w
 #### Implementing above ideas
 Most of the interactions, components and other aspects of the "prototype" are feasible and achievable. Layik has already worked on STATS19 dataset and developed a basic "interaction dashboard" to explore STATS19 which does include elements from above/below mentioned ideas and work by Roger.
 
-<img style="width:80%" src="https://user-images.githubusercontent.com/408568/66118004-44646f80-e5cd-11e9-98fa-c319c9b42bf3.png" alt="stats19 image"/>
+![STATS19 dashboard](https://user-images.githubusercontent.com/408568/66118004-44646f80-e5cd-11e9-98fa-c319c9b42bf3.png)
 
 ## What is a Turing (geo)visualization toolkit?
 
@@ -143,11 +153,15 @@ Could this instead be a more *research-focussed* activity aimed at developing an
 
 * Generate slide deck with 'case' / ambition for e-Atlas : RB
 * Present case/ambition for e-Atlas at Turing : RB, NL, LH
-* Prototype 1 design ideas : RB, LH
+* Prototype 1 design ideas : RB, LH (Done)
 
-### Aug 2019
+### Aug 2019 (break)
 
+### Sep 2019
+
+* WIP deployed on Turing Azure space (Done).
 * Prototype 1 implemented : RB, LH
+* Determine the direction of contribution: NL, RB, LH
 
 ## Prototype 1 / making a 'case' : a thought on picking a domain (SPENCER data)
 
