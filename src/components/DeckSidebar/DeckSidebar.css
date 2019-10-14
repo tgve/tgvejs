@@ -34,12 +34,10 @@
   -webkit-box-align: stretch;
   -webkit-transition: margin 250ms;
   transition: margin 250ms cubic-bezier(0, 0, 0.5, 0.1);
-
   position: absolute;
   padding-top: 20px;
   padding-bottom: 30px;
   padding-left: 20px;
-  z-index: 1;
 }
 
 .side-panel {

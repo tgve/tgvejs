@@ -2,8 +2,6 @@ import React from 'react';
 
 import GenerateUI from '../UI';
 import { DateTime } from "luxon";
-import RBDropDown from '../RBDropdownComponent';
-import { humanize } from '../../utils';
 
 const timeSlider = (data, year, multiVarSelect, onSelectCallback, callback) => {
   return data && data.length > 1 &&
@@ -38,30 +36,6 @@ const timeSlider = (data, year, multiVarSelect, onSelectCallback, callback) => {
       }} />;
 }
 
-const drawDropdown = (options) => {
-  const { multiVarSelect, curr_list, full_list,
-    onSelectCallback, callback, filter } = options;
-
-  return (
-    // TODO: filter full_list accoridng to the data 
-    <RBDropDown
-      title={multiVarSelect && multiVarSelect[filter] ?
-        multiVarSelect[filter] : humanize(filter) + " All"}
-      menuitems={curr_list ? ["All", ...curr_list]
-        : full_list}
-      onSelectCallback={(selected) => {
-        selected === "All" ? delete multiVarSelect[filter] :
-          multiVarSelect[filter] = new Set([selected]);
-        typeof callback === 'function' &&
-          callback({ multiVarSelect });
-        onSelectCallback &&
-          onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
-            { what: '' } : { what: 'multi', selected: multiVarSelect });
-      }} />
-  )
-}
-
 export {
   timeSlider,
-  drawDropdown
 }

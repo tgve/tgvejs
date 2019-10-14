@@ -16,15 +16,15 @@ import {
 import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
-import { propertyCount, getPropertyValues } from '../../geojsonutils';
+import { propertyCount } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
-import { timeSlider, drawDropdown } from '../Showcases/Widgets';
+import { timeSlider } from '../Showcases/Widgets';
 import { seriesPlot } from '../Showcases/Plots';
-import RBDropDown from '../RBDropdownComponent';
 import { isEmptyOrSpaces } from '../../JSUtils';
 import HexPlot from './HexPlot';
+import MultiSelect from '../MultiSelect';
 // import GenerateUI from '../UI';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
@@ -37,7 +37,7 @@ export default class DeckSidebar extends React.Component {
       elevation: 4,
       open: !props.isMobile,
       // must match the order in plumber.R
-      all_road_types: ["All", "Dual carriageway",
+      all_road_types: ["Dual carriageway",
         "Single carriageway", "Roundabout", "Unknown",
         "Slip road", "One way street"],
       year: "",
@@ -93,9 +93,9 @@ export default class DeckSidebar extends React.Component {
       ['Slight', 'Serious', 'Fatal'])
     // console.log(severity_data);
 
-    const data_properties = getPropertyValues({ features: data });
-    const curr_road_types = notEmpty && data_properties['road_type'] &&
-      Array.from(data_properties['road_type'])
+    // const data_properties = getPropertyValues({ features: data });
+    // const curr_road_types = notEmpty && data_properties['road_type'] &&
+    //   Array.from(data_properties['road_type'])
 
     const columnPlot = {
       data: notEmpty ? xyObjectByProperty(data, column || barChartVariable) : [],
@@ -141,18 +141,6 @@ export default class DeckSidebar extends React.Component {
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
-              {/* {
-                <GenerateUI 
-                  title={"showing %"}
-                  sublist={[10,20,30,40,50,60,70,80,90,100]}
-                  suggested="slider"
-                  steps={5}
-                  onChange={(value) => {
-                    typeof onSelectCallback === 'function' &&
-                      onSelectCallback({what: '%', selected: value});
-                  }}
-                />
-              } */}
               {/* range of two values slider is not native html */
                 timeSlider(data, year, multiVarSelect,
                   onSelectCallback, (changes) => this.setState(changes))
@@ -160,12 +148,23 @@ export default class DeckSidebar extends React.Component {
               {
                 //only if there is such a property
                 data && data.length > 1 && data[0].properties['road_type'] &&
-                drawDropdown({
-                  multiVarSelect, filter: 'road_type',
-                  curr_list: curr_road_types, full_list: all_road_types,
-                  onSelectCallback,
-                  callback: (changes) => this.setState(changes)
-                })
+                <MultiSelect
+                  title={humanize('road_type')}
+                  filter='road_type' // showcase/hardcode section
+                  multiVarSelect={multiVarSelect}
+                  // showcase/hardcode section all_road_types
+                  values={all_road_types.map(e => ({ id: e, value: e }))}
+                  onSelectCallback={(filter) => {
+                    onSelectCallback && onSelectCallback(filter);
+                    this.setState({
+                      multiVarSelect: filter.selected
+                    })
+                  }}
+                  // sync state
+                  value={multiVarSelect && multiVarSelect['road_type'] &&
+                    Array.from(multiVarSelect['road_type'])
+                      .map(e => ({ id: e, value: e }))}
+                />
               }
               <br />
               {/* TODO: generate this declaritively too */}
@@ -199,28 +198,36 @@ export default class DeckSidebar extends React.Component {
                     notEmpty &&
                     Object.keys(data[0].properties)
                       .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
-                    <RBDropDown
-                      title={humanize(column) || humanize(barChartVariable) ||
-                        "Choose Column"}
-                      menuitems={Object.keys(data[0].properties)}
+                    <MultiSelect 
+                      title="Choose Column"
+                      single={true}
+                      values={
+                        Object.keys(data[0].properties).map(e => 
+                          ({id:humanize(e), value:e}))
+                      }
                       onSelectCallback={(selected) => {
+                        // array of seingle {id: , value: } object
                         this.setState({
-                          barChartVariable: selected
+                          barChartVariable: selected[0].value
                         });
                         typeof onSelectCallback === 'function' &&
-                          onSelectCallback({ what: 'column', selected });
-                      }} />
+                          onSelectCallback({ 
+                            what: 'column', selected: selected[0].value 
+                          });
+                      }}
+                      />
                   }
                   {seriesPlot({
                     data: columnPlot.data,
                     type: VerticalBarSeries,
                     onValueClick: (datapoint) => {
+                      console.log(datapoint);
+                      
                       multiVarSelect[column] = new Set([datapoint.x]);
                       console.log(datapoint);
                       this.setState({ multiVarSelect })
                       onSelectCallback &&
-                        onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
-                          { what: '' } : { what: 'multi', selected: multiVarSelect })
+                        onSelectCallback({ what: 'multi', selected: multiVarSelect })
                       // {x: "Single carriageway", y: 2419}
                     }, margin: 100
                   })}
