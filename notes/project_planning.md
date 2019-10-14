@@ -20,7 +20,7 @@ This is a recent effort (officially released in September 2018). From their abou
 
 The application can be found [here](https://atlas.cancer.org.au/app).
 
-![Australia Cancer Atlas](https://user-images.githubusercontent.com/408568/66746949-2fb09300-ee7b-11e9-88a4-2ea1c03e2e30.png)
+<img style="width:100%" src="https://user-images.githubusercontent.com/408568/66746949-2fb09300-ee7b-11e9-88a4-2ea1c03e2e30.png" alt="Australia cancer atlas" />
 
 #### Australia's AURIN
 Available at [www.aurin.org.au](https://aurin.org.au/about-aurin/the-aurin-journey/). We will add some more notes about AURIN as we learn more about it. For now [here](https://vimeo.com/aurin) is a video from their website. Thanks to Dr Robin Lovelace for mentioning this.
@@ -29,7 +29,7 @@ Available at [www.aurin.org.au](https://aurin.org.au/about-aurin/the-aurin-journ
 
 Available at [www.ncin.org](http://www.ncin.org.uk/cancer_information_tools/eatlas/pct/atlas.html?select=Eav&indicator=i0). Displays cancer incidence by LAD.
 
-![NCIN](./images/eatlas_ncin.png)
+<img style="width:100%" src="./images/eatlas_ncin.png" alt="NCIN"/>
 
 **Components**
 
@@ -50,7 +50,7 @@ Available at [www.envhealthatlas.co.uk](http://www.envhealthatlas.co.uk/homepage
 
 Additional note : there are some data-related problems I've noticed here -- **base rate fallacy**. It is possible to generate risk ratios for obscure cancers that have extremely low frequency at small area-level -- e.g. the choropleth simply distinguishes presence or absence. Something to consider if we aim at a tool that supports analysis of a user-loaded dataset
 
-![NCIN](./images/health_atlas.png)
+<img style="width:100%" src="./images/health_atlas.png" />
 
 **Components**
 
@@ -69,7 +69,7 @@ Url no longer supported, but design published in this IJGIS paper: [Slingsby et 
 
 Displays results of large-sample public attitude survey, with results shown thematically and spatially at different levels of aggregation. Paper itself may be useful reference point as discusses design principles and interaction constraints that may be relevant for us.
 
-![Place survey home view](./images/place_survey_all.png)
+<img style="width:100%" src="./images/place_survey_all.png" alt="Place survey home view" />
 
 **Components**
 
@@ -85,7 +85,7 @@ Displays results of large-sample public attitude survey, with results shown them
 
 * *Linked views* : probably discussed in the paper, but I think brushing the map, highlights the demographic (right) and attitudinal (left) profile of those living in those areas.
 
-![Place survey hierarchy](./images/place_survey_hierarchy.png)
+<img style="width:100%" src="./images/place_survey_hierarchy.png" alt="place survey hierarchy" />
 
 ### So, what is an e-Atlas?
 
@@ -128,7 +128,8 @@ We aim to develop an online application. However, for the record, applications w
 #### Implementing above ideas
 Most of the interactions, components and other aspects of the "prototype" are feasible and achievable. Layik has already worked on STATS19 dataset and developed a basic "interaction dashboard" to explore STATS19 which does include elements from above/below mentioned ideas and work by Roger.
 
-![STATS19 dashboard](https://user-images.githubusercontent.com/408568/66118004-44646f80-e5cd-11e9-98fa-c319c9b42bf3.png)
+Following screenshot is a recent view of the dashboard exploring STATS19 point data.
+<img style="width:100%" src="https://user-images.githubusercontent.com/408568/66118004-44646f80-e5cd-11e9-98fa-c319c9b42bf3.png" alt="Turing geovis dashboard" />
 
 ## What is a Turing (geo)visualization toolkit?
 
