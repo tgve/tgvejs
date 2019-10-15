@@ -23,7 +23,7 @@ const properties = (geojson) => {
 /**
  * {some: data, another: value}
  * turn it into {some: type, another: type}
- * @param {*} feature 
+ * @param {Object} feature 
  */
 const describeGeojson = (feature) => {
   if (!feature || feature.type !== 'Feature') return null;
@@ -62,8 +62,8 @@ const describeGeojson = (feature) => {
  * If no property is given it gets all properties
  * of each feature and adds unique values for each in a Set.
  * 
- * @param {*} geojson 
- * @param {*} property 
+ * @param {Object} geojson 
+ * @param {String} property 
  */
 const getPropertyValues = (geojson, property) => {
   if (!geojson || !geojson.features) return null;
@@ -88,6 +88,16 @@ const getPropertyValues = (geojson, property) => {
   return property ? Array.from(values) : all;
 }
 
+/**
+ * Get a list of {x:property, y:count} objects for a features in 
+ * a geojson object. 
+ * 
+ * @param {Object} data features to loop through. 
+ * @param {String} key a particular property as key
+ * @param {Object} list of values to return their counts
+ * 
+ * @returns {Object}
+ */
 const propertyCount = (data, key, list) => {
   if (!data || !key || !list) return;
   let sub_data = []; // match it with list
@@ -103,6 +113,44 @@ const propertyCount = (data, key, list) => {
         }
         else {
           sub_data[i] = { x: feature.properties[each], y: 1 };
+        }
+      }
+    });
+  });
+  return sub_data;
+}
+
+/**
+ * Generate an object with frequency of values of a particular property, arranged
+ * under a different property. Given features = 
+ * [{p1: a, p2: b, p3: v1},
+ * {p1: a, p2: b, p3: v1},
+ * {p1: b, p2: a, p3: v2},
+ * ].
+ * The function returns an object {v1: {a: 2, b: 2}, v2: {a:1, b:1}}
+ * 
+ * @param {Object} data features to loop through. 
+ * @param {String} key a particular property as key
+ * @param {Object} list of values to return their counts
+ * @param {String} key2 a different property as key
+ * @returns {Object} 
+ */
+const propertyCountByProperty = (data, key, list, key2) => {
+  if (!data || !key || !list || !key2 || key === key2) return;
+  let sub_data = {} // create object based on key2 values
+  data.forEach(feature => {
+    const k2 = key2 === 'date' ?
+    feature.properties[key2].split("/")[2] : key2;
+    Object.keys(feature.properties).forEach(each => {
+      if (each === key) {
+        // create object based on key2 values
+        if (sub_data[k2] && sub_data[k2][feature.properties[each]]) {
+          sub_data[k2][feature.properties[each]] += 1;
+        }
+        else {
+          sub_data[k2] = Object.assign(
+            sub_data[k2] || {}, { [feature.properties[each]]: 1}
+          );
         }
       }
     });
@@ -128,6 +176,7 @@ const coordsAsXY = (geojson, sizeProperty) => {
 }
 
 export {
+  propertyCountByProperty,
   getPropertyValues,
   describeGeojson,
   propertyCount,
