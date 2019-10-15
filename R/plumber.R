@@ -55,6 +55,7 @@ bbx <- c(
 )
 accidents <- sf::st_crop(accidents, bbx) # Leeds only
 accidents <- accidents[c(
+  "sex_of_casualty",
   "speed_limit",
   "date",
   "road_type",

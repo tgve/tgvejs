@@ -21,7 +21,7 @@ import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
 import { timeSlider } from '../Showcases/Widgets';
-import { seriesPlot } from '../Showcases/Plots';
+import { seriesPlot, popPyramid } from '../Showcases/Plots';
 import { isEmptyOrSpaces } from '../../JSUtils';
 import HexPlot from './HexPlot';
 import MultiSelect from '../MultiSelect';
@@ -180,7 +180,7 @@ export default class DeckSidebar extends React.Component {
               {
                 severity_data && severity_data.map(each =>
                   percentDiv(each.x, 100 * each.y / data.length, () => {
-                    multiVarSelect['accident_severity'] &&
+                    multiVarSelect && multiVarSelect['accident_severity'] &&
                       multiVarSelect['accident_severity'].has(each.x) ?
                       delete multiVarSelect['accident_severity'] :
                       multiVarSelect['accident_severity'] = new Set([each.x]);
@@ -228,6 +228,7 @@ export default class DeckSidebar extends React.Component {
                       }}
                       />
                   }
+                  {popPyramid({ data })}
                   {seriesPlot({
                     data: columnPlot.data,
                     type: VerticalBarSeries,
