@@ -1,10 +1,35 @@
 import React from 'react';
-import { XYPlot, XAxis, YAxis, LineSeries, MarkSeries } from 'react-vis';
+import { XYPlot, XAxis, YAxis, LineSeries, MarkSeries,
+  HorizontalRectSeries } from 'react-vis';
 import { format } from 'd3-format';
+
+const popPyramid = (options) => {
+  if(!options || !options.data) return;
+  // const d = [Array.apply(null, { length: 9 })
+  //   .map(Number.call, Number).map(d => d + 2009)]
+  //   .map((e, i) =>
+  //     ({
+  //       x: i % 2 ? 1 : -1,
+  //       x0: (i % 2 ? 1 : -1) * (i + 5),
+  //       y: e === 0 ? 2009 : e,
+  //       y0: i % 2 ? (e - 1 + 5) : e + 5
+  //     })
+  //   )
+  const W = 250;
+  return (
+    <XYPlot height={options.plotStyle && options.plotStyle.height || 250}
+    width={options.plotStyle && options.plotStyle.width || W} >
+      <HorizontalRectSeries data={options.data} />
+      <YAxis
+        style={{ text: { fill: '#fff' } }}
+        left={(W / 2) - 10} />
+    </XYPlot>
+  )
+}
 
 const seriesPlot = (options) => {
   const ReactSeries = options.type;
-  if(!ReactSeries) return null;
+  if (!ReactSeries) return null;
   const data = options.type !== MarkSeries &&
     options.data.length > 10 ? options.data.slice(0, 10)
     : options.data
@@ -39,5 +64,6 @@ const seriesPlot = (options) => {
 }
 
 export {
-  seriesPlot
+  seriesPlot,
+  popPyramid
 }
