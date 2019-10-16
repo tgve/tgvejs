@@ -120,8 +120,8 @@ export default class DeckSidebar extends React.Component {
             <DataInput
               toggleOpen={() => this.setState({ open: !open })}
               urlCallback={(url, geojson) => {
-                this.setState({ 
-                  open: true, 
+                this.setState({
+                  open: true,
                   reset: true,
                   year: "",
                   multiVarSelect: {},
@@ -138,10 +138,10 @@ export default class DeckSidebar extends React.Component {
               <Button
                 kind={KIND.secondary} size={SIZE.compact}
                 onClick={() => {
-                  this.setState({ 
+                  this.setState({
                     reset: false,
                     year: "",
-                    multiVarSelect: {}, 
+                    multiVarSelect: {},
                   })
                   typeof (urlCallback) === 'function'
                     && urlCallback(URL + "/api/stats19")
@@ -198,52 +198,62 @@ export default class DeckSidebar extends React.Component {
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
                 }>
+                  {/* distribution example */}
+                  {notEmpty &&
+                    data[0].properties.hasOwnProperty(['age_of_casualty']) &&
+                    seriesPlot({
+                      title: "Casualty age", noYAxis: true,
+                      plotStyle: { height: 100 }, noLimit: true,
+                      type: LineSeries,
+                      data: xyObjectByProperty(data, "age_of_casualty")
+                    })}
                   {seriesPlot({
                     data: plot_data, type: LineSeries,
-                    title: "Crashes"
+                    title: "Crashes", noYAxis: true, 
+                    plotStyle: { height: 100, marginBottom: 50 },
                   })}
                   {/* pick a column */}
                   {
                     notEmpty &&
                     Object.keys(data[0].properties)
                       .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
-                    <MultiSelect 
+                    <MultiSelect
                       title="Choose Column"
                       single={true}
                       values={
-                        Object.keys(data[0].properties).map(e => 
-                          ({id:humanize(e), value:e}))
+                        Object.keys(data[0].properties).map(e =>
+                          ({ id: humanize(e), value: e }))
                       }
-                      onSelectCallback={(selected) => {                        
+                      onSelectCallback={(selected) => {
                         // array of seingle {id: , value: } object
-                        const newBarChartVar = (selected && selected[0]) ? 
-                        selected[0].value : barChartVariable;
+                        const newBarChartVar = (selected && selected[0]) ?
+                          selected[0].value : barChartVariable;
                         this.setState({
                           barChartVariable: newBarChartVar
                         });
                         typeof onSelectCallback === 'function' &&
-                          onSelectCallback({ 
-                            what: 'column', selected: newBarChartVar 
+                          onSelectCallback({
+                            what: 'column', selected: newBarChartVar
                           });
                       }}
-                      />
+                    />
                   }
-                  {popPyramid({ data })}
                   {seriesPlot({
                     data: columnPlot.data,
                     type: VerticalBarSeries,
                     onValueClick: (datapoint) => {
                       // console.log(datapoint, column);
                       // convert back to string
-                      multiVarSelect[column || 
-                        barChartVariable ] = new Set([datapoint.x + ""]);
+                      multiVarSelect[column ||
+                        barChartVariable] = new Set([datapoint.x + ""]);
                       // console.log(multiVarSelect);
                       this.setState({ multiVarSelect })
                       onSelectCallback &&
                         onSelectCallback({ what: 'multi', selected: multiVarSelect })
                       // {x: "Single carriageway", y: 2419}
-                    }, margin: 100
+                    }, plotStyle: {marginBottom: 100}
                   })}
+                  {popPyramid({ data })}
                 </Tab>
                 <Tab eventKey="2" title={
                   <i style={{ fontSize: '2rem' }}
