@@ -15,6 +15,13 @@ We discussed some of the characteristics of an e-atlas. Here are some examples (
 
 ### Examples
 
+#### Australia Cancer Atlas
+This is a recent effort (officially released in September 2018). From their abouts page this is how they define the Atlas: "The Australian Cancer Atlas is the first online, interactive platform showing how cancer diagnosis and survival vary across small areas for many different cancer types."
+
+The application can be found [here](https://atlas.cancer.org.au/app).
+
+![Australia Cancer Atlas](https://user-images.githubusercontent.com/408568/66746949-2fb09300-ee7b-11e9-88a4-2ea1c03e2e30.png)
+
 #### Australia's AURIN
 Available at [www.aurin.org.au](https://aurin.org.au/about-aurin/the-aurin-journey/). We will add some more notes about AURIN as we learn more about it. For now [here](https://vimeo.com/aurin) is a video from their website. Thanks to Dr Robin Lovelace for mentioning this.
 
@@ -121,7 +128,7 @@ We aim to develop an online application. However, for the record, applications w
 #### Implementing above ideas
 Most of the interactions, components and other aspects of the "prototype" are feasible and achievable. Layik has already worked on STATS19 dataset and developed a basic "interaction dashboard" to explore STATS19 which does include elements from above/below mentioned ideas and work by Roger.
 
-![STATS19 dashboard](./images/stats19.png)
+![STATS19 dashboard](https://user-images.githubusercontent.com/408568/66118004-44646f80-e5cd-11e9-98fa-c319c9b42bf3.png)
 
 ## What is a Turing (geo)visualization toolkit?
 

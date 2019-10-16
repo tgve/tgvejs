@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import HexbinSeries from '../Showcases/HexbinSeries';
-import MultiSelect from '../MultiSelect';
 
 import { coordsAsXY } from '../../geojsonutils';
 
@@ -40,11 +39,6 @@ export default (props) => {
               "fa fa-arrow-circle-left"} />
         </div>
         <div className="right-side-panel">
-          <MultiSelect
-            selectedCallback={(v) => {
-              // console.log(v);
-
-            }} />
           {notEmpty &&
             <HexbinSeries
               data={coordsAsXY({ features: data })}
