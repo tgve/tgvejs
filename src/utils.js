@@ -4,10 +4,11 @@ import {
   IconLayer, ScreenGridLayer, GridLayer, LineLayer
 } from 'deck.gl';
 import { interpolateSinebow } from 'd3-scale-chromatic';
+import qs from 'qs'; // warning: importing it otherways would cause minificatino issue.
 
 import mapping from './location-icon-mapping.json';
-import qs from 'qs'; // warning: importing it otherways would cause minificatino issue.
 import Constants from './Constants';
+import { isString, isNumber } from './JSUtils.js';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -61,7 +62,7 @@ const fetchData = (url, callback) => {
 
 }
 
-const xyObjectByProperty = (data, property) => {
+const xyObjectByProperty = (data, property, noNulls = true) => {
   if (!data || !property) return;
   //data = [{...data = 12/12/12}]       
   const map = new Map()
@@ -70,10 +71,12 @@ const xyObjectByProperty = (data, property) => {
     if (typeof (value) === 'string' && value.split("/")[2]) {
       value = value.split("/")[2]
     }
-    if (map.get(value)) {
-      map.set(value, map.get(value) + 1)
-    } else {
-      map.set(value, 1)
+    if(noNulls && value !== null) { // remove nulls here
+      if (map.get(value)) {
+        map.set(value, map.get(value) + 1)
+      } else {
+        map.set(typeof value === 'number' ? +(value) : value, 1)
+      }
     }
   });
   const sortedMap = typeof Array.from(map.keys())[0] === 'number' ?
@@ -82,7 +85,7 @@ const xyObjectByProperty = (data, property) => {
   return sortedMap.map(key => {
     return (
       {
-        x: typeof key === 'number' ? +(key) : key,
+        x: key,
         y: +(map.get(key))
       }
     )
@@ -302,12 +305,19 @@ const humanize = (str) => {
   return frags.join(' ');
 }
 
-const shortenName = (name) => {
-  if (!name || name.length <= 26) return name;
-  const extension = name.split('.').pop();
-  let shorten = name;
-  shorten.replace(extension, "");
-  return (shorten.substring(0, 10) + "..." + extension);
+const shortenName = (name, n = 26) => {  
+  if (isNumber(name)) {    
+    return parseFloat(Number.parseFloat(name).toFixed(2).toString())
+  }
+  if (!name || name.length <= n || !isString(name)) return name;
+  let shortened = name.trim();
+  const extension = name.split('.').length > 1 && 
+  name.split('.').pop().length < 10 && name.split('.').pop();
+  shortened.replace(extension, "");
+  if(name.length > 10) {
+    shortened = shortened.substring(0, 10) + "..." + (extension || "")
+  }  
+  return (shortened);
 }
 
 const percentDiv = (title, left, cb, dark) => {

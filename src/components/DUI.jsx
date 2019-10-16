@@ -26,6 +26,7 @@ import URL from './URL';
 import { propertyCount } from '../geojsonutils';
 import GeomExplore from './GeomExplore';
 import Table from './Table/Table';
+import {popPyramid} from './Showcases/Plots';
 
 const WIDTH = '400';
 const BAR_HEIGHT = 320;
@@ -132,6 +133,7 @@ export default class DUI extends React.Component {
               this._fetchAndUpdateState(url)
             }} />
         </center>
+        {/* {popPyramid({ data, plotStyle:{width: 600, height: 400}})} */}
         {loading && <div id="loading"></div>}
         {
           data && <h3>

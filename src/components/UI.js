@@ -51,7 +51,7 @@ export default class UI extends React.Component {
       ui_returned =
         <>
           <Slider
-            value={this.state.value || [s[0]]}
+            value={this.state.value || this.state.value || [s[0]]}
             min={parseInt(s[0])}
             max={parseInt(s[s.length - 1])}
             step={steps || 1} //something
