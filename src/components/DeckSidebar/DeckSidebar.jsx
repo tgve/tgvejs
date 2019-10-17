@@ -96,9 +96,12 @@ export default class DeckSidebar extends React.Component {
     // const data_properties = getPropertyValues({ features: data });
     // const curr_road_types = notEmpty && data_properties['road_type'] &&
     //   Array.from(data_properties['road_type'])
-
+    let columnData = notEmpty ?
+      xyObjectByProperty(data, column || barChartVariable) : [];
+    // console.log(columnData);
+    
     const columnPlot = {
-      data: notEmpty ? xyObjectByProperty(data, column || barChartVariable) : [],
+      data: columnData,
       opacity: 1,
       stroke: 'rgb(72, 87, 104)',
       fill: 'rgb(18, 147, 154)',
@@ -251,7 +254,7 @@ export default class DeckSidebar extends React.Component {
                       onSelectCallback &&
                         onSelectCallback({ what: 'multi', selected: multiVarSelect })
                       // {x: "Single carriageway", y: 2419}
-                    }, plotStyle: {marginBottom: 100}
+                    }, plotStyle: { marginBottom: 100 }
                   })}
                   {popPyramid({ data })}
                 </Tab>
