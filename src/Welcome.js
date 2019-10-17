@@ -279,6 +279,7 @@ export default class Welcome extends React.Component {
       tooltip:
         // react did not like x and y props.
         <Tooltip
+          dark={this.props.dark}
           isMobile={isMobile()}
           topx={x} topy={y} hoveredObject={hoveredObject} />
     })

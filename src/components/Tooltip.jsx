@@ -2,7 +2,7 @@ import React from 'react';
 import { LineSeries, VerticalBarSeries } from 'react-vis';
 import { Table } from 'baseui/table';
 import { humanize } from '../utils';
-import { seriesPlot } from './Showcases/Plots';
+import SeriesPlot from './Showcases/SeriesPlot';
 
 const WIDTH = 220;
 const BAR_HEIGHT = 80;
@@ -36,7 +36,7 @@ export default class Tooltip extends React.Component {
    * 2. properties of `.type === 'Feature'`.
    */
   render() {
-    const { topx, topy, hoveredObject } = this.props;
+    const { topx, topy, hoveredObject, dark } = this.props;
     const { isMobile } = this.state;
     // console.log(x,y);
 
@@ -113,17 +113,19 @@ export default class Tooltip extends React.Component {
           {
             // react-vis cannot generate plot for single value
             crashes_data.length > 1 &&
-            seriesPlot({ data: crashes_data, type: LineSeries })
+            <SeriesPlot 
+            plotStyle={{ height: 100, width: WIDTH }}
+            data= {crashes_data} type= {LineSeries} />
           }
           {
             // react-vis cannot generate plot for single value
             severity_data.length > 1 &&
-            seriesPlot({
-              data: severity_data,
-              type: VerticalBarSeries,
-              plotStyle: { height: BAR_HEIGHT, width: WIDTH },
-              noYAxis: true
-            })
+            <SeriesPlot
+              data={severity_data} dark={dark}
+              type={VerticalBarSeries}
+              plotStyle={{ height: BAR_HEIGHT, width: WIDTH }}
+              noYAxis={true}
+            />
           }
         </div>
       </div >

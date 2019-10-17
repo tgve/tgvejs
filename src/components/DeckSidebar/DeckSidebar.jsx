@@ -21,7 +21,8 @@ import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
 import { timeSlider } from '../Showcases/Widgets';
-import { seriesPlot, popPyramid } from '../Showcases/Plots';
+import { popPyramid } from '../Showcases/Plots';
+import SeriesPlot from '../Showcases/SeriesPlot';
 import { isEmptyOrSpaces } from '../../JSUtils';
 import HexPlot from './HexPlot';
 import MultiSelect from '../MultiSelect';
@@ -96,9 +97,12 @@ export default class DeckSidebar extends React.Component {
     // const data_properties = getPropertyValues({ features: data });
     // const curr_road_types = notEmpty && data_properties['road_type'] &&
     //   Array.from(data_properties['road_type'])
-
+    let columnData = notEmpty ?
+      xyObjectByProperty(data, column || barChartVariable) : [];
+    // console.log(columnData);
+    
     const columnPlot = {
-      data: notEmpty ? xyObjectByProperty(data, column || barChartVariable) : [],
+      data: columnData,
       opacity: 1,
       stroke: 'rgb(72, 87, 104)',
       fill: 'rgb(18, 147, 154)',
@@ -209,17 +213,19 @@ export default class DeckSidebar extends React.Component {
                   {/* distribution example */}
                   {notEmpty &&
                     data[0].properties.hasOwnProperty(['age_of_casualty']) &&
-                    seriesPlot({
-                      title: "Casualty age", noYAxis: true,
-                      plotStyle: { height: 100 }, noLimit: true,
-                      type: LineSeries, dark, 
-                      data: xyObjectByProperty(data, "age_of_casualty")
-                    })}
-                  {seriesPlot({
-                    data: plot_data, type: LineSeries,
-                    title: "Crashes", dark, noYAxis: true, 
-                    plotStyle: { height: 100, marginBottom: 50 },
-                  })}
+                    <SeriesPlot 
+                      title= "Casualty age" noYAxis= {true} dark={true}
+                      plotStyle= {{ height: 100 }} noLimit= {true}
+                      type= {LineSeries}
+                      data= {xyObjectByProperty(data, "age_of_casualty")}
+                    />
+                  }
+                  {<SeriesPlot 
+                    data={plot_data} type= {LineSeries}
+                    title="Crashes" noYAxis= {true} dark={true}
+                    plotStyle= {{ height: 100, marginBottom: 50 }}
+                    />
+                  }
                   {/* pick a column */}
                   {
                     notEmpty &&
@@ -246,10 +252,10 @@ export default class DeckSidebar extends React.Component {
                       }}
                     />
                   }
-                  {seriesPlot({
-                    data: columnPlot.data,
-                    type: VerticalBarSeries,
-                    onValueClick: (datapoint) => {
+                  {<SeriesPlot
+                    data= {columnPlot.data}
+                    type= {VerticalBarSeries}
+                    onValueClick= {(datapoint) => {
                       // console.log(datapoint, column);
                       // convert back to string
                       multiVarSelect[column ||
@@ -259,9 +265,9 @@ export default class DeckSidebar extends React.Component {
                       onSelectCallback &&
                         onSelectCallback({ what: 'multi', selected: multiVarSelect })
                       // {x: "Single carriageway", y: 2419}
-                    }, dark, plotStyle: {marginBottom: 100}
-                  })}
-                  {popPyramid({ data, dark })}
+                    }} plotStyle= {{ marginBottom: 100 }} dark={true}
+                    /> }
+                  {popPyramid({ data })}
                 </Tab>
                 <Tab eventKey="2" title={
                   <i style={{ fontSize: '2rem' }}
