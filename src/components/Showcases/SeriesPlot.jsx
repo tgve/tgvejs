@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {
-  XYPlot, XAxis, YAxis, LineSeries, MarkSeries
-} from 'react-vis';
+  XYPlot, XAxis, YAxis, LineSeries, MarkSeries, 
+  Hint} from 'react-vis';
 import { format } from 'd3-format';
 
 import { shortenName } from '../../utils';
@@ -9,7 +9,7 @@ import { shortenName } from '../../utils';
 const W = 250;
 
 export default function SeriesPlot (options) {
-  const [hint,useHint] = useState();
+  const [hint, setHint] = useState();
 
   const ReactSeries = options.type;
   const limit = 10;
@@ -20,7 +20,8 @@ export default function SeriesPlot (options) {
   const { plotStyle, title, noXAxis, noYAxis, type,
     onValueClick } = options;
   return options.data && options.data.length > 1 &&
-    <>
+    // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
+    <div style={{position: 'relative'}}>
       {options.type !== MarkSeries && !options.noLimit &&
         options.data && options.data.length > limit &&
         <h4>Plotting first {limit} values:</h4>}
@@ -31,7 +32,9 @@ export default function SeriesPlot (options) {
         margin={{ bottom: plotStyle && plotStyle.marginBottom || 40 }} // default is 40
         animation={{ duration: 1 }}
         height={plotStyle && plotStyle.height || W}
-        width={plotStyle && plotStyle.width || W} >
+        width={plotStyle && plotStyle.width || W} 
+        onMouseLeave={() => {setHint(false)}}
+        >
         {!noXAxis && // if provided dont
           <XAxis 
             tickFormat={ v => shortenName(v, 10)}
@@ -56,10 +59,12 @@ export default function SeriesPlot (options) {
         }
         <ReactSeries
           onValueClick={onValueClick}
-          onSeriesMouseOver={(event) => {
+          onNearestX={(datapoint)=>{                   
+            setHint(datapoint)            
           }}
           style={{ fill: type === LineSeries ? 'none' : 'rgb(18, 147, 154)' }}
           data={data} />
+        {hint && <Hint value={hint} />}
       </XYPlot>
-    </>;
+    </div>;
 }

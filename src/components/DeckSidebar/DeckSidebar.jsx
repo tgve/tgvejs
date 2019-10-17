@@ -257,7 +257,7 @@ export default class DeckSidebar extends React.Component {
                       onSelectCallback &&
                         onSelectCallback({ what: 'multi', selected: multiVarSelect })
                       // {x: "Single carriageway", y: 2419}
-                    }} plotStyle= {{ marginBottom: 100 }}
+                    }} plotStyle= {{ marginBottom: 100 }} noYAxis={true}
                     /> }
                   {popPyramid({ data })}
                 </Tab>
