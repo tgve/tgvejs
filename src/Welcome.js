@@ -335,7 +335,7 @@ export default class Welcome extends React.Component {
         {/* just a little catch to hide the loader 
         when no basemap is presetn */}
         <div className="loader" style={{
-          zIndex: loading ? 999 : 0,
+          zIndex: loading ? 999 : -1,
           visibility: typeof mapStyle === 'string' &&
             mapStyle.endsWith("No map-v9") ? 'hidden' : 'visible'
         }} />

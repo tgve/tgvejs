@@ -16,7 +16,7 @@ import {
 import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
-import { propertyCount } from '../../geojsonutils';
+import { propertyCount, getPropertyValues } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
@@ -90,13 +90,15 @@ export default class DeckSidebar extends React.Component {
         }
       })
     }
+    const data_properties = getPropertyValues({ features: data });
+    const accident_severity_types = notEmpty && data_properties['accident_severity'] &&
+      Array.from(data_properties['accident_severity'])
+
     const severity_data = propertyCount(data, "accident_severity",
-      ['Slight', 'Serious', 'Fatal'])
+    accident_severity_types);
+
     // console.log(severity_data);
 
-    // const data_properties = getPropertyValues({ features: data });
-    // const curr_road_types = notEmpty && data_properties['road_type'] &&
-    //   Array.from(data_properties['road_type'])
     let columnData = notEmpty ?
       xyObjectByProperty(data, column || barChartVariable) : [];
     // console.log(columnData);
@@ -167,10 +169,10 @@ export default class DeckSidebar extends React.Component {
                   multiVarSelect={multiVarSelect}
                   // showcase/hardcode section all_road_types
                   values={all_road_types.map(e => ({ id: e, value: e }))}
-                  onSelectCallback={(filter) => {
+                  onSelectCallback={(filter) => {                    
                     onSelectCallback && onSelectCallback(filter);
                     this.setState({
-                      multiVarSelect: filter.selected
+                      multiVarSelect: filter.selected || {} // not ""
                     })
                   }}
                   // sync state
@@ -184,11 +186,13 @@ export default class DeckSidebar extends React.Component {
               {
                 severity_data && severity_data.map(each =>
                   percentDiv(each.x, 100 * each.y / data.length, () => {
-                    multiVarSelect && multiVarSelect['accident_severity'] &&
-                      multiVarSelect['accident_severity'].has(each.x) ?
-                      delete multiVarSelect['accident_severity'] :
+                    if (multiVarSelect && multiVarSelect['accident_severity'] &&
+                      multiVarSelect['accident_severity'].has(each.x)) {
+                      delete multiVarSelect['accident_severity'];
+                    } else {
                       multiVarSelect['accident_severity'] = new Set([each.x]);
-                    this.setState({ multiVarSelect })
+                      this.setState({ multiVarSelect })
+                    }
                     onSelectCallback &&
                       onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
                         { what: '' } : { what: 'multi', selected: multiVarSelect })
