@@ -36,7 +36,8 @@ export default function SeriesPlot (options) {
         onMouseLeave={() => {setHint(false)}}
         >
         {!noXAxis && // if provided dont
-          <XAxis 
+          <XAxis
+            tickSize={0}
             tickFormat={ v => shortenName(v, 10)}
             tickValues={
               (data.length > limit)
@@ -49,13 +50,17 @@ export default function SeriesPlot (options) {
                 : data.map(item => (item.x))
             }
             position="right" tickLabelAngle={-65} style={{
-            text: { fill: '#fff'} //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
-          }} />}
+              line: { strokeWidth: 0 },
+              text: { fill: '#fff'} //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
+            }} />}
         {!noYAxis && // if provided dont
-          <YAxis tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} style={{
-            title: { fill: '#fff' },
-            text: { fill: '#fff'} //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
-          }} position="start" title={title} />
+          <YAxis 
+            tickSize={0}
+            tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} style={{
+              line: { strokeWidth: 0 },
+              title: { fill: '#fff' },
+              text: { fill: '#fff'} //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
+            }} position="start" title={title} />
         }
         <ReactSeries
           onValueClick={onValueClick}
