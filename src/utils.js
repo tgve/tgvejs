@@ -65,6 +65,8 @@ const fetchData = (url, callback) => {
 }
 
 /**
+ * Function to count frequency of values of `property` given.
+ * 
  * TODO: Double check to see if it is slightly different
  * version of propertyCount
  * 

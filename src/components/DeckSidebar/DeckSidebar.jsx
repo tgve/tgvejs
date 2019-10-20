@@ -211,6 +211,9 @@ export default class DeckSidebar extends React.Component {
                       title= "Casualty age" noYAxis= {true}
                       plotStyle= {{ height: 100 }} noLimit= {true}
                       type= {LineSeries}
+                      // sorts the results if x is a number
+                      // TODO: do we want to do this?
+                      // also think about sorting according to y
                       data= {xyObjectByProperty(data, "age_of_casualty")}
                     />
                   }
