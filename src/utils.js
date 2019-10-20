@@ -64,6 +64,15 @@ const fetchData = (url, callback) => {
 
 }
 
+/**
+ * TODO: Double check to see if it is slightly different
+ * version of propertyCount
+ * 
+ * 
+ * @param {Object} data 
+ * @param {String} property 
+ * @param {Boolean} noNulls 
+ */
 const xyObjectByProperty = (data, property, noNulls = true) => {
   if (!data || !property) return;
   //data = [{...data = 12/12/12}]       

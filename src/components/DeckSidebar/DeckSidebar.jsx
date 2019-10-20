@@ -16,7 +16,7 @@ import {
 import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
-import { propertyCount, getPropertyValues } from '../../geojsonutils';
+import { propertyCount } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
@@ -26,6 +26,7 @@ import SeriesPlot from '../Showcases/SeriesPlot';
 import { isEmptyOrSpaces } from '../../JSUtils';
 import HexPlot from './HexPlot';
 import MultiSelect from '../MultiSelect';
+import AddVIS from '../AddVIS';
 // import GenerateUI from '../UI';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
@@ -90,14 +91,11 @@ export default class DeckSidebar extends React.Component {
         }
       })
     }
-    const data_properties = getPropertyValues({ features: data });
-    const accident_severity_types = notEmpty && data_properties['accident_severity'] &&
-      Array.from(data_properties['accident_severity'])
+    // const data_properties = getPropertyValues({ features: data });
+    // const accident_severity_types = notEmpty && data_properties['accident_severity'] &&
+    //   Array.from(data_properties['accident_severity'])
 
-    const severity_data = propertyCount(data, "accident_severity",
-    accident_severity_types);
-
-    // console.log(severity_data);
+    const severity_data = propertyCount(data, "accident_severity");
 
     let columnData = notEmpty ?
       xyObjectByProperty(data, column || barChartVariable) : [];
@@ -223,6 +221,7 @@ export default class DeckSidebar extends React.Component {
                     />
                   }
                   {/* pick a column */}
+                  <AddVIS data={data}/>
                   {
                     notEmpty &&
                     Object.keys(data[0].properties)
