@@ -16,7 +16,7 @@ import {
 import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
-import { propertyCount } from '../../geojsonutils';
+import { propertyCount, propertyCountByProperty } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
@@ -27,6 +27,7 @@ import { isEmptyOrSpaces } from '../../JSUtils';
 import HexPlot from './HexPlot';
 import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
+import MultiLinePlot from '../Showcases/MultiLinePlot';
 // import GenerateUI from '../UI';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
@@ -81,6 +82,7 @@ export default class DeckSidebar extends React.Component {
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, column } = this.props;
     let plot_data = [];
+    let plot_data_multi = [[],[]];
     const notEmpty = data && data.length > 1;
     if (notEmpty) {
       Object.keys(data[1].properties).forEach(each => {
@@ -90,7 +92,21 @@ export default class DeckSidebar extends React.Component {
           plot_data = xyObjectByProperty(data, "date")
         }
       })
+      const mf = propertyCountByProperty(data, "sex_of_casualty",
+      plot_data.map(e => e.x), "date");
+
+      Object.keys(mf)
+      //2009: {Male: 3295, Female: 2294}
+      .forEach(k => {
+        plot_data_multi[0]
+          .push({x: k,
+                 y: mf[k].Male})
+        plot_data_multi[1]
+          .push({x: k,
+                 y: mf[k].Female})
+      })
     }
+
     // const data_properties = getPropertyValues({ features: data });
     // const accident_severity_types = notEmpty && data_properties['accident_severity'] &&
     //   Array.from(data_properties['accident_severity'])
@@ -217,8 +233,10 @@ export default class DeckSidebar extends React.Component {
                       data= {xyObjectByProperty(data, "age_of_casualty")}
                     />
                   }
-                  {<SeriesPlot 
-                    data={plot_data} type= {LineSeries}
+                  {plot_data && <MultiLinePlot 
+                    data={
+                      [...plot_data_multi, plot_data]
+                    }
                     title="Crashes" noYAxis= {true} 
                     plotStyle= {{ height: 100, marginBottom: 50 }}
                     />
