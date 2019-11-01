@@ -82,28 +82,32 @@ export default class DeckSidebar extends React.Component {
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, column } = this.props;
     let plot_data = [];
-    let plot_data_multi = [[],[]];
+    let plot_data_multi = [[], []];
     const notEmpty = data && data.length > 1;
     if (notEmpty) {
       Object.keys(data[1].properties).forEach(each => {
         if (each.match(/date|datetime|datestamp|timestamp/g) &&
           typeof (data[1].properties[each]) === 'string' &&
           data[1].properties[each].split("/")[2]) { //date in 09/01/2019 HARDCODE
-          plot_data = xyObjectByProperty(data, "date")
+          plot_data = xyObjectByProperty(data, "date");
+          const mf = propertyCountByProperty(data, "sex_of_casualty",
+            plot_data.map(e => e.x), "date");
+          plot_data.length > 1 && // more than one years
+            Object.keys(mf)
+              //2009: {Male: 3295, Female: 2294}
+              .forEach(k => {
+                plot_data_multi[0]
+                  .push({
+                    x: k,
+                    y: mf[k].Male
+                  })
+                plot_data_multi[1]
+                  .push({
+                    x: k,
+                    y: mf[k].Female
+                  })
+              })
         }
-      })
-      const mf = propertyCountByProperty(data, "sex_of_casualty",
-      plot_data.map(e => e.x), "date");
-
-      Object.keys(mf)
-      //2009: {Male: 3295, Female: 2294}
-      .forEach(k => {
-        plot_data_multi[0]
-          .push({x: k,
-                 y: mf[k].Male})
-        plot_data_multi[1]
-          .push({x: k,
-                 y: mf[k].Female})
       })
     }
 
@@ -116,7 +120,7 @@ export default class DeckSidebar extends React.Component {
     let columnData = notEmpty ?
       xyObjectByProperty(data, column || barChartVariable) : [];
     // console.log(columnData);
-    
+
     const columnPlot = {
       data: columnData,
       opacity: 1,
@@ -183,7 +187,7 @@ export default class DeckSidebar extends React.Component {
                   multiVarSelect={multiVarSelect}
                   // showcase/hardcode section all_road_types
                   values={all_road_types.map(e => ({ id: e, value: e }))}
-                  onSelectCallback={(filter) => {                    
+                  onSelectCallback={(filter) => {
                     onSelectCallback && onSelectCallback(filter);
                     this.setState({
                       multiVarSelect: filter.selected || {} // not ""
@@ -223,26 +227,27 @@ export default class DeckSidebar extends React.Component {
                   {/* distribution example */}
                   {notEmpty &&
                     data[0].properties.hasOwnProperty(['age_of_casualty']) &&
-                    <SeriesPlot 
-                      title= "Casualty age" noYAxis= {true}
-                      plotStyle= {{ height: 100 }} noLimit= {true}
-                      type= {LineSeries}
+                    <SeriesPlot
+                      title="Casualty age" noYAxis={true}
+                      plotStyle={{ height: 100 }} noLimit={true}
+                      type={LineSeries}
                       // sorts the results if x is a number
                       // TODO: do we want to do this?
                       // also think about sorting according to y
-                      data= {xyObjectByProperty(data, "age_of_casualty")}
+                      data={xyObjectByProperty(data, "age_of_casualty")}
                     />
                   }
-                  {plot_data && <MultiLinePlot 
-                    data={
-                      [...plot_data_multi, plot_data]
-                    }
-                    title="Crashes" noYAxis= {true} 
-                    plotStyle= {{ height: 100, marginBottom: 50 }}
+                  {notEmpty && plot_data_multi[0].length > 0 &&
+                    <MultiLinePlot
+                      data={
+                        [...plot_data_multi, plot_data]
+                      }
+                      title="Crashes" noYAxis={true}
+                      plotStyle={{ height: 100, marginBottom: 50 }}
                     />
                   }
                   {/* pick a column */}
-                  <AddVIS data={data}/>
+                  <AddVIS data={data} />
                   {
                     notEmpty &&
                     Object.keys(data[0].properties)
@@ -269,9 +274,9 @@ export default class DeckSidebar extends React.Component {
                     />
                   }
                   {<SeriesPlot
-                    data= {columnPlot.data}
-                    type= {VerticalBarSeries}
-                    onValueClick= {(datapoint) => {
+                    data={columnPlot.data}
+                    type={VerticalBarSeries}
+                    onValueClick={(datapoint) => {
                       // console.log(datapoint, column);
                       // convert back to string
                       multiVarSelect[column ||
@@ -281,8 +286,8 @@ export default class DeckSidebar extends React.Component {
                       onSelectCallback &&
                         onSelectCallback({ what: 'multi', selected: multiVarSelect })
                       // {x: "Single carriageway", y: 2419}
-                    }} plotStyle= {{ marginBottom: 100 }} noYAxis={true}
-                    /> }
+                    }} plotStyle={{ marginBottom: 100 }} noYAxis={true}
+                  />}
                   {popPyramid({ data })}
                 </Tab>
                 <Tab eventKey="2" title={

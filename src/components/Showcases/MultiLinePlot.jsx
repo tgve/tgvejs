@@ -59,8 +59,9 @@ export default function MultiLinePlot(options) {
                 text: { fill: '#fff' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
               }} position="start" title={title} />
           }
-          {data.map(line =>
+          {data.map((line, i) =>
             <LineSeries
+              key={"line-" + i}
               onValueClick={onValueClick}
               onNearestX={(_, { index }) => {
                 setHint(data.map(d => d[index]))
