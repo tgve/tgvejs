@@ -19,7 +19,7 @@ export default function SeriesPlot (options) {
     : options.data
   const { plotStyle, title, noXAxis, noYAxis, type,
     onValueClick } = options;
-  return options.data && options.data.length > 1 &&
+  return data && data.length > 1 &&
     // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
     <div style={{position: 'relative'}}>
       {options.type !== MarkSeries && !options.noLimit &&
@@ -29,10 +29,10 @@ export default function SeriesPlot (options) {
         <h4>{title}</h4>
       }
       <XYPlot xType="ordinal"
-        margin={{ bottom: plotStyle && plotStyle.marginBottom || 40 }} // default is 40
+        margin={{ bottom: (plotStyle && plotStyle.marginBottom) || 40 }} // default is 40
         animation={{ duration: 1 }}
-        height={plotStyle && plotStyle.height || W}
-        width={plotStyle && plotStyle.width || W} 
+        height={(plotStyle && plotStyle.height) || W}
+        width={(plotStyle && plotStyle.width) || W} 
         onMouseLeave={() => {setHint(false)}}
         >
         {!noXAxis && // if provided dont
