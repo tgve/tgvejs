@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, KIND, SIZE } from 'baseui/button';
-import {VerticalBarSeries, HorizontalBarSeries, LineSeries} from 'react-vis';
+import { Accordion, Panel } from 'baseui/accordion';
+import { VerticalBarSeries, HorizontalBarSeries, LineSeries } from 'react-vis';
 
 import MultiSelect from './MultiSelect';
 import TreeMap from './TreeMap';
@@ -34,7 +35,7 @@ function generateVIS(data, column, vis) {
           color: 1,
           children: counts.map((e, i) => ({
             name: e.x,
-            size: +(e.y)/data.length,
+            size: +(e.y) / data.length,
             color: isNumber(e.x) || i,
             style: {
               border: 'thin solid red'
@@ -45,17 +46,17 @@ function generateVIS(data, column, vis) {
     )
   }
   if (vis.startsWith('Vertical') ||
-      vis.startsWith("Horizontal") ||
-      vis.startsWith("Line") ) {
+    vis.startsWith("Horizontal") ||
+    vis.startsWith("Line")) {
     return (
       <SeriesPlot
-        data={counts} 
+        data={counts}
         type={
           vis.startsWith("Vertical") ?
-          VerticalBarSeries : 
-          vis.startsWith("Horizontal") ?
-          HorizontalBarSeries :
-          LineSeries
+            VerticalBarSeries :
+            vis.startsWith("Horizontal") ?
+              HorizontalBarSeries :
+              LineSeries
         }
         title={humanize(column)} noYAxis={true}
       />
@@ -86,8 +87,8 @@ export default function AddVIS(props) {
         values={columns.map(e => ({ id: humanize(e), value: e }))}
         onSelectCallback={(selected) => {
           setColumn(selected);
-          typeof onSelectCallback === 'function' && 
-          onSelectCallback(selected)
+          typeof onSelectCallback === 'function' &&
+            onSelectCallback(selected)
         }}
         // sync state
         value={column}
@@ -105,29 +106,32 @@ export default function AddVIS(props) {
       <Button
         kind={KIND.secondary} size={SIZE.compact}
         onClick={() => {
-          if(column.length === 0 || vis.length === 0) return;
+          if (column.length === 0 || vis.length === 0) return;
           setList([
             ...list,
             generateVIS(data, column[0].value, vis[0].value)
           ])
           // console.log(column[0].value, vis[0].value);
         }}>Add</Button>
-      {
-        list.map((tm, i) =>
-          <div style={{
-            borderr: '1px solid black'
-          }}>
-            <Button
-              kind={KIND.secondary} size={SIZE.compact}
-              onClick={() => {
-                setList(
-                  list.filter((e, j) => i !== j)
-                )
-              }}>X</Button>
-            {tm}
-          </div>
-        )
-      }
+      <Accordion
+        expanded={true}
+        onChange={({ expanded }) => console.log(expanded)}
+      >
+        {
+          list.map((plot, i) =>
+            <Panel key={'panel-' + i}>
+              <Button
+                kind={KIND.secondary} size={SIZE.compact}
+                onClick={() => {
+                  setList(
+                    list.filter((e, j) => i !== j)
+                  )
+                }}>X</Button>
+              {plot}
+            </Panel>
+          )
+        }
+      </Accordion>
     </div>
   )
 }

@@ -204,6 +204,8 @@ export default class DeckSidebar extends React.Component {
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
                 }>
+                  {/* pick a column and vis type */}
+                  <AddVIS data={data}/>
                   {/* distribution example */}
                   {notEmpty &&
                     data[0].properties.hasOwnProperty(['age_of_casualty']) &&
@@ -223,8 +225,6 @@ export default class DeckSidebar extends React.Component {
                     plotStyle= {{ height: 100, marginBottom: 50 }}
                     />
                   }
-                  {/* pick a column */}
-                  <AddVIS data={data}/>
                   {
                     notEmpty &&
                     Object.keys(data[0].properties)
