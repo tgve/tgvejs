@@ -64,3 +64,17 @@ main, .content {
   width: 30px; 
   text-align: center;
 }
+
+.searchField {
+  max-width: 320px;
+}
+
+.visArea {
+  max-width: 640px;
+}
+
+@media only screen and (max-width: 600px) {
+  .searchField, .visArea {
+    max-width: 90%;
+  }
+}

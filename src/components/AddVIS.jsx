@@ -20,8 +20,9 @@ const VIS = ['Vertical Bar', 'Horizontal Bar',
  * @param {Object} data 
  * @param {String} column 
  * @param {String} vis 
+ * @param {Object} plotStyle
  */
-function generateVIS(data, column, vis) {
+function generateVIS(data, column, vis, plotStyle) {
   if (!data || data.length === 0 || !isString(column) || !isString(vis)) {
     return;
   }
@@ -30,6 +31,7 @@ function generateVIS(data, column, vis) {
   if (vis === 'Treemap') {
     return (
       <TreeMap
+        plotStyle={plotStyle}
         data={{
           title: column + " " + vis,
           color: 1,
@@ -50,6 +52,7 @@ function generateVIS(data, column, vis) {
     vis.startsWith("Line")) {
     return (
       <SeriesPlot
+        plotStyle={plotStyle}
         data={counts}
         type={
           vis.startsWith("Vertical") ?
@@ -73,7 +76,8 @@ export default function AddVIS(props) {
   //   setColumn([])
   // }, [props.data])
 
-  const { data, onSelectCallback, value } = props;
+  const { data, onSelectCallback, value,
+    noAccordion, plotStyle } = props;
 
   if (!data || data.length === 0) return null;
 
@@ -81,57 +85,78 @@ export default function AddVIS(props) {
 
   return (
     <div>
-      <MultiSelect
-        single={true}
-        title="Choose column"
-        values={columns.map(e => ({ id: humanize(e), value: e }))}
-        onSelectCallback={(selected) => {
-          setColumn(selected);
-          typeof onSelectCallback === 'function' &&
-            onSelectCallback(selected)
-        }}
-        // sync state
-        value={column}
-      />
-      {column.length > 0 && <MultiSelect
-        single={true}
-        title="Choose vis"
-        values={VIS.map(e => ({ id: e, value: e }))}
-        onSelectCallback={(selected) => {
-          setVis(selected)
-        }}
-        // sync state
-        value={vis}
-      />}
+      <div className="searchField">
+        <MultiSelect
+          single={true}
+          title="Choose column"
+          values={columns.map(e => ({ id: humanize(e), value: e }))}
+          onSelectCallback={(selected) => {
+            setColumn(selected);
+            typeof onSelectCallback === 'function' &&
+              onSelectCallback(selected)
+          }}
+          // sync state
+          value={column}
+        />
+        {column.length > 0 &&
+          <MultiSelect
+            single={true}
+            title="Choose vis"
+            values={VIS.map(e => ({ id: e, value: e }))}
+            onSelectCallback={(selected) => {
+              setVis(selected)
+            }}
+            // sync state
+            value={vis}
+          />}
+      </div>
       <Button
         kind={KIND.secondary} size={SIZE.compact}
         onClick={() => {
           if (column.length === 0 || vis.length === 0) return;
           setList([
             ...list,
-            generateVIS(data, column[0].value, vis[0].value)
+            generateVIS(data, column[0].value, vis[0].value, plotStyle)
           ])
           // console.log(column[0].value, vis[0].value);
         }}>Add</Button>
-      <Accordion
-        expanded={true}
-        onChange={({ expanded }) => console.log(expanded)}
-      >
-        {
-          list.map((plot, i) =>
-            <Panel key={'panel-' + i}>
-              <Button
-                kind={KIND.secondary} size={SIZE.compact}
-                onClick={() => {
-                  setList(
-                    list.filter((e, j) => i !== j)
-                  )
-                }}>X</Button>
-              {plot}
-            </Panel>
-          )
+      <div className="visArea">
+        {!noAccordion ?
+          <Accordion
+            expanded={true}
+            onChange={({ expanded }) => console.log(expanded)}
+          >
+            {
+              list.map((plot, i) =>
+                <Panel key={'panel-' + i}>
+                  <Button
+                    kind={KIND.secondary} size={SIZE.compact}
+                    onClick={() => {
+                      setList(
+                        list.filter((e, j) => i !== j)
+                      )
+                    }}>X</Button>
+                  {plot}
+                </Panel>
+              )
+            }
+          </Accordion> :
+          <center>
+            {list.map((plot, i) =>
+              <div style={{ border: '1px solid' }}>
+                <Button
+                  kind={KIND.secondary} size={SIZE.compact}
+                  onClick={() => {
+                    setList(
+                      list.filter((e, j) => i !== j)
+                    )
+                  }}>X</Button>
+                {plot}
+              </div>)
+            }
+          </center>
         }
-      </Accordion>
+      </div>
     </div>
   )
 }

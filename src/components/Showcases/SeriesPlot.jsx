@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  makeWidthFlexible, 
   XYPlot, XAxis, YAxis, LineSeries, MarkSeries, 
   Hint} from 'react-vis';
 import { format } from 'd3-format';
@@ -7,6 +8,7 @@ import { format } from 'd3-format';
 import { shortenName } from '../../utils';
 
 const W = 250;
+const FlexibleXYPlot = makeWidthFlexible(XYPlot); 
 
 export default function SeriesPlot (options) {
   const [hint, setHint] = useState();
@@ -28,11 +30,11 @@ export default function SeriesPlot (options) {
       {noYAxis && title &&
         <h4>{title}</h4>
       }
-      <XYPlot xType="ordinal"
+      <FlexibleXYPlot xType="ordinal"
         margin={{ bottom: (plotStyle && plotStyle.marginBottom) || 40 }} // default is 40
         animation={{ duration: 1 }}
         height={(plotStyle && plotStyle.height) || W}
-        width={(plotStyle && plotStyle.width) || W} 
+        // width={(plotStyle && plotStyle.width) || W} 
         onMouseLeave={() => {setHint(false)}}
         >
         {!noXAxis && // if provided dont
@@ -70,6 +72,6 @@ export default function SeriesPlot (options) {
           style={{ fill: type === LineSeries ? 'none' : 'rgb(18, 147, 154)' }}
           data={data} />
         {hint && <Hint value={hint} />}
-      </XYPlot>
+      </FlexibleXYPlot>
     </div>;
 }

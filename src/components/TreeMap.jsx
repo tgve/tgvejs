@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 
-import { Treemap } from 'react-vis';
+import { makeWidthFlexible, Treemap } from 'react-vis';
+const FlexibleTreemap = makeWidthFlexible(Treemap); 
 
+const H = 250;
 /**
  * props.data needs to be in this formard
  * {
@@ -22,7 +24,7 @@ import { Treemap } from 'react-vis';
  */
 export default function TreeMap(props) {
   const [hoveredNode, setHoveredNode] = useState(false)
-  const { data } = props;
+  const { data, plotStyle } = props;
   
   const treeProps = {
     animation: {
@@ -33,16 +35,18 @@ export default function TreeMap(props) {
     onLeafMouseOver: x => setHoveredNode({ hoveredNode: x }),
     onLeafMouseOut: () => setHoveredNode({ hoveredNode: false }),
     // onLeafClick: () => this.setState({ treemapData: _getRandomData() }),
-    height: 300,
     mode: 'squarify',
     getLabel: x => x.name,
-    width: 350
+    // see 
+    // https://github.com/uber/react-vis/issues/262#issuecomment-281757385
+    // width: plotStyle && plotStyle.width || H + 50,
+    height: plotStyle && plotStyle.height || H
   };
 
   if(!data || data.length === 0) return null;
   return (
     <div className="dynamic-treemap-example">
-      {<Treemap {...treeProps} />}
+      {<FlexibleTreemap {...treeProps} />}
         {hoveredNode && hoveredNode.value}
     </div>
   )

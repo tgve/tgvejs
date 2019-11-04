@@ -26,6 +26,7 @@ import URL from './URL';
 import { propertyCount } from '../geojsonutils';
 import GeomExplore from './GeomExplore';
 import Table from './Table/Table';
+import AddVIS from './AddVIS';
 
 const WIDTH = '400';
 const BAR_HEIGHT = 320;
@@ -178,7 +179,11 @@ export default class DUI extends React.Component {
                 }
               </div>
             } */}
-
+        <AddVIS data={data} noAccordion={true} 
+        // plotStyle={{
+        //   height: 600, width: 400
+        // }} 
+        />
         <p>Data preview:</p>
         <Table data={data} />
       </div>
