@@ -16,12 +16,12 @@ import {
 import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
-import { propertyCount, propertyCountByProperty } from '../../geojsonutils';
+import { propertyCount } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
 import { timeSlider } from '../Showcases/Widgets';
-import { popPyramid } from '../Showcases/Plots';
+import { popPyramid, crashes_plot_data } from '../Showcases/Plots';
 import SeriesPlot from '../Showcases/SeriesPlot';
 import { isEmptyOrSpaces } from '../../JSUtils';
 import HexPlot from './HexPlot';
@@ -84,32 +84,7 @@ export default class DeckSidebar extends React.Component {
     let plot_data = [];
     let plot_data_multi = [[], []];
     const notEmpty = data && data.length > 1;
-    if (notEmpty) {
-      Object.keys(data[1].properties).forEach(each => {
-        if (each.match(/date|datetime|datestamp|timestamp/g) &&
-          typeof (data[1].properties[each]) === 'string' &&
-          data[1].properties[each].split("/")[2]) { //date in 09/01/2019 HARDCODE
-          plot_data = xyObjectByProperty(data, "date");
-          const mf = propertyCountByProperty(data, "sex_of_casualty",
-            plot_data.map(e => e.x), "date");
-          plot_data.length > 1 && // more than one years
-            Object.keys(mf)
-              //2009: {Male: 3295, Female: 2294}
-              .forEach(k => {
-                plot_data_multi[0]
-                  .push({
-                    x: k,
-                    y: mf[k].Male
-                  })
-                plot_data_multi[1]
-                  .push({
-                    x: k,
-                    y: mf[k].Female
-                  })
-              })
-        }
-      })
-    }
+    plot_data = crashes_plot_data(notEmpty, data, plot_data, plot_data_multi);
 
     // const data_properties = getPropertyValues({ features: data });
     // const accident_severity_types = notEmpty && data_properties['accident_severity'] &&

@@ -5,6 +5,7 @@ import {
 import { format } from 'd3-format';
 
 import { propertyCountByProperty } from '../../geojsonutils';
+import { xyObjectByProperty } from '../../utils';
 
 const W = 250;
 
@@ -70,24 +71,54 @@ const popPyramid = (options) => {
       <YAxis
         tickSize={0}
         tickFormat={v => v === 0 ? 2009 : v - 2 + 2009}
-        style={{ 
+        style={{
           line: { strokeWidth: 0 },
-          text: { fill: '#fff' } 
+          text: { fill: '#fff' }
         }}
       />
       {/* left={(W / 2) - 10} */}
       <XAxis
         tickSize={0}
         tickFormat={v => format(".2s")(v < 0 ? -1 * v : v)}
-        style={{ 
+        style={{
           line: { strokeWidth: 0 },
-          text: { fill: '#fff' } 
+          text: { fill: '#fff' }
         }}
       />
     </XYPlot>
   )
 }
 
+function crashes_plot_data(notEmpty, data, plot_data, plot_data_multi) {
+  if (notEmpty) {
+    Object.keys(data[1].properties).forEach(each => {
+      if (each.match(/date|datetime|datestamp|timestamp/g) &&
+        typeof (data[1].properties[each]) === 'string' &&
+        data[1].properties[each].split("/")[2]) { //date in 09/01/2019 HARDCODE
+        plot_data = xyObjectByProperty(data, "date");
+        const mf = propertyCountByProperty(data, "sex_of_casualty", plot_data.map(e => e.x), "date");
+        plot_data.length > 1 && // more than one years
+          Object.keys(mf)
+            //2009: {Male: 3295, Female: 2294}
+            .forEach(k => {
+              plot_data_multi[0]
+                .push({
+                  x: k,
+                  y: mf[k].Male
+                });
+              plot_data_multi[1]
+                .push({
+                  x: k,
+                  y: mf[k].Female
+                });
+            });
+      }
+    });
+  }
+  return plot_data;
+}
+
 export {
+  crashes_plot_data,
   popPyramid
 }
