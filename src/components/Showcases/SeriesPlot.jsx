@@ -34,7 +34,7 @@ export default function SeriesPlot (options) {
         margin={{ bottom: (plotStyle && plotStyle.marginBottom) || 40 }} // default is 40
         animation={{ duration: 1 }}
         height={(plotStyle && plotStyle.height) || W}
-        // width={(plotStyle && plotStyle.width) || W} 
+        width={(plotStyle && plotStyle.width) || W} 
         onMouseLeave={() => {setHint(false)}}
         >
         {!noXAxis && // if provided dont

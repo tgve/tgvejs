@@ -24,7 +24,7 @@ const H = 250;
  */
 export default function TreeMap(props) {
   const [hoveredNode, setHoveredNode] = useState(false)
-  const { data, plotStyle } = props;
+  const { data, plotStyle, title } = props;
   
   const treeProps = {
     animation: {
@@ -39,13 +39,14 @@ export default function TreeMap(props) {
     getLabel: x => x.name,
     // see 
     // https://github.com/uber/react-vis/issues/262#issuecomment-281757385
-    // width: plotStyle && plotStyle.width || H + 50,
+    width: plotStyle && plotStyle.width || H + 50,
     height: plotStyle && plotStyle.height || H
   };
 
   if(!data || data.length === 0) return null;
   return (
     <div className="dynamic-treemap-example">
+      <h6>{title}</h6>
       {<FlexibleTreemap {...treeProps} />}
         {hoveredNode && hoveredNode.value}
     </div>

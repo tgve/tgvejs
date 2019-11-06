@@ -71,6 +71,7 @@ main, .content {
 
 .visArea {
   max-width: 640px;
+  min-width: 320px;
 }
 
 @media only screen and (max-width: 600px) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, KIND, SIZE } from 'baseui/button';
 import { Accordion, Panel } from 'baseui/accordion';
 import { VerticalBarSeries, HorizontalBarSeries, LineSeries } from 'react-vis';
@@ -44,6 +44,7 @@ function generateVIS(data, column, vis, plotStyle) {
             }
           }))
         }}
+        title={humanize(column)}
       />
     )
   }
@@ -71,9 +72,9 @@ export default function AddVIS(props) {
   const [vis, setVis] = useState(false)
   const [list, setList] = useState([]);
   // useEffect(() => {
-  //   // if props.data changes only then it should react to it
-  //   setList([]);
-  //   setColumn([])
+    // if props.data changes only then it should react to it
+    // setVis(false);
+    // setColumn([])
   // }, [props.data])
 
   const { data, onSelectCallback, value,
@@ -85,6 +86,7 @@ export default function AddVIS(props) {
 
   return (
     <div>
+      <h6>Generate graphs from columns</h6>
       <div className="searchField">
         <MultiSelect
           single={true}
@@ -143,7 +145,7 @@ export default function AddVIS(props) {
           </Accordion> :
           <center>
             {list.map((plot, i) =>
-              <div style={{ border: '1px solid' }}>
+              plot && <div style={{ border: '1px solid' }}>
                 <Button
                   kind={KIND.secondary} size={SIZE.compact}
                   onClick={() => {

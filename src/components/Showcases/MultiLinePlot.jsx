@@ -28,52 +28,53 @@ export default function MultiLinePlot(options) {
     onValueClick, data } = options;
   return options.data && options.data.length > 1 &&
     // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
-      <div style={{ position: 'relative' }}>
-        {!options.noLimit &&
-          options.data && options.data.length > limit &&
-          <h4>Plotting first {limit} values:</h4>}
-        {noYAxis && title &&
-          <h4>{title}</h4>
+    <div style={{ position: 'relative', color: '#fff' }}>
+      {!options.noLimit &&
+        options.data && options.data.length > limit &&
+        <h4>Plotting first {limit} values:</h4>}
+      {noYAxis && title &&
+        <h4>{title}</h4>
+      }
+      <XYPlot xType="ordinal"
+        margin={{ bottom: (plotStyle && plotStyle.marginBottom) || 40 }} // default is 40
+        animation={{ duration: 1 }}
+        height={(plotStyle && plotStyle.height) || W}
+        width={(plotStyle && plotStyle.width) || W}
+        onMouseLeave={() => { setHint(false) }}
+      >
+        {!noXAxis && // if provided dont
+          <XAxis
+            tickSize={0}
+            tickFormat={v => shortenName(v, 10)}
+            position="right" tickLabelAngle={-65} style={{
+              line: { strokeWidth: 0 },
+              text: { fill: '#fff' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
+            }} />}
+        {!noYAxis && // if provided dont
+          <YAxis
+            tickSize={0}
+            tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} style={{
+              line: { strokeWidth: 0 },
+              title: { fill: '#fff' },
+              text: { fill: '#fff' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
+            }} position="start" title={title} />
         }
-        <XYPlot xType="ordinal"
-          margin={{ bottom: (plotStyle && plotStyle.marginBottom) || 40 }} // default is 40
-          animation={{ duration: 1 }}
-          height={(plotStyle && plotStyle.height) || W}
-          width={(plotStyle && plotStyle.width) || W}
-          onMouseLeave={() => { setHint(false) }}
-        >
-          {!noXAxis && // if provided dont
-            <XAxis
-              tickSize={0}
-              tickFormat={v => shortenName(v, 10)}
-              position="right" tickLabelAngle={-65} style={{
-                line: { strokeWidth: 0 },
-                text: { fill: '#fff' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
-              }} />}
-          {!noYAxis && // if provided dont
-            <YAxis
-              tickSize={0}
-              tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} style={{
-                line: { strokeWidth: 0 },
-                title: { fill: '#fff' },
-                text: { fill: '#fff' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
-              }} position="start" title={title} />
-          }
-          {data.map((line, i) =>
-            <LineSeries
-              key={"line-" + i}
-              onValueClick={onValueClick}
-              onNearestX={(_, { index }) => {
-                setHint(data.map(d => d[index]))
-              }}
-              style={{ fill: 'none' }}
-              data={line} />)}
-          {hint && <Crosshair
-            values={hint}
-            className={'test-class-name'}
-          />}
-        </XYPlot>
-        <DiscreteColorLegend orientation="horizontal" width={W}
+        {data.map((line, i) =>
+          <LineSeries
+            key={"line-" + i}
+            onValueClick={onValueClick}
+            onNearestX={(_, { index }) => {
+              setHint(data.map(d => d[index]))
+            }}
+            style={{ fill: 'none' }}
+            data={line} />)}
+        {hint && <Crosshair
+          values={hint}
+          className={'test-class-name'}
+        />}
+      </XYPlot>
+      <DiscreteColorLegend
+        orientation="horizontal" width={W}
         items={['Male', 'Female', 'Total']} />
-      </div>;
+    </div>;
 }
