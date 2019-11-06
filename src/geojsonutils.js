@@ -25,7 +25,7 @@ const properties = (geojson) => {
  * turn it into {some: type, another: type}
  * @param {Object} feature 
  */
-const describeGeojson = (feature) => {
+const describeFeatureVariables = (feature) => {
   if (!feature || feature.type !== 'Feature') return null;
   const description = {};
 
@@ -186,7 +186,7 @@ const coordsAsXY = (geojson, sizeProperty) => {
 export {
   propertyCountByProperty,
   getPropertyValues,
-  describeGeojson,
+  describeFeatureVariables,
   propertyCount,
   properties,
   coordsAsXY,

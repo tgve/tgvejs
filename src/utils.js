@@ -478,7 +478,7 @@ const colorRanges = (name) => {
 }
 
 const iconJSType = (dataType) => {
-  // describeGeojson in geojsonutils
+  // describeFeatureVariables in geojsonutils
   // String, Number, Boolean and Object
   if (!dataType) return (null)
   switch (dataType) {

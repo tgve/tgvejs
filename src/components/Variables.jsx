@@ -19,7 +19,7 @@ import React, { Component } from 'react';
 import './style.css';
 import { humanize } from '../utils';
 import { isEmptyOrSpaces } from '../JSUtils';
-import { describeGeojson } from '../geojsonutils';
+import { describeFeatureVariables } from '../geojsonutils';
 import { Button, SIZE, KIND } from 'baseui/button';
 
 const SHOWN_ITEMS = 5;
@@ -69,7 +69,7 @@ export default class Variables extends Component {
     const { data, onSelectCallback, style, subStyle,
       propertyValuesCallback } = this.props;
     const selected = this.state.selected;
-    const description = describeGeojson(data[0]); // describe first feature
+    const description = describeFeatureVariables(data[0]); // describe first feature
     const all = Object.keys(data[0].properties);
     const limit = this.state.showAll ? all.length : 10;
     // console.log(limit);
