@@ -90,23 +90,31 @@ const getPropertyValues = (geojson, property) => {
 
 /**
  * Get a list of {x:property, y:count} objects for a features in 
- * a geojson object. 
+ * a geojson object. The function can return the counts for
+ * a specific list provided or it would get all values in 
+ * the given key/column of the data.
  * 
  * @param {Object} data features to loop through. 
  * @param {String} key a particular property as key
- * @param {Object} list of values to return their counts
+ * @param {Object} list of values to limit return their counts
  * 
  * @returns {Object}
  */
 const propertyCount = (data, key, list) => {
-  if (!data || !key || !list) return;
+  if (!data || !key) return;
   let sub_data = []; // match it with list
+  let list_copy = list;  
+  if(!list || list.length === 0) {
+    list_copy = getPropertyValues ({
+      features: data
+    }, key)    
+  }
   data.forEach(feature => {
     Object.keys(feature.properties).forEach(each => {
       if (each === key) {
         // create an array matching given list
         // if no list match first 
-        const i = list.indexOf(feature.properties[each]);
+        const i = list_copy.indexOf(feature.properties[each]);
         if (sub_data[i] &&
           sub_data[i].x === feature.properties[each]) {
           sub_data[i].y += 1;

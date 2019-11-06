@@ -16,7 +16,7 @@ import {
 import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
-import { propertyCount } from '../../geojsonutils';
+import { propertyCount, propertyCountByProperty } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Table/Modal';
@@ -26,6 +26,8 @@ import SeriesPlot from '../Showcases/SeriesPlot';
 import { isEmptyOrSpaces } from '../../JSUtils';
 import HexPlot from './HexPlot';
 import MultiSelect from '../MultiSelect';
+import AddVIS from '../AddVIS';
+import MultiLinePlot from '../Showcases/MultiLinePlot';
 // import GenerateUI from '../UI';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
@@ -80,27 +82,45 @@ export default class DeckSidebar extends React.Component {
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, dark, column } = this.props;
     let plot_data = [];
+    let plot_data_multi = [[], []];
     const notEmpty = data && data.length > 1;
     if (notEmpty) {
       Object.keys(data[1].properties).forEach(each => {
         if (each.match(/date|datetime|datestamp|timestamp/g) &&
           typeof (data[1].properties[each]) === 'string' &&
           data[1].properties[each].split("/")[2]) { //date in 09/01/2019 HARDCODE
-          plot_data = xyObjectByProperty(data, "date")
+          plot_data = xyObjectByProperty(data, "date");
+          const mf = propertyCountByProperty(data, "sex_of_casualty",
+            plot_data.map(e => e.x), "date");
+          plot_data.length > 1 && // more than one years
+            Object.keys(mf)
+              //2009: {Male: 3295, Female: 2294}
+              .forEach(k => {
+                plot_data_multi[0]
+                  .push({
+                    x: k,
+                    y: mf[k].Male
+                  })
+                plot_data_multi[1]
+                  .push({
+                    x: k,
+                    y: mf[k].Female
+                  })
+              })
         }
       })
     }
-    const severity_data = propertyCount(data, "accident_severity",
-      ['Slight', 'Serious', 'Fatal'])
-    // console.log(severity_data);
 
     // const data_properties = getPropertyValues({ features: data });
-    // const curr_road_types = notEmpty && data_properties['road_type'] &&
-    //   Array.from(data_properties['road_type'])
+    // const accident_severity_types = notEmpty && data_properties['accident_severity'] &&
+    //   Array.from(data_properties['accident_severity'])
+
+    const severity_data = propertyCount(data, "accident_severity");
+
     let columnData = notEmpty ?
       xyObjectByProperty(data, column || barChartVariable) : [];
     // console.log(columnData);
-    
+
     const columnPlot = {
       data: columnData,
       opacity: 1,
@@ -178,7 +198,7 @@ export default class DeckSidebar extends React.Component {
                   onSelectCallback={(filter) => {
                     onSelectCallback && onSelectCallback(filter);
                     this.setState({
-                      multiVarSelect: filter.selected
+                      multiVarSelect: filter.selected || {} // not ""
                     })
                   }}
                   // sync state
@@ -192,11 +212,13 @@ export default class DeckSidebar extends React.Component {
               {
                 severity_data && severity_data.map(each =>
                   percentDiv(each.x, 100 * each.y / data.length, () => {
-                    multiVarSelect && multiVarSelect['accident_severity'] &&
-                      multiVarSelect['accident_severity'].has(each.x) ?
-                      delete multiVarSelect['accident_severity'] :
+                    if (multiVarSelect && multiVarSelect['accident_severity'] &&
+                      multiVarSelect['accident_severity'].has(each.x)) {
+                      delete multiVarSelect['accident_severity'];
+                    } else {
                       multiVarSelect['accident_severity'] = new Set([each.x]);
-                    this.setState({ multiVarSelect })
+                      this.setState({ multiVarSelect })
+                    }
                     onSelectCallback &&
                       onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
                         { what: '' } : { what: 'multi', selected: multiVarSelect })
@@ -210,23 +232,30 @@ export default class DeckSidebar extends React.Component {
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
                 }>
+                  {/* pick a column and vis type */}
+                  <AddVIS data={data}/>
                   {/* distribution example */}
                   {notEmpty &&
                     data[0].properties.hasOwnProperty(['age_of_casualty']) &&
-                    <SeriesPlot 
-                      title= "Casualty age" noYAxis= {true} dark={true}
-                      plotStyle= {{ height: 100 }} noLimit= {true}
-                      type= {LineSeries}
-                      data= {xyObjectByProperty(data, "age_of_casualty")}
+                    <SeriesPlot
+                      title="Casualty age" noYAxis={true} dark={dark}
+                      plotStyle={{ height: 100 }} noLimit={true}
+                      type={LineSeries}
+                      // sorts the results if x is a number
+                      // TODO: do we want to do this?
+                      // also think about sorting according to y
+                      data={xyObjectByProperty(data, "age_of_casualty")}
                     />
                   }
-                  {<SeriesPlot 
-                    data={plot_data} type= {LineSeries}
-                    title="Crashes" noYAxis= {true} dark={true}
-                    plotStyle= {{ height: 100, marginBottom: 50 }}
+                  {notEmpty && plot_data_multi[0].length > 0 &&
+                    <MultiLinePlot
+                      data={
+                        [...plot_data_multi, plot_data]
+                      }
+                      title="Crashes" noYAxis={true} dark={dark}
+                      plotStyle={{ height: 100, marginBottom: 50 }}
                     />
                   }
-                  {/* pick a column */}
                   {
                     notEmpty &&
                     Object.keys(data[0].properties)
@@ -252,10 +281,12 @@ export default class DeckSidebar extends React.Component {
                       }}
                     />
                   }
+                  {/* TODO: example of generating vis based on column
+                  cloudl now be deleted. */}
                   {<SeriesPlot
-                    data= {columnPlot.data}
-                    type= {VerticalBarSeries}
-                    onValueClick= {(datapoint) => {
+                    data={columnPlot.data}
+                    type={VerticalBarSeries}
+                    onValueClick={(datapoint) => {
                       // console.log(datapoint, column);
                       // convert back to string
                       multiVarSelect[column ||
@@ -265,9 +296,9 @@ export default class DeckSidebar extends React.Component {
                       onSelectCallback &&
                         onSelectCallback({ what: 'multi', selected: multiVarSelect })
                       // {x: "Single carriageway", y: 2419}
-                    }} plotStyle= {{ marginBottom: 100 }} dark={true}
+                    }} plotStyle= {{ marginBottom: 100 }} dark={dark}
                     /> }
-                  {popPyramid({ data })}
+                  {popPyramid({ data, dark: dark })}
                 </Tab>
                 <Tab eventKey="2" title={
                   <i style={{ fontSize: '2rem' }}

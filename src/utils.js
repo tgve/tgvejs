@@ -3,7 +3,9 @@ import {
   ScatterplotLayer, HexagonLayer, GeoJsonLayer,
   IconLayer, ScreenGridLayer, GridLayer, LineLayer
 } from 'deck.gl';
-import { interpolateSinebow } from 'd3-scale-chromatic';
+import { interpolateOrRd, schemeBlues 
+} from 'd3-scale-chromatic';
+
 import qs from 'qs'; // warning: importing it otherways would cause minificatino issue.
 
 import mapping from './location-icon-mapping.json';
@@ -62,6 +64,17 @@ const fetchData = (url, callback) => {
 
 }
 
+/**
+ * Function to count frequency of values of `property` given.
+ * 
+ * TODO: Double check to see if it is slightly different
+ * version of propertyCount
+ * 
+ * 
+ * @param {Object} data 
+ * @param {String} property 
+ * @param {Boolean} noNulls 
+ */
 const xyObjectByProperty = (data, property, noNulls = true) => {
   if (!data || !property) return;
   //data = [{...data = 12/12/12}]       
@@ -366,17 +379,44 @@ const isMobile = function () {
   return check;
 };
 
+function hexToRgb(hex) {
+  let bigint = parseInt(hex.substring(1, hex.length), 16);
+  let r = (bigint >> 16) & 255;
+  let g = (bigint >> 8) & 255;
+  let b = bigint & 255;
+
+  return 'rgb(' + r + "," + g + "," + b + ")";
+}
+
+/**
+ * Generate colour scale for unique set of values
+ * based on the index of the values in an array.
+ * 
+ * @param {object} d particular property to get color for from features
+ * @param {*} features features in a geojson featureset
+ * @param {*} p index/name of column to generate color scale with
+ */
 const colorScale = (d, features, p = 0) => {
   if (!d || !features || features.length === 0) return null;
-  const x = Object.keys(d.properties)[p];
-  let domain = features.map(feature => feature.properties[x])
+  const x = isNumber(p) ? Object.keys(d.properties)[p] : p;  
+  let domain = features.map(feature => {
+    // uber move to show isochrones
+    if(isNumber(feature.properties[x]) && 
+    p === 'Mean.Travel.Time..Seconds.') {
+      return(Math.floor(feature.properties[x]/300))
+    }
+    return feature.properties[x]
+  })
   domain = Array.from(new Set(domain))
-  // console.log(d, d.properties[x], domain);
-  const index = domain.indexOf(d.properties[x])
-  const col = interpolateSinebow(index / domain.length);
-  return col.substring(4, col.length - 1)
-    .replace(/ /g, '')
-    .split(',');
+  const index = domain.indexOf(isNumber(d.properties[x]) && 
+  p === 'Mean.Travel.Time..Seconds.' ? 
+  Math.floor(d.properties[x]/300) : d.properties[x])
+  // console.log(domain, index)
+  let col = interpolateOrRd(index / domain.length);  
+  col = col.substring(4, col.length - 1)
+  .replace(/ /g, '')
+  .split(',');
+  return col
 }
 
 const colorRangeNames = ['inverseDefault', 'yellowblue', 'greens',

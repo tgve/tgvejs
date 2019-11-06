@@ -210,14 +210,16 @@ export default class Welcome extends React.Component {
           return r
         }; // avoid id
       }
-    }
-    if (geomType === "polygon") {   
+    }    
+    if (geomType === "polygon" || geomType === "multipolygon") {         
       const SPENSER = Object.keys(data[0].properties)[1] === 'GEOGRAPHY_CODE';
-      options.getElevation = d => (isNumber(d.properties[column]) && 
+      if(SPENSER) {
+        options.getElevation = d => (isNumber(d.properties[column]) && 
       column !== 'YEAR' && d.properties[column]) || null
+      }
       // TODO: allow user to specify column.
       options.getFillColor = (d) => 
-      colorScale(d, data,  SPENSER ? 1 : 0)
+      colorScale(d, data,  SPENSER ? 1 : column ? column : 0)
     }
     if (data.length === 7201) {
       options.getColor = d => [255, 255, 255]
@@ -333,7 +335,7 @@ export default class Welcome extends React.Component {
         {/* just a little catch to hide the loader 
         when no basemap is presetn */}
         <div className="loader" style={{
-          zIndex: loading ? 999 : 0,
+          zIndex: loading ? 999 : -1,
           visibility: typeof mapStyle === 'string' &&
             mapStyle.endsWith("No map-v9") ? 'hidden' : 'visible'
         }} />

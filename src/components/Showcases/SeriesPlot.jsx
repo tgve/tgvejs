@@ -1,15 +1,17 @@
 import React, {useState} from 'react';
 import {
-  XYPlot, XAxis, YAxis, LineSeries, MarkSeries
-} from 'react-vis';
+  makeWidthFlexible, 
+  XYPlot, XAxis, YAxis, LineSeries, MarkSeries, 
+  Hint} from 'react-vis';
 import { format } from 'd3-format';
 
 import { shortenName } from '../../utils';
 
 const W = 250;
+const FlexibleXYPlot = makeWidthFlexible(XYPlot); 
 
 export default function SeriesPlot (options) {
-  const [hint,useHint] = useState();
+  const [hint, setHint] = useState();
 
   const ReactSeries = options.type;
   const limit = 10;
@@ -19,21 +21,25 @@ export default function SeriesPlot (options) {
     : options.data
   const { plotStyle, title, noXAxis, noYAxis, type,
     onValueClick } = options;
-  return options.data && options.data.length > 1 &&
-    <>
+  return data && data.length > 1 &&
+    // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
+    <div style={{position: 'relative'}}>
       {options.type !== MarkSeries && !options.noLimit &&
         options.data && options.data.length > limit &&
         <h4>Plotting first {limit} values:</h4>}
       {noYAxis && title &&
         <h4>{title}</h4>
       }
-      <XYPlot xType="ordinal"
-        margin={{ bottom: plotStyle && plotStyle.marginBottom || 40 }} // default is 40
+      <FlexibleXYPlot xType="ordinal"
+        margin={{ bottom: (plotStyle && plotStyle.marginBottom) || 40 }} // default is 40
         animation={{ duration: 1 }}
-        height={plotStyle && plotStyle.height || W}
-        width={plotStyle && plotStyle.width || W} >
+        height={(plotStyle && plotStyle.height) || W}
+        width={(plotStyle && plotStyle.width) || W} 
+        onMouseLeave={() => {setHint(false)}}
+        >
         {!noXAxis && // if provided dont
-          <XAxis 
+          <XAxis
+            tickSize={0}
             tickFormat={ v => shortenName(v, 10)}
             tickValues={
               (data.length > limit)
@@ -46,20 +52,28 @@ export default function SeriesPlot (options) {
                 : data.map(item => (item.x))
             }
             position="right" tickLabelAngle={-65} style={{
-            text: { fill: options.dark ? '#fff' : '#000' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
-          }} />}
+              line: { strokeWidth: 0 },
+              text: { fill: options.dark ? '#fff' : '#000' } 
+              //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
+            }} />}
         {!noYAxis && // if provided dont
-          <YAxis tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} style={{
-            title: { fill: options.dark ? '#fff' : '#000'  },
-            text: { fill: options.dark ? '#fff' : '#000' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
-          }} position="start" title={title} />
+          <YAxis 
+            tickSize={0}
+            tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} style={{
+              line: { strokeWidth: 0 },
+              title: { fill: options.dark ? '#fff' : '#000'  },
+              text: { fill: options.dark ? '#fff' : '#000' } 
+              //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
+            }} position="start" title={title} />
         }
         <ReactSeries
           onValueClick={onValueClick}
-          onSeriesMouseOver={(event) => {
+          onNearestX={(datapoint)=>{                   
+            setHint(datapoint)            
           }}
           style={{ fill: type === LineSeries ? 'none' : 'rgb(18, 147, 154)' }}
           data={data} />
-      </XYPlot>
-    </>;
+        {hint && <Hint value={hint} />}
+      </FlexibleXYPlot>
+    </div>;
 }

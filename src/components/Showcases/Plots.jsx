@@ -68,13 +68,21 @@ const popPyramid = (options) => {
         data={mf_array_male} />
 
       <YAxis
+        tickSize={0}
         tickFormat={v => v === 0 ? 2009 : v - 2 + 2009}
-        style={{ text: { fill: options.dark ? '#fff' : '#000' } }}
+        style={{ 
+          line: { strokeWidth: 0 },
+          text: { fill: options.dark ? '#fff' : '#000' } 
+        }}
       />
       {/* left={(W / 2) - 10} */}
       <XAxis
+        tickSize={0}
         tickFormat={v => format(".2s")(v < 0 ? -1 * v : v)}
-        style={{ text: { fill: options.dark ? '#fff' : '#000' } }}
+        style={{ 
+          line: { strokeWidth: 0 },
+          text: { fill: options.dark ? '#fff' : '#000' } 
+        }}
       />
     </XYPlot>
   )
