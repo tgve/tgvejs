@@ -218,7 +218,7 @@ export default class DeckSidebar extends React.Component {
                     <MultiLinePlot
                       data={
                         [...plot_data_multi, plot_data]
-                      }
+                      } legend={["Male", "Female", "Total"]}
                       title="Crashes" noYAxis={true}
                       plotStyle={{ height: 100, marginBottom: 50 }}
                     />

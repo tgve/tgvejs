@@ -74,6 +74,11 @@ main, .content {
   min-width: 320px;
 }
 
+/* hard coded for theming*/
+.rv-discrete-color-legend-item__title {
+  color: lightgray;
+}
+
 @media only screen and (max-width: 600px) {
   .searchField, .visArea {
     max-width: 90%;

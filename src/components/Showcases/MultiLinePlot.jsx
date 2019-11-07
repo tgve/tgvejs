@@ -14,6 +14,10 @@ const W = 250;
  * multi line data {data: [[{x:v,y:v},],[]]} object arrays and
  * maximum of 10 lines.
  * 
+ * Note: options.legend must match order of options.data multi
+ * dimensional array.
+ * TODO: consider {data: {legend1: array, legend2: array}}
+ * 
  * @param {Object} options 
  */
 export default function MultiLinePlot(options) {
@@ -25,7 +29,8 @@ export default function MultiLinePlot(options) {
   const limit = 10;
 
   const { plotStyle, title, noXAxis, noYAxis,
-    onValueClick, data } = options;
+    onValueClick, data, legend } = options;
+  
   return options.data && options.data.length > 1 &&
     // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
     <div style={{ position: 'relative', color: '#fff' }}>
@@ -75,6 +80,6 @@ export default function MultiLinePlot(options) {
       </XYPlot>
       <DiscreteColorLegend
         orientation="horizontal" width={W}
-        items={['Male', 'Female', 'Total']} />
+        items={legend} />
     </div>;
 }

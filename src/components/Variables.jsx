@@ -71,7 +71,6 @@ export default class Variables extends Component {
     const selected = this.state.selected;
     const description = describeFeatureVariables(data[0]); // describe first feature
     const keys = getKeyColumns({features: data});
-    console.log(keys)
     const all = Object.keys(data[0].properties);
     const limit = this.state.showAll ? all.length : 10;
     // console.log(limit);
