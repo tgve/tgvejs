@@ -9,7 +9,7 @@ export default class Uploader extends React.Component {
     const textType = /text.*/;
     const file = acceptedFiles[0]
     // console.log(file);
-    console.log(file.type);
+    // console.log(file.type);
 
     if (!file.type || file.type.match(textType) || file.type.match(/geo/) 
     || file.type.match(/json/)) {

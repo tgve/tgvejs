@@ -28,7 +28,7 @@ import GeomExplore from './GeomExplore';
 import Table from './Table/Table';
 import AddVIS from './AddVIS';
 
-const WIDTH = '400';
+const WIDTH = 400;
 const BAR_HEIGHT = 320;
 const url = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 

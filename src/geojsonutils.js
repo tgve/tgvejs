@@ -1,6 +1,6 @@
 import {
   isNumber, isBoolean, isObject,
-  isDate
+  isDate, isString
 } from './JSUtils';
 
 const { DateTime } = require("luxon");
@@ -20,6 +20,47 @@ const properties = (geojson) => {
   return Object.keys(properties);
 }
 
+/**
+ * Find all columns which can be considered as key columns.
+ * Using `getPropertyValues` we compare the length with
+ * geojson objects and determin which olumn can be considered as key.
+ * 
+ * @param {Object} geojson to process
+ * @returns array of keys or null if none.
+ */
+const getKeyColumns = (geojson) => {
+  if (!geojson || !geojson.features) return null;  
+  const keys = [];
+  const all_property_counts = getPropertyValues(geojson);
+  Object.keys(all_property_counts).forEach(column => {
+    if(Array.from(all_property_counts[column]).length === 
+    geojson.features.length) {
+      keys.push(column); 
+      // if property values of column === geojson.features
+      // must be unique      
+    }
+  })
+  return keys.length > 0 ? keys : null;
+}
+
+/**
+ * Given an array of [E010000001, S010000001] the function checks
+ * all values within the array and returns true if all matches
+ * pattern for UK ONS codes.
+ * See https://en.wikipedia.org/wiki/ONS_coding_system
+ * 
+ * @param {*} array 
+ */
+const isONSCode = (array) => {
+  if(!array || array.length === 0) return false;
+  let result = true;
+  array.forEach(e => {
+    if(!isString(e) || e.length !== 9 || !e.match(/^[EWS]\d{2}.{6}$/)) {
+      result = false;
+    }
+  })
+  return result;
+}
 /**
  * {some: data, another: value}
  * turn it into {some: type, another: type}
@@ -184,11 +225,13 @@ const coordsAsXY = (geojson, sizeProperty) => {
 }
 
 export {
+  describeFeatureVariables,
   propertyCountByProperty,
   getPropertyValues,
-  describeFeatureVariables,
+  getKeyColumns,
   propertyCount,
   properties,
   coordsAsXY,
+  isONSCode,
   sfType
 }

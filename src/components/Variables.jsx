@@ -19,7 +19,7 @@ import React, { Component } from 'react';
 import './style.css';
 import { humanize } from '../utils';
 import { isEmptyOrSpaces } from '../JSUtils';
-import { describeFeatureVariables } from '../geojsonutils';
+import { describeFeatureVariables, getKeyColumns } from '../geojsonutils';
 import { Button, SIZE, KIND } from 'baseui/button';
 
 const SHOWN_ITEMS = 5;
@@ -70,6 +70,8 @@ export default class Variables extends Component {
       propertyValuesCallback } = this.props;
     const selected = this.state.selected;
     const description = describeFeatureVariables(data[0]); // describe first feature
+    const keys = getKeyColumns({features: data});
+    console.log(keys)
     const all = Object.keys(data[0].properties);
     const limit = this.state.showAll ? all.length : 10;
     // console.log(limit);
@@ -121,11 +123,14 @@ export default class Variables extends Component {
           key={key}>
           {this._shorten(key)}
           {' '}
-          <i
+          <i // keep it i
             style={{ color: 'orange' }}
             className="data-type">
-            [{description[key].name.substring(0, 3)}]
-                </i>
+            [
+            {description[key].name.substring(0, 3)}
+            {keys && keys.includes(key) && ', UNQ'}
+            ]
+          </i>
         </span>
       )
     return (list)
