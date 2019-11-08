@@ -507,32 +507,9 @@ const searchNominatom = (location, callback) => {
     typeof callback === 'function' && callback(json)
   })
 }
-export {
-  getResultsFromGoogleMaps,
-  getParamsFromSearch,
-  suggestUIforNumber,
-  generateDeckLayer,
-  suggestDeckLayer,
-  xyObjectByProperty,
-  colorRangeNames,
-  searchNominatom,
-  convertRange,
-  getCentroid,
-  shortenName,
-  colorRanges,
-  percentDiv,
-  iconJSType,
-  colorScale,
-  fetchData,
-  humanize,
-  isMobile,
-  ATILOGO,
-  getBbx,
-  isURL,
-}
 
 const ATILOGO = () => (
-  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+  <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
     <g id="ATI_logo_black_ATI_logo_black_W1024px" fill="#ffffff">
       <g id="logo-line-1" data-svg-origin="0.8190000057220459 0.7929999828338623" transform="matrix(1,0,0,1,0,0)" style={{ zIndex: 0, visibility: 'inherit', opacity: 1 }}>
         <path d="M273.346,71.521 L233.737,71.521 C235.771,58.945 242.738,52.485 253.966,52.485 C265.183,52.485 272.837,60.128 273.346,71.521 M299.694,83.932 C299.694,52.816 282.185,33.27 254.131,33.27 C226.425,33.27 207.72,52.816 207.72,81.718 C207.72,111.985 226.08,131.363 254.983,131.363 C277.938,131.363 293.744,120.479 299.529,100.424 L272.495,100.424 C269.775,107.735 263.987,111.475 255.493,111.475 C242.573,111.475 234.588,103.654 233.902,90.05 L299.529,90.05 C299.694,87.327 299.694,84.948 299.694,83.932" id="Fill-13"></path>
@@ -565,3 +542,27 @@ const ATILOGO = () => (
     </g>
   </g>
 )
+
+export {
+  getResultsFromGoogleMaps,
+  getParamsFromSearch,
+  suggestUIforNumber,
+  generateDeckLayer,
+  suggestDeckLayer,
+  xyObjectByProperty,
+  colorRangeNames,
+  searchNominatom,
+  convertRange,
+  getCentroid,
+  shortenName,
+  colorRanges,
+  percentDiv,
+  iconJSType,
+  colorScale,
+  fetchData,
+  humanize,
+  isMobile,
+  ATILOGO,
+  getBbx,
+  isURL,
+}
