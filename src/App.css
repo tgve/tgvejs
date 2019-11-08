@@ -230,9 +230,9 @@ html, body, main, .App, #root {
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.logo {
+  /* animation: App-logo-spin infinite 20s linear; */
+  height: 24px;
 }
 
 .App-header {
