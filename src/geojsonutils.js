@@ -188,7 +188,8 @@ const propertyCountByProperty = (data, key, list, key2) => {
   if (!data || !key || !list || !key2 || key === key2) return;
   let sub_data = {} // create object based on key2 values
   data.forEach(feature => {
-    const k2 = key2 === 'date' ?
+    const k2 = key2 === 'date' &&  
+    DateTime.fromFormat(feature.properties[key2] + '', 'dd/MM/yyyy').isValid ? 
     feature.properties[key2].split("/")[2] : feature.properties[key2];
     Object.keys(feature.properties).forEach(each => {
       if (each === key) {
