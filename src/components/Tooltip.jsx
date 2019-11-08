@@ -47,13 +47,16 @@ export default class Tooltip extends React.Component {
 
     const type_feature = hoveredObject.type && 
     hoveredObject.type === 'Feature';
+    const cluster = hoveredObject && hoveredObject.cluster 
+    // {cluster: true, cluster_id: 8, point_count: 54, 
+    // point_count_abbreviated: 54}
+
     let list;
     let severity_keys = [];
     let crashes_data = [];
     let severity_data = [];
-    let severity_data_separate = [];
-
-    if (!type_feature) {
+    let severity_data_separate = [];    
+    if (!type_feature && !cluster) {
       list = hoveredObject.points.map(feature => {
         const aKey = {}
         if (feature.properties.hasOwnProperty('accident_severity')) {
@@ -131,14 +134,15 @@ export default class Tooltip extends React.Component {
           left: crashes_data.length > 1 ? n_left : topx
         }}>
         <div>
-          <b>Total:{type_feature ? 1 : hoveredObject.points.length}</b>
+          <b>Total: {cluster ? hoveredObject.point_count : 
+            type_feature ? 1 : hoveredObject.points.length}</b>
         </div>
         <div>
           {
             // Simple logic, if points and less two points or less,
             // or not poingts, hard to expect React-vis generating plot.
             // so list the values of the non-point or list both points.
-            (type_feature || hoveredObject.points.length <= 2) &&
+            !cluster && (type_feature || hoveredObject.points.length <= 2) &&
             this._listPropsAndValues(hoveredObject)
           }
           {

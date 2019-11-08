@@ -92,7 +92,8 @@ export default class Welcome extends React.Component {
       initialViewState: init,
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
-      colourName: 'default'
+      colourName: 'default',
+      iconLimit: 500
     }
     this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
@@ -144,7 +145,7 @@ export default class Welcome extends React.Component {
    */
   _generateLayer(radius, elevation, filter, cn) {
     let data = this.state.data && this.state.data.features
-    const { colourName } = this.state;
+    const { colourName, iconLimit } = this.state;
     let column = (filter && filter.what === 'column' && filter.selected) ||
     this.state.column;
 
@@ -177,7 +178,7 @@ export default class Welcome extends React.Component {
     // console.log(data.length);
     let layerStyle = 'grid';
     if (geomType !== "point") layerStyle = "geojson"
-    if (data.length < 100 && geomType === "point") layerStyle = 'icon'
+    if (data.length < iconLimit && geomType === "point") layerStyle = 'icon'
     const options = {
       radius: radius ? radius : this.state.radius,
       cellSize: radius ? radius : this.state.radius,

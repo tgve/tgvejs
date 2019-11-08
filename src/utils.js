@@ -12,6 +12,7 @@ import qs from 'qs'; // warning: importing it otherways would cause minificatino
 import mapping from './location-icon-mapping.json';
 import Constants from './Constants';
 import { isString, isNumber } from './JSUtils.js';
+import IconClusterLayer from './icon-cluster-layer';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -170,15 +171,16 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       pickable: true,
       iconAtlas: 'location-icon-atlas.png',
       iconMapping: mapping,
-      sizeScale: 15,
+      sizeScale: 60,
       getPosition: d => d.geometry.coordinates,
-      getIcon: d => 'marker-1',
-      getSize: d => 5,
+      wrapLongitude: true,
+      // getIcon: d => 'marker-1',
+      // getSize: d => 5,
       // getColor: d => [Math.sqrt(d.exits), 140, 0],
       onHover: renderTooltip
     }
     addOptionsToObject(options, iconObj)
-    return (new IconLayer(iconObj))
+    return (new IconClusterLayer(iconObj))
   } else if (name === 'sgrid') {
     const sgridObject = {
       id: 'screen_grid',
