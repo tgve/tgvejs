@@ -7,6 +7,9 @@ if(is.null(curl::nslookup("r-project.org", error = FALSE))) {
 }
 packages <- c("sf", "geojsonsf", "osmdata", "curl")
 main.file <- "ac_joined_wy_2009-2017.Rds"
+# https://github.com/layik/eAtlas/releases/
+# download/0.0.1/spenser.geojson
+spenser.file <- "spenser.geojson"
 
 if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
   install.packages(setdiff(packages, rownames(installed.packages())),repos='http://cran.us.r-project.org')
@@ -15,8 +18,17 @@ if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
 lapply(packages, library, character.only = TRUE)
 
 if(!file.exists(main.file)) {
-  download.file(paste0("https://github.com/layik/eAtlas/releases/download/0.0.1/", main.file), 
-                destfile = "ac_joined_wy_2009-2017.Rds")
+  download.file(
+    paste0("https://github.com/layik/eAtlas/releases/download/0.0.1/",
+           main.file),
+    destfile = main.file)
+}
+
+if(!file.exists(spenser.file)) {
+  download.file(
+    paste0("https://github.com/layik/eAtlas/releases/download/0.0.1/",
+           spenser.file),
+    destfile = spenser.file)
 }
 
 # Enable CORS -------------------------------------------------------------
@@ -135,7 +147,6 @@ parse_url <- function(res, q = "") {
   } else {
     return(res)
   }
-  
 }
 
 #' start wip/play.R
@@ -227,6 +238,17 @@ geom <- function(res) {
   res$body <- scenarios_geojson
   res
 }
+
+# read spenser.file
+spenser <- readChar(spenser.file, file.info(spenser.file)$size)
+
+#' server spenser
+#' @get /api/spenser
+get_spenser <- function(res) {
+  res$body <- spenser
+  res
+}
+
 #' Tell plumber where our public facing directory is to SERVE.
 #' No need to map / to the build or public index.html. This will do.
 #'

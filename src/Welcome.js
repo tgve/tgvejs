@@ -246,7 +246,7 @@ export default class Welcome extends React.Component {
         this.state.road_type,
       colourName: cn || colourName,
       column, // all checked
-    })
+    }, this._fitViewport())
   }
 
   _fitViewport(bboxLonLat) {
@@ -398,7 +398,6 @@ export default class Welcome extends React.Component {
             } else {
               this._fetchAndUpdateState(url_returned);
             }
-            this._fitViewport();
           }}
           column={this.state.column}
           onSelectCallback={(selected) => this._generateLayer(undefined, undefined, selected)}
