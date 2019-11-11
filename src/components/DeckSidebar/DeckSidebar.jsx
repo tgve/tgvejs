@@ -56,6 +56,9 @@ export default class DeckSidebar extends React.Component {
     const { data, alert, loading } = this.props;
     const { elevation, radius, reset, open,
       barChartVariable } = this.state;
+    // TODO move out sidepanels open/close
+    // avoid rerender as directly operating on document.get* 
+    // does not look neat. Keeping it React way.
     if (open !== nextState.open ||
       reset !== nextState.reset ||
       elevation !== nextState.elevation ||
@@ -134,6 +137,9 @@ export default class DeckSidebar extends React.Component {
             <Modal
               toggleOpen={() => this.setState({ open: !open })}
               component={<DataTable data={data} />} />
+            <Modal
+              // toggleOpen={() => this.setState({ open: !open })}
+              component={<p> Hello </p>} />
             {
               this.state.reset &&
               <Button
