@@ -147,7 +147,7 @@ export default class Welcome extends React.Component {
     let data = this.state.data && this.state.data.features
     const { colourName, iconLimit } = this.state;
     let column = (filter && filter.what === 'column' && filter.selected) ||
-    this.state.column;
+      this.state.column;
 
     if (!data) return;
     if (filter && filter.what === "%") {
@@ -197,7 +197,7 @@ export default class Welcome extends React.Component {
       options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
       let columnNameOrIndex =
         (filter && filter.what === 'column' && filter.selected) ||
-        column || 1;      
+        column || 1;
       if (isNumber(data[0] && data[0].properties &&
         data[0].properties[columnNameOrIndex])) {
         const colArray = data.map(f => f.properties[columnNameOrIndex])
@@ -212,16 +212,16 @@ export default class Welcome extends React.Component {
           return r
         }; // avoid id
       }
-    }    
-    if (geomType === "polygon" || geomType === "multipolygon") {         
+    }
+    if (geomType === "polygon" || geomType === "multipolygon") {
       const SPENSER = Object.keys(data[0].properties)[1] === 'GEOGRAPHY_CODE';
-      if(SPENSER) {
-        options.getElevation = d => (isNumber(d.properties[column]) && 
-      column !== 'YEAR' && d.properties[column]) || null
+      if (SPENSER) {
+        options.getElevation = d => (isNumber(d.properties[column]) &&
+          column !== 'YEAR' && d.properties[column]) || null
       }
       // TODO: allow user to specify column.
-      options.getFillColor = (d) => 
-      colorScale(d, data,  SPENSER ? 1 : column ? column : 0)
+      options.getFillColor = (d) =>
+        colorScale(d, data, SPENSER ? 1 : column ? column : 0)
     }
     if (data.length === 7201) {
       options.getColor = d => [255, 255, 255]
@@ -389,6 +389,7 @@ export default class Welcome extends React.Component {
               road_type: "",
               radius: 100,
               elevation: 4,
+              loading: true
             })
             if (geojson_returned) {
               this.setState({

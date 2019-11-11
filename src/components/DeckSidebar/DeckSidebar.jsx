@@ -19,7 +19,9 @@ import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
-import Modal from '../Table/Modal';
+import Modal from '../Modal';
+import DataTable from '../Table';
+
 import { timeSlider } from '../Showcases/Widgets';
 import { popPyramid, crashes_plot_data } from '../Showcases/Plots';
 import SeriesPlot from '../Showcases/SeriesPlot';
@@ -131,7 +133,7 @@ export default class DeckSidebar extends React.Component {
               } />
             <Modal
               toggleOpen={() => this.setState({ open: !open })}
-              data={data} />
+              component={<DataTable data={data} />} />
             {
               this.state.reset &&
               <Button
@@ -200,7 +202,7 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-info" />
                 }>
                   {/* pick a column and vis type */}
-                  <AddVIS data={data}/>
+                  <AddVIS data={data} />
                   {/* distribution example */}
                   {notEmpty &&
                     data[0].properties.hasOwnProperty(['age_of_casualty']) &&
