@@ -26,7 +26,6 @@ import { timeSlider } from '../Showcases/Widgets';
 import { popPyramid, crashes_plot_data } from '../Showcases/Plots';
 import SeriesPlot from '../Showcases/SeriesPlot';
 import { isEmptyOrSpaces } from '../../JSUtils';
-import HexPlot from './HexPlot';
 import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
 import MultiLinePlot from '../Showcases/MultiLinePlot';
@@ -54,13 +53,12 @@ export default class DeckSidebar extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const { data, alert, loading } = this.props;
-    const { elevation, radius, reset, open,
+    const { elevation, radius, reset,
       barChartVariable } = this.state;
     // TODO move out sidepanels open/close
     // avoid rerender as directly operating on document.get* 
     // does not look neat. Keeping it React way.
-    if (open !== nextState.open ||
-      reset !== nextState.reset ||
+    if (reset !== nextState.reset ||
       elevation !== nextState.elevation ||
       radius !== nextState.radius ||
       alert !== nextProps.alert ||
@@ -85,7 +83,7 @@ export default class DeckSidebar extends React.Component {
     const { onChangeRadius, onChangeElevation, isMobile,
       onSelectCallback, data, colourCallback, layerStyle,
       toggleSubsetBoundsChange, urlCallback, alert,
-      onlocationChange, column } = this.props;
+      onlocationChange, column, toggleOpen } = this.props;
     let plot_data = [];
     let plot_data_multi = [[], []];
     const notEmpty = data && data.length > 1;
@@ -109,8 +107,7 @@ export default class DeckSidebar extends React.Component {
     }
 
     return (
-      <div className="side-panel-container"
-        style={{ marginLeft: !open ? '-320px' : '0px' }}>
+      <>
         <div
           className="side-panel">
           <RBAlert alert={alert} />
@@ -122,10 +119,9 @@ export default class DeckSidebar extends React.Component {
           </div>
           <div>
             <DataInput
-              toggleOpen={() => this.setState({ open: !open })}
+              toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
               urlCallback={(url, geojson) => {
                 this.setState({
-                  open: true,
                   reset: true,
                   year: "",
                   multiVarSelect: {},
@@ -135,11 +131,8 @@ export default class DeckSidebar extends React.Component {
               }
               } />
             <Modal
-              toggleOpen={() => this.setState({ open: !open })}
+              toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
               component={<DataTable data={data} />} />
-            <Modal
-              // toggleOpen={() => this.setState({ open: !open })}
-              component={<p> Hello </p>} />
             {
               this.state.reset &&
               <Button
@@ -200,8 +193,6 @@ export default class DeckSidebar extends React.Component {
                   }))
               }
               <hr style={{ clear: 'both' }} />
-              <HexPlot open={open} isMobile={isMobile}
-                notEmpty={notEmpty} data={data} />
               <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
@@ -394,21 +385,7 @@ export default class DeckSidebar extends React.Component {
             </form>
           </div>
         </div>
-        <div
-          className="close-button"
-          onClick={() =>
-            this.setState({
-              open: !open
-            })}
-          style={{ color: 'white' }}>
-          <div style={{ backgroundColor: '#242730' }}>
-            <i
-              style={{ fontSize: '2rem', color: 'white !important' }}
-              className={open ? "fa fa-arrow-circle-left" :
-                "fa fa-arrow-circle-right"} />
-          </div>
-        </div>
-      </div>
+      </>
     )
   }
 }

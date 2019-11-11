@@ -12,7 +12,8 @@ import {
   convertRange
 } from './utils';
 import Constants from './Constants';
-import DeckSidebar from './components/DeckSidebar/DeckSidebar';
+import DeckSidebarContainer from
+  './components/DeckSidebar/DeckSidebarContainer';
 import history from './history';
 
 import './App.css';
@@ -373,7 +374,7 @@ export default class Welcome extends React.Component {
             {tooltip}
           </DeckGL>
         </MapGL>
-        <DeckSidebar
+        <DeckSidebarContainer
           layerStyle={layerStyle}
           isMobile={isMobile()}
           key="decksidebar"
