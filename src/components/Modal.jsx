@@ -7,11 +7,9 @@ import {
   ModalFooter,
 } from 'baseui/modal';
 
-import DataTable from './Table';
-
 export default (props) => {
   const [open, setOpen] = React.useState(false);
-  const { toggleOpen } = props;
+  const { toggleOpen, title, component, button } = props;
 
   return (
     <React.Fragment>
@@ -22,18 +20,18 @@ export default (props) => {
           fontSize: '1.5em'
         }}
         onClick={() => {
+          typeof toggleOpen === 'function' && toggleOpen();
           setOpen(true);
-          typeof toggleOpen === 'function' && toggleOpen()
         }}
-        className="fa fa-table"></i>
+        className={button || "fa fa-table"}></i>
       <Modal size="80%"
         onClose={() => {
           typeof (toggleOpen) === 'function' && toggleOpen()
           setOpen(false);
         }} isOpen={open}>
-        <ModalHeader>Data table</ModalHeader>
+        <ModalHeader>{title}</ModalHeader>
         <ModalBody>
-          <DataTable data={props.data} />
+          {component}
         </ModalBody>
         <ModalFooter>
           <Button

@@ -1,8 +1,11 @@
 import React from 'react';
-import { LineSeries, VerticalBarSeries } from 'react-vis';
+import { LineSeries } from 'react-vis';
 import { Table } from 'baseui/table';
 import { humanize } from '../utils';
-import { seriesPlot } from './Showcases/Plots';
+import SeriesPlot from './Showcases/SeriesPlot';
+import { propertyCountByProperty } from '../geojsonutils';
+import MultiLinePlot from './Showcases/MultiLinePlot';
+import TreeMap from './TreeMap';
 
 const WIDTH = 220;
 const BAR_HEIGHT = 80;
@@ -44,11 +47,16 @@ export default class Tooltip extends React.Component {
 
     const type_feature = hoveredObject.type && 
     hoveredObject.type === 'Feature';
+    const cluster = hoveredObject && hoveredObject.cluster 
+    // {cluster: true, cluster_id: 8, point_count: 54, 
+    // point_count_abbreviated: 54}
+
     let list;
+    let severity_keys = [];
     let crashes_data = [];
     let severity_data = [];
-
-    if (!type_feature) {
+    let severity_data_separate = [];    
+    if (!type_feature && !cluster) {
       list = hoveredObject.points.map(feature => {
         const aKey = {}
         if (feature.properties.hasOwnProperty('accident_severity')) {
@@ -60,7 +68,7 @@ export default class Tooltip extends React.Component {
         return (aKey)
       });
       const map = new Map()
-      //aggregate severity and years
+      // aggregate severity and years
       list.forEach(element => {
         if (element.hasOwnProperty('severity')) {
           if (map.get(element.severity)) {
@@ -83,10 +91,36 @@ export default class Tooltip extends React.Component {
         if (parseInt(key)) { // TODO: replace with moment check - is it year?
           crashes_data.push({ x: key, y: map.get(key) })
         } else {
+          // {x: serious, y: 20}
+          // {x: slight: y: 21}
           severity_data.push({ x: key, y: map.get(key) })
         }
       })
+      // separate the severity into [[],[]] arrays
+      severity_keys = Array.from(new Set(severity_data.map(e => e.x)));
+      const severity_by_year = propertyCountByProperty(hoveredObject.points,
+        "accident_severity", severity_keys, "date");
+      // now turn it into [[],[]]
+      //{2009: {Slight: 1}, 2010: {Slight: 3}, 2012: {Slight: 4}, 
+      // 2013: {Slight: 3}, 2014: {Serious: 1}, 2015: {Slight: 6}, 
+      // 2016: {Serious: 1, Slight: 2}, 2017: {Slight: 1}}
+      Object.keys(severity_by_year).forEach(y => {
+        severity_by_year[y] &&
+        Object.keys(severity_by_year[y]).forEach(kk => {
+          // get index of kk
+          const index = severity_keys.indexOf(kk);
+          if(!severity_data_separate[index]) {
+            severity_data_separate[index] = [];
+          }
+          // 2016: {Serious: 1, Slight: 2}
+          severity_data_separate[index].push({
+            x: +(y), y: severity_by_year[y][kk]
+          })
+        })
+      })
     }
+    // console.log(crashes_data);
+    
     const w = window.innerWidth;
     const y = window.innerHeight;
     const n_topy = isMobile ? 10 :
@@ -100,30 +134,27 @@ export default class Tooltip extends React.Component {
           left: crashes_data.length > 1 ? n_left : topx
         }}>
         <div>
-          <b>Total:{type_feature ? 1 : hoveredObject.points.length}</b>
+          <b>Total: {cluster ? hoveredObject.point_count : 
+            type_feature ? 1 : hoveredObject.points.length}</b>
         </div>
         <div>
           {
             // Simple logic, if points and less two points or less,
             // or not poingts, hard to expect React-vis generating plot.
             // so list the values of the non-point or list both points.
-            (type_feature || hoveredObject.points.length <= 2) &&
+            !cluster && (type_feature || hoveredObject.points.length <= 2) &&
             this._listPropsAndValues(hoveredObject)
           }
           {
-            // react-vis cannot generate plot for single value
-            crashes_data.length > 1 &&
-            seriesPlot({ data: crashes_data, type: LineSeries })
-          }
-          {
-            // react-vis cannot generate plot for single value
-            severity_data.length > 1 &&
-            seriesPlot({
-              data: severity_data,
-              type: VerticalBarSeries,
-              plotStyle: { height: BAR_HEIGHT, width: WIDTH },
-              noYAxis: true
-            })
+            severity_data_separate.length > 1 ?
+            <MultiLinePlot
+              data={[...severity_data_separate, crashes_data]}
+              legend={[...severity_keys, 'Total']}
+              title="Crashes" noYAxis={true}
+              plotStyle={{ height: 100, marginBottom: 50 }}
+            /> :
+            <SeriesPlot title={severity_keys.length === 1 && severity_keys[0]} 
+            data= {crashes_data} type= {LineSeries} />
           }
         </div>
       </div >

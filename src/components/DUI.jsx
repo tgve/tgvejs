@@ -25,9 +25,10 @@ import GenerateUI from './UI';
 import URL from './URL';
 import { propertyCount } from '../geojsonutils';
 import GeomExplore from './GeomExplore';
-import Table from './Table/Table';
+import Table from './Table';
+import AddVIS from './AddVIS';
 
-const WIDTH = '400';
+const WIDTH = 400;
 const BAR_HEIGHT = 320;
 const url = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 
@@ -180,7 +181,11 @@ export default class DUI extends React.Component {
                 }
               </div>
             } */}
-
+        <AddVIS data={data} noAccordion={true}
+          plotStyle={{
+            width: 620
+          }}
+        />
         <p>Data preview:</p>
         <Table data={data} />
       </div>

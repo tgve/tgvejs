@@ -63,15 +63,6 @@ Use your favourite document server (nginx for example) to proxy requets
 
 <img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/66118004-44646f80-e5cd-11e9-98fa-c319c9b42bf3.png">
 
-## Current deployment
-
-The project has been given an Azure account from Turing. The deployment
-model is as follows for now:
-
-![eatlas-production](https://user-images.githubusercontent.com/408568/64371799-62b06d00-d019-11e9-90b2-0951c3b14c3a.png)
-
-Please let us know if you think of a better model.
-
 Disclaimer:
 <div style="font-size: 0.5rem">THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,

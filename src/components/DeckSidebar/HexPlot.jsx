@@ -13,7 +13,8 @@ export default (props) => {
     setOpen(props.open);
   }, [props.open])
 
-  const { notEmpty, data } = props;
+  const { data } = props;
+  const notEmpty = data && data.length > 1;
 
   if (notEmpty && data[0].geometry.type.toUpperCase() === 'POINT') {
     return (
@@ -25,12 +26,12 @@ export default (props) => {
         <div
           className="close-button"
           onClick={() => setOpen(!open)}
-          style={{ color: 'white'}}>
+          style={{ color: 'white' }}>
           <i
             style={{
               //bottom and just outside the div
               marginLeft: -16,
-              bottom:0,
+              bottom: 0,
               position: 'absolute',
               backgroundColor: '#242730',
               fontSize: '2rem', color: 'white !important'

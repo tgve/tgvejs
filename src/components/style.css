@@ -64,3 +64,23 @@
   width: 30px; 
   text-align: center;
 }
+
+.searchField {
+  max-width: 320px;
+}
+
+.visArea {
+  max-width: 640px;
+  min-width: 320px;
+}
+
+/* hard coded for theming*/
+.rv-discrete-color-legend-item__title {
+  color: lightgray;
+}
+
+@media only screen and (max-width: 600px) {
+  .searchField, .visArea {
+    max-width: 90%;
+  }
+}

@@ -5,6 +5,8 @@ import React, { useState } from 'react';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
 
+import { ATILOGO } from '../utils';
+
 const navs = [
   {
     key: 1,
@@ -24,7 +26,14 @@ function Header(props) {
     <Navbar inverse={dark} collapseOnSelect>
       <Navbar.Header>
         <Navbar.Brand>
-          <Link to="/">eAtlas</Link>
+          <Link to="/">
+            <svg className="logo" viewBox="0 0 1025 428"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xlink="http://www.w3.org/1999/xlink">
+              {ATILOGO(dark)}
+            </svg>
+          </Link>
         </Navbar.Brand>
         <Navbar.Toggle />
       </Navbar.Header>
@@ -73,7 +82,7 @@ function Header(props) {
           </NavItem>
         </Nav>
       </Navbar.Collapse>
-    </Navbar>
+    </Navbar >
   )
 }
 

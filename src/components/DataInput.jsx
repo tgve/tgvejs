@@ -11,7 +11,12 @@ import {
 
 import File from './File'
 import URL from './URL';
+import Card from './Card';
+import { DEV_URL, PRD_URL } from '../Constants';
+
 const csv2geojson = require('csv2geojson');
+
+const partURL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
 
 export default function (props) {
   const [isOpen, setOpen] = React.useState(false);
@@ -30,7 +35,7 @@ export default function (props) {
           setOpen(false);
         }}
         isOpen={isOpen}>
-        <ModalHeader>Add Data</ModalHeader>
+        <ModalHeader>Your data remains on your browser. It is NOT uploaded anywhere.</ModalHeader>
         <ModalBody>
           <FocusOnce>
             <URL urlCallback={(url) => {
@@ -60,6 +65,13 @@ export default function (props) {
               });
             }
           }} />
+          <Card button="Load" title="SPENSER" image="./images/spenser.png"
+            body="Spenser Cambridge sample." loadCallback={() => {
+              const u = partURL + '/api/spenser';
+              typeof (urlCallback) === 'function'
+                && urlCallback(u)
+              setOpen(false);
+            }} />
         </ModalBody>
         <ModalFooter>
           <ModalButton onClick={() => {

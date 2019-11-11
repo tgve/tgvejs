@@ -1,6 +1,6 @@
 #### SPENSER
 unzip("~/Downloads/oxford.zip", exdir = "~/Downloads/oxford")
-dir = "~/Downloads/oxford/oxford"
+dir = "~/Downloads/oxford/"
 list.files(dir)
 csv = read.csv(file.path(dir, list.files(dir)[1]))
 # all_housholds = read.csv("~/Downloads/all_households/all_households.csv")
@@ -60,3 +60,13 @@ write(geojsonsf::sf_geojson(dj_sf), file = dj_file_name)
 dj_sf_area = st_as_sf(dj, msoa$geometry)
 dj_file_name = "~/Downloads/DjDiff_area.geojson"
 write(geojsonsf::sf_geojson(dj_sf_area[1:1000,]), file = dj_file_name)
+
+
+# pct rnet lines.
+wy_rnet = get_pct(region = "west-yorkshire", layer = "rnet")
+wy_rnet_gj = geojsonsf::sf_geojson(wy_rnet)
+write(wy_rnet_gj, "~/Desktop/recent/eAtlas/wy-rnet.geojson")
+
+wy_l = get_pct(region = "west-yorkshire", layer = "l")
+wy_l_gj = geojsonsf::sf_geojson(wy_l)
+write(wy_l_gj, "~/Desktop/recent/eAtlas/wy-lines.geojson")

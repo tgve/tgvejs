@@ -32,6 +32,13 @@
 	z-index: 0;
 }
 
+@keyframes hideshow {
+  0% { opacity: 1; }
+  10% { opacity: 0.9; }
+  15% { opacity: 0.7; }
+  100% { opacity: 0; }
+} 
+
 @keyframes load8 {
   0% {
     transform: rotate(0deg);
@@ -230,9 +237,13 @@ html, body, main, .App, #root {
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.logo {
+  /* animation: App-logo-spin infinite 20s linear; */
+  height: 24px;
+}
+
+.logo:hover {
+  animation: hideshow 0.5s ease alternate;
 }
 
 .App-header {

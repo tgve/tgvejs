@@ -19,12 +19,16 @@ import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
 import Constants from '../../Constants';
 import ColorPicker from '../ColourPicker';
-import Modal from '../Table/Modal';
+import Modal from '../Modal';
+import DataTable from '../Table';
+
 import { timeSlider } from '../Showcases/Widgets';
-import { seriesPlot } from '../Showcases/Plots';
+import { popPyramid, crashes_plot_data } from '../Showcases/Plots';
+import SeriesPlot from '../Showcases/SeriesPlot';
 import { isEmptyOrSpaces } from '../../JSUtils';
-import HexPlot from './HexPlot';
 import MultiSelect from '../MultiSelect';
+import AddVIS from '../AddVIS';
+import MultiLinePlot from '../Showcases/MultiLinePlot';
 // import GenerateUI from '../UI';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
@@ -49,10 +53,12 @@ export default class DeckSidebar extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const { data, alert, loading } = this.props;
-    const { elevation, radius, reset, open,
+    const { elevation, radius, reset,
       barChartVariable } = this.state;
-    if (open !== nextState.open ||
-      reset !== nextState.reset ||
+    // TODO move out sidepanels open/close
+    // avoid rerender as directly operating on document.get* 
+    // does not look neat. Keeping it React way.
+    if (reset !== nextState.reset ||
       elevation !== nextState.elevation ||
       radius !== nextState.radius ||
       alert !== nextProps.alert ||
@@ -77,36 +83,31 @@ export default class DeckSidebar extends React.Component {
     const { onChangeRadius, onChangeElevation, isMobile,
       onSelectCallback, data, colourCallback, layerStyle,
       toggleSubsetBoundsChange, urlCallback, alert,
-      onlocationChange, dark, column } = this.props;
+      onlocationChange, column, dark, toggleOpen } = this.props;
     let plot_data = [];
+    let plot_data_multi = [[], []];
     const notEmpty = data && data.length > 1;
-    if (notEmpty) {
-      Object.keys(data[1].properties).forEach(each => {
-        if (each.match(/date|datetime|datestamp|timestamp/g) &&
-          typeof (data[1].properties[each]) === 'string' &&
-          data[1].properties[each].split("/")[2]) { //date in 09/01/2019 HARDCODE
-          plot_data = xyObjectByProperty(data, "date")
-        }
-      })
-    }
-    const severity_data = propertyCount(data, "accident_severity",
-      ['Slight', 'Serious', 'Fatal'])
-    // console.log(severity_data);
+    plot_data = crashes_plot_data(notEmpty, data, plot_data, plot_data_multi);
 
     // const data_properties = getPropertyValues({ features: data });
-    // const curr_road_types = notEmpty && data_properties['road_type'] &&
-    //   Array.from(data_properties['road_type'])
+    // const accident_severity_types = notEmpty && data_properties['accident_severity'] &&
+    //   Array.from(data_properties['accident_severity'])
+
+    const severity_data = propertyCount(data, "accident_severity");
+
+    let columnData = notEmpty ?
+      xyObjectByProperty(data, column || barChartVariable) : [];
+    // console.log(columnData);
 
     const columnPlot = {
-      data: notEmpty ? xyObjectByProperty(data, column || barChartVariable) : [],
+      data: columnData,
       opacity: 1,
       stroke: 'rgb(72, 87, 104)',
       fill: 'rgb(18, 147, 154)',
     }
 
     return (
-      <div className="side-panel-container"
-        style={{ marginLeft: !open ? '-320px' : '0px' }}>
+      <>
         <div
           style={{
             color: dark ? "white" : "black",
@@ -126,22 +127,30 @@ export default class DeckSidebar extends React.Component {
           </div>
           <div>
             <DataInput
-              toggleOpen={() => this.setState({ open: !open })}
+              toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
               urlCallback={(url, geojson) => {
-                this.setState({ open: true, reset: true })
+                this.setState({
+                  reset: true,
+                  year: "",
+                  multiVarSelect: {},
+                })
                 typeof (urlCallback) === 'function'
                   && urlCallback(url, geojson)
               }
               } />
             <Modal
-              toggleOpen={() => this.setState({ open: !open })}
-              data={data} />
+              toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
+              component={<DataTable data={data} />} />
             {
               this.state.reset &&
               <Button
                 kind={KIND.secondary} size={SIZE.compact}
                 onClick={() => {
-                  this.setState({ reset: false })
+                  this.setState({
+                    reset: false,
+                    year: "",
+                    multiVarSelect: {},
+                  })
                   typeof (urlCallback) === 'function'
                     && urlCallback(URL + "/api/stats19")
                 }}>Reset</Button>
@@ -165,7 +174,7 @@ export default class DeckSidebar extends React.Component {
                   onSelectCallback={(filter) => {
                     onSelectCallback && onSelectCallback(filter);
                     this.setState({
-                      multiVarSelect: filter.selected
+                      multiVarSelect: filter.selected || {} // not ""
                     })
                   }}
                   // sync state
@@ -179,65 +188,94 @@ export default class DeckSidebar extends React.Component {
               {
                 severity_data && severity_data.map(each =>
                   percentDiv(each.x, 100 * each.y / data.length, () => {
-                    multiVarSelect['accident_severity'] &&
-                      multiVarSelect['accident_severity'].has(each.x) ?
-                      delete multiVarSelect['accident_severity'] :
+                    if (multiVarSelect && multiVarSelect['accident_severity'] &&
+                      multiVarSelect['accident_severity'].has(each.x)) {
+                      delete multiVarSelect['accident_severity'];
+                    } else {
                       multiVarSelect['accident_severity'] = new Set([each.x]);
-                    this.setState({ multiVarSelect })
+                      this.setState({ multiVarSelect })
+                    }
                     onSelectCallback &&
                       onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
                         { what: '' } : { what: 'multi', selected: multiVarSelect })
                   }, dark))
               }
               <hr style={{ clear: 'both' }} />
-              <HexPlot open={open} isMobile={isMobile}
-                notEmpty={notEmpty} data={data} />
               <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
                 }>
-                  {seriesPlot({
-                    data: plot_data, type: LineSeries,
-                    title: "Crashes", dark
-                  })}
-                  {/* pick a column */}
+                  {/* pick a column and vis type */}
+                  <AddVIS data={data} dark={dark} />
+                  {/* distribution example */}
+                  {notEmpty &&
+                    data[0].properties.hasOwnProperty(['age_of_casualty']) &&
+                    <SeriesPlot
+                      dark={dark}
+                      title="Casualty age" noYAxis={true}
+                      plotStyle={{ height: 100 }} noLimit={true}
+                      type={LineSeries}
+                      // sorts the results if x is a number
+                      // TODO: do we want to do this?
+                      // also think about sorting according to y
+                      data={xyObjectByProperty(data, "age_of_casualty")}
+                    />
+                  }
+                  {notEmpty && plot_data_multi[0].length > 0 &&
+                    <MultiLinePlot
+                      dark={dark}
+                      data={
+                        [...plot_data_multi, plot_data]
+                      } legend={["Male", "Female", "Total"]}
+                      title="Crashes" noYAxis={true}
+                      plotStyle={{ height: 100, marginBottom: 50 }}
+                    />
+                  }
                   {
                     notEmpty &&
                     Object.keys(data[0].properties)
                       .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
-                    <MultiSelect 
+                    <MultiSelect
                       title="Choose Column"
                       single={true}
                       values={
-                        Object.keys(data[0].properties).map(e => 
-                          ({id:humanize(e), value:e}))
+                        Object.keys(data[0].properties).map(e =>
+                          ({ id: humanize(e), value: e }))
                       }
                       onSelectCallback={(selected) => {
                         // array of seingle {id: , value: } object
+                        const newBarChartVar = (selected && selected[0]) ?
+                          selected[0].value : barChartVariable;
                         this.setState({
-                          barChartVariable: selected[0].value
+                          barChartVariable: newBarChartVar
                         });
                         typeof onSelectCallback === 'function' &&
-                          onSelectCallback({ 
-                            what: 'column', selected: selected[0].value 
+                          onSelectCallback({
+                            what: 'column', selected: newBarChartVar
                           });
                       }}
-                      />
+                    />
                   }
-                  {seriesPlot({
-                    data: columnPlot.data,
-                    type: VerticalBarSeries,
-                    onValueClick: (datapoint) => {
-                      console.log(datapoint);
-                      
-                      multiVarSelect[column] = new Set([datapoint.x]);
+                  {/* TODO: example of generating vis based on column
+                  cloudl now be deleted. */}
+                  {<SeriesPlot
+                    dark={dark}
+                    data={columnPlot.data}
+                    type={VerticalBarSeries}
+                    onValueClick={(datapoint) => {
+                      // console.log(datapoint, column);
+                      // convert back to string
+                      multiVarSelect[column ||
+                        barChartVariable] = new Set([datapoint.x + ""]);
+                      // console.log(multiVarSelect);
                       this.setState({ multiVarSelect })
                       onSelectCallback &&
                         onSelectCallback({ what: 'multi', selected: multiVarSelect })
                       // {x: "Single carriageway", y: 2419}
-                    }, margin: 100, dark
-                  })}
+                    }} plotStyle={{ marginBottom: 100 }} noYAxis={true}
+                  />}
+                  {popPyramid({ data, dark: dark })}
                 </Tab>
                 <Tab eventKey="2" title={
                   <i style={{ fontSize: '2rem' }}
@@ -367,21 +405,7 @@ export default class DeckSidebar extends React.Component {
             </form>
           </div>
         </div>
-        <div
-          className="close-button"
-          onClick={() =>
-            this.setState({
-              open: !open
-            })}
-          style={{ color: 'white' }}>
-          <div style={{ backgroundColor: '#242730' }}>
-            <i
-              style={{ fontSize: '2rem', color: 'white !important' }}
-              className={open ? "fa fa-arrow-circle-left" :
-                "fa fa-arrow-circle-right"} />
-          </div>
-        </div>
-      </div>
+      </>
     )
   }
 }
