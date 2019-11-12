@@ -65,7 +65,7 @@ export default function (props) {
               });
             }
           }} />
-          <Card button="Load" title="SPENSER" image="./images/spenser.png"
+          <Card button="Load" title="SPENSER" image="images/spenser.png"
             body="Spenser Cambridge sample." loadCallback={() => {
               const u = partURL + '/api/spenser';
               typeof (urlCallback) === 'function'
