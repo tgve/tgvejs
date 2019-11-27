@@ -145,6 +145,13 @@ export default class Welcome extends React.Component {
    * @param {*} cn short for colorName passed from callback
    */
   _generateLayer(radius, elevation, filter, cn) {
+    if(filter && filter.what === 'mapstyle') {
+      this.setState({
+        mapStyle: !MAPBOX_ACCESS_TOKEN ? osmtiles :
+        filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
+      })
+      return;
+    }
     let data = this.state.data && this.state.data.features
     const { colourName, iconLimit } = this.state;
     let column = (filter && filter.what === 'column' && filter.selected) ||
@@ -237,8 +244,6 @@ export default class Welcome extends React.Component {
     this.setState({
       loading:false,
       layerStyle,
-      mapStyle: !MAPBOX_ACCESS_TOKEN ? osmtiles :
-        filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
       tooltip: "",
       filtered: data,
       layers: [alayer],
