@@ -235,6 +235,7 @@ export default class Welcome extends React.Component {
     )
 
     this.setState({
+      loading:false,
       layerStyle,
       mapStyle: !MAPBOX_ACCESS_TOKEN ? osmtiles :
         filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
