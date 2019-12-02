@@ -10,6 +10,7 @@ main.file <- "ac_joined_wy_2009-2017.Rds"
 # https://github.com/layik/eAtlas/releases/
 # download/0.0.1/spenser.geojson
 spenser.file <- "spenser.geojson"
+github <- "https://github.com/layik/eAtlas/releases/download/0.0.1/"
 
 if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
   install.packages(setdiff(packages, rownames(installed.packages())),repos='http://cran.us.r-project.org')
@@ -19,14 +20,14 @@ lapply(packages, library, character.only = TRUE)
 
 if(!file.exists(main.file)) {
   download.file(
-    paste0("https://github.com/layik/eAtlas/releases/download/0.0.1/",
+    paste0(github,
            main.file),
     destfile = main.file)
 }
 
 if(!file.exists(spenser.file)) {
   download.file(
-    paste0("https://github.com/layik/eAtlas/releases/download/0.0.1/",
+    paste0(github,
            spenser.file),
     destfile = spenser.file)
 }
@@ -54,11 +55,12 @@ swagger <- function(req, res){
 
 accidents <- readRDS(main.file)
 accidents <- sf::st_transform(accidents, 4326)
-# v <- c(53.698968, -1.800421, 53.945872, -1.290352)
-# Leeds bbox in case of future offline mode
-bb <- osmdata::getbb("leeds")
-bb_str <- osmdata::bbox_to_string(bb)
-v <- as.double(unlist(strsplit(bb_str, ",")))
+# keep using below and avoid dynamic api for dev
+v <- c(53.698968, -1.800421, 53.945872, -1.290352)
+# # Leeds bbox in case of future offline mode
+# bb <- osmdata::getbb("leeds")
+# bb_str <- osmdata::bbox_to_string(bb)
+# v <- as.double(unlist(strsplit(bb_str, ",")))
 bbx <- c(
   xmin = v[2],
   ymin = v[1],
@@ -242,10 +244,22 @@ geom <- function(res) {
 # read spenser.file
 spenser <- readChar(spenser.file, file.info(spenser.file)$size)
 
-#' server spenser
+#' serve spenser
 #' @get /api/spenser
 get_spenser <- function(res) {
   res$body <- spenser
+  res
+}
+
+source("R/get_quant.R")
+#' combine both msoa.geojson and csv in
+#' {q: csv, m: msoa.json}
+#' see get_quant.R for details.
+#' serve quant
+#' @get /api/quant
+get_quant <- function(res) {
+  res$headers$`Content-type` <- "application/json"
+  res$body <- quant
   res
 }
 
