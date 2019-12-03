@@ -256,11 +256,13 @@ source("R/get_quant.R")
 #' {q: csv, m: msoa.json}
 #' see get_quant.R for details.
 #' serve quant
+#' @serializer unboxedJSON
 #' @get /api/quant
-get_quant <- function(res) {
-  res$headers$`Content-type` <- "application/json"
-  res$body <- quant
-  res
+get_quant <- function() {
+  # res$headers$`Content-type` <- "application/json"
+  # res$body <- quant
+  # res
+  quant
 }
 
 #' Tell plumber where our public facing directory is to SERVE.

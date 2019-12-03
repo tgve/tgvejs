@@ -20,6 +20,7 @@ import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
 import { isNumber } from './JSUtils';
+import { fetchQuant } from './components/Showcases/util_quant';
 
 const osmtiles = {
   "version": 8,
@@ -94,7 +95,8 @@ export default class Welcome extends React.Component {
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
       colourName: 'default',
-      iconLimit: 500
+      iconLimit: 500,
+      legend: false
     }
     this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
@@ -421,7 +423,14 @@ export default class Welcome extends React.Component {
           onlocationChange={(bboxLonLat) => {
             this._fitViewport(bboxLonLat)
           }}
+          showLegend={(legend) => this.setState({legend})}
         />
+      {
+        this.state.legend && 
+        <div className="right-side-panel mapbox-legend">
+          {this.state.legend}
+        </div>
+      }
       </div>
     );
   }

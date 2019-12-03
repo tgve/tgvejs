@@ -11,7 +11,7 @@ import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   xyObjectByProperty, percentDiv,
   searchNominatom,
-  humanize
+  humanize, generateDomain, generateLegend
 } from '../../utils';
 import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
@@ -25,7 +25,7 @@ import DataTable from '../Table';
 import { timeSlider } from '../Showcases/Widgets';
 import { popPyramid, crashes_plot_data } from '../Showcases/Plots';
 import SeriesPlot from '../Showcases/SeriesPlot';
-import { isEmptyOrSpaces } from '../../JSUtils';
+import { isEmptyOrSpaces, isNumber } from '../../JSUtils';
 import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
 import MultiLinePlot from '../Showcases/MultiLinePlot';
@@ -80,7 +80,7 @@ export default class DeckSidebar extends React.Component {
     const { open, elevation,
       radius, all_road_types, year,
       subsetBoundsChange, multiVarSelect, barChartVariable } = this.state;
-    const { onChangeRadius, onChangeElevation, isMobile,
+    const { onChangeRadius, onChangeElevation,
       onSelectCallback, data, colourCallback, layerStyle,
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, column, toggleOpen } = this.props;
@@ -93,8 +93,12 @@ export default class DeckSidebar extends React.Component {
     // const accident_severity_types = notEmpty && data_properties['accident_severity'] &&
     //   Array.from(data_properties['accident_severity'])
 
-    const severity_data = propertyCount(data, "accident_severity");
-
+    const severity_data = propertyCount(data, "accident_severity");    
+    if(notEmpty && column && 
+      isNumber(data[0].properties[column])) {
+        const domain = generateDomain(data, column);
+        this.props.showLegend(generateLegend(domain));
+    }
     let columnData = notEmpty ?
       xyObjectByProperty(data, column || barChartVariable) : [];
     // console.log(columnData);
