@@ -1,11 +1,19 @@
 import { fetchData } from '../../utils';
+import { DEV_URL, PRD_URL} from '../../Constants';
+
+const URL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
 
 const fetchQuant = () => {
-    fetchData(
-        'https://github.com/layik/eAtlas/releases/download/0.0.1/quant_50_msoa.geojson',
-        (json) => {
-            console.log(json)
-        })
+    const fullURL = URL + '/api/quant';
+    console.log(fullURL);
+    
+    fetchData(fullURL, (data, error) => {
+        if (!error) {
+          console.log(data)
+        } else {
+          console.log(error);
+        }
+      })
 }
 
 export {
