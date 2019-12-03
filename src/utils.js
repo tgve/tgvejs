@@ -409,14 +409,15 @@ const colorScale = (d, features, p = 0) => {
     if (isNumber(i) &&
       p === 'Mean.Travel.Time..Seconds.') {
       return (Math.floor(i / 300))
-    } else if(!isNumber(i)) {
+    } else if (domainIsNumeric && !isNumber(i)) {
+      // stop getting here if already been
       domainIsNumeric = false;
     }
     return isNumber(i) ? +(i) : i
   })
   domain = Array.from(new Set(domain))
   // sort the domain if possible
-  if(domainIsNumeric) {
+  if (domainIsNumeric) {
     domain = domain.sort((a, b) => { return (a - b) })
   }
   const index = domain.indexOf(isNumber(d.properties[x]) &&
@@ -551,15 +552,67 @@ const ATILOGO = () => (
   </g>
 )
 
+/**
+ * 
+ * @param {*} domain 
+ * @param {*} interpolate function to use
+ */
+const generateLegend = (domain, interpolate = interpolateOrRd) => {
+  //quick check 
+
+  if (!domain || !Array.isArray(domain) || !isNumber(domain[0])) return
+  const jMax = domain[domain.length - 1], jMin = domain[0];
+  const legend = []
+  for (var i = 0; i < 10; i += 1) {
+    legend.push(
+      <>
+        {i === 0 && <i>{jMin.toFixed(2)}</i>}
+        <span key={i} style={{ background: interpolate(i / 10) }}>
+        </span>
+        {i === 9 && <i>{jMax.toFixed(2)}</i>}
+      </>)
+  }
+  return legend;
+}
+
+/**
+ * 
+ * @param {*} data features from a geojson object
+ * @param {*} column 
+ */
+const generateDomain = (data, column) => {
+  if (!data || !Array.isArray(data) || !column ||
+    !isString(column) || data.length === 0) return;
+
+  let domainIsNumeric = true;
+  let domain = data.map(feature => {
+    // uber move to show isochrones
+    const i = feature.properties[column];
+    if (isNumber(i) &&
+      column === 'Mean.Travel.Time..Seconds.') {
+      return (Math.floor(i / 300));
+    }
+    return isNumber(i) ? +(i) : i;
+  });
+  domain = Array.from(new Set(domain));
+  // sort the domain if possible
+  if (domainIsNumeric) {
+    domain = domain.sort((a, b) => { return (a - b); });
+  }
+  return domain
+}
+
 export {
   getResultsFromGoogleMaps,
   getParamsFromSearch,
+  xyObjectByProperty,
   suggestUIforNumber,
   generateDeckLayer,
   suggestDeckLayer,
-  xyObjectByProperty,
   colorRangeNames,
   searchNominatom,
+  generateLegend,
+  generateDomain,
   convertRange,
   getCentroid,
   shortenName,

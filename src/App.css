@@ -86,6 +86,10 @@
   height: 10px;
 }
 
+.mapbox-legend i:first-child {
+  margin-right: 5px;
+}
+
 .legend {
 	line-height: 18px;
 	color: #555;
