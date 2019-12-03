@@ -402,15 +402,23 @@ function hexToRgb(hex) {
 const colorScale = (d, features, p = 0) => {
   if (!d || !features || features.length === 0) return null;
   const x = isNumber(p) ? Object.keys(d.properties)[p] : p;
+  let domainIsNumeric = true;
   let domain = features.map(feature => {
     // uber move to show isochrones
-    if (isNumber(feature.properties[x]) &&
+    const i = feature.properties[x];
+    if (isNumber(i) &&
       p === 'Mean.Travel.Time..Seconds.') {
-      return (Math.floor(feature.properties[x] / 300))
+      return (Math.floor(i / 300))
+    } else if(!isNumber(i)) {
+      domainIsNumeric = false;
     }
-    return feature.properties[x]
+    return isNumber(i) ? +(i) : i
   })
   domain = Array.from(new Set(domain))
+  // sort the domain if possible
+  if(domainIsNumeric) {
+    domain = domain.sort((a, b) => { return (a - b) })
+  }
   const index = domain.indexOf(isNumber(d.properties[x]) &&
     p === 'Mean.Travel.Time..Seconds.' ?
     Math.floor(d.properties[x] / 300) : d.properties[x])
