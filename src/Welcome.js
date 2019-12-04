@@ -339,8 +339,8 @@ export default class Welcome extends React.Component {
   render() {
     const { tooltip, viewport, initialViewState,
       loading, mapStyle, alert,
-      layerStyle, geomType } = this.state;
-    console.log(geomType);
+      layerStyle, geomType, legend } = this.state;
+    // console.log(geomType, legend);
       
     return (
       <div>
@@ -429,10 +429,10 @@ export default class Welcome extends React.Component {
           showLegend={(legend) => this.setState({legend})}
         />
       {
-        this.state.legend && (geomType === 'polygon' ||
+        legend && (geomType === 'polygon' ||
         geomType === 'multipolygon') &&
         <div className="right-side-panel mapbox-legend">
-          {this.state.legend}
+          {legend}
         </div>
       }
       </div>

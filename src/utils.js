@@ -565,10 +565,18 @@ const generateLegend = (options) => {
   for (var i = 0; i < 10; i += 1) {
     legend.push(
       <>
-        {i === 0 && <i>{jMin.toFixed(2)}</i>}
+        {i === 0 &&
+          <i>{(title === humanize('Mean.Travel.Time..Seconds.') ?
+            +(jMin) / 300 : jMin).toFixed(2)
+          }</i>
+        }
         <span key={i} style={{ background: interpolate(i / 10) }}>
         </span>
-        {i === 9 && <i>{jMax.toFixed(2)}</i>}
+        {i === 9 &&
+          <i>{(title === humanize('Mean.Travel.Time..Seconds.') ?
+            +(jMax) / 300 : jMax).toFixed(2)
+          }</i>
+        }
       </>)
   }
   return legend;

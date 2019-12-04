@@ -97,7 +97,7 @@ export default class DeckSidebar extends React.Component {
     const geomType = notEmpty && data[0].geometry.type.toLowerCase();
     // console.log(geomType);
     if(notEmpty && column && (geomType === 'polygon' ||
-    geomType === 'mulitpolygon') &&
+    geomType === 'multipolygon') &&
       isNumber(data[0].properties[column])) {
         // we dont need to use generateDomain(data, column)
         // columnData already has this in its x'es
