@@ -554,15 +554,14 @@ const ATILOGO = () => (
 
 /**
  * 
- * @param {*} domain 
- * @param {*} interpolate function to use
+ * @param {*} options 
  */
-const generateLegend = (domain, interpolate = interpolateOrRd) => {
+const generateLegend = (options) => {
   //quick check 
-
+  const {domain, interpolate = interpolateOrRd, title} = options;
   if (!domain || !Array.isArray(domain) || !isNumber(domain[0])) return
   const jMax = domain[domain.length - 1], jMin = domain[0];
-  const legend = []
+  const legend = [<p>{title}</p>]
   for (var i = 0; i < 10; i += 1) {
     legend.push(
       <>
@@ -602,6 +601,16 @@ const generateDomain = (data, column) => {
   return domain
 }
 
+const sortNumericArray = (array) => {
+  let domainIsNumeric = true;
+  // sort the domain if possible
+  array.map(e => !isNumber(e) && (domainIsNumeric = false))
+  if (domainIsNumeric) {
+    array = array.sort((a, b) => { return (a - b); });
+  }
+  return array
+}
+
 export {
   getResultsFromGoogleMaps,
   getParamsFromSearch,
@@ -609,6 +618,7 @@ export {
   suggestUIforNumber,
   generateDeckLayer,
   suggestDeckLayer,
+  sortNumericArray,
   colorRangeNames,
   searchNominatom,
   generateLegend,

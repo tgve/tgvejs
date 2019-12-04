@@ -11,7 +11,7 @@ import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   xyObjectByProperty, percentDiv,
   searchNominatom,
-  humanize, generateDomain, generateLegend
+  humanize, generateLegend, sortNumericArray
 } from '../../utils';
 import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
@@ -39,7 +39,6 @@ export default class DeckSidebar extends React.Component {
     this.state = {
       radius: 100,
       elevation: 4,
-      open: !props.isMobile,
       // must match the order in plumber.R
       all_road_types: ["Dual carriageway",
         "Single carriageway", "Roundabout", "Unknown",
@@ -55,7 +54,6 @@ export default class DeckSidebar extends React.Component {
     const { data, alert, loading } = this.props;
     const { elevation, radius, reset,
       barChartVariable } = this.state;
-    // TODO move out sidepanels open/close
     // avoid rerender as directly operating on document.get* 
     // does not look neat. Keeping it React way.
     if (reset !== nextState.reset ||
@@ -77,7 +75,7 @@ export default class DeckSidebar extends React.Component {
    * Partly because we like to load from a URL.
    */
   render() {
-    const { open, elevation,
+    const { elevation,
       radius, all_road_types, year,
       subsetBoundsChange, multiVarSelect, barChartVariable } = this.state;
     const { onChangeRadius, onChangeElevation,
@@ -94,14 +92,20 @@ export default class DeckSidebar extends React.Component {
     //   Array.from(data_properties['accident_severity'])
 
     const severity_data = propertyCount(data, "accident_severity");    
-    if(notEmpty && column && 
-      isNumber(data[0].properties[column])) {
-        const domain = generateDomain(data, column);
-        this.props.showLegend(generateLegend(domain));
-    }
     let columnData = notEmpty ?
       xyObjectByProperty(data, column || barChartVariable) : [];
-    // console.log(columnData);
+    const geomType = notEmpty && data[0].geometry.type.toLowerCase();
+    // console.log(geomType);
+    if(notEmpty && column && (geomType === 'polygon' ||
+    geomType === 'mulitpolygon') &&
+      isNumber(data[0].properties[column])) {
+        // we dont need to use generateDomain(data, column)
+        // columnData already has this in its x'es
+        let domain = columnData.map(e => e.x);
+        // we will just sort it        
+        domain = sortNumericArray(domain);
+        this.props.showLegend(generateLegend({domain, title: humanize(column)}));
+    }
 
     const columnPlot = {
       data: columnData,

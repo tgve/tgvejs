@@ -124,6 +124,7 @@ export default class Welcome extends React.Component {
           data: data,
           alert: null
         })
+        this._fitViewport(data)
         this._generateLayer()
       } else {
         console.log(error);
@@ -245,7 +246,7 @@ export default class Welcome extends React.Component {
 
     this.setState({
       loading:false,
-      layerStyle,
+      layerStyle, geomType,
       tooltip: "",
       filtered: data,
       layers: [alayer],
@@ -255,18 +256,17 @@ export default class Welcome extends React.Component {
         this.state.road_type,
       colourName: cn || colourName,
       column, // all checked
-    }, this._fitViewport())
+    })
   }
 
-  _fitViewport(bboxLonLat) {
-    // is called after mounds
-    const { data } = this.state;
+  _fitViewport(newData, bboxLonLat) {
+    const data = newData || this.state.data;
     if (!data || data.length === 0) return;
-    const center = centroid(this.state.data).geometry.coordinates;
-    // console.log(center, bboxLonLat);
+    const center = centroid(data).geometry.coordinates;
     const bounds = bboxLonLat ?
-      bboxLonLat.bbox : bbox(this.state.data)
-
+      bboxLonLat.bbox : bbox(data)
+    // console.log(center, bounds);
+      
     this.map.fitBounds(bounds)
     const viewport = {
       ...this.state.viewport,
@@ -339,7 +339,9 @@ export default class Welcome extends React.Component {
   render() {
     const { tooltip, viewport, initialViewState,
       loading, mapStyle, alert,
-      layerStyle } = this.state;
+      layerStyle, geomType } = this.state;
+    console.log(geomType);
+      
     return (
       <div>
         {/* just a little catch to hide the loader 
@@ -404,6 +406,7 @@ export default class Welcome extends React.Component {
               this.setState({
                 data: geojson_returned
               })
+              this._fitViewport(geojson_returned)
               this._generateLayer()
             } else {
               this._fetchAndUpdateState(url_returned);
@@ -426,7 +429,8 @@ export default class Welcome extends React.Component {
           showLegend={(legend) => this.setState({legend})}
         />
       {
-        this.state.legend && 
+        this.state.legend && (geomType === 'polygon' ||
+        geomType === 'multipolygon') &&
         <div className="right-side-panel mapbox-legend">
           {this.state.legend}
         </div>
