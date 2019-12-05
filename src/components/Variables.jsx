@@ -286,7 +286,7 @@ export default class Variables extends Component {
             }
           </div>
           {
-            // this._multiSelect(key, selected, sublist, onSelectCallback)
+            this._multiSelect(key, selected, sublist, onSelectCallback)
           }
           <div className="tagcloud">
             {
@@ -309,9 +309,8 @@ export default class Variables extends Component {
     return key &&
       <MultiSelect title="Choose value" multiVarSelect={selected} values={sublist && sublist.length > 0 &&
         sublist.map(e => ({ id: e.key, value: e.key }))} filter={key} onSelectCallback={(filter) => {
-          console.log(filter);
           typeof (onSelectCallback) === 'function' &&
-            onSelectCallback(filter);
+            onSelectCallback(filter.selected || {});
           this.setState({
             selected: filter.selected || {} // not ""
           });
