@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 
 import DeckSidebar from "./DeckSidebar";
 import HexPlot from './HexPlot';
@@ -13,17 +13,27 @@ import HexPlot from './HexPlot';
  * 
  */
 export default (props) => {
-  const [open, setOpen] = React.useState(!props.isMobile);
-  // console.log(open);
+  const [open, setOpen] = useState(!props.isMobile);
+  const [hex, setHex] = useState(false);
+
+  // console.log(hex);
 
   return (
     <div className="side-panel-container"
       style={{ marginLeft: open ? 0 : '-320px' }}>
-      <DeckSidebar {...props} toggleOpen={() => {
-        setOpen(!open)
-      }} />
-      <HexPlot open={open} isMobile={props.isMobile}
-        data={props.data} />
+      <DeckSidebar {...props}
+        // TODO: 
+        // *****************************
+        // none of the two following callbacks work
+        // both gets called back but state is not 
+        // updated.
+        // *****************************
+        toggleOpen={() => setOpen(!open)}
+        toggleHexPlot={() => setHex(!hex)}
+      />
+      {hex &&
+        <HexPlot open={open} isMobile={props.isMobile}
+          data={props.data} />}
       <div
         className="close-button"
         onClick={() => setOpen(!open)}

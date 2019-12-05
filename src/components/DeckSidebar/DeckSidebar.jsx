@@ -81,7 +81,7 @@ export default class DeckSidebar extends React.Component {
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data, colourCallback, layerStyle,
       toggleSubsetBoundsChange, urlCallback, alert,
-      onlocationChange, column, toggleOpen } = this.props;
+      onlocationChange, column, toggleOpen, toggleHexPlot } = this.props;
     let plot_data = [];
     let plot_data_multi = [[], []];
     const notEmpty = data && data.length > 1;
@@ -331,6 +331,9 @@ export default class DeckSidebar extends React.Component {
                     }
                   />
                   <Checkbox
+                    onChange={() => toggleHexPlot && toggleHexPlot()}
+                  >Hex Plot</Checkbox>
+                  <Checkbox
                     onChange={() => {
                       this.setState({ subsetBoundsChange: !subsetBoundsChange })
                       if (toggleSubsetBoundsChange && typeof (toggleSubsetBoundsChange) === 'function') {
@@ -338,6 +341,7 @@ export default class DeckSidebar extends React.Component {
                       }
                     }}
                   >Subset by map boundary</Checkbox>
+                  
                 </Tab>
                 {/* <Tab eventKey="3" title={
                   <i style={{ fontSize: '2rem' }}
