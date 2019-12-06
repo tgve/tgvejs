@@ -3,14 +3,13 @@ import DeckGL from 'deck.gl';
 import MapGL, { NavigationControl, FlyToInterpolator } from 'react-map-gl';
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
-import * as helpers from '@turf/helpers';
 
 import {
   fetchData, generateDeckLayer,
   getParamsFromSearch, getBbx,
   isMobile, colorScale,
   colorRanges,
-  convertRange
+  convertRange, getMin, getMax
 } from './utils';
 import Constants from './Constants';
 import DeckSidebarContainer from
@@ -21,7 +20,7 @@ import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
 import { isNumber } from './JSUtils';
-import { fetchQuant } from './components/Showcases/util_quant';
+// import { fetchQuant } from './components/Showcases/util_quant';
 
 const osmtiles = {
   "version": 8,
@@ -107,13 +106,6 @@ export default class Welcome extends React.Component {
 
   componentDidMount() {
     this._fetchAndUpdateState()
-    fetchQuant((obj) => {
-      const collection = [];
-      obj.quant.map(e => {
-        const m = helpers.multiPolygon(m)
-      })
-      console.log(collection);
-    })
   }
 
   _fetchAndUpdateState(aURL) {
@@ -212,6 +204,8 @@ export default class Welcome extends React.Component {
       layerStyle = "line"
       // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
       options.getColor = d => [235, 170, 20]
+      // options.getSourceColor = d => [15, 0, 239]
+      // options.getTargetColor = d => [+(d.properties.hs2), 140, 0]
       options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
       options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
       let columnNameOrIndex =
@@ -220,14 +214,13 @@ export default class Welcome extends React.Component {
       if (isNumber(data[0] && data[0].properties &&
         data[0].properties[columnNameOrIndex])) {
         const colArray = data.map(f => f.properties[columnNameOrIndex])
-        const max = Math.max(...colArray);
-        const min = Math.min(...colArray)
+        const max = getMax(colArray);        
+        const min = getMin(colArray)
         options.getWidth = d => {
           const r = convertRange(
             d.properties[columnNameOrIndex], {
             oldMin: min, oldMax: max, newMax: 10, newMin: 0.1
-          }
-          )
+          })
           return r
         }; // avoid id
       }
@@ -242,12 +235,12 @@ export default class Welcome extends React.Component {
       options.getFillColor = (d) =>
         colorScale(d, data, SPENSER ? 1 : column ? column : 0)
     }
-    if (data.length === 7201) {
-      options.getColor = d => [255, 255, 255]
-      options.getSourcePosition = d =>
-        [d.properties.area_lon, d.properties.area_lat];
-      options.getTargetPosition = d => d.geometry.coordinates;
-    }
+    // if (data.length === 7201) {
+    //   options.getColor = d => [255, 255, 255]
+    //   options.getSourcePosition = d =>
+    //     [d.properties.area_lon, d.properties.area_lat];
+    //   options.getTargetPosition = d => d.geometry.coordinates;
+    // }
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options
     )

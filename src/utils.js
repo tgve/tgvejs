@@ -13,6 +13,7 @@ import mapping from './location-icon-mapping.json';
 import Constants from './Constants';
 import { isString, isNumber } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
+import { ArcLayer } from '@deck.gl/layers';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -216,6 +217,16 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, lineObject)
     return (new LineLayer(lineObject))
+  } else if (name == 'arc') {
+    const arcObject = {
+      id: 'arc-layer',
+      data,
+      pickable: true,
+      // getSourcePosition: d => d.geometry.coordinates[0],
+      // getTargetPosition: d => d.geometry.coordinates[1],
+    }
+    addOptionsToObject(options, arcObject)
+    return (new ArcLayer(arcObject))
   }
   return (null)
 }
@@ -619,6 +630,12 @@ const sortNumericArray = (array) => {
   return array
 }
 
+const getMax = (arr) => {
+  return arr.reduce((max, v) => max >= v ? max : v, -Infinity);
+}
+const getMin = (arr) => {
+  return arr.reduce((max, v) => max <= v ? max : v, Infinity);
+}
 export {
   getResultsFromGoogleMaps,
   getParamsFromSearch,
@@ -643,5 +660,7 @@ export {
   isMobile,
   ATILOGO,
   getBbx,
+  getMin,
+  getMax,
   isURL,
 }
