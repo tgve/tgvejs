@@ -69,7 +69,7 @@ bbx <- c(
 )
 accidents <- sf::st_crop(accidents, bbx) # Leeds only
 # for dev lets just load 5000
-# accidents <- accidents[1:5e3,]
+accidents <- accidents[sample(nrow(accidents), 5e3),]
 accidents <- accidents[c(
   "sex_of_casualty",
   "speed_limit",

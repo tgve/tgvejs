@@ -44,7 +44,7 @@ d = levels(factor(all$destination_msoacode))
 all_i = data.frame(all$base, hs2 = all$data, o, d)
 # object.size(all_i)/1024/1024
 # 9.7 bytes
-write.csv(all_i, "~/Downloads/quant/sample.csv")
+write.csv(all, "~/Downloads/quant/sample.csv")
 head(all_i)
 # that is still 14mb of csv
 # the wrong way of doing this would be to 

@@ -3,6 +3,7 @@ import DeckGL from 'deck.gl';
 import MapGL, { NavigationControl, FlyToInterpolator } from 'react-map-gl';
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
+import * as helpers from '@turf/helpers';
 
 import {
   fetchData, generateDeckLayer,
@@ -106,6 +107,13 @@ export default class Welcome extends React.Component {
 
   componentDidMount() {
     this._fetchAndUpdateState()
+    fetchQuant((obj) => {
+      const collection = [];
+      obj.quant.map(e => {
+        const m = helpers.multiPolygon(m)
+      })
+      console.log(collection);
+    })
   }
 
   _fetchAndUpdateState(aURL) {
