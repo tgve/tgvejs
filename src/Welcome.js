@@ -20,7 +20,6 @@ import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
 import { isNumber } from './JSUtils';
-// import { fetchQuant } from './components/Showcases/util_quant';
 
 const osmtiles = {
   "version": 8,
