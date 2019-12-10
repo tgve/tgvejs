@@ -8,6 +8,8 @@ import {
   ModalButton,
   FocusOnce,
 } from 'baseui/modal';
+import { FlexGrid, FlexGridItem } from 'baseui/flex-grid';
+import { fetchQuant } from './Showcases/util_quant';
 
 import File from './File'
 import URL from './URL';
@@ -21,6 +23,41 @@ const partURL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
 export default function (props) {
   const [isOpen, setOpen] = React.useState(false);
   const { urlCallback, toggleOpen } = props;
+
+  function cards() {
+    const info = {
+      SPENSER: {
+        image: "images/spenser.png",
+        body: "Spenser Cambridge sample.",
+        api: partURL + '/api/spenser'
+      },
+      QUANT: {
+        image: "images/spenser.png",
+        body: "QUANT HS2 scenario example.",
+        api: fetchQuant // a function
+      },
+    };
+    return (Object.keys(info).map(key =>
+      <FlexGridItem key={key} {...itemProps}>
+        {
+          <Card button="Load" title={key} image={info[key]['image']}
+            body={info[key]['body']} loadCallback={() => {
+              const api = info[key]['api'];
+              // if api is function call and provied
+              // geojson returned in case of quant for instance.
+              api && typeof (api) === 'function' ?
+                api((geojson) => urlCallback(undefined, geojson)) :
+                typeof (urlCallback) === 'function'
+                && urlCallback()
+              setOpen(false);
+            }} />
+        }
+      </FlexGridItem>
+
+    ))
+  }
+
+
   return (
     <React.Fragment>
       <Button
@@ -65,13 +102,13 @@ export default function (props) {
               });
             }
           }} />
-          <Card button="Load" title="SPENSER" image="./images/spenser.png"
-            body="Spenser Cambridge sample." loadCallback={() => {
-              const u = partURL + '/api/spenser';
-              typeof (urlCallback) === 'function'
-                && urlCallback(u)
-              setOpen(false);
-            }} />
+          <FlexGrid
+            flexGridColumnCount={3}
+            flexGridColumnGap="scale800"
+            flexGridRowGap="scale800"
+          >
+            {cards()}
+          </FlexGrid>
         </ModalBody>
         <ModalFooter>
           <ModalButton onClick={() => {
@@ -80,6 +117,14 @@ export default function (props) {
           }}>Close</ModalButton>
         </ModalFooter>
       </Modal>
-    </React.Fragment>
+    </React.Fragment >
   );
 }
+
+const itemProps = {
+  // backgroundColor: 'mono300',
+  // height: 'scale1000',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+};

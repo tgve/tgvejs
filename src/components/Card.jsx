@@ -11,7 +11,7 @@ export default (props) => {
   }
   return (
     <Card
-      overrides={{ Root: { style: { width: props.width || '128px' } } }}
+      // overrides={{ Root: { style: { width: props.width || '128px' } } }}
       headerImage={props.image}
       title={props.title}
     >

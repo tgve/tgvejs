@@ -9,7 +9,7 @@ import {
   getParamsFromSearch, getBbx,
   isMobile, colorScale,
   colorRanges,
-  convertRange
+  convertRange, getMin, getMax
 } from './utils';
 import Constants from './Constants';
 import DeckSidebarContainer from
@@ -95,7 +95,8 @@ export default class Welcome extends React.Component {
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
       colourName: 'default',
-      iconLimit: 500
+      iconLimit: 500,
+      legend: false
     }
     this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
@@ -123,6 +124,7 @@ export default class Welcome extends React.Component {
           data: data,
           alert: null
         })
+        this._fitViewport(data)
         this._generateLayer()
       } else {
         this.setState({
@@ -144,6 +146,13 @@ export default class Welcome extends React.Component {
    * @param {*} cn short for colorName passed from callback
    */
   _generateLayer(radius, elevation, filter, cn) {
+    if(filter && filter.what === 'mapstyle') {
+      this.setState({
+        mapStyle: !MAPBOX_ACCESS_TOKEN ? osmtiles :
+        filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
+      })
+      return;
+    }
     let data = this.state.data && this.state.data.features
     const { colourName, iconLimit } = this.state;
     let column = (filter && filter.what === 'column' && filter.selected) ||
@@ -193,6 +202,8 @@ export default class Welcome extends React.Component {
       layerStyle = "line"
       // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
       options.getColor = d => [235, 170, 20]
+      // options.getSourceColor = d => [15, 0, 239]
+      // options.getTargetColor = d => [+(d.properties.hs2), 140, 0]
       options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
       options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
       let columnNameOrIndex =
@@ -201,14 +212,13 @@ export default class Welcome extends React.Component {
       if (isNumber(data[0] && data[0].properties &&
         data[0].properties[columnNameOrIndex])) {
         const colArray = data.map(f => f.properties[columnNameOrIndex])
-        const max = Math.max(...colArray);
-        const min = Math.min(...colArray)
+        const max = getMax(colArray);        
+        const min = getMin(colArray)
         options.getWidth = d => {
           const r = convertRange(
             d.properties[columnNameOrIndex], {
             oldMin: min, oldMax: max, newMax: 10, newMin: 0.1
-          }
-          )
+          })
           return r
         }; // avoid id
       }
@@ -223,20 +233,19 @@ export default class Welcome extends React.Component {
       options.getFillColor = (d) =>
         colorScale(d, data, SPENSER ? 1 : column ? column : 0)
     }
-    if (data.length === 7201) {
-      options.getColor = d => [255, 255, 255]
-      options.getSourcePosition = d =>
-        [d.properties.area_lon, d.properties.area_lat];
-      options.getTargetPosition = d => d.geometry.coordinates;
-    }
+    // if (data.length === 7201) {
+    //   options.getColor = d => [255, 255, 255]
+    //   options.getSourcePosition = d =>
+    //     [d.properties.area_lon, d.properties.area_lat];
+    //   options.getTargetPosition = d => d.geometry.coordinates;
+    // }
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options
     )
 
     this.setState({
-      layerStyle,
-      mapStyle: !MAPBOX_ACCESS_TOKEN ? osmtiles :
-        filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
+      loading:false,
+      layerStyle, geomType,
       tooltip: "",
       filtered: data,
       layers: [alayer],
@@ -246,18 +255,17 @@ export default class Welcome extends React.Component {
         this.state.road_type,
       colourName: cn || colourName,
       column, // all checked
-    }, this._fitViewport())
+    })
   }
 
-  _fitViewport(bboxLonLat) {
-    // is called after mounds
-    const { data } = this.state;
+  _fitViewport(newData, bboxLonLat) {
+    const data = newData || this.state.data;
     if (!data || data.length === 0) return;
-    const center = centroid(this.state.data).geometry.coordinates;
-    // console.log(center, bboxLonLat);
+    const center = centroid(data).geometry.coordinates;
     const bounds = bboxLonLat ?
-      bboxLonLat.bbox : bbox(this.state.data)
-
+      bboxLonLat.bbox : bbox(data)
+    // console.log(center, bounds);
+      
     this.map.fitBounds(bounds)
     const viewport = {
       ...this.state.viewport,
@@ -330,7 +338,9 @@ export default class Welcome extends React.Component {
   render() {
     const { tooltip, viewport, initialViewState,
       loading, mapStyle, alert,
-      layerStyle } = this.state;
+      layerStyle, geomType, legend } = this.state;
+    // console.log(geomType, legend);
+      
     return (
       <div>
         {/* just a little catch to hide the loader 
@@ -396,6 +406,7 @@ export default class Welcome extends React.Component {
               this.setState({
                 data: geojson_returned
               })
+              this._fitViewport(geojson_returned)
               this._generateLayer()
             } else {
               this._fetchAndUpdateState(url_returned);
@@ -415,7 +426,15 @@ export default class Welcome extends React.Component {
           onlocationChange={(bboxLonLat) => {
             this._fitViewport(bboxLonLat)
           }}
+          showLegend={(legend) => this.setState({legend})}
         />
+      {
+        legend && (geomType === 'polygon' ||
+        geomType === 'multipolygon') &&
+        <div className="right-side-panel mapbox-legend">
+          {legend}
+        </div>
+      }
       </div>
     );
   }

@@ -19,7 +19,8 @@ const W = 250;
  * @param {Object} options 
  */
 const popPyramid = (options) => {
-  if (!options || !options.data || !options.data[0].properties.date ||
+  if (!options || !options.data || !options.data[0] || 
+    !options.data[0].properties.date ||
     !options.data[0].properties.sex_of_casualty) return;
   const mf = propertyCountByProperty(options.data, "sex_of_casualty",
     ["Male", "Female"], "date");

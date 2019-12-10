@@ -21,6 +21,7 @@ import { humanize } from '../utils';
 import { isEmptyOrSpaces } from '../JSUtils';
 import { describeFeatureVariables, getKeyColumns } from '../geojsonutils';
 import { Button, SIZE, KIND } from 'baseui/button';
+import MultiSelect from './MultiSelect';
 
 const SHOWN_ITEMS = 5;
 export default class Variables extends Component {
@@ -32,10 +33,11 @@ export default class Variables extends Component {
       selected: props.multiVarSelect || {},
       n: SHOWN_ITEMS
     }
-    this._generateList = this._generateList.bind(this);
     this._geoJSONPropsOrValues = this._geoJSONPropsOrValues.bind(this);
-    this._processData = this._processData.bind(this);
     this._showSelectedVars = this._showSelectedVars.bind(this);
+    this._generateList = this._generateList.bind(this);
+    this._processData = this._processData.bind(this);
+    this._multiSelect = this._multiSelect.bind(this);
     this._showTopn = this._showTopn.bind(this);
     this._shorten = this._shorten.bind(this);
     this._button = this._button.bind(this);
@@ -50,7 +52,7 @@ export default class Variables extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { data } = this.props;
     if (!data || data.length === 0) return;
-    
+
     if (data.length !== prevProps.data.length ||
       this.state.showAll !== prevState.showAll) {
       this._processData(data);
@@ -70,7 +72,7 @@ export default class Variables extends Component {
       propertyValuesCallback } = this.props;
     const selected = this.state.selected;
     const description = describeFeatureVariables(data[0]); // describe first feature
-    const keys = getKeyColumns({features: data});
+    const keys = getKeyColumns({ features: data });
     const all = Object.keys(data[0].properties);
     const limit = this.state.showAll ? all.length : 10;
     // console.log(limit);
@@ -234,22 +236,22 @@ export default class Variables extends Component {
 
   render() {
     const { list, sublist, key, selected, showAll } = this.state;
-    const { data } = this.props;
+    const { data, onSelectCallback } = this.props;
     const shownSublist = sublist && selected && key &&
       sublist.filter(each => {
         return selected[key] && each && !selected[key].has(each.key)
       })
 
-    if(data && Object.keys(data[0].properties)
-    .filter(p => !isEmptyOrSpaces(p)).length === 0) {
-      return(
+    if (data && Object.keys(data[0].properties)
+      .filter(p => !isEmptyOrSpaces(p)).length === 0) {
+      return (
         <h3>There are no columns to inspect or filter.</h3>
       )
     }
     return (
       <div style={this.props.style}>
         Dataset:
-                <div>
+          <div>
           <div className="tagcloud">
             {
               //show main GeoJSON key if there is one chosen
@@ -283,6 +285,9 @@ export default class Variables extends Component {
                   </>
             }
           </div>
+          {
+            this._multiSelect(key, selected, sublist, onSelectCallback)
+          }
           <div className="tagcloud">
             {
               this._geoJSONPropsOrValues(shownSublist, selected, key, sublist)
@@ -298,6 +303,21 @@ export default class Variables extends Component {
         </div>
       </div>
     )
+  }
+
+  _multiSelect(key, selected, sublist, onSelectCallback) {
+    return key &&
+      <MultiSelect title="Choose value" multiVarSelect={selected} values={sublist && sublist.length > 0 &&
+        sublist.map(e => ({ id: e.key, value: e.key }))} filter={key} onSelectCallback={(filter) => {
+          typeof (onSelectCallback) === 'function' &&
+            onSelectCallback(filter.selected || {});
+          this.setState({
+            selected: filter.selected || {} // not ""
+          });
+        } }
+        // sync state
+        value={selected && selected[key] && Array.from(selected[key])
+          .map(e => ({ id: e, value: e }))} />;
   }
 
   _button(showAll, title = "Show all", n) {

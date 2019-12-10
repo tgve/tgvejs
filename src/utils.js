@@ -13,6 +13,7 @@ import mapping from './location-icon-mapping.json';
 import Constants from './Constants';
 import { isString, isNumber } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
+import { ArcLayer } from '@deck.gl/layers';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -216,6 +217,16 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, lineObject)
     return (new LineLayer(lineObject))
+  } else if (name == 'arc') {
+    const arcObject = {
+      id: 'arc-layer',
+      data,
+      pickable: true,
+      // getSourcePosition: d => d.geometry.coordinates[0],
+      // getTargetPosition: d => d.geometry.coordinates[1],
+    }
+    addOptionsToObject(options, arcObject)
+    return (new ArcLayer(arcObject))
   }
   return (null)
 }
@@ -402,15 +413,24 @@ function hexToRgb(hex) {
 const colorScale = (d, features, p = 0) => {
   if (!d || !features || features.length === 0) return null;
   const x = isNumber(p) ? Object.keys(d.properties)[p] : p;
+  let domainIsNumeric = true;
   let domain = features.map(feature => {
     // uber move to show isochrones
-    if (isNumber(feature.properties[x]) &&
+    const i = feature.properties[x];
+    if (isNumber(i) &&
       p === 'Mean.Travel.Time..Seconds.') {
-      return (Math.floor(feature.properties[x] / 300))
+      return (Math.floor(i / 300))
+    } else if (domainIsNumeric && !isNumber(i)) {
+      // stop getting here if already been
+      domainIsNumeric = false;
     }
-    return feature.properties[x]
+    return isNumber(i) ? +(i) : i
   })
   domain = Array.from(new Set(domain))
+  // sort the domain if possible
+  if (domainIsNumeric) {
+    domain = domain.sort((a, b) => { return (a - b) })
+  }
   const index = domain.indexOf(isNumber(d.properties[x]) &&
     p === 'Mean.Travel.Time..Seconds.' ?
     Math.floor(d.properties[x] / 300) : d.properties[x])
@@ -543,15 +563,91 @@ const ATILOGO = (dark = true) => (
   </g>
 )
 
+/**
+ * 
+ * @param {*} options 
+ */
+const generateLegend = (options) => {
+  //quick check 
+  const {domain, interpolate = interpolateOrRd, title} = options;
+  if (!domain || !Array.isArray(domain) || !isNumber(domain[0])) return
+  const jMax = domain[domain.length - 1], jMin = domain[0];
+  const legend = [<p>{title}</p>]
+  for (var i = 0; i < 10; i += 1) {
+    legend.push(
+      <>
+        {i === 0 &&
+          <i>{(title === humanize('Mean.Travel.Time..Seconds.') ?
+            +(jMin) / 300 : jMin).toFixed(2)
+          }</i>
+        }
+        <span key={i} style={{ background: interpolate(i / 10) }}>
+        </span>
+        {i === 9 &&
+          <i>{(title === humanize('Mean.Travel.Time..Seconds.') ?
+            +(jMax) / 300 : jMax).toFixed(2)
+          }</i>
+        }
+      </>)
+  }
+  return legend;
+}
+
+/**
+ * 
+ * @param {*} data features from a geojson object
+ * @param {*} column 
+ */
+const generateDomain = (data, column) => {
+  if (!data || !Array.isArray(data) || !column ||
+    !isString(column) || data.length === 0) return;
+
+  let domainIsNumeric = true;
+  let domain = data.map(feature => {
+    // uber move to show isochrones
+    const i = feature.properties[column];
+    if (isNumber(i) &&
+      column === 'Mean.Travel.Time..Seconds.') {
+      return (Math.floor(i / 300));
+    }
+    return isNumber(i) ? +(i) : i;
+  });
+  domain = Array.from(new Set(domain));
+  // sort the domain if possible
+  if (domainIsNumeric) {
+    domain = domain.sort((a, b) => { return (a - b); });
+  }
+  return domain
+}
+
+const sortNumericArray = (array) => {
+  let domainIsNumeric = true;
+  // sort the domain if possible
+  array.map(e => !isNumber(e) && (domainIsNumeric = false))
+  if (domainIsNumeric) {
+    array = array.sort((a, b) => { return (a - b); });
+  }
+  return array
+}
+
+const getMax = (arr) => {
+  return arr.reduce((max, v) => max >= v ? max : v, -Infinity);
+}
+const getMin = (arr) => {
+  return arr.reduce((max, v) => max <= v ? max : v, Infinity);
+}
 export {
   getResultsFromGoogleMaps,
   getParamsFromSearch,
+  xyObjectByProperty,
   suggestUIforNumber,
   generateDeckLayer,
   suggestDeckLayer,
-  xyObjectByProperty,
+  sortNumericArray,
   colorRangeNames,
   searchNominatom,
+  generateLegend,
+  generateDomain,
   convertRange,
   getCentroid,
   shortenName,
@@ -564,5 +660,7 @@ export {
   isMobile,
   ATILOGO,
   getBbx,
+  getMin,
+  getMax,
   isURL,
 }

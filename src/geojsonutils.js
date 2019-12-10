@@ -10,7 +10,9 @@ const { DateTime } = require("luxon");
 const sfType = (geojson) => {
   if (geojson.type === "FeatureCollection") { return "FeatureCollection"; }
   if (geojson.type === "GeometryCollection") { return "GeometryCollection"; }
-  if (geojson.type === "Feature" && geojson.geometry !== null) { return geojson.geometry.type; }
+  if (geojson.type === "Feature" && geojson.geometry !== null) { 
+    return geojson.geometry.type; 
+  }  
   return geojson.type;
 }
 
