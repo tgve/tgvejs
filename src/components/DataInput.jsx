@@ -48,7 +48,7 @@ export default function (props) {
               api && typeof (api) === 'function' ?
                 api((geojson) => urlCallback(undefined, geojson)) :
                 typeof (urlCallback) === 'function'
-                && urlCallback()
+                && urlCallback(api)
               setOpen(false);
             }} />
         }
