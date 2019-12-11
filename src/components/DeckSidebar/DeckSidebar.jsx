@@ -159,8 +159,9 @@ export default class DeckSidebar extends React.Component {
           <div className="side-panel-body">
             <div className="side-panel-body-content">
               {/* range of two values slider is not native html */
-                timeSlider(data, year, multiVarSelect,
-                  onSelectCallback, (changes) => this.setState(changes))
+                timeSlider({data, year, multiVarSelect,
+                  // for callback we get { year: "",multiVarSelect }
+                  onSelectCallback, callback: (changes) => this.setState(changes)})
               }
               {
                 //only if there is such a property
@@ -231,29 +232,32 @@ export default class DeckSidebar extends React.Component {
                     />
                   }
                   {
-                    notEmpty &&
+                    notEmpty && geomType !== 'point' &&
                     Object.keys(data[0].properties)
                       .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
-                    <MultiSelect
-                      title="Choose Column"
-                      single={true}
-                      values={
-                        Object.keys(data[0].properties).map(e =>
-                          ({ id: humanize(e), value: e }))
-                      }
-                      onSelectCallback={(selected) => {
-                        // array of seingle {id: , value: } object
-                        const newBarChartVar = (selected && selected[0]) ?
-                          selected[0].value : barChartVariable;
-                        this.setState({
-                          barChartVariable: newBarChartVar
-                        });
-                        typeof onSelectCallback === 'function' &&
-                          onSelectCallback({
-                            what: 'column', selected: newBarChartVar
+                    <>
+                      <h6>Column for layer:</h6>
+                      <MultiSelect
+                        title="Choose Column"
+                        single={true}
+                        values={
+                          Object.keys(data[0].properties).map(e =>
+                            ({ id: humanize(e), value: e }))
+                        }
+                        onSelectCallback={(selected) => {
+                          // array of seingle {id: , value: } object
+                          const newBarChartVar = (selected && selected[0]) ?
+                            selected[0].value : barChartVariable;
+                          this.setState({
+                            barChartVariable: newBarChartVar
                           });
-                      }}
-                    />
+                          typeof onSelectCallback === 'function' &&
+                            onSelectCallback({
+                              what: 'column', selected: newBarChartVar
+                            });
+                        }}
+                      />
+                    </>
                   }
                   {/* TODO: example of generating vis based on column
                   cloudl now be deleted. */}
