@@ -22,14 +22,13 @@ export default (props) => {
     <div className="side-panel-container"
       style={{ marginLeft: open ? 0 : '-320px' }}>
       <DeckSidebar {...props}
-        // TODO: 
+        // Note: 
         // *****************************
-        // none of the two following callbacks work
-        // both gets called back but state is not 
-        // updated.
+        // Hooks is strange see this
+        // https://stackoverflow.com/a/54069332/2332101
         // *****************************
-        toggleOpen={() => setOpen(!open)}
-        toggleHexPlot={() => setHex(!hex)}
+        toggleOpen={() => setOpen(o => !o)}   // o is current open
+        toggleHexPlot={() => setHex(h => !h)} // h is current hex
       />
       {hex &&
         <HexPlot open={open} isMobile={props.isMobile}

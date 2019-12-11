@@ -18,7 +18,7 @@ test('Shallow and mount', () => {
   .contains(Header)).toEqual(true);
   const h = m.find(BrowserRouter).children().find(Header).children();
   // console.log(h.find(Navbar).children().debug());
-  // Navbar inverse={true} collapseOnSelect={true}
+  // <Navbar inverse={true} collapseOnSelect={true}
   // ....
   // ..
   const nb = h.find(Navbar).children();
