@@ -135,7 +135,8 @@ export default class DeckSidebar extends React.Component {
                   multiVarSelect: {},
                 })
                 typeof (urlCallback) === 'function'
-                  && urlCallback(url, geojson)
+                  && urlCallback(url, geojson);
+                typeof (toggleOpen) === 'function' && toggleOpen()
               }
               } />
             <Modal

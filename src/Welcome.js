@@ -216,9 +216,13 @@ export default class Welcome extends React.Component {
         const max = getMax(colArray);        
         const min = getMin(colArray)
         options.getWidth = d => {
+          let newMax = 10, newMin = 0.1;
+          if(data.length > 1000) {            
+            newMax = 0.5; newMin = 0.005
+          } 
           const r = convertRange(
             d.properties[columnNameOrIndex], {
-            oldMin: min, oldMax: max, newMax: 10, newMin: 0.1
+            oldMin: min, oldMax: max, newMax: newMax, newMin: newMin
           })
           return r
         }; // avoid id

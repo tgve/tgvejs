@@ -32,7 +32,7 @@ export default function (props) {
         api: partURL + '/api/spenser'
       },
       QUANT: {
-        image: "images/spenser.png",
+        image: "images/quant.png",
         body: "QUANT HS2 scenario example.",
         api: fetchQuant // a function
       },

@@ -5,9 +5,7 @@ import { DateTime } from "luxon";
 
 const timeSlider = (options) => {
   const {data, year, multiVarSelect, onSelectCallback,
-    callback} = options;
-  console.log(year);
-  
+    callback} = options;  
   return data && data.length > 1 &&
     (data[0].properties.date || data[0].properties['YEAR']) &&
     (DateTime.fromFormat(data[0].properties.date + '', 'dd/MM/yyyy').isValid ||
