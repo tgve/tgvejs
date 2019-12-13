@@ -1,0 +1,26 @@
+.d3-chart {
+  margin-top: 20px;
+  border-bottom: 1px solid white;
+  border-left: 1px solid white;
+  z-index: 99;
+  color: white;
+}
+.d3-line-text {
+  fill: white;
+  font: italic 18px serif;
+}
+
+line {
+  /* stroke: #555555;  */
+  stroke:white;
+  stroke-width:2;
+}
+
+.d3-line-grid {
+  stroke: #555555; 
+  stroke-width:0.1;
+}
+.d3-axis-labels {
+  font: italic 11px;
+  fill: white;
+} 

@@ -45,16 +45,6 @@ const popPyramid = (options) => {
       y0: i + 1
     })
   })
-  // const d = [Array.apply(null, { length: 9 })
-  //   .map(Number.call, Number).map(d => d + 2009)]
-  //   .map((e, i) =>
-  //     ({
-  //       x: i % 2 ? 1 : -1,
-  //       x0: (i % 2 ? 1 : -1) * (i + 5),
-  //       y: e === 0 ? 2009 : e,
-  //       y0: i % 2 ? (e - 1 + 5) : e + 5
-  //     })
-  //   )
   return (
     <XYPlot
       margin={{ left: options.margin || 60 }} // default is 40

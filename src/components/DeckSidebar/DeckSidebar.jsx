@@ -29,6 +29,7 @@ import { isEmptyOrSpaces, isNumber } from '../../JSUtils';
 import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
 import MultiLinePlot from '../Showcases/MultiLinePlot';
+import Boxplot from '../Boxplot/Boxplot';
 // import GenerateUI from '../UI';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
@@ -92,6 +93,7 @@ export default class DeckSidebar extends React.Component {
     //   Array.from(data_properties['accident_severity'])
 
     const severity_data = propertyCount(data, "accident_severity");    
+    let columnDomain = [];
     let columnData = notEmpty ?
       xyObjectByProperty(data, column || barChartVariable) : [];
     const geomType = notEmpty && data[0].geometry.type.toLowerCase();
@@ -101,10 +103,10 @@ export default class DeckSidebar extends React.Component {
       isNumber(data[0].properties[column])) {
         // we dont need to use generateDomain(data, column)
         // columnData already has this in its x'es
-        let domain = columnData.map(e => e.x);
+        columnDomain = columnData.map(e => e.x);
         // we will just sort it        
-        domain = sortNumericArray(domain);
-        this.props.showLegend(generateLegend({domain, title: humanize(column)}));
+        columnDomain = sortNumericArray(columnDomain);
+        this.props.showLegend(generateLegend({columnDomain, title: humanize(column)}));
     }
 
     const columnPlot = {
@@ -203,6 +205,9 @@ export default class DeckSidebar extends React.Component {
                   }))
               }
               <hr style={{ clear: 'both' }} />
+              {/* {columnDomain.length > 1 && */}
+              {/* <Boxplot data={[10.2, 14.1, 14.4, 14.4, 14.4, 14.5, 14.5, 14.6, 14.7, 14.7, 14.7, 14.9, 15.1, 15.9, 16.4]}/> */}
+
               <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}

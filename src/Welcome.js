@@ -217,7 +217,7 @@ export default class Welcome extends React.Component {
         const min = getMin(colArray)
         options.getWidth = d => {
           let newMax = 10, newMin = 0.1;
-          if(data.length > 1000) {            
+          if(data.length > 100000) {            
             newMax = 0.5; newMin = 0.005
           } 
           const r = convertRange(
