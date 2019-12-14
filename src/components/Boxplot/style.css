@@ -12,8 +12,8 @@
 
 line {
   /* stroke: #555555;  */
-  stroke:white;
-  stroke-width:2;
+  stroke: rgb(18, 147, 154);
+  stroke-width: 1;
 }
 
 .d3-line-grid {
@@ -23,4 +23,5 @@ line {
 .d3-axis-labels {
   font: italic 11px;
   fill: white;
+  stroke: none;
 } 

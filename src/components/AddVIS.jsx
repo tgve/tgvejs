@@ -115,7 +115,7 @@ export default function AddVIS(props) {
       <Button
         kind={KIND.secondary} size={SIZE.compact}
         onClick={() => {
-          if (column.length === 0 || vis.length === 0) return;
+          if (column.length === 0 || vis.length === 0 || !column[0]) return;
           setList([
             ...list,
             generateVIS(data, column[0].value, vis[0].value, plotStyle)

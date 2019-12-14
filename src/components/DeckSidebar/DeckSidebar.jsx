@@ -205,8 +205,8 @@ export default class DeckSidebar extends React.Component {
                   }))
               }
               <hr style={{ clear: 'both' }} />
-              {/* {columnDomain.length > 1 && */}
-              {/* <Boxplot data={[10.2, 14.1, 14.4, 14.4, 14.4, 14.5, 14.5, 14.6, 14.7, 14.7, 14.7, 14.9, 15.1, 15.9, 16.4]}/> */}
+              {columnDomain.length > 1 &&
+              <Boxplot data={columnDomain}/>}
 
               <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
