@@ -16,9 +16,9 @@ export default (props) => {
       isNumeric = false
     }
   });
-  if(!isNumeric) return null;
+  if (!isNumeric) return null;
   // proceed
-  const W = 100, H = (plotStyle && plotStyle.height) || 100, limit = 8;
+  const W = 100, H = (plotStyle && plotStyle.height) || 100, limit = 5;
   // Compute summary statistics used for the box:
   let data_sorted = data.sort(ascending)
   data_sorted = data_sorted.map(e => convertRange(e, {
@@ -43,20 +43,20 @@ export default (props) => {
 
   // show less on scale depending on settings
   let scale = data;
-  if(data.length > limit) {
+  if (data.length > limit) {
     scale = [];
     data.forEach((item, idx) => {
       let d = Math.floor(data.length / limit);
-      if(d === 1) d = 2;
+      if (d === 1) d = 2;
       if ((idx % d) === 0) {
         let l = Math.floor(item);
-        if(l > 1000) l = (l/1000).toFixed(1) + "k"
+        if (l > 1000) l = (l / 1000).toFixed(1) + "k"
         scale.push(l)
       }
     })
   }
   console.log(scale);
-  
+
   return (
     <div style={{
       width: '100%',
@@ -72,9 +72,9 @@ export default (props) => {
         maxWidth: '600px',
       }}>
         <svg width='100%' height='100%'>
-          <g style={{ 
-            stroke: (plotStyle && plotStyle.lineColor) || 'rgb(18, 147, 154)' 
-            }}>
+          <g style={{
+            stroke: (plotStyle && plotStyle.lineColor) || 'rgb(18, 147, 154)'
+          }}>
             <line
               x1={min + "%"}
               x2={q1 + "%"}
@@ -104,7 +104,7 @@ export default (props) => {
               width={interQuantileRange + "%"}
               y={Y + "%"}
               height={yHeight + "%"}
-              fill={ (plotStyle && plotStyle.fillColor) ||'rgb(18, 147, 154)'}
+              fill={(plotStyle && plotStyle.fillColor) || 'rgb(18, 147, 154)'}
               stroke="black 0.5px"
             />
             {/* median */}
@@ -116,7 +116,10 @@ export default (props) => {
             {
               outliers.map((e, i) => <circle
                 key={e + "-" + i}
-                r="5" cx={e + "%"} cy={yMiddle + "%"}
+                r="5"
+                // avoid placing first on top/bottom line
+                cx={(e > max ? e + 2 : e - 2) + "%"}
+                cy={yMiddle + "%"}
                 style={{
                   fill: 'none',
                   opacity: 1
