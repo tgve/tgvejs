@@ -9,7 +9,7 @@ import {
   getParamsFromSearch, getBbx,
   isMobile, colorScale,
   colorRanges,
-  convertRange, getMin, getMax
+  convertRange, getMin, getMax, isURL
 } from './utils';
 import Constants from './Constants';
 import DeckSidebarContainer from
@@ -107,7 +107,15 @@ export default class Welcome extends React.Component {
     this._fetchAndUpdateState()
   }
 
-  _fetchAndUpdateState(aURL) {
+  /**
+   * Main function to fetch data and update state.
+   * 
+   * @param {String} aURL to use if not default `/api/stats19` is used.
+   * @param {Object} customError to use in case of urlCallback object/urls.
+   */
+  _fetchAndUpdateState(aURL, customError) {
+    if(aURL && !isURL(aURL)) return;
+    if(customError && typeof(customError) !== 'object') return;
     // TODO: more sanity checks?
     const fullURL = aURL ?
       // TODO: decide which is better.
@@ -121,7 +129,7 @@ export default class Welcome extends React.Component {
         this.setState({
           loading: false,
           data: data,
-          alert: null
+          alert: customError || null
         })
         this._fitViewport(data)
         this._generateLayer()
@@ -407,11 +415,17 @@ export default class Welcome extends React.Component {
               loading: true
             })
             if (geojson_returned) {
-              this.setState({
-                data: geojson_returned
-              })
-              this._fitViewport(geojson_returned)
-              this._generateLayer()
+              // confirm valid geojson
+              try {
+                this.setState({
+                  data: geojson_returned
+                })
+                this._fitViewport(geojson_returned)
+                this._generateLayer()
+              } catch (error) {
+                // load up default
+                this._fetchAndUpdateState(undefined, { content: error.message });
+              }
             } else {
               this._fetchAndUpdateState(url_returned);
             }
