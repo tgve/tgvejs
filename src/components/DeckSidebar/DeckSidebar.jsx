@@ -106,7 +106,15 @@ export default class DeckSidebar extends React.Component {
         columnDomain = columnData.map(e => e.x);
         // we will just sort it        
         columnDomain = sortNumericArray(columnDomain);
-        this.props.showLegend(generateLegend({columnDomain, title: humanize(column)}));
+        // console.log(columnDomain);
+        
+        this.props.showLegend(
+          generateLegend(
+            {domain: columnDomain, 
+              title: humanize(column)
+            }
+          )
+        );
     }
 
     const columnPlot = {
@@ -116,6 +124,14 @@ export default class DeckSidebar extends React.Component {
       fill: 'rgb(18, 147, 154)',
     }
 
+    const resetState = () => {
+      this.setState({
+        reset: true,
+        year: "",
+        multiVarSelect: {},
+        barChartVariable: "road_type"
+      })
+    }
     return (
       <>
         <div
@@ -131,11 +147,7 @@ export default class DeckSidebar extends React.Component {
             <DataInput
               toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
               urlCallback={(url, geojson) => {
-                this.setState({
-                  reset: true,
-                  year: "",
-                  multiVarSelect: {},
-                })
+                resetState();
                 typeof (urlCallback) === 'function'
                   && urlCallback(url, geojson);
                 typeof (toggleOpen) === 'function' && toggleOpen()
@@ -149,13 +161,11 @@ export default class DeckSidebar extends React.Component {
               <Button
                 kind={KIND.secondary} size={SIZE.compact}
                 onClick={() => {
-                  this.setState({
-                    reset: false,
-                    year: "",
-                    multiVarSelect: {},
-                  })
+                  resetState();
                   typeof (urlCallback) === 'function'
-                    && urlCallback(URL + "/api/stats19")
+                    && urlCallback(URL + "/api/stats19");
+                  typeof (this.props.showLegend) === 'function' &&
+                  this.props.showLegend(false);
                 }}>Reset</Button>
             }
           </div>
