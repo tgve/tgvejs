@@ -16,6 +16,22 @@ import URL from './URL';
 import Card from './Card';
 import { DEV_URL, PRD_URL } from '../Constants';
 
+/**
+ * The package is by mapbox. 
+ * 
+ * GDAL specs have been taken into consideration according to
+ * package docs. The package creats lines and polygons from 
+ * correct csv files.
+ * 
+ * There has been good effort into guessing the naming of
+ * lat/longs, see 
+ * https://github.com/mapbox/csv2geojson/blob/gh-pages/index.js
+ * 
+ * From the package
+ * var latRegex = /(Lat)(itude)?/gi,
+ *  lonRegex = /(L)(on|ng)(gitude)?/i;
+ * 
+ */
 const csv2geojson = require('csv2geojson');
 
 const partURL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
@@ -32,7 +48,7 @@ export default function (props) {
         api: partURL + '/api/spenser'
       },
       QUANT: {
-        image: "images/spenser.png",
+        image: "images/quant.png",
         body: "QUANT HS2 scenario example.",
         api: fetchQuant // a function
       },
@@ -48,7 +64,7 @@ export default function (props) {
               api && typeof (api) === 'function' ?
                 api((geojson) => urlCallback(undefined, geojson)) :
                 typeof (urlCallback) === 'function'
-                && urlCallback()
+                && urlCallback(api)
               setOpen(false);
             }} />
         }

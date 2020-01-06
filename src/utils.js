@@ -572,7 +572,8 @@ const generateLegend = (options) => {
   const {domain, interpolate = interpolateOrRd, title} = options;
   if (!domain || !Array.isArray(domain) || !isNumber(domain[0])) return
   const jMax = domain[domain.length - 1], jMin = domain[0];
-  const legend = [<p>{title}</p>]
+  const legend = [<p key='title'>{title}</p>]
+  
   for (var i = 0; i < 10; i += 1) {
     legend.push(
       <>

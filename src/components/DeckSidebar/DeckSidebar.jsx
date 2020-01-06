@@ -29,6 +29,7 @@ import { isEmptyOrSpaces, isNumber } from '../../JSUtils';
 import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
 import MultiLinePlot from '../Showcases/MultiLinePlot';
+import Boxplot from '../Boxplot/Boxplot';
 // import GenerateUI from '../UI';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
@@ -92,6 +93,7 @@ export default class DeckSidebar extends React.Component {
     //   Array.from(data_properties['accident_severity'])
 
     const severity_data = propertyCount(data, "accident_severity");    
+    let columnDomain = [];
     let columnData = notEmpty ?
       xyObjectByProperty(data, column || barChartVariable) : [];
     const geomType = notEmpty && data[0].geometry.type.toLowerCase();
@@ -101,10 +103,18 @@ export default class DeckSidebar extends React.Component {
       isNumber(data[0].properties[column])) {
         // we dont need to use generateDomain(data, column)
         // columnData already has this in its x'es
-        let domain = columnData.map(e => e.x);
+        columnDomain = columnData.map(e => e.x);
         // we will just sort it        
-        domain = sortNumericArray(domain);
-        this.props.showLegend(generateLegend({domain, title: humanize(column)}));
+        columnDomain = sortNumericArray(columnDomain);
+        // console.log(columnDomain);
+        
+        this.props.showLegend(
+          generateLegend(
+            {domain: columnDomain, 
+              title: humanize(column)
+            }
+          )
+        );
     }
 
     const columnPlot = {
@@ -114,6 +124,14 @@ export default class DeckSidebar extends React.Component {
       fill: 'rgb(18, 147, 154)',
     }
 
+    const resetState = () => {
+      this.setState({
+        reset: true,
+        year: "",
+        multiVarSelect: {},
+        barChartVariable: "road_type"
+      })
+    }
     return (
       <>
         <div
@@ -137,13 +155,10 @@ export default class DeckSidebar extends React.Component {
             <DataInput
               toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
               urlCallback={(url, geojson) => {
-                this.setState({
-                  reset: true,
-                  year: "",
-                  multiVarSelect: {},
-                })
+                resetState();
                 typeof (urlCallback) === 'function'
-                  && urlCallback(url, geojson)
+                  && urlCallback(url, geojson);
+                typeof (toggleOpen) === 'function' && toggleOpen()
               }
               } />
             <Modal
@@ -154,21 +169,20 @@ export default class DeckSidebar extends React.Component {
               <Button
                 kind={KIND.secondary} size={SIZE.compact}
                 onClick={() => {
-                  this.setState({
-                    reset: false,
-                    year: "",
-                    multiVarSelect: {},
-                  })
+                  resetState();
                   typeof (urlCallback) === 'function'
-                    && urlCallback(URL + "/api/stats19")
+                    && urlCallback(URL + "/api/stats19");
+                  typeof (this.props.showLegend) === 'function' &&
+                  this.props.showLegend(false);
                 }}>Reset</Button>
             }
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
               {/* range of two values slider is not native html */
-                timeSlider(data, year, multiVarSelect,
-                  onSelectCallback, (changes) => this.setState(changes))
+                timeSlider({data, year, multiVarSelect,
+                  // for callback we get { year: "",multiVarSelect }
+                  onSelectCallback, callback: (changes) => this.setState(changes)})
               }
               {
                 //only if there is such a property
@@ -209,6 +223,9 @@ export default class DeckSidebar extends React.Component {
                   }, dark))
               }
               <hr style={{ clear: 'both' }} />
+              {columnDomain.length > 1 &&
+              <Boxplot data={columnDomain}/>}
+
               <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
@@ -241,29 +258,32 @@ export default class DeckSidebar extends React.Component {
                     />
                   }
                   {
-                    notEmpty &&
+                    notEmpty && geomType !== 'point' &&
                     Object.keys(data[0].properties)
                       .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
-                    <MultiSelect
-                      title="Choose Column"
-                      single={true}
-                      values={
-                        Object.keys(data[0].properties).map(e =>
-                          ({ id: humanize(e), value: e }))
-                      }
-                      onSelectCallback={(selected) => {
-                        // array of seingle {id: , value: } object
-                        const newBarChartVar = (selected && selected[0]) ?
-                          selected[0].value : barChartVariable;
-                        this.setState({
-                          barChartVariable: newBarChartVar
-                        });
-                        typeof onSelectCallback === 'function' &&
-                          onSelectCallback({
-                            what: 'column', selected: newBarChartVar
+                    <>
+                      <h6>Column for layer:</h6>
+                      <MultiSelect
+                        title="Choose Column"
+                        single={true}
+                        values={
+                          Object.keys(data[0].properties).map(e =>
+                            ({ id: humanize(e), value: e }))
+                        }
+                        onSelectCallback={(selected) => {
+                          // array of seingle {id: , value: } object
+                          const newBarChartVar = (selected && selected[0]) ?
+                            selected[0].value : barChartVariable;
+                          this.setState({
+                            barChartVariable: newBarChartVar
                           });
-                      }}
-                    />
+                          typeof onSelectCallback === 'function' &&
+                            onSelectCallback({
+                              what: 'column', selected: newBarChartVar
+                            });
+                        }}
+                      />
+                    </>
                   }
                   {/* TODO: example of generating vis based on column
                   cloudl now be deleted. */}

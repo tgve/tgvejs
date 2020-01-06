@@ -30,7 +30,7 @@ const fetchQuant = (callback) => {
         }
       })
       collection = helpers.featureCollection(collection);
-      console.log(collection);
+      // console.log(collection);
       
       callback && callback(collection)
     } else {
