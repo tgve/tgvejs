@@ -364,7 +364,6 @@ export default class Welcome extends React.Component {
             mapStyle.endsWith("No map-v9") ? 'hidden' : 'visible'
         }} />
         <MapGL
-          // key={height+width} //causes layer to disappear
           ref={ref => {
             // save a reference to the mapboxgl.Map instance
             this.map = ref && ref.getMap();

@@ -1,19 +1,30 @@
 import React, { Component } from 'react';
-
+import { Slider } from 'baseui/slider';
 import { XYPlot, XAxis, YAxis, HexbinSeries, Hint } from 'react-vis';
 
 export default class HexHeatmap extends Component {
   state = {
     hoveredNode: null,
     radius: 10,
-    offset: 0
+    offset: 0,
   };
   render() {
     const { data, options } = this.props;
     const { radius, hoveredNode } = this.state;
     if(!data || !data.length) return null
     return (
-      <div className="centered-and-flexed">
+      <div className="centered-and-flexed" style={{color:'#fff'}}>
+        <Slider
+            value={[this.state.radius]}
+            min={5}
+            max={50}
+            step={5}
+            onChange={({ value }) => {
+              this.setState({ radius: value[0] });
+              // typeof (onChange) === 'function' && onChange(value[0])
+            }}
+          />
+          {"Radius (pixels)"}
         <XYPlot
           margin={{ left: 10, bottom: 10 }}
           height={options &&
