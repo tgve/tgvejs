@@ -1,24 +1,14 @@
 
-# eAtlas · [![Build Status](https://travis-ci.org/layik/eAtlas.svg)](https://travis-ci.org/layik/eAtlas) [![Project Status: WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#)
+eAtlas · [![Build Status](https://travis-ci.org/layik/eAtlas.svg)](https://travis-ci.org/layik/eAtlas) [![Project Status: WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#)
+================================================================================================================================================================================================================================================================================================
 
-Currently this is just a “WIP” as we explore and gather requirements of
-the project. The idea of an eAtlas is one by Sir Alan Wilson (Turing
-Institute):
+Currently this is just a "WIP" as we explore and gather requirements of the project. The idea of an eAtlas is one by Sir Alan Wilson (Turing Institute):
 
-> A key message from the Foresight Future of Cities Project is the
-> importance of interdependence: between urban subsystems and between
-> associated planning and policy challenges. \~ Sir Alan Wilson.
+> A key message from the Foresight Future of Cities Project is the importance of interdependence: between urban subsystems and between associated planning and policy challenges. ~ Sir Alan Wilson.
 
-There are some
-[notes](https://github.com/layik/eAtlas/blob/master/notes/project_planning.md)
-to read. These are thoughts and background reading material as we take
-steps towards understanding what an “interdependent” eAtlas might be.
-Would it be “Turing Geovisualization Engine”?
+There are some [notes](https://github.com/layik/eAtlas/blob/master/notes/project_planning.md) to read. These are thoughts and background reading material as we take steps towards understanding what an "interdependent" eAtlas might be. Would it be "Turing Geovisualization Engine"?
 
-This source code is a
-[geopumber](https://github.com/ATFutures/geoplumber) app. That means it
-is an R powered backend API (think Flask in Python) and a ReactJS front
-end.
+This source code is a [geopumber](https://github.com/ATFutures/geoplumber) app. That means it is an R powered backend API (think Flask in Python) and a ReactJS front end.
 
 To build, from an R console:
 
@@ -27,10 +17,13 @@ library(geoplumber)
 gp_build()
 ```
 
-Before you run the app: \* you will need some preprocessed data, an RDS
-called “ac\_joined\_wy\_2009-2017.Rds”. \* you will need a Mapbox API
-key (will see if we can remove this) in `.env.local` file using variable
-name: `REACT_APP_MAPBOX_ACCESS_TOKEN = 'API_KEY'`
+Before you run the app:
+
+-   you will need some preprocessed data, an RDS called "ac\_joined\_wy\_2009-2017.Rds".
+
+-   you will need a Mapbox API key (will see if we can remove this) in `.env.local` file using variable name: `REACT_APP_MAPBOX_ACCESS_TOKEN = 'API_KEY'`
+
+-   in production its better to change the `PRD_URL` in the `Constants.js` file.
 
 Then you can run
 
@@ -41,10 +34,10 @@ gp_plumb()
 
 visit `localhost:8000`
 
-or just run the front using (without any data loaded from local server):
-`npm i & npm start`
+or just run the front using (without any data loaded from local server): `npm i & npm start`
 
-## deploy with docker
+deploy with docker
+------------------
 
 Repo contains Dockerfile for production. This is again WIP.
 
@@ -56,18 +49,9 @@ docker build -t eatlas .
 docker run -d -p 8000:8001 --name eatlas eatlas
 ```
 
-Use your favourite document server (nginx for example) to proxy requets
-(more later hopefully).
+Use your favourite document server (nginx for example) to proxy requets (more later hopefully).
 
-## Screenshots/gif’s
+Screenshots/gif's
+-----------------
 
 <img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/66118004-44646f80-e5cd-11e9-98fa-c319c9b42bf3.png">
-
-Disclaimer:
-<div style="font-size: 0.5rem">THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.</div>

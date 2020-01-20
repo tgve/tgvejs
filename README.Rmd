@@ -17,10 +17,14 @@ library(geoplumber)
 gp_build()
 ```
 
-Before you run the app: 
+Before you run the app:
+
 * you will need some preprocessed data, an RDS called "ac_joined_wy_2009-2017.Rds".
+
 * you will need a Mapbox API key (will see if we can remove this) in `.env.local` file using variable name:
 `REACT_APP_MAPBOX_ACCESS_TOKEN = 'API_KEY'`
+
+* in production its better to change the `PRD_URL` in the `Constants.js` file.
 
 Then you can run
 ```{r, eval=FALSE}

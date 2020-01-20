@@ -5,7 +5,8 @@ function define(name, value) {
   });
 }
 
-define("PRD_URL", 'http://51.140.14.188');
+// TODO: change to domain name 
+define("PRD_URL", 'http://localhost:8000');
 define("DEV_URL", 'http://localhost:8000');
 define("UI_LIST", [
   "checkbox",
