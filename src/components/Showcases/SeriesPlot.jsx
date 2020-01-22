@@ -17,16 +17,17 @@ export default function SeriesPlot (options) {
   const [x1, setX1] = useState(null);
   const [y1, setY1] = useState(null);
   const [rect, setRect] = useState(null);
+  const [selectedData, setSelectedData] = useState([]);
 
   const ReactSeries = options.type;
   const limit = 10;
   if (!ReactSeries) return null;
-  const data = options.type !== MarkSeries && !options.noLimit &&
+  let data = options.type !== MarkSeries && !options.noLimit &&
     options.data.length > limit ? options.data.slice(0, limit)
     : options.data
   const { plotStyle, title, noXAxis, noYAxis, type,
     onValueClick } = options;
-  console.log(x, y, x1, y1);
+  // console.log(x, y, x1, y1);
   return data && data.length > 1 &&
     // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
     <div className="unselectable" 
@@ -43,7 +44,7 @@ export default function SeriesPlot (options) {
           setRect(
             <div style={{
               position: 'fixed',
-              left: x > newX ? newX : x, top: y, 
+              left: x > newX ? newX : x, top: y > y1 ? newY : y,
               width: Math.abs(newX - x), height: Math.abs(newY-y),
               backgroundColor: 'gray', opacity: 0.2}}/>
           )
@@ -96,12 +97,29 @@ export default function SeriesPlot (options) {
         }
         <ReactSeries
           onValueClick={onValueClick}
-          onNearestX={(datapoint, {event})=>{  
-            console.log(event.clientX)                 
+          onNearestX={(datapoint)=>{  
+            // console.log(event.clientX)
+            if(rect) {
+              console.log(datapoint.x);
+              
+              data = data.filter(e => e.x !== 'Roundabout');
+              console.log(data, selectedData);
+            }
             setHint(datapoint)            
           }}
           style={{ fill: type === LineSeries ? 'none' : 'rgb(18, 147, 154)' }}
           data={data} />
+        {
+          selectedData.length > 0 && 
+          <ReactSeries
+          onValueClick={onValueClick}
+          onNearestX={(datapoint, {event})=>{  
+            // console.log(event.clientX)                 
+            setHint(datapoint)            
+          }}
+          style={{ fill: type === LineSeries ? 'none' : 'red' }}
+          data={selectedData} />
+        }
         {hint && <Hint value={hint} />}
       </FlexibleXYPlot>
       {x && x1 && rect}
