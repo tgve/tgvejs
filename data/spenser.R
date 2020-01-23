@@ -2,7 +2,7 @@
 download.file("https://github.com/layik/eAtlas/releases/download/0.0.1/population.Rds",
               "~/Downloads/population.Rds")
 pop = readRDS("~/Downloads/population.Rds")
-
+pop_2011 = pop[pop$Year == '2011', ]
 # get UK boundaries from
 # http://geoportal.statistics.gov.uk/datasets/f341dcfd94284d58aba0a84daf2199e9_0
 dest_file = "~/Downloads/boundaries_2001"
@@ -14,25 +14,29 @@ list.files(dest_file)
 
 library(sf)
 msoa = st_read(dest_file)
-names(msoa)
+# names(msoa)
 # plot(msoa[, 1])
-length(unique(msoa$msoa01cd))
-any(is.na(msoa$geometry))   # FALSE
-any(is.null(msoa$geometry)) # FALSE
+# length(unique(msoa$msoa01cd))
+# any(is.na(msoa$geometry))   # FALSE
+# any(is.null(msoa$geometry)) # FALSE
 
 # match all pop Area in msoa$msoa01cd
-m = match(pop$Area, msoa$msoa01cd)
+m = match(pop_2011$Area, msoa$msoa01cd)
 sfc = st_geometry(msoa)
 sfc = sfc[m] # list all boundaries with entries in pop
-pop_sf = st_as_sf(pop, sfc)
-object.size(pop_sf)
-# 325273869832
-325273869832/1024/1024/1024
-# 302GiB?
+pop_2011_sf = st_as_sf(pop_2011, sfc)
+object.size(pop_2011_sf)
 
 # generate geotiff, sf does not do raster I think 
 library(raster)
-# writeRaster(pop_sf) # * CPU/GPU* alert 
+# 1000 rows
+r = fasterize::raster(pop_2011_sf, ncols = 4, nrows = 10000 )# nrow(pop_2011_sf))
+r = fasterize::fasterize(sf = pop_2011_sf, raster = r, field = "DC1117EW_C_SEX")
+# not sure if it works
+# view it on a map
+mapview::mapview(r)
+object.size(r)
+writeRaster(r, filename = "~/Downloads/pop_2011_10krows_sex_sf.tif") # * CPU/GPU* alert
 
 # finally tile it.
 # There are few ways of doing this, preferred method is this python
@@ -49,10 +53,6 @@ names(spenser)
 # [1] "PID"                 "Area"               
 # [3] "DC1117EW_C_SEX"      "DC1117EW_C_AGE"     
 # [5] "DC2101EW_C_ETHPUK11"
-
-# msoa = st_read("~/Downloads/quant/msoa.geojson")
-# all(match(spenser$Area, msoa$msoa11cd))
-# [1] TRUE
 
 # aim
 # year  sex age eth area
