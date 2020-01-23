@@ -36,13 +36,33 @@ r = fasterize::fasterize(sf = pop_2011_sf, raster = r, field = "DC1117EW_C_SEX")
 # view it on a map
 mapview::mapview(r)
 object.size(r)
-writeRaster(r, filename = "~/Downloads/pop_2011_10krows_sex_sf.tif") # * CPU/GPU* alert
+tif_name = "~/Downloads/pop_2011_10krows_sex_sf.tif"
+writeRaster(r, filename = tif_name) # * CPU/GPU* alert
 
 # finally tile it.
 # There are few ways of doing this, preferred method is this python
 # package
 # https://gdal.org/programs/gdal2tiles.html
-
+# *********** code from Dr Robin Lovelace et al WHO work 2018
+devtools::install_github("leonawicz/tiler")
+library(tiler)
+r = raster::raster(tif_name)
+# create the tiles
+tiles_dir = "~/Downloads/pop_2011_part_tiles"
+dir.create(tiles_dir)
+pal <- colorRampPalette(c("darkblue", "lightblue"))(20)
+#' tiler IS using gdal2tile python code 
+#' https://github.com/leonawicz/tiler/blob/77ccbf7da1a2077c483a4abb6bc19bad9b9ebdcc/inst/python/gdal2tilesIMG.py
+#'So, careful with what Zoom level you use below, here is tiler docs warning.
+#'it is recommended to (1) try making tiles for only one zoom level at a time, 
+#'starting from zero and then increasing while monitoring your system resources. 
+#'(2) If this is not enough, find a better system.
+#'
+tiler::tile(file = tif_name, tiles = tiles_dir, zoom = "0-3", col = pal)
+# create the viewer
+tiler::tile_viewer(tiles = "tiles", zoom = "0-3")
+browseURL("preview.html")
+# ***********
 ###############################################
 # collate csvs into a dataframe
 ppp_files = list.files("~/Downloads/data/", full.names = TRUE)[
