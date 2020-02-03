@@ -13,8 +13,8 @@
   padding: 2px; 
   background: #000; 
   color: #fff;
-  max-height: 320px;
-  overflow-y: scroll;
+  /* max-height: 320px; */
+  /* overflow-y: scroll; */
 }
 
 .navbar { /* above deck.gl*/

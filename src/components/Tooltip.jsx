@@ -5,7 +5,6 @@ import { humanize } from '../utils';
 import SeriesPlot from './Showcases/SeriesPlot';
 import { propertyCountByProperty } from '../geojsonutils';
 import MultiLinePlot from './Showcases/MultiLinePlot';
-import TreeMap from './TreeMap';
 
 const WIDTH = 220;
 const BAR_HEIGHT = 80;
