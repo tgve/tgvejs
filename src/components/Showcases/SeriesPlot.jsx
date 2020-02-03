@@ -36,7 +36,7 @@ export default function SeriesPlot(options) {
 
   const { plotStyle, title, noXAxis, noYAxis,
     onValueClick } = options;
-  // console.log(JSON.stringify(dataWithColor));
+      
   return data && data.length > 1 &&
     // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
     <div className="unselectable"
@@ -137,6 +137,7 @@ export default function SeriesPlot(options) {
               }
             }
           }}
+          colorDomain={[0, 1]}
           colorRange={['rgb(239, 93, 40)', 'rgb(18, 147, 154)']}
           // style={{ fill: type === LineSeries ? 'none' : 'rgb(18, 147, 154)' }}
           data={dataWithColor} />
