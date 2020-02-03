@@ -277,7 +277,7 @@ export default class DeckSidebar extends React.Component {
                   }
                   {/* TODO: example of generating vis based on column
                   cloudl now be deleted. */}
-                  {<SeriesPlot
+                  {notEmpty && <SeriesPlot
                     data={columnPlot.data}
                     type={VerticalBarSeries}
                     onValueClick={(datapoint) => {
