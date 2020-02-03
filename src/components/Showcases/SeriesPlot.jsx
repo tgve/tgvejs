@@ -17,14 +17,20 @@ export default function SeriesPlot (options) {
   const [x1, setX1] = useState(null);
   const [y1, setY1] = useState(null);
   const [rect, setRect] = useState(null);
-  const [selectedData, setSelectedData] = useState([]);
+  const [selected, setSelected] = useState([]);
 
   const ReactSeries = options.type;
-  const limit = 10;
   if (!ReactSeries) return null;
-  let data = options.type !== MarkSeries && !options.noLimit &&
-    options.data.length > limit ? options.data.slice(0, limit)
-    : options.data
+
+  const data = options.type !== MarkSeries && !options.noLimit &&
+  options.data.length > limit ? options.data.slice(0, limit)
+  : options.data;
+  const dataWithColor = data.map((d, i) => ({...d, 
+    color: data.length === selected.length ? 0 : Number(!selected.includes(i))}));
+    
+  const limit = 10;
+  console.log(dataWithColor);
+  
   const { plotStyle, title, noXAxis, noYAxis, type,
     onValueClick } = options;
   // console.log(x, y, x1, y1);
@@ -41,6 +47,7 @@ export default function SeriesPlot (options) {
         if(x && y) {
           const newX = e.clientX; const newY = e.clientY;
           setX1(newX); setY1(newY);
+          if(!rect) setSelected([]); // just before it starts
           setRect(
             <div style={{
               position: 'fixed',
@@ -53,7 +60,11 @@ export default function SeriesPlot (options) {
       onMouseUp={(e) => {
         setX(null); setY(null); setX1(null); setY1(null);
         setRect(null);
+        setSelected([])
         }}
+      onMouseOut={() => {        
+        setSelected([])
+      }}
       >
       {options.type !== MarkSeries && !options.noLimit &&
         options.data && options.data.length > limit &&
@@ -97,29 +108,19 @@ export default function SeriesPlot (options) {
         }
         <ReactSeries
           onValueClick={onValueClick}
-          onNearestX={(datapoint)=>{  
-            // console.log(event.clientX)
+          onNearestX={(datapoint, { index })=>{  
+            setHint({x: datapoint.x, y: datapoint.y});
             if(rect) {
-              console.log(datapoint.x);
-              
-              data = data.filter(e => e.x !== 'Roundabout');
-              console.log(data, selectedData);
+              if(!selected.includes(index)) {
+                setSelected([...selected, index]);     
+              }
+            } else {
+              setSelected([index])
             }
-            setHint(datapoint)            
           }}
-          style={{ fill: type === LineSeries ? 'none' : 'rgb(18, 147, 154)' }}
-          data={data} />
-        {
-          selectedData.length > 0 && 
-          <ReactSeries
-          onValueClick={onValueClick}
-          onNearestX={(datapoint, {event})=>{  
-            // console.log(event.clientX)                 
-            setHint(datapoint)            
-          }}
-          style={{ fill: type === LineSeries ? 'none' : 'red' }}
-          data={selectedData} />
-        }
+          colorRange={['rgb(239, 93, 40)', 'rgb(18, 147, 154)']}
+          // style={{ fill: type === LineSeries ? 'none' : 'rgb(18, 147, 154)' }}
+          data={dataWithColor} />
         {hint && <Hint value={hint} />}
       </FlexibleXYPlot>
       {x && x1 && rect}
