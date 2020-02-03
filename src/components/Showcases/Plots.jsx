@@ -19,7 +19,7 @@ const W = 250;
  * @param {Object} options 
  */
 const popPyramid = (options) => {
-  if (!options || !options.data || !options.data[0] || 
+  if (!options || !options.data || !options.data[0] ||
     !options.data[0].properties.date ||
     !options.data[0].properties.sex_of_casualty) return;
   const mf = propertyCountByProperty(options.data, "sex_of_casualty",
@@ -51,11 +51,11 @@ const popPyramid = (options) => {
       height={options.plotStyle && options.plotStyle.height || W}
       width={options.plotStyle && options.plotStyle.width || W} >
       <HorizontalRectSeries
-        color="red"
+        color='rgb(18, 147, 154)'
         stroke='black'
         data={mf_array_female} />
       <HorizontalRectSeries
-        color="blue"
+        color='rgb(239, 93, 40)'
         stroke='black'
         data={mf_array_male} />
 
