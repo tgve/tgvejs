@@ -22,6 +22,7 @@ export default function SeriesPlot(options) {
 
   const ReactSeries = options.type;
   if (!ReactSeries) return null;
+  const limit = 10;
 
   const data = options.type !== MarkSeries && !options.noLimit &&
     options.data.length > limit ? options.data.slice(0, limit)
@@ -33,11 +34,9 @@ export default function SeriesPlot(options) {
     color: data.length === selected.length ? 0 : Number(!selected.includes(i))
   }));
 
-  const limit = 10;
-
-  const { plotStyle, title, noXAxis, noYAxis, type,
+  const { plotStyle, title, noXAxis, noYAxis,
     onValueClick } = options;
-  // console.log(x, y, x1, y1);
+  // console.log(JSON.stringify(dataWithColor));
   return data && data.length > 1 &&
     // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
     <div className="unselectable"
@@ -51,7 +50,6 @@ export default function SeriesPlot(options) {
         if (x && y) {
           const newX = e.clientX; const newY = e.clientY;
           setX1(newX); setY1(newY);
-          if (!rect) setSelected([]); // just before it starts
           setRect(
             <div style={{
               position: 'fixed',
@@ -68,7 +66,9 @@ export default function SeriesPlot(options) {
         setSelected([])
       }}
       onMouseOut={() => {
-        setSelected([])
+        if(!rect) {
+          setSelected([])
+        }
       }}
     >
       {options.type !== MarkSeries && !options.noLimit &&
@@ -125,7 +125,6 @@ export default function SeriesPlot(options) {
             setHint({ x: datapoint.x, y: datapoint.y });
             if (rect && isWithinRect({ x, x1, value: innerX })) {
               if (!selected.includes(index)) { // prevent rerender
-                console.log("select ", index);
                 setSelected([...selected, index]);
               }
               // TODO see how one can detect "leaving"
@@ -133,7 +132,7 @@ export default function SeriesPlot(options) {
               // console.log("DEselect ", index);
               // setSelected(selected.filter(e => e !== index));
             } else {
-              if (!rect) {
+              if (!rect) {              
                 setSelected([index]); // single hover
               }
             }
