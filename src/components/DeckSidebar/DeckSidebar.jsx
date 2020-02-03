@@ -276,21 +276,28 @@ export default class DeckSidebar extends React.Component {
                     </>
                   }
                   {/* TODO: example of generating vis based on column
-                  cloudl now be deleted. */}
-                  {notEmpty && <SeriesPlot
+                  clould now be deleted. */}
+                  {notEmpty && 
+                  <SeriesPlot
                     data={columnPlot.data}
                     type={VerticalBarSeries}
                     onValueClick={(datapoint) => {
-                      // console.log(datapoint, column);
                       // convert back to string
                       multiVarSelect[column ||
                         barChartVariable] = new Set([datapoint.x + ""]);
-                      // console.log(multiVarSelect);
                       this.setState({ multiVarSelect })
                       onSelectCallback &&
                         onSelectCallback({ what: 'multi', selected: multiVarSelect })
-                      // {x: "Single carriageway", y: 2419}
-                    }} plotStyle={{ marginBottom: 100 }} noYAxis={true}
+                    }}
+                    onDragSelected={(datapoints) => {
+                      multiVarSelect[column ||
+                        barChartVariable] = new Set(datapoints.map(e => e + ""));
+                      this.setState({ multiVarSelect })
+                      onSelectCallback &&
+                        onSelectCallback({ what: 'multi', selected: multiVarSelect })
+                    }}
+                    plotStyle={{ marginBottom: 100 }} noYAxis={true}
+
                   />}
                   {popPyramid({ data })}
                 </Tab>

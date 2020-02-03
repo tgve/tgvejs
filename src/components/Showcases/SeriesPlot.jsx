@@ -35,7 +35,7 @@ export default function SeriesPlot(options) {
   }));
 
   const { plotStyle, title, noXAxis, noYAxis,
-    onValueClick } = options;
+    onValueClick, onDragSelected } = options;
       
   return data && data.length > 1 &&
     // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
@@ -63,6 +63,10 @@ export default function SeriesPlot(options) {
       onMouseUp={(e) => {
         setX(null); setY(null); setX1(null); setY1(null);
         setRect(null);
+        if(rect) {
+          onDragSelected(selected.map(e => 
+            dataWithColor[e] && dataWithColor[e].x))
+        }
         setSelected([])
       }}
       onMouseOut={() => {
