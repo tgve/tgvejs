@@ -1,10 +1,10 @@
 import React from 'react';
 import {
   ScatterplotLayer, HexagonLayer, GeoJsonLayer,
-  IconLayer, ScreenGridLayer, GridLayer, LineLayer
+  ScreenGridLayer, GridLayer, LineLayer, //IconLayer,
 } from 'deck.gl';
 import {
-  interpolateOrRd, schemeBlues
+  interpolateOrRd, // schemeBlues
 } from 'd3-scale-chromatic';
 
 import qs from 'qs'; // warning: importing it otherways would cause minificatino issue.
@@ -13,7 +13,7 @@ import mapping from './location-icon-mapping.json';
 import Constants from './Constants';
 import { isString, isNumber } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
-import { ArcLayer } from '@deck.gl/layers';
+import { ArcLayer, PathLayer } from '@deck.gl/layers';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -217,7 +217,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, lineObject)
     return (new LineLayer(lineObject))
-  } else if (name == 'arc') {
+  } else if (name === 'arc') {
     const arcObject = {
       id: 'arc-layer',
       data,
@@ -227,7 +227,16 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, arcObject)
     return (new ArcLayer(arcObject))
+  } else if (name === 'path') {
+    const pathObject = {
+      id: 'path-layer',
+      data,
+      pickable: true,
+    }
+    addOptionsToObject(options, pathObject)
+    return (new PathLayer(pathObject))
   }
+  
   return (null)
 }
 

@@ -208,13 +208,14 @@ export default class Welcome extends React.Component {
       options.getFillColor = (d) => colorScale(d, data) //first prop
     }
     if (geomType === 'linestring') {
-      layerStyle = "line"
+      layerStyle = "path"
       // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
       options.getColor = d => [235, 170, 20]
-      // options.getSourceColor = d => [15, 0, 239]
-      // options.getTargetColor = d => [+(d.properties.hs2), 140, 0]
-      options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
-      options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
+      options.getPath = d => d.geometry.coordinates
+      // options.getSourceColor = d => [Math.sqrt(+(d.properties.base)) * 1000, 140, 0]
+      // options.getTargetColor = d => [Math.sqrt(+(d.properties.hs2)) * 1e13, 140, 0]
+      // options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
+      // options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
       let columnNameOrIndex =
         (filter && filter.what === 'column' && filter.selected) ||
         column || 1;

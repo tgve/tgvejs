@@ -40,7 +40,7 @@ export default class Tooltip extends React.Component {
   render() {
     const { topx, topy, hoveredObject } = this.props;
     const { isMobile } = this.state;
-    // console.log(x,y);
+    console.log(topx, topy);
 
     if (!hoveredObject) return null;
 
