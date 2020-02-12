@@ -55,7 +55,7 @@ export default (props) => {
       }
     })
   }
-  console.log(scale);
+  // console.log(scale);
 
   return (
     <div style={{

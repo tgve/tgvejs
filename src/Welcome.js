@@ -169,13 +169,16 @@ export default class Welcome extends React.Component {
    * Welcome should hold own state in selected as:
    * {property: Set(val1, val2), ...}.
    * 
-   * @param {*} radius specific to changing geoms
-   * @param {*} elevation specific to changing geoms
-   * @param {*} filter multivariate filter of properties
-   * @param {*} cn short for colorName passed from callback
-   * @param {*} coords coordinates to filter
+   * @param {*} values includes
+   * radius: specific to changing geoms
+   * elevation: specific to changing geoms
+   * filter: multivariate filter of properties
+   * cn: short for colorName passed from callback
+   * coords: coordinates to filter
    */
-  _generateLayer(radius, elevation, filter, cn, coords) {
+  _generateLayer(values  = {}) {
+    const {radius, elevation, filter, cn, coords} = values;
+    
     if(filter && filter.what === 'mapstyle') {
       this.setState({
         mapStyle: !MAPBOX_ACCESS_TOKEN ? osmtiles :
@@ -214,12 +217,12 @@ export default class Welcome extends React.Component {
         }
       )
     }
-    // check coordinates first, filter is more costly
-    if (coords) {
+    // check coordinates first, filter is more costly    
+    if ((coords || this.state.coords) && coords !== 'reset') {
       data = data.filter(
         d => {
           // coords in 
-          if (_.difference(coords, 
+          if (_.difference(coords || this.state.coords, 
             d.geometry.coordinates.flat()).length === 0) {
             return true;
           }
@@ -241,24 +244,25 @@ export default class Welcome extends React.Component {
       options.getFillColor = (d) => colorScale(d, data) //first prop
     }
     if (geomType === 'linestring') {
-      layerStyle = "path"
+      layerStyle = "line"
       // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
       options.getColor = d => [235, 170, 20]
       options.getPath = d => d.geometry.coordinates
       options.onClick = (info) => {
         // console.log(info);
         if(info && info.hasOwnProperty('coordinate')) {
-          if(['path', 'arc'].includes(this.state.layerStyle) &&
+          if(['path', 'arc', 'line'].includes(this.state.layerStyle) &&
           info.object.geometry.coordinates) {        
-            this._generateLayer(undefined, undefined, undefined, undefined,
-              info.object.geometry.coordinates[0])
+            this._generateLayer({coords: info.object.geometry.coordinates[0]})
           }
         }
       }
-      // options.getSourceColor = d => [Math.sqrt(+(d.properties.base)) * 1000, 140, 0]
-      // options.getTargetColor = d => [Math.sqrt(+(d.properties.hs2)) * 1e13, 140, 0]
-      // options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
-      // options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
+      if(layerStyle === 'line') {
+        // options.getSourceColor = d => [Math.sqrt(+(d.properties.base)) * 1000, 140, 0]
+        // options.getTargetColor = d => [Math.sqrt(+(d.properties.hs2)) * 1e13, 140, 0]
+        options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
+        options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
+      }
       let columnNameOrIndex =
         (filter && filter.what === 'column' && filter.selected) ||
         column || 1;
@@ -312,7 +316,7 @@ export default class Welcome extends React.Component {
         this.state.road_type,
       colourName: cn || colourName,
       column, // all checked
-      coords
+      coords: coords === 'reset' ? null : (coords || this.state.coords)
     })
   }
 
@@ -440,9 +444,9 @@ export default class Welcome extends React.Component {
             // https://deck.gl/#/documentation/developer-guide/
             // adding-interactivity?
             // section=using-the-built-in-event-handling
-            onClick={(e)=> {
+            onClick={(e)=> {              
               if(!e.layer && coords){
-                this._generateLayer()
+                this._generateLayer({coords: 'reset'})
               }
             }}
           >
@@ -456,8 +460,7 @@ export default class Welcome extends React.Component {
           alert={alert}
           data={this.state.filtered}
           colourCallback={(colourName) =>
-            this._generateLayer(undefined, undefined, undefined,
-              colourName)
+            this._generateLayer({colourName})
           }
           urlCallback={(url_returned, geojson_returned) => {
             this.setState({
@@ -465,7 +468,8 @@ export default class Welcome extends React.Component {
               road_type: "",
               radius: 100,
               elevation: 4,
-              loading: true
+              loading: true,
+              coords: null
             })
             if (geojson_returned) {
               // confirm valid geojson
@@ -484,9 +488,9 @@ export default class Welcome extends React.Component {
             }
           }}
           column={this.state.column}
-          onSelectCallback={(selected) => this._generateLayer(undefined, undefined, selected)}
-          onChangeRadius={(value) => this._generateLayer(value)}
-          onChangeElevation={(value) => this._generateLayer(undefined, value)}
+          onSelectCallback={(selected) => this._generateLayer({filter:selected})}
+          onChangeRadius={(value) => this._generateLayer({radius:value})}
+          onChangeElevation={(value) => this._generateLayer({elevation: value})}
           toggleSubsetBoundsChange={(value) => {
             this.setState({
               loading: true,
