@@ -247,7 +247,7 @@ export default class Welcome extends React.Component {
       options.getColor = d => [235, 170, 20]
       options.getPath = d => d.geometry.coordinates
       options.onClick = (info) => {
-        console.log(info);
+        // console.log(info);
         if(info && info.hasOwnProperty('coordinate')) {
           if(['path', 'arc'].includes(this.state.layerStyle) &&
           info.object.geometry.coordinates) {        
@@ -436,6 +436,15 @@ export default class Welcome extends React.Component {
             viewState={viewport ? viewport : initialViewState}
             initialViewState={initialViewState}
             layers={this.state.layers}
+            // see docs below, url split for readability
+            // https://deck.gl/#/documentation/developer-guide/
+            // adding-interactivity?
+            // section=using-the-built-in-event-handling
+            onClick={(e)=> {
+              if(!e.layer){
+                this._generateLayer()
+              }
+            }}
           >
             {tooltip}
           </DeckGL>
