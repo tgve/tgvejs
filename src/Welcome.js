@@ -1,8 +1,28 @@
+/**
+ * Main entry to the application.
+ * 
+ * The crucial bits are:
+ * 
+     this.state = {
+      data,            <= main data holding param   
+      layers: [],      <= mapgl layers object
+      initialViewState:<= deckgl/mapgl initial state object
+      legend: false    <= map legend to avoid rerender.
+    }
+ * and
+ * DeckSidebarContainer which holds DeckSidebar object itself.
+ * 
+ * Main funcitons:
+ * _generateLayer which is the main/factory of filtering state
+ * of the map area of the application.
+ * 
+ */
 import React from 'react';
 import DeckGL from 'deck.gl';
 import MapGL, { NavigationControl, FlyToInterpolator } from 'react-map-gl';
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
+import _ from 'underscore';
 
 import {
   fetchData, generateDeckLayer,
@@ -149,12 +169,16 @@ export default class Welcome extends React.Component {
    * Welcome should hold own state in selected as:
    * {property: Set(val1, val2), ...}.
    * 
-   * @param {*} radius specific to changing geoms
-   * @param {*} elevation specific to changing geoms
-   * @param {*} filter multivariate filter of properties
-   * @param {*} cn short for colorName passed from callback
+   * @param {*} values includes
+   * radius: specific to changing geoms
+   * elevation: specific to changing geoms
+   * filter: multivariate filter of properties
+   * cn: short for colorName passed from callback
+   * coords: coordinates to filter
    */
-  _generateLayer(radius, elevation, filter, cn) {
+  _generateLayer(values  = {}) {
+    const {radius, elevation, filter, cn, coords} = values;
+    
     if(filter && filter.what === 'mapstyle') {
       this.setState({
         mapStyle: !MAPBOX_ACCESS_TOKEN ? osmtiles :
@@ -193,6 +217,18 @@ export default class Welcome extends React.Component {
         }
       )
     }
+    // check coordinates first, filter is more costly    
+    if ((coords || this.state.coords) && coords !== 'reset') {
+      data = data.filter(
+        d => {
+          // coords in 
+          if (_.difference(coords || this.state.coords, 
+            d.geometry.coordinates.flat()).length === 0) {
+            return true;
+          }
+          return false
+        })
+    }
     // console.log(data.length);
     let layerStyle = 'grid';
     if (geomType !== "point") layerStyle = "geojson"
@@ -211,10 +247,22 @@ export default class Welcome extends React.Component {
       layerStyle = "line"
       // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
       options.getColor = d => [235, 170, 20]
-      // options.getSourceColor = d => [15, 0, 239]
-      // options.getTargetColor = d => [+(d.properties.hs2), 140, 0]
-      options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
-      options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
+      options.getPath = d => d.geometry.coordinates
+      options.onClick = (info) => {
+        // console.log(info);
+        if(info && info.hasOwnProperty('coordinate')) {
+          if(['path', 'arc', 'line'].includes(this.state.layerStyle) &&
+          info.object.geometry.coordinates) {        
+            this._generateLayer({coords: info.object.geometry.coordinates[0]})
+          }
+        }
+      }
+      if(layerStyle === 'line') {
+        // options.getSourceColor = d => [Math.sqrt(+(d.properties.base)) * 1000, 140, 0]
+        // options.getTargetColor = d => [Math.sqrt(+(d.properties.hs2)) * 1e13, 140, 0]
+        options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
+        options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
+      }
       let columnNameOrIndex =
         (filter && filter.what === 'column' && filter.selected) ||
         column || 1;
@@ -268,6 +316,7 @@ export default class Welcome extends React.Component {
         this.state.road_type,
       colourName: cn || colourName,
       column, // all checked
+      coords: coords === 'reset' ? null : (coords || this.state.coords)
     })
   }
 
@@ -351,7 +400,7 @@ export default class Welcome extends React.Component {
   render() {
     const { tooltip, viewport, initialViewState,
       loading, mapStyle, alert,
-      layerStyle, geomType, legend } = this.state;
+      layerStyle, geomType, legend, coords } = this.state;
     // console.log(geomType, legend);
       
     return (
@@ -391,6 +440,15 @@ export default class Welcome extends React.Component {
             viewState={viewport ? viewport : initialViewState}
             initialViewState={initialViewState}
             layers={this.state.layers}
+            // see docs below, url split for readability
+            // https://deck.gl/#/documentation/developer-guide/
+            // adding-interactivity?
+            // section=using-the-built-in-event-handling
+            onClick={(e)=> {              
+              if(!e.layer && coords){
+                this._generateLayer({coords: 'reset'})
+              }
+            }}
           >
             {tooltip}
           </DeckGL>
@@ -402,8 +460,7 @@ export default class Welcome extends React.Component {
           alert={alert}
           data={this.state.filtered}
           colourCallback={(colourName) =>
-            this._generateLayer(undefined, undefined, undefined,
-              colourName)
+            this._generateLayer({colourName})
           }
           urlCallback={(url_returned, geojson_returned) => {
             this.setState({
@@ -411,7 +468,8 @@ export default class Welcome extends React.Component {
               road_type: "",
               radius: 100,
               elevation: 4,
-              loading: true
+              loading: true,
+              coords: null
             })
             if (geojson_returned) {
               // confirm valid geojson
@@ -430,9 +488,9 @@ export default class Welcome extends React.Component {
             }
           }}
           column={this.state.column}
-          onSelectCallback={(selected) => this._generateLayer(undefined, undefined, selected)}
-          onChangeRadius={(value) => this._generateLayer(value)}
-          onChangeElevation={(value) => this._generateLayer(undefined, value)}
+          onSelectCallback={(selected) => this._generateLayer({filter:selected})}
+          onChangeRadius={(value) => this._generateLayer({radius:value})}
+          onChangeElevation={(value) => this._generateLayer({elevation: value})}
           toggleSubsetBoundsChange={(value) => {
             this.setState({
               loading: true,

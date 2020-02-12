@@ -7,7 +7,7 @@ const URL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
 
 const fetchQuant = (callback) => {
   const fullURL = URL + '/api/quant';
-  console.log(fullURL);
+  // console.log(fullURL);
 
   fetchData(fullURL, (data, error) => {
     if (!error && data.length == 2) {
