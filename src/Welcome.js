@@ -174,10 +174,9 @@ export default class Welcome extends React.Component {
    * elevation: specific to changing geoms
    * filter: multivariate filter of properties
    * cn: short for colorName passed from callback
-   * coords: coordinates to filter
    */
   _generateLayer(values  = {}) {
-    const {radius, elevation, filter, cn, coords} = values;
+    const {radius, elevation, filter, cn} = values;
     
     if(filter && filter.what === 'mapstyle') {
       this.setState({
@@ -194,12 +193,16 @@ export default class Welcome extends React.Component {
     if (!data) return;
     if (filter && filter.what === "%") {
       data = data.slice(0, filter.selected / 100 * data.length)
+    } 
+    // to optimize the search keep state as the source of truth
+    if (this.state.coords) {
+      data = this.state.filtered;
     }
     const geomType = sfType(data[0]).toLowerCase();
     //if resetting a value
     if (filter && filter.selected !== "") {
       data = data.filter(
-        d => {
+        d => {        
           if (filter.what === 'multi') {
             // go through each selection
             const selected = filter.selected;
@@ -213,21 +216,16 @@ export default class Welcome extends React.Component {
               }
             }
           }
+          if (filter.what === 'coords') {
+            // coords in 
+            if (_.difference(filter.selected || this.state.coords, 
+              d.geometry.coordinates.flat()).length !== 0) {
+              return false;
+            }
+          }
           return (true)
         }
       )
-    }
-    // check coordinates first, filter is more costly    
-    if ((coords || this.state.coords) && coords !== 'reset') {
-      data = data.filter(
-        d => {
-          // coords in 
-          if (_.difference(coords || this.state.coords, 
-            d.geometry.coordinates.flat()).length === 0) {
-            return true;
-          }
-          return false
-        })
     }
     // console.log(data.length);
     let layerStyle = 'grid';
@@ -253,7 +251,8 @@ export default class Welcome extends React.Component {
         if(info && info.hasOwnProperty('coordinate')) {
           if(['path', 'arc', 'line'].includes(this.state.layerStyle) &&
           info.object.geometry.coordinates) {        
-            this._generateLayer({coords: info.object.geometry.coordinates[0]})
+            this._generateLayer({filter: {what: 'coords', 
+            selected: info.object.geometry.coordinates[0]}})
           }
         }
       }
@@ -316,7 +315,8 @@ export default class Welcome extends React.Component {
         this.state.road_type,
       colourName: cn || colourName,
       column, // all checked
-      coords: coords === 'reset' ? null : (coords || this.state.coords)
+      coords: filter && filter.what === 'coords' ? filter.selected :
+        this.state.coords
     })
   }
 
@@ -444,9 +444,10 @@ export default class Welcome extends React.Component {
             // https://deck.gl/#/documentation/developer-guide/
             // adding-interactivity?
             // section=using-the-built-in-event-handling
-            onClick={(e)=> {              
+            onClick={(e)=> {      
               if(!e.layer && coords){
-                this._generateLayer({coords: 'reset'})
+                this.setState({coords: null})
+                this._generateLayer()
               }
             }}
           >
