@@ -222,6 +222,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       id: 'arc-layer',
       data,
       pickable: true,
+      onHover: renderTooltip
       // getSourcePosition: d => d.geometry.coordinates[0],
       // getTargetPosition: d => d.geometry.coordinates[1],
     }
@@ -232,6 +233,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       id: 'path-layer',
       data,
       pickable: true,
+      onHover: renderTooltip
     }
     addOptionsToObject(options, pathObject)
     return (new PathLayer(pathObject))

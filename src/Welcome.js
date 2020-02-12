@@ -1,8 +1,28 @@
+/**
+ * Main entry to the application.
+ * 
+ * The crucial bits are:
+ * 
+     this.state = {
+      data,            <= main data holding param   
+      layers: [],      <= mapgl layers object
+      initialViewState:<= deckgl/mapgl initial state object
+      legend: false    <= map legend to avoid rerender.
+    }
+ * and
+ * DeckSidebarContainer which holds DeckSidebar object itself.
+ * 
+ * Main funcitons:
+ * _generateLayer which is the main/factory of filtering state
+ * of the map area of the application.
+ * 
+ */
 import React from 'react';
 import DeckGL from 'deck.gl';
 import MapGL, { NavigationControl, FlyToInterpolator } from 'react-map-gl';
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
+import _ from 'underscore';
 
 import {
   fetchData, generateDeckLayer,
@@ -20,6 +40,7 @@ import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
 import { isNumber } from './JSUtils';
+import { fetchQuant } from './components/Showcases/util_quant';
 
 const osmtiles = {
   "version": 8,
@@ -123,7 +144,7 @@ export default class Welcome extends React.Component {
       aURL : // do not get the server to parse it 
       URL + "/api/stats19";
 
-    fetchData(fullURL, (data, error) => {
+    fetchQuant((data, error) => {
       if (!error) {
         // this._updateURL(viewport)
         this.setState({
@@ -153,8 +174,9 @@ export default class Welcome extends React.Component {
    * @param {*} elevation specific to changing geoms
    * @param {*} filter multivariate filter of properties
    * @param {*} cn short for colorName passed from callback
+   * @param {*} coords coordinates to filter
    */
-  _generateLayer(radius, elevation, filter, cn) {
+  _generateLayer(radius, elevation, filter, cn, coords) {
     if(filter && filter.what === 'mapstyle') {
       this.setState({
         mapStyle: !MAPBOX_ACCESS_TOKEN ? osmtiles :
@@ -193,6 +215,18 @@ export default class Welcome extends React.Component {
         }
       )
     }
+    // check coordinates first, filter is more costly
+    if (coords) {
+      data = data.filter(
+        d => {
+          // coords in 
+          const l = _.difference(coords, d.geometry.coordinates.flat()).length;
+          if (l === 0) {
+            return true;
+          }
+          return false
+        })
+    }
     // console.log(data.length);
     let layerStyle = 'grid';
     if (geomType !== "point") layerStyle = "geojson"
@@ -212,6 +246,16 @@ export default class Welcome extends React.Component {
       // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
       options.getColor = d => [235, 170, 20]
       options.getPath = d => d.geometry.coordinates
+      options.onClick = (info) => {
+        console.log(info);
+        if(info && info.hasOwnProperty('coordinate')) {
+          if(['path', 'arc'].includes(this.state.layerStyle) &&
+          info.object.geometry.coordinates) {        
+            this._generateLayer(undefined, undefined, undefined, undefined,
+              info.object.geometry.coordinates[0])
+          }
+        }
+      }
       // options.getSourceColor = d => [Math.sqrt(+(d.properties.base)) * 1000, 140, 0]
       // options.getTargetColor = d => [Math.sqrt(+(d.properties.hs2)) * 1e13, 140, 0]
       // options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
