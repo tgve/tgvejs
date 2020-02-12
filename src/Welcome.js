@@ -40,7 +40,6 @@ import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
 import { isNumber } from './JSUtils';
-import { fetchQuant } from './components/Showcases/util_quant';
 
 const osmtiles = {
   "version": 8,
@@ -144,7 +143,7 @@ export default class Welcome extends React.Component {
       aURL : // do not get the server to parse it 
       URL + "/api/stats19";
 
-    fetchQuant((data, error) => {
+    fetchData(fullURL, (data, error) => {
       if (!error) {
         // this._updateURL(viewport)
         this.setState({
@@ -220,8 +219,8 @@ export default class Welcome extends React.Component {
       data = data.filter(
         d => {
           // coords in 
-          const l = _.difference(coords, d.geometry.coordinates.flat()).length;
-          if (l === 0) {
+          if (_.difference(coords, 
+            d.geometry.coordinates.flat()).length === 0) {
             return true;
           }
           return false
@@ -313,6 +312,7 @@ export default class Welcome extends React.Component {
         this.state.road_type,
       colourName: cn || colourName,
       column, // all checked
+      coords
     })
   }
 
@@ -396,7 +396,7 @@ export default class Welcome extends React.Component {
   render() {
     const { tooltip, viewport, initialViewState,
       loading, mapStyle, alert,
-      layerStyle, geomType, legend } = this.state;
+      layerStyle, geomType, legend, coords } = this.state;
     // console.log(geomType, legend);
       
     return (
@@ -441,7 +441,7 @@ export default class Welcome extends React.Component {
             // adding-interactivity?
             // section=using-the-built-in-event-handling
             onClick={(e)=> {
-              if(!e.layer){
+              if(!e.layer && coords){
                 this._generateLayer()
               }
             }}
