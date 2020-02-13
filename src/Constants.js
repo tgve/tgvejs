@@ -6,7 +6,7 @@ function define(name, value) {
 }
 
 // TODO: change to domain name 
-define("PRD_URL", 'http://0.0.0.0:8000');
+define("PRD_URL", 'http://0.0.0.0');
 define("DEV_URL", 'http://localhost:8000');
 define("UI_LIST", [
   "checkbox",
