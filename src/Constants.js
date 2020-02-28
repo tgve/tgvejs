@@ -13,4 +13,12 @@ define("UI_LIST", [
   "radio",
   "buttongroups",
   "dropdown",
-  "slider"])      
+  "slider"]) 
+define("LAYERSTYLES", [
+  "grid",
+  "heatmap",
+  "path",
+  "line",
+  "arc",
+  "sgrid"
+])     

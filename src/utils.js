@@ -1,7 +1,8 @@
 import React from 'react';
 import {
   ScatterplotLayer, HexagonLayer, GeoJsonLayer,
-  ScreenGridLayer, GridLayer, LineLayer, //IconLayer,
+  ScreenGridLayer, GridLayer, LineLayer, 
+  HeatmapLayer //IconLayer,
 } from 'deck.gl';
 import {
   interpolateOrRd, // schemeBlues
@@ -237,6 +238,15 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, pathObject)
     return (new PathLayer(pathObject))
+  } else if (name === 'heatmap') {
+    const heatObject = {
+      id: 'heatmap-layer',
+      data,
+      pickable: true,
+      onHover: renderTooltip,
+    }
+    addOptionsToObject(options, heatObject);
+    return(new HeatmapLayer(heatObject))
   }
   
   return (null)
@@ -420,8 +430,9 @@ function hexToRgb(hex) {
  * @param {object} d particular property to get color for from features
  * @param {*} features features in a geojson featureset
  * @param {*} p index/name of column to generate color scale with
+ * @param {Number} alpha value to add to colour pallete
  */
-const colorScale = (d, features, p = 0) => {
+const colorScale = (d, features, p = 0, alpha = 100) => {
   if (!d || !features || features.length === 0) return null;
   const x = isNumber(p) ? Object.keys(d.properties)[p] : p;
   let domainIsNumeric = true;
@@ -450,7 +461,7 @@ const colorScale = (d, features, p = 0) => {
   col = col.substring(4, col.length - 1)
     .replace(/ /g, '')
     .split(',');
-  return col
+  return [...col, alpha] 
 }
 
 const colorRangeNames = ['inverseDefault', 'yellowblue', 'greens',

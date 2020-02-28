@@ -228,7 +228,8 @@ export default class Welcome extends React.Component {
       )
     }
     // console.log(data.length);
-    let layerStyle = 'grid';
+    let layerStyle = (filter && filter.what === 
+      'layerStyle' && filter.selected) || 'grid';
     if (geomType !== "point") layerStyle = "geojson"
     if (data.length < iconLimit && geomType === "point") layerStyle = 'icon'
     const options = {
@@ -240,6 +241,12 @@ export default class Welcome extends React.Component {
     };
     if (layerStyle === 'geojson') {
       options.getFillColor = (d) => colorScale(d, data) //first prop
+    }
+    let columnNameOrIndex =
+    (filter && filter.what === 'column' && filter.selected) || column || 1;
+    if (layerStyle === 'heatmap') {      
+      options.getPosition = d => d.geometry.coordinates
+      // options.getWeight = d => d.properties[columnNameOrIndex]
     }
     if (geomType === 'linestring') {
       layerStyle = "line"
@@ -262,9 +269,6 @@ export default class Welcome extends React.Component {
         options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
         options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
       }
-      let columnNameOrIndex =
-        (filter && filter.what === 'column' && filter.selected) ||
-        column || 1;
       if (isNumber(data[0] && data[0].properties &&
         data[0].properties[columnNameOrIndex])) {
         const colArray = data.map(f => f.properties[columnNameOrIndex])
@@ -461,7 +465,7 @@ export default class Welcome extends React.Component {
           alert={alert}
           data={this.state.filtered}
           colourCallback={(colourName) =>
-            this._generateLayer({colourName})
+            this._generateLayer({cn: colourName})
           }
           urlCallback={(url_returned, geojson_returned) => {
             this.setState({

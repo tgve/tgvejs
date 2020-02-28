@@ -17,7 +17,7 @@ import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
-import Constants from '../../Constants';
+import {DEV_URL, PRD_URL, LAYERSTYLES} from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Modal';
 import DataTable from '../Table';
@@ -32,7 +32,7 @@ import MultiLinePlot from '../Showcases/MultiLinePlot';
 import Boxplot from '../Boxplot/Boxplot';
 // import GenerateUI from '../UI';
 
-const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
+const URL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
 
 export default class DeckSidebar extends React.Component {
   constructor(props) {
@@ -248,7 +248,7 @@ export default class DeckSidebar extends React.Component {
                     />
                   }
                   {
-                    notEmpty && geomType !== 'point' &&
+                    notEmpty &&
                     Object.keys(data[0].properties)
                       .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
                     <>
@@ -345,9 +345,35 @@ export default class DeckSidebar extends React.Component {
                         }}
                       />
                       <h5>Elevation: {elevation}.</h5>
-                    </div>}
+                    </div>
+                    }
+                  {notEmpty &&
+                    <>
+                      <h6>Deck Layer:</h6>
+                      <MultiSelect
+                        title="Choose Layer"
+                        single={true}
+                        values={
+                          LAYERSTYLES.map(e =>
+                            ({ id: humanize(e), value: e }))
+                        }
+                        onSelectCallback={(selected) => {
+                          // array of seingle {id: , value: } object
+                          const newBarChartVar = (selected && selected[0]) ?
+                            selected[0].value : barChartVariable;
+                          this.setState({
+                            barChartVariable: newBarChartVar
+                          });
+                          typeof onSelectCallback === 'function' &&
+                            onSelectCallback({
+                              what: 'layerStyle', selected: newBarChartVar
+                            });
+                        }}
+                      />
+                    </>
+                  }
                   Map Styles
-                                    <br />
+                  <br />
                   <MapboxBaseLayers
                     onSelectCallback={(selected) =>
                       onSelectCallback &&
