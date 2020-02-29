@@ -174,6 +174,7 @@ export default class Welcome extends React.Component {
    * elevation: specific to changing geoms
    * filter: multivariate filter of properties
    * cn: short for colorName passed from callback
+   * TODO: other
    */
   _generateLayer(values  = {}) {
     const {radius, elevation, filter, cn} = values;
@@ -229,7 +230,7 @@ export default class Welcome extends React.Component {
     }
     // console.log(data.length);
     let layerStyle = (filter && filter.what === 
-      'layerStyle' && filter.selected) || 'grid';
+      'layerStyle' && filter.selected) || this.state.layerStyle || 'grid';
     if (geomType !== "point") layerStyle = "geojson"
     if (data.length < iconLimit && geomType === "point") layerStyle = 'icon'
     const options = {

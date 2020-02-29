@@ -307,12 +307,9 @@ export default class DeckSidebar extends React.Component {
                 }>
                   {notEmpty &&
                     <div>
-                      {
-                        layerStyle === "grid" &&
-                        <ColorPicker colourCallback={(color) =>
+                      <ColorPicker colourCallback={(color) =>
                           typeof colourCallback === 'function' &&
                           colourCallback(color)} />
-                      }
                       <input
                         type="range"
                         id="radius"
