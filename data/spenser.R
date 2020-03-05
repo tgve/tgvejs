@@ -1,4 +1,5 @@
-# get the RDS from github, see below how it was generated.
+########### STEP 2
+# get the RDS from github, see STEP 1 to see how it was generated.
 download.file("https://github.com/layik/eAtlas/releases/download/0.0.1/population.Rds",
               "~/Downloads/population.Rds")
 pop = readRDS("~/Downloads/population.Rds")
@@ -39,6 +40,8 @@ object.size(r)
 tif_name = "~/Downloads/pop_2011_10krows_sex_sf.tif"
 writeRaster(r, filename = tif_name) # * CPU/GPU* alert
 
+# #################################################
+# STEP 3
 # finally tile it.
 # There are few ways of doing this, preferred method is this python
 # package
@@ -62,8 +65,10 @@ tiler::tile(file = tif_name, tiles = tiles_dir, zoom = "0-3", col = pal)
 # create the viewer
 tiler::tile_viewer(tiles = "tiles", zoom = "0-3")
 browseURL("preview.html")
-# ***********
+
+
 ###############################################
+# STEP 1
 # collate csvs into a dataframe
 ppp_files = list.files("~/Downloads/data/", full.names = TRUE)[
   grep("ppp", list.files("~/Downloads/data/"))

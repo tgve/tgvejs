@@ -134,8 +134,8 @@ export default class Welcome extends React.Component {
    * @param {Object} customError to use in case of urlCallback object/urls.
    */
   _fetchAndUpdateState(aURL, customError) {
-    if(aURL && !isURL(aURL)) return;
-    if(customError && typeof(customError) !== 'object') return;
+    if (aURL && !isURL(aURL)) return;
+    if (customError && typeof (customError) !== 'object') return;
     // TODO: more sanity checks?
     const fullURL = aURL ?
       // TODO: decide which is better.
@@ -176,13 +176,13 @@ export default class Welcome extends React.Component {
    * cn: short for colorName passed from callback
    * TODO: other
    */
-  _generateLayer(values  = {}) {
-    const {radius, elevation, filter, cn} = values;
-    
-    if(filter && filter.what === 'mapstyle') {
+  _generateLayer(values = {}) {
+    const { radius, elevation, filter, cn } = values;
+
+    if (filter && filter.what === 'mapstyle') {
       this.setState({
         mapStyle: !MAPBOX_ACCESS_TOKEN ? osmtiles :
-        filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
+          filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
       })
       return;
     }
@@ -194,7 +194,7 @@ export default class Welcome extends React.Component {
     if (!data) return;
     if (filter && filter.what === "%") {
       data = data.slice(0, filter.selected / 100 * data.length)
-    } 
+    }
     // to optimize the search keep state as the source of truth
     if (this.state.coords) {
       data = this.state.filtered;
@@ -203,7 +203,7 @@ export default class Welcome extends React.Component {
     //if resetting a value
     if (filter && filter.selected !== "") {
       data = data.filter(
-        d => {        
+        d => {
           if (filter.what === 'multi') {
             // go through each selection
             const selected = filter.selected;
@@ -219,7 +219,7 @@ export default class Welcome extends React.Component {
           }
           if (filter.what === 'coords') {
             // coords in 
-            if (_.difference(filter.selected || this.state.coords, 
+            if (_.difference(filter.selected || this.state.coords,
               d.geometry.coordinates.flat()).length !== 0) {
               return false;
             }
@@ -229,7 +229,7 @@ export default class Welcome extends React.Component {
       )
     }
     // console.log(data.length);
-    let layerStyle = (filter && filter.what === 
+    let layerStyle = (filter && filter.what ===
       'layerStyle' && filter.selected) || this.state.layerStyle || 'grid';
     if (geomType !== "point") layerStyle = "geojson"
     if (data.length < iconLimit && geomType === "point") layerStyle = 'icon'
@@ -244,8 +244,8 @@ export default class Welcome extends React.Component {
       options.getFillColor = (d) => colorScale(d, data) //first prop
     }
     let columnNameOrIndex =
-    (filter && filter.what === 'column' && filter.selected) || column || 1;
-    if (layerStyle === 'heatmap') {      
+      (filter && filter.what === 'column' && filter.selected) || column || 1;
+    if (layerStyle === 'heatmap') {
       options.getPosition = d => d.geometry.coordinates
       // options.getWeight = d => d.properties[columnNameOrIndex]
     }
@@ -256,15 +256,19 @@ export default class Welcome extends React.Component {
       options.getPath = d => d.geometry.coordinates
       options.onClick = (info) => {
         // console.log(info);
-        if(info && info.hasOwnProperty('coordinate')) {
-          if(['path', 'arc', 'line'].includes(this.state.layerStyle) &&
-          info.object.geometry.coordinates) {        
-            this._generateLayer({filter: {what: 'coords', 
-            selected: info.object.geometry.coordinates[0]}})
+        if (info && info.hasOwnProperty('coordinate')) {
+          if (['path', 'arc', 'line'].includes(this.state.layerStyle) &&
+            info.object.geometry.coordinates) {
+            this._generateLayer({
+              filter: {
+                what: 'coords',
+                selected: info.object.geometry.coordinates[0]
+              }
+            })
           }
         }
       }
-      if(layerStyle === 'line') {
+      if (layerStyle === 'line') {
         // options.getSourceColor = d => [Math.sqrt(+(d.properties.base)) * 1000, 140, 0]
         // options.getTargetColor = d => [Math.sqrt(+(d.properties.hs2)) * 1e13, 140, 0]
         options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
@@ -273,13 +277,13 @@ export default class Welcome extends React.Component {
       if (isNumber(data[0] && data[0].properties &&
         data[0].properties[columnNameOrIndex])) {
         const colArray = data.map(f => f.properties[columnNameOrIndex])
-        const max = getMax(colArray);        
+        const max = getMax(colArray);
         const min = getMin(colArray)
         options.getWidth = d => {
           let newMax = 10, newMin = 0.1;
-          if(data.length > 100000) {            
+          if (data.length > 100000) {
             newMax = 0.5; newMin = 0.005
-          } 
+          }
           const r = convertRange(
             d.properties[columnNameOrIndex], {
             oldMin: min, oldMax: max, newMax: newMax, newMin: newMin
@@ -289,7 +293,7 @@ export default class Welcome extends React.Component {
       }
     }
     if (geomType === "polygon" || geomType === "multipolygon") {
-      const SPENSER = Object.keys(data[0].properties)[1] === 'GEOGRAPHY_CODE';
+      const SPENSER = Object.keys(data[0] && data[0].properties)[1] === 'GEOGRAPHY_CODE';
       if (SPENSER) {
         options.getElevation = d => (isNumber(d.properties[column]) &&
           column !== 'YEAR' && d.properties[column]) || null
@@ -309,7 +313,7 @@ export default class Welcome extends React.Component {
     )
 
     this.setState({
-      loading:false,
+      loading: false,
       layerStyle, geomType,
       tooltip: "",
       filtered: data,
@@ -332,7 +336,7 @@ export default class Welcome extends React.Component {
     const bounds = bboxLonLat ?
       bboxLonLat.bbox : bbox(data)
     // console.log(center, bounds);
-      
+
     this.map.fitBounds(bounds)
     const viewport = {
       ...this.state.viewport,
@@ -407,7 +411,7 @@ export default class Welcome extends React.Component {
       loading, mapStyle, alert,
       layerStyle, geomType, legend, coords } = this.state;
     // console.log(geomType, legend);
-      
+
     return (
       <div>
         {/* just a little catch to hide the loader 
@@ -449,9 +453,9 @@ export default class Welcome extends React.Component {
             // https://deck.gl/#/documentation/developer-guide/
             // adding-interactivity?
             // section=using-the-built-in-event-handling
-            onClick={(e)=> {      
-              if(!e.layer && coords){
-                this.setState({coords: null})
+            onClick={(e) => {
+              if (!e.layer && coords) {
+                this.setState({ coords: null })
                 this._generateLayer()
               }
             }}
@@ -466,7 +470,7 @@ export default class Welcome extends React.Component {
           alert={alert}
           data={this.state.filtered}
           colourCallback={(colourName) =>
-            this._generateLayer({cn: colourName})
+            this._generateLayer({ cn: colourName })
           }
           urlCallback={(url_returned, geojson_returned) => {
             this.setState({
@@ -494,9 +498,9 @@ export default class Welcome extends React.Component {
             }
           }}
           column={this.state.column}
-          onSelectCallback={(selected) => this._generateLayer({filter:selected})}
-          onChangeRadius={(value) => this._generateLayer({radius:value})}
-          onChangeElevation={(value) => this._generateLayer({elevation: value})}
+          onSelectCallback={(selected) => this._generateLayer({ filter: selected })}
+          onChangeRadius={(value) => this._generateLayer({ radius: value })}
+          onChangeElevation={(value) => this._generateLayer({ elevation: value })}
           toggleSubsetBoundsChange={(value) => {
             this.setState({
               loading: true,
@@ -507,15 +511,15 @@ export default class Welcome extends React.Component {
           onlocationChange={(bboxLonLat) => {
             this._fitViewport(bboxLonLat)
           }}
-          showLegend={(legend) => this.setState({legend})}
+          showLegend={(legend) => this.setState({ legend })}
         />
-      {
-        legend && (geomType === 'polygon' ||
-        geomType === 'multipolygon') &&
-        <div className="right-side-panel mapbox-legend">
-          {legend}
-        </div>
-      }
+        {
+          legend && (geomType === 'polygon' ||
+            geomType === 'multipolygon') &&
+          <div className="right-side-panel mapbox-legend">
+            {legend}
+          </div>
+        }
       </div>
     );
   }
