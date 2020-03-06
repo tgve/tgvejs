@@ -38,7 +38,8 @@ msoa = st_transform(msoa, 4326)
 # any(is.null(msoa$geometry)) # FALSE
 
 # match all pop Area in msoa$msoa01cd
-m = match(pop_2011$Area, msoa$msoa01cd)
+m = match(pop_2011$Area, msoa$code)
+m_unique = match(unique(pop_2011$Area), msoa$code)
 sfc = st_geometry(msoa)
 sfc = sfc[m] # list all boundaries with entries in pop
 pop_2011_sf = pop_2011
