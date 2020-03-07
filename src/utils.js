@@ -432,7 +432,7 @@ function hexToRgb(hex) {
  * @param {*} p index/name of column to generate color scale with
  * @param {Number} alpha value to add to colour pallete
  */
-const colorScale = (d, features, p = 0, alpha = 100) => {
+const colorScale = (d, features, p = 0, alpha = 180) => {
   if (!d || !features || features.length === 0) return null;
   const x = isNumber(p) ? Object.keys(d.properties)[p] : p;
   let domainIsNumeric = true;
@@ -460,7 +460,7 @@ const colorScale = (d, features, p = 0, alpha = 100) => {
   let col = interpolateOrRd(index / domain.length);
   col = col.substring(4, col.length - 1)
     .replace(/ /g, '')
-    .split(',');
+    .split(',').map(x=>+x); // deck.gl 8 int not strings
   return [...col, alpha] 
 }
 

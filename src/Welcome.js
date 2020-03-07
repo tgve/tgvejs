@@ -296,7 +296,7 @@ export default class Welcome extends React.Component {
       }
       // TODO: allow user to specify column.
       options.getFillColor = (d) =>
-        colorScale(d, data, SPENSER ? 1 : column ? column : 0)
+        colorScale(d, data, column ? column : SPENSER ? 1 : 0)
     }
     // if (data.length === 7201) {
     //   options.getColor = d => [255, 255, 255]
