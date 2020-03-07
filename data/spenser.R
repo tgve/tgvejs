@@ -1,19 +1,36 @@
-# get the RDS from github, see below how it was generated.
-download.file("https://github.com/layik/eAtlas/releases/download/0.0.1/population.Rds",
-              "~/Downloads/population.Rds")
-pop = readRDS("~/Downloads/population.Rds")
+########### STEP 2
+# get the RDS from github, see STEP 1 to see how it was generated.
+pop_rds = "~/Downloads/population.Rds"
+if(!file.exists(pop_rds)) {
+  download.file("https://github.com/layik/eAtlas/releases/download/0.0.1/population.Rds",
+                pop_rds)
+}
+pop = readRDS(pop_rds)
+#slow
 pop_2011 = pop[pop$Year == '2011', ]
 # get UK boundaries from
 # http://geoportal.statistics.gov.uk/datasets/f341dcfd94284d58aba0a84daf2199e9_0
-dest_file = "~/Downloads/boundaries_2001"
-download.file("https://opendata.arcgis.com/datasets/f341dcfd94284d58aba0a84daf2199e9_0.zip?outSR=%7B%22latestWkid%22%3A27700%2C%22wkid%22%3A27700%7D",
-              paste0(dest_file, ".zip"))
+# https://borders.ukdataservice.ac.uk/ukborders/easy_download/prebuilt/shape/England_msoa_2011_gen.zip
+dest_file_not_cliped = "~/Downloads/boundaries_2001"
+dest_file_clipped = "~/Downloads/boundaries_clipped"
+url_not_clipped = paste0("https://opendata.arcgis.com/datasets/",
+                         "f341dcfd94284d58aba0a84daf2199e9_0.zip?outSR=",
+                         "%7B%22latestWkid%22%3A27700%2C%22wkid%22%3A27700%7D")
+url_cliped = paste0("https://borders.ukdataservice.ac.uk/ukborders/",
+                    "easy_download/prebuilt/shape/",
+                    "England_msoa_2011_gen.zip")
 
-unzip(paste0(dest_file, ".zip"), exdir = dest_file)
-list.files(dest_file)
+if(!file.exists(file.path(dest_file_clipped))) {
+  download.file(url_cliped,
+                paste0(dest_file_clipped, ".zip"))
+  unzip(paste0(dest_file_clipped, ".zip"), exdir = dest_file_clipped)
+}
+
+shape = list.files(dest_file_clipped, pattern = ".shp")
 
 library(sf)
-msoa = st_read(dest_file)
+msoa = st_read(file.path(dest_file_clipped, shape))
+msoa = st_transform(msoa, 4326)
 # names(msoa)
 # plot(msoa[, 1])
 # length(unique(msoa$msoa01cd))
@@ -21,11 +38,24 @@ msoa = st_read(dest_file)
 # any(is.null(msoa$geometry)) # FALSE
 
 # match all pop Area in msoa$msoa01cd
-m = match(pop_2011$Area, msoa$msoa01cd)
+m = match(pop_2011$Area, msoa$code)
+m_unique = match(unique(pop_2011$Area), msoa$code)
 sfc = st_geometry(msoa)
 sfc = sfc[m] # list all boundaries with entries in pop
-pop_2011_sf = st_as_sf(pop_2011, sfc)
+pop_2011_sf = pop_2011
+pop_2011_sf$geom = sfc
+pop_2011_sf = st_as_sf(pop_2011_sf)
 object.size(pop_2011_sf)
+unique(pop_2011_sf$Year) # 2011
+pop_2011_sf$Year = NULL
+any(is.na(pop_2011_sf))
+
+
+# areas within the data
+areas = unique()
+st_write(pop_2011_sf, "~/Downloads/population_2011.geojson")
+# 241114152/1024/1024
+# 229.9444
 
 # generate geotiff, sf does not do raster I think 
 library(raster)
@@ -39,6 +69,8 @@ object.size(r)
 tif_name = "~/Downloads/pop_2011_10krows_sex_sf.tif"
 writeRaster(r, filename = tif_name) # * CPU/GPU* alert
 
+# #################################################
+# STEP 3
 # finally tile it.
 # There are few ways of doing this, preferred method is this python
 # package
@@ -62,8 +94,10 @@ tiler::tile(file = tif_name, tiles = tiles_dir, zoom = "0-3", col = pal)
 # create the viewer
 tiler::tile_viewer(tiles = "tiles", zoom = "0-3")
 browseURL("preview.html")
-# ***********
+
+
 ###############################################
+# STEP 1
 # collate csvs into a dataframe
 ppp_files = list.files("~/Downloads/data/", full.names = TRUE)[
   grep("ppp", list.files("~/Downloads/data/"))
