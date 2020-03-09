@@ -232,7 +232,8 @@ export default class Welcome extends React.Component {
     let layerStyle = (filter && filter.what ===
       'layerStyle' && filter.selected) || this.state.layerStyle || 'grid';
     if (geomType !== "point") layerStyle = "geojson"
-    if (data.length < iconLimit && geomType === "point") layerStyle = 'icon'
+    if (data.length < iconLimit && !column &&
+      geomType === "point") layerStyle = 'icon';
     const options = {
       radius: radius ? radius : this.state.radius,
       cellSize: radius ? radius : this.state.radius,
@@ -302,12 +303,6 @@ export default class Welcome extends React.Component {
       options.getFillColor = (d) =>
         colorScale(d, data, column ? column : SPENSER ? 1 : 0)
     }
-    // if (data.length === 7201) {
-    //   options.getColor = d => [255, 255, 255]
-    //   options.getSourcePosition = d =>
-    //     [d.properties.area_lon, d.properties.area_lat];
-    //   options.getTargetPosition = d => d.geometry.coordinates;
-    // }
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options
     )

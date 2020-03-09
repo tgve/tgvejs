@@ -9,7 +9,7 @@ import {
   FocusOnce,
 } from 'baseui/modal';
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid';
-import { fetchQuant } from './Showcases/util_quant';
+import { fetchQuant, fetchSPENSER } from './Showcases/util_quant';
 
 import File from './File'
 import URL from './URL';
@@ -42,9 +42,14 @@ export default function (props) {
 
   function cards() {
     const info = {
+      // SPENSER2: {
+      //   image: "images/spenser.png",
+      //   body: "SPENSER Manchester 2011 - 2020.",
+      //   api: fetchSPENSER
+      // },
       SPENSER: {
         image: "images/spenser.png",
-        body: "Spenser Cambridge sample.",
+        body: "SPENSER Cambridge sample.",
         api: partURL + '/api/spenser'
       },
       QUANT: {

@@ -111,12 +111,14 @@ names(spenser)
 # aim
 # year  sex age eth area
 # 2011  1   1   1   E02001064
+library(plyr)
 spenser_all = data.frame()
 for (index in 1:40) {
   spenser = read.csv(ppp_files[index])
   spenser$Year = index + 2010 # cheeky
   # remove PID
   spenser$PID = NULL
+  spenser = count(spenser, vars = names(spenser))
   if(index == 1L) {
     spenser_all = data.frame() # reset just for safety
     spenser_all = spenser
@@ -129,3 +131,9 @@ for (index in 1:40) {
 saveRDS(spenser_all, "~/Desktop/data/spenser/population.Rds")
 # released under repo
 
+# generate separate files (geo + df)
+m_sfc = st_geometry(msoa[match(unique(pop$Area), msoa$msoa11cd),])
+# c = count(pop, vars = names(pop))
+m_sf = st_as_sf(as.data.frame(list(Area =unique(c$Area))), 
+                geometry = m_sfc)
+st_write(m_sf, "~/Desktop/data/spenser/man.geojson")
