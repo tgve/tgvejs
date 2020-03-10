@@ -294,7 +294,8 @@ export default class Welcome extends React.Component {
       }
     }
     if (geomType === "polygon" || geomType === "multipolygon") {
-      const SPENSER = Object.keys(data[0] && data[0].properties)[1] === 'GEOGRAPHY_CODE';
+      const SPENSER = Object.keys(data[0] && data[0].properties && 
+        data[0].properties)[1] === 'GEOGRAPHY_CODE';
       if (SPENSER) {
         options.getElevation = d => (isNumber(d.properties[column]) &&
           column !== 'YEAR' && d.properties[column]) || null
