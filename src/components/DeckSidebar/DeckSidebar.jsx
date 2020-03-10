@@ -314,7 +314,7 @@ export default class DeckSidebar extends React.Component {
                         type="range"
                         id="radius"
                         min={50}
-                        max={500}
+                        max={1000}
                         step={50}
                         value={radius}
                         onChange={(e) => {
