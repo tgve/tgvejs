@@ -47,7 +47,8 @@ export default class DeckSidebar extends React.Component {
       year: "",
       reset: false,
       multiVarSelect: {},
-      barChartVariable: "road_type"
+      barChartVariable: "road_type",
+      datasetName: props.datasetName
     }
   }
 
@@ -124,12 +125,13 @@ export default class DeckSidebar extends React.Component {
       fill: 'rgb(18, 147, 154)',
     }
 
-    const resetState = () => {
+    const resetState = (urlOrName) => {      
       this.setState({
         reset: true,
         year: "",
         multiVarSelect: {},
-        barChartVariable: "road_type"
+        barChartVariable: "road_type",
+        datasetName: urlOrName || this.state.datasetName
       })
     }
     return (
@@ -142,12 +144,13 @@ export default class DeckSidebar extends React.Component {
               data.length + " row" + (data.length > 1 ? "s" : "") + "."
               : "Nothing to show"}
             </h2>
+            dataset: {this.state.datasetName}
           </div>
           <div>
             <DataInput
               toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
-              urlCallback={(url, geojson) => {
-                resetState();
+              urlCallback={(url, geojson, name) => {
+                resetState(url || name);
                 typeof (urlCallback) === 'function'
                   && urlCallback(url, geojson);
                 typeof (toggleOpen) === 'function' && toggleOpen()

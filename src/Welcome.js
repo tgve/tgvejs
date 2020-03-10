@@ -61,6 +61,7 @@ const osmtiles = {
   }]
 };
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
+const defualtURL = "/api/stats19";
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -141,7 +142,7 @@ export default class Welcome extends React.Component {
       // TODO: decide which is better.
       // URL + "/api/url?q=" + aURL : // get the server to parse it 
       aURL : // do not get the server to parse it 
-      URL + "/api/stats19";
+      URL + defualtURL;
 
     fetchData(fullURL, (data, error) => {
       if (!error) {
@@ -385,7 +386,7 @@ export default class Welcome extends React.Component {
       const box = getBbx(bounds)
       // console.log("bounds", box);
       const { xmin, ymin, xmax, ymax } = box;
-      fetchData(URL + "/api/stats19/" + xmin + "/" +
+      fetchData(URL + defualtURL + xmin + "/" +
         ymin + "/" + xmax + "/" + ymax,
         (data, error) => {
           if (!error) {
@@ -508,6 +509,7 @@ export default class Welcome extends React.Component {
             this._fitViewport(bboxLonLat)
           }}
           showLegend={(legend) => this.setState({ legend })}
+          datasetName={defualtURL}
         />
         {
           legend && (geomType === 'polygon' ||

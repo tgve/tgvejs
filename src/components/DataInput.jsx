@@ -67,7 +67,7 @@ export default function (props) {
               // if api is function call and provied
               // geojson returned in case of quant for instance.
               api && typeof (api) === 'function' ?
-                api((geojson) => urlCallback(undefined, geojson)) :
+                api((geojson, apiURL) => urlCallback(undefined, geojson, apiURL)) :
                 typeof (urlCallback) === 'function'
                 && urlCallback(api)
               setOpen(false);
@@ -108,7 +108,7 @@ export default function (props) {
               try {
                 const json = JSON.parse(text);
                 typeof (urlCallback) === 'function'
-                  && urlCallback(null, json)
+                  && urlCallback(null, json, name)
                 setOpen(false);
               } catch (e) {
                 console.log(e);
@@ -118,7 +118,7 @@ export default function (props) {
               csv2geojson.csv2geojson(text, (err, data) => {
                 if (!err) {
                   typeof (urlCallback) === 'function'
-                    && urlCallback(null, data)
+                    && urlCallback(null, data, name)
                 }
               });
             }
