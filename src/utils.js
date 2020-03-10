@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ScatterplotLayer, HexagonLayer, GeoJsonLayer,
-  ScreenGridLayer, GridLayer, LineLayer, 
+  ScreenGridLayer, GridLayer, LineLayer,
   HeatmapLayer //IconLayer,
 } from 'deck.gl';
 import {
@@ -246,9 +246,9 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       onHover: renderTooltip,
     }
     addOptionsToObject(options, heatObject);
-    return(new HeatmapLayer(heatObject))
+    return (new HeatmapLayer(heatObject))
   }
-  
+
   return (null)
 }
 
@@ -460,8 +460,8 @@ const colorScale = (d, features, p = 0, alpha = 180) => {
   let col = interpolateOrRd(index / domain.length);
   col = col.substring(4, col.length - 1)
     .replace(/ /g, '')
-    .split(',').map(x=>+x); // deck.gl 8 int not strings
-  return [...col, alpha] 
+    .split(',').map(x => +x); // deck.gl 8 int not strings
+  return [...col, alpha]
 }
 
 const colorRangeNames = ['inverseDefault', 'yellowblue', 'greens',
@@ -591,11 +591,11 @@ const ATILOGO = () => (
  */
 const generateLegend = (options) => {
   //quick check 
-  const {domain, interpolate = interpolateOrRd, title} = options;
+  const { domain, interpolate = interpolateOrRd, title } = options;
   if (!domain || !Array.isArray(domain) || !isNumber(domain[0])) return
   const jMax = domain[domain.length - 1], jMin = domain[0];
   const legend = [<p key='title'>{title}</p>]
-  
+
   for (var i = 0; i < 10; i += 1) {
     legend.push(
       <>
