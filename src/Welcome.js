@@ -410,7 +410,7 @@ export default class Welcome extends React.Component {
     // console.log(geomType, legend);
 
     return (
-      <div>
+      <div id="html2pdf">
         {/* just a little catch to hide the loader 
         when no basemap is presetn */}
         <div className="loader" style={{
