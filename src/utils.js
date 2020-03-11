@@ -2,7 +2,8 @@ import React from 'react';
 import {
   ScatterplotLayer, HexagonLayer, GeoJsonLayer,
   ScreenGridLayer, GridLayer, LineLayer,
-  HeatmapLayer //IconLayer,
+  HeatmapLayer,
+  TextLayer
 } from 'deck.gl';
 import {
   interpolateOrRd, // schemeBlues
@@ -247,6 +248,25 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, heatObject);
     return (new HeatmapLayer(heatObject))
+  } else if (name === "scatterplot") {
+    const scatterObject = {
+      id: 'scatterplot',
+      data,
+      pickable: true,
+      onHover: renderTooltip,
+      opacity: 0.3
+    }
+    addOptionsToObject(options, scatterObject);
+    return (new ScatterplotLayer(scatterObject))
+  } else if (name === "text") {
+    const textObject = {
+      id: 'text-layer',
+      data,
+      pickable: true,
+      onHover: renderTooltip,
+    }
+    addOptionsToObject(options, textObject);
+    return (new TextLayer(textObject))
   }
 
   return (null)
