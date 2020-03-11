@@ -61,7 +61,7 @@ const osmtiles = {
   }]
 };
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
-const defualtURL = "/api/stats19";
+const defualtURL = "/api/covid19";
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -131,7 +131,7 @@ export default class Welcome extends React.Component {
   /**
    * Main function to fetch data and update state.
    * 
-   * @param {String} aURL to use if not default `/api/stats19` is used.
+   * @param {String} aURL to use if not default `/api/covid19` is used.
    * @param {Object} customError to use in case of urlCallback object/urls.
    */
   _fetchAndUpdateState(aURL, customError) {
