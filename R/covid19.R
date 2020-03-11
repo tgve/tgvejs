@@ -4,7 +4,7 @@ h = html_node(h, "table") # or use pipe
 df = html_table(h)
 class(df); names(df)
 # get LAs
-folder = "~/Downloads/Counties_and_UA"
+folder = "Counties_and_UA"
 stopifnot(dir.exists(folder))
 url = "https://opendata.arcgis.com/datasets/658297aefddf49e49dcd5fbfc647769e_1.zip"
 las_shape = list.files(folder, pattern = "shp")[1]
