@@ -9,9 +9,21 @@ Currently this is just a "WIP" as we explore and gather requirements of the proj
 
 There are some [notes](https://github.com/layik/eAtlas/blob/master/notes/project_planning.md) to read. These are thoughts and background reading material as we take steps towards understanding what an "interdependent" eAtlas might be. Would it be "Turing Geovisualization Engine"?
 
-This source code is a [geopumber](https://github.com/ATFutures/geoplumber) app. That means it is an R powered backend API (think Flask in Python) and a ReactJS front end.
+### Development
+The front end is an npm package, so if you do not need the backend, having cloned the repo:
 
-To build, from an R console:
+```{js}
+npm i # or yarn
+# and run
+npm start
+```
+
+The frontend is a [`create-react-app`](https://create-react-app.dev/docs/getting-started/) (CRA) so all the standard commands of CRA appliees.
+
+### R 
+The whole application is a [geopumber](https://github.com/ATFutures/geoplumber) app. That means it is an R powered backend API (think Flask in Python) and a ReactJS front end.
+
+To build the frontend, from an R console:
 ```{r, eval=FALSE}
 library(geoplumber)
 gp_build()
@@ -36,7 +48,7 @@ visit `localhost:8000`
 
 or just run the front using (without any data loaded from local server): `npm i & npm start`
 
-## deploy with docker
+### Docker for production
 
 Repo contains Dockerfile for production. This is again WIP. 
 
@@ -49,6 +61,6 @@ docker run -d -p 8000:8001 --name eatlas eatlas
 ````
 Use your favourite document server (nginx for example) to proxy requets (more later hopefully).
 
-## Screenshots/gif's
+### Screenshots/gif's
 
-<img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/66118004-44646f80-e5cd-11e9-98fa-c319c9b42bf3.png">
+<img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/76419738-c46edc80-6398-11ea-8bbe-496394f90adc.png">

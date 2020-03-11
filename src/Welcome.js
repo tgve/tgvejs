@@ -39,7 +39,7 @@ import history from './history';
 import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
-import { isNumber } from './JSUtils';
+import { isNumber, isArray } from './JSUtils';
 
 const osmtiles = {
   "version": 8,
@@ -295,8 +295,11 @@ export default class Welcome extends React.Component {
       }
     }
     if (geomType === "polygon" || geomType === "multipolygon") {
-      const SPENSER = Object.keys(data[0] && data[0].properties && 
-        data[0].properties)[1] === 'GEOGRAPHY_CODE';
+      const cols = Object.keys(data[0] && data[0].properties && 
+        data[0].properties);
+      // TODO: remove SPENSER
+      const SPENSER = isArray(cols) && cols.length > 0 && 
+      cols[1] === 'GEOGRAPHY_CODE';
       if (SPENSER) {
         options.getElevation = d => (isNumber(d.properties[column]) &&
           column !== 'YEAR' && d.properties[column]) || null
