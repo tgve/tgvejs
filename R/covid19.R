@@ -1,20 +1,3 @@
-
- 
-
-All gists
-Back to GitHub
- @layik 
-@layik layik/covid-uk.R
-Last active 1 minute ago
- Edit
- Delete
- Unsubscribe
- Star 0
- Code  Revisions 4
-Embed  	
-  Download ZIP
-Raw
- covid-uk.R
 library(rvest)
 h = read_html("https://www.gov.uk/government/publications/coronavirus-covid-19-number-of-cases-in-england/coronavirus-covid-19-number-of-cases-in-england")
 h = html_node(h, "table") # or use pipe
