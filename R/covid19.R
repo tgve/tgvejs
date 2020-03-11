@@ -5,7 +5,9 @@ df = html_table(h)
 class(df); names(df)
 # get LAs
 folder = "Counties_and_UA"
-stopifnot(dir.exists(folder))
+if(!dir.exists(folder)) {
+  dir.create(folder)
+}
 url = "https://opendata.arcgis.com/datasets/658297aefddf49e49dcd5fbfc647769e_1.zip"
 las_shape = list.files(folder, pattern = "shp")[1]
 if(!file.exists(file.path(folder, las_shape))) {
