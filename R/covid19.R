@@ -13,6 +13,7 @@ las_shape = list.files(folder, pattern = "shp")[1]
 if(!file.exists(file.path(folder, las_shape))) {
   download.file(url, destfile = file.path(folder, "data.zip"))
   unzip(file.path(folder, "data.zip"), exdir = folder)
+  las_shape = list.files(folder, pattern = "shp")[1]
 }
 library(sf)
 las = st_read(file.path(folder, las_shape))
