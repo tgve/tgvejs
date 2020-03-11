@@ -35,7 +35,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --updateSnapshot",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --env=jsdom --coverage"
   },
