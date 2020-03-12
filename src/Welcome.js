@@ -88,9 +88,7 @@ export default class Welcome extends React.Component {
     const init = {
       longitude: -1.6362,
       latitude: 53.8321,
-      zoom: 10,
-      pitch: 55,
-      bearing: 0,
+      zoom: 7,
     }
     const param = getParamsFromSearch(props.location.search);
     if (param) {
@@ -307,6 +305,12 @@ export default class Welcome extends React.Component {
       // TODO: allow user to specify column.
       options.getFillColor = (d) =>
         colorScale(d, data, column ? column : SPENSER ? 1 : 0)
+    }
+    if(defualtURL === '/api/covid19') {
+      layerStyle = 'scatterplot'
+      options.getPosition = d => d.geometry.coordinates;
+      options.getColor = d => colorScale(d, data, 1) //2nd prop
+      options.getRadius = d => +(Object.values(d.properties)[1]) * 300
     }
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options

@@ -17,7 +17,7 @@ if(!file.exists(file.path(folder, las_shape))) {
 }
 library(sf)
 las = st_read(file.path(folder, las_shape))
-
+las = st_centroid(las)
 m = match(tolower(df$`Upper Tier Local Authority`), 
           tolower(las$ctyua17nm))
 nrow(df) - length(las) # 139

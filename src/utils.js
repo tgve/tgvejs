@@ -248,7 +248,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, heatObject);
     return (new HeatmapLayer(heatObject))
-  } else if (name === "scatterplot") {
+  } else if (name === "scatterplot") {    
     const scatterObject = {
       id: 'scatterplot',
       data,
