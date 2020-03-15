@@ -28,6 +28,6 @@ stopifnot(!any(is.na(m)))
 sfc = st_geometry(las[m,])
 covid_sf = st_as_sf(df, geom=sfc)
 # top 30 regions
-plot(covid_sf[order(df$TotalCases, decreasing = T)[1:30],
-              "TotalCases"])
-st_write(covid_sf, "~/Downloads/covid19.geojson", update=TRUE)
+# plot(covid_sf[order(df$TotalCases, decreasing = T)[1:30],
+              # "TotalCases"])
+# st_write(covid_sf, "~/Downloads/covid19.geojson", update=TRUE)
