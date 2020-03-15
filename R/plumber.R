@@ -53,7 +53,7 @@ swagger <- function(req, res){
   plumber::include_html(fname, res)
 }
 
-source("R/covid19.R")
+# source("R/covid19.R")
 covid.file = "covid19.geojson"
 covid19 <- readChar(covid.file, file.info(covid.file)$size)
 #' serve covid19
@@ -272,20 +272,6 @@ source("R/get_spenser.R")
 #' @get /api/spenser2
 get_spenser2 <- function() {
   spenser2
-}
-
-source("R/get_quant.R")
-#' combine both msoa.geojson and csv in
-#' {q: csv, m: msoa.json}
-#' see get_quant.R for details.
-#' serve quant
-#' @serializer unboxedJSON
-#' @get /api/quant
-get_quant <- function() {
-  # res$headers$`Content-type` <- "application/json"
-  # res$body <- quant
-  # res
-  quant
 }
 
 #' Tell plumber where our public facing directory is to SERVE.
