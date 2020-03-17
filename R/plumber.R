@@ -68,7 +68,7 @@ covid19.regions <- readChar(covid.file,
                             file.info(covid.file)$size)
 #' serve covid19-regions
 #' @get /api/covid19r
-get_covid19 <- function(res) {
+get_covid19r <- function(res) {
   res$body <- covid19.regions
   res
 }

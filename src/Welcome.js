@@ -308,10 +308,10 @@ export default class Welcome extends React.Component {
     }
     if(!column && geomType === "point") {
       layerStyle = 'scatterplot'
+      options.getPosition = d => d.geometry.coordinates;
+      options.getFillColor = d => colorScale(d, data, 1) //2nd prop
+      options.getRadius = d => +(Object.values(d.properties)[2]) * 30
     }
-    options.getPosition = d => d.geometry.coordinates;
-    options.getColor = d => colorScale(d, data, 1) //2nd prop
-    options.getRadius = d => +(Object.values(d.properties)[2]) * 30
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options
     )
@@ -388,7 +388,7 @@ export default class Welcome extends React.Component {
       )
       this.setState({ lastViewPortChange: new Date() })
       if(zoom < 6) {
-        this._fetchAndUpdateState('http://0.0.0.0/api/covid19r');
+        this._fetchAndUpdateState('http://eatlas.geoplumber.com/api/covid19r');
       } else {
         this._fetchAndUpdateState();
       }
