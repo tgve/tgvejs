@@ -63,6 +63,16 @@ get_covid19 <- function(res) {
   res
 }
 
+covid.file = "covid19-regions.geojson"
+covid19.regions <- readChar(covid.file, 
+                            file.info(covid.file)$size)
+#' serve covid19-regions
+#' @get /api/covid19r
+get_covid19 <- function(res) {
+  res$body <- covid19.regions
+  res
+}
+
 accidents <- readRDS(main.file)
 accidents <- sf::st_transform(accidents, 4326)
 # keep using below and avoid dynamic api for dev

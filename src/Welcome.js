@@ -292,9 +292,9 @@ export default class Welcome extends React.Component {
         }; // avoid id
       }
     }
+    const cols = Object.keys(data && data[0] && 
+      data[0].properties);
     if (geomType === "polygon" || geomType === "multipolygon") {
-      const cols = Object.keys(data[0] && data[0].properties && 
-        data[0].properties);
       // TODO: remove SPENSER
       const SPENSER = isArray(cols) && cols.length > 0 && 
       cols[1] === 'GEOGRAPHY_CODE';
@@ -306,12 +306,12 @@ export default class Welcome extends React.Component {
       options.getFillColor = (d) =>
         colorScale(d, data, column ? column : SPENSER ? 1 : 0)
     }
-    if(defualtURL === '/api/covid19') {
+    if(!column && geomType === "point") {
       layerStyle = 'scatterplot'
-      options.getPosition = d => d.geometry.coordinates;
-      options.getColor = d => colorScale(d, data, 1) //2nd prop
-      options.getRadius = d => +(Object.values(d.properties)[1]) * 300
     }
+    options.getPosition = d => d.geometry.coordinates;
+    options.getColor = d => colorScale(d, data, 1) //2nd prop
+    options.getRadius = d => +(Object.values(d.properties)[2]) * 30
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options
     )
@@ -387,6 +387,11 @@ export default class Welcome extends React.Component {
         `&alt=${altitude}`
       )
       this.setState({ lastViewPortChange: new Date() })
+      if(zoom < 6) {
+        this._fetchAndUpdateState('http://0.0.0.0/api/covid19r');
+      } else {
+        this._fetchAndUpdateState();
+      }
     }
     const bounds = this.map && this.map.getBounds()
     if (bounds && subsetBoundsChange) {

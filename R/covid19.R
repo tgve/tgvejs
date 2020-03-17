@@ -1,9 +1,9 @@
 # https://www.arcgis.com/sharing/rest/content/items/b684319181f94875a6879bbc833ca3a6/data
 # Locked in ArcGIS servers!
-df = read.csv("CountyUAs_cases_table.csv")
+df = read.csv("~/Downloads/CountyUAs_cases_table.csv")
 class(df); names(df)
 # get LAs
-folder = "Counties_and_UA"
+folder = "~/Downloads/Counties_and_UA"
 if(!dir.exists(folder)) {
   dir.create(folder)
 }
@@ -33,3 +33,12 @@ covid_sf = st_as_sf(df, geom=sfc)
 covid_sf = st_centroid(covid_sf)
 plot(covid_sf)
 st_write(covid_sf, "covid19.geojson", update=TRUE)
+
+w = st_within(covid_sf,r)
+w[127] = 9
+w = unlist(w) 
+covid_sf$region = w
+a = aggregate(TotalCases ~ region, covid_sf, sum)
+r$TotalCases = a[,"TotalCases"]
+st_write(r[, c("rgn17cd", "rgn17nm", "TotalCases"), ], 
+         "~/Downloads/covid19-regions.geojson")

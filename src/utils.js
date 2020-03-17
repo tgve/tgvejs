@@ -129,7 +129,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, hexObj)
     return (new HexagonLayer(hexObj))
-  } else if (name === 'hex') {
+  } else if (name === 'scatterplot') {
     const scatterObj = {
       id: 'scatterplot-layer',
       data,
