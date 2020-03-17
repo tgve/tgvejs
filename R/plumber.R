@@ -253,6 +253,17 @@ get_spenser <- function(res) {
   res
 }
 
+source("R/get_spenser.R")
+#' combine both msoa.geojson and Rds in
+#' {q: csv, m: msoa.json}
+#' see get_quant.R for details.
+#' serve quant
+#' @serializer unboxedJSON
+#' @get /api/spenser2
+get_spenser2 <- function() {
+  spenser2
+}
+
 source("R/get_quant.R")
 #' combine both msoa.geojson and csv in
 #' {q: csv, m: msoa.json}

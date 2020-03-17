@@ -9,7 +9,7 @@ import {
   FocusOnce,
 } from 'baseui/modal';
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid';
-import { fetchQuant } from './Showcases/util_quant';
+import { fetchQuant, fetchSPENSER } from './Showcases/util_quant';
 
 import File from './File'
 import URL from './URL';
@@ -42,9 +42,14 @@ export default function (props) {
 
   function cards() {
     const info = {
+      // SPENSER2: {
+      //   image: "images/spenser.png",
+      //   body: "SPENSER Manchester 2011 - 2020.",
+      //   api: fetchSPENSER
+      // },
       SPENSER: {
         image: "images/spenser.png",
-        body: "Spenser Cambridge sample.",
+        body: "SPENSER Cambridge sample.",
         api: partURL + '/api/spenser'
       },
       QUANT: {
@@ -62,7 +67,7 @@ export default function (props) {
               // if api is function call and provied
               // geojson returned in case of quant for instance.
               api && typeof (api) === 'function' ?
-                api((geojson) => urlCallback(undefined, geojson)) :
+                api((geojson, apiURL) => urlCallback(undefined, geojson, apiURL)) :
                 typeof (urlCallback) === 'function'
                 && urlCallback(api)
               setOpen(false);
@@ -103,7 +108,7 @@ export default function (props) {
               try {
                 const json = JSON.parse(text);
                 typeof (urlCallback) === 'function'
-                  && urlCallback(null, json)
+                  && urlCallback(null, json, name)
                 setOpen(false);
               } catch (e) {
                 console.log(e);
@@ -113,7 +118,7 @@ export default function (props) {
               csv2geojson.csv2geojson(text, (err, data) => {
                 if (!err) {
                   typeof (urlCallback) === 'function'
-                    && urlCallback(null, data)
+                    && urlCallback(null, data, name)
                 }
               });
             }

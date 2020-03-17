@@ -15,22 +15,46 @@ to read. These are thoughts and background reading material as we take
 steps towards understanding what an “interdependent” eAtlas might be.
 Would it be “Turing Geovisualization Engine”?
 
-This source code is a
+### Development
+
+The front end is an npm package, so if you do not need the backend,
+having cloned the repo:
+
+``` js
+npm i # or yarn
+# and run
+npm start
+```
+
+The frontend is a
+[`create-react-app`](https://create-react-app.dev/docs/getting-started/)
+(CRA) so all the standard commands of CRA appliees.
+
+### R
+
+The whole application is a
 [geopumber](https://github.com/ATFutures/geoplumber) app. That means it
 is an R powered backend API (think Flask in Python) and a ReactJS front
 end.
 
-To build, from an R console:
+To build the frontend, from an R console:
 
 ``` r
 library(geoplumber)
 gp_build()
 ```
 
-Before you run the app: \* you will need some preprocessed data, an RDS
-called “ac\_joined\_wy\_2009-2017.Rds”. \* you will need a Mapbox API
-key (will see if we can remove this) in `.env.local` file using variable
-name: `REACT_APP_MAPBOX_ACCESS_TOKEN = 'API_KEY'`
+Before you run the app:
+
+  - you will need some preprocessed data, an RDS called
+    “ac\_joined\_wy\_2009-2017.Rds”.
+
+  - you will need a Mapbox API key (will see if we can remove this) in
+    `.env.local` file using variable name:
+    `REACT_APP_MAPBOX_ACCESS_TOKEN = 'API_KEY'`
+
+  - in production its better to change the `PRD_URL` in the
+    `Constants.js` file.
 
 Then you can run
 
@@ -44,7 +68,7 @@ visit `localhost:8000`
 or just run the front using (without any data loaded from local server):
 `npm i & npm start`
 
-## deploy with docker
+### Docker for production
 
 Repo contains Dockerfile for production. This is again WIP.
 
@@ -59,15 +83,6 @@ docker run -d -p 8000:8001 --name eatlas eatlas
 Use your favourite document server (nginx for example) to proxy requets
 (more later hopefully).
 
-## Screenshots/gif’s
+### Screenshots/gif’s
 
-<img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/66118004-44646f80-e5cd-11e9-98fa-c319c9b42bf3.png">
-
-Disclaimer:
-<div style="font-size: 0.5rem">THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.</div>
+<img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/76419738-c46edc80-6398-11ea-8bbe-496394f90adc.png">

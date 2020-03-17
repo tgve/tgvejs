@@ -249,7 +249,9 @@ exports[`App - should create snapshot 1`] = `
     </div>
   </nav>
   <div>
-    <div>
+    <div
+      id="html2pdf"
+    >
       <div
         className="loader"
         style={
@@ -318,6 +320,8 @@ exports[`App - should create snapshot 1`] = `
             <h2>
               Nothing to show
             </h2>
+            dataset: 
+            /api/stats19
           </div>
           <div>
             <button

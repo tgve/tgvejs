@@ -33,7 +33,7 @@ export default function MultiLinePlot(options) {
 
   return options.data && options.data.length > 1 &&
     // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
-    <div style={{ position: 'relative', color: '#fff' }}>
+    <div className="unselectable" style={{ position: 'relative', color: '#fff' }}>
       {!options.noLimit &&
         options.data && options.data.length > limit &&
         <h4>Plotting first {limit} values:</h4>}

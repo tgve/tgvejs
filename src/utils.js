@@ -1,10 +1,12 @@
 import React from 'react';
 import {
   ScatterplotLayer, HexagonLayer, GeoJsonLayer,
-  IconLayer, ScreenGridLayer, GridLayer, LineLayer
+  ScreenGridLayer, GridLayer, LineLayer,
+  HeatmapLayer,
+  TextLayer
 } from 'deck.gl';
 import {
-  interpolateOrRd, schemeBlues
+  interpolateOrRd, // schemeBlues
 } from 'd3-scale-chromatic';
 
 import qs from 'qs'; // warning: importing it otherways would cause minificatino issue.
@@ -13,7 +15,7 @@ import mapping from './location-icon-mapping.json';
 import Constants from './Constants';
 import { isString, isNumber } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
-import { ArcLayer } from '@deck.gl/layers';
+import { ArcLayer, PathLayer } from '@deck.gl/layers';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -217,17 +219,56 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, lineObject)
     return (new LineLayer(lineObject))
-  } else if (name == 'arc') {
+  } else if (name === 'arc') {
     const arcObject = {
       id: 'arc-layer',
       data,
       pickable: true,
+      onHover: renderTooltip
       // getSourcePosition: d => d.geometry.coordinates[0],
       // getTargetPosition: d => d.geometry.coordinates[1],
     }
     addOptionsToObject(options, arcObject)
     return (new ArcLayer(arcObject))
+  } else if (name === 'path') {
+    const pathObject = {
+      id: 'path-layer',
+      data,
+      pickable: true,
+      onHover: renderTooltip
+    }
+    addOptionsToObject(options, pathObject)
+    return (new PathLayer(pathObject))
+  } else if (name === 'heatmap') {
+    const heatObject = {
+      id: 'heatmap-layer',
+      data,
+      pickable: true,
+      onHover: renderTooltip,
+    }
+    addOptionsToObject(options, heatObject);
+    return (new HeatmapLayer(heatObject))
+  } else if (name === "scatterplot") {
+    const scatterObject = {
+      id: 'scatterplot',
+      data,
+      pickable: true,
+      onHover: renderTooltip,
+      opacity: 0.3
+    }
+    addOptionsToObject(options, scatterObject);
+    return (new ScatterplotLayer(scatterObject))
+  } else if (name === "text") {
+    const textObject = {
+      id: 'text-layer',
+      data,
+      pickable: true,
+      onHover: renderTooltip,
+    }
+    addOptionsToObject(options, textObject);
+    return (new TextLayer(textObject))
   }
+
   return (null)
 }
 
@@ -409,8 +450,9 @@ function hexToRgb(hex) {
  * @param {object} d particular property to get color for from features
  * @param {*} features features in a geojson featureset
  * @param {*} p index/name of column to generate color scale with
+ * @param {Number} alpha value to add to colour pallete
  */
-const colorScale = (d, features, p = 0) => {
+const colorScale = (d, features, p = 0, alpha = 180) => {
   if (!d || !features || features.length === 0) return null;
   const x = isNumber(p) ? Object.keys(d.properties)[p] : p;
   let domainIsNumeric = true;
@@ -438,8 +480,8 @@ const colorScale = (d, features, p = 0) => {
   let col = interpolateOrRd(index / domain.length);
   col = col.substring(4, col.length - 1)
     .replace(/ /g, '')
-    .split(',');
-  return col
+    .split(',').map(x => +x); // deck.gl 8 int not strings
+  return [...col, alpha]
 }
 
 const colorRangeNames = ['inverseDefault', 'yellowblue', 'greens',
@@ -569,11 +611,11 @@ const ATILOGO = (dark = true) => (
  */
 const generateLegend = (options) => {
   //quick check 
-  const {domain, interpolate = interpolateOrRd, title} = options;
+  const { domain, interpolate = interpolateOrRd, title } = options;
   if (!domain || !Array.isArray(domain) || !isNumber(domain[0])) return
   const jMax = domain[domain.length - 1], jMin = domain[0];
   const legend = [<p key='title'>{title}</p>]
-  
+
   for (var i = 0; i < 10; i += 1) {
     legend.push(
       <>

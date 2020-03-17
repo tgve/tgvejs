@@ -5,7 +5,6 @@ import { humanize } from '../utils';
 import SeriesPlot from './Showcases/SeriesPlot';
 import { propertyCountByProperty } from '../geojsonutils';
 import MultiLinePlot from './Showcases/MultiLinePlot';
-import TreeMap from './TreeMap';
 
 const WIDTH = 220;
 const BAR_HEIGHT = 80;
@@ -41,7 +40,7 @@ export default class Tooltip extends React.Component {
   render() {
     const { topx, topy, hoveredObject } = this.props;
     const { isMobile } = this.state;
-    // console.log(x,y);
+    // console.log(topx, topy);
 
     if (!hoveredObject) return null;
 

@@ -4,20 +4,20 @@ import {
   Glyphicon, FormGroup
 } from 'react-bootstrap';
 
-import {isURL} from '../utils';
+import { isURL } from '../utils';
 
 export default function URL(props) {
   const { urlCallback } = props;
-  const [url, setUrl] = useState("/api/stats19")
+  const [url, setUrl] = useState("https://domain.com/api/stats19")
 
   return (
     <form
       onKeyPress={(event) => {
-          if (event.which === 13 /* Enter */) {
-            event.preventDefault();
-            isURL(url) && typeof (urlCallback) === 'function' &&
-              urlCallback(url)
-          }
+        if (event.which === 13 /* Enter */) {
+          event.preventDefault();
+          isURL(url) && typeof (urlCallback) === 'function' &&
+            urlCallback(url)
+        }
       }}
       className="search-form">
       <FormGroup>
