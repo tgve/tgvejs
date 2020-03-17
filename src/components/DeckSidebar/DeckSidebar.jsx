@@ -22,7 +22,7 @@ import ColorPicker from '../ColourPicker';
 import Modal from '../Modal';
 import DataTable from '../Table';
 
-import { timeSlider } from '../Showcases/Widgets';
+import { yearSlider } from '../Showcases/Widgets';
 import { popPyramid, crashes_plot_data } from '../Showcases/Plots';
 import SeriesPlot from '../Showcases/SeriesPlot';
 import { isEmptyOrSpaces, isNumber } from '../../JSUtils';
@@ -88,11 +88,6 @@ export default class DeckSidebar extends React.Component {
     let plot_data_multi = [[], []];
     const notEmpty = data && data.length > 1;
     plot_data = crashes_plot_data(notEmpty, data, plot_data, plot_data_multi);
-
-    // const data_properties = getPropertyValues({ features: data });
-    // const accident_severity_types = notEmpty && data_properties['accident_severity'] &&
-    //   Array.from(data_properties['accident_severity'])
-
     const severity_data = propertyCount(data, "accident_severity");    
     let columnDomain = [];
     let columnData = notEmpty ?
@@ -174,8 +169,11 @@ export default class DeckSidebar extends React.Component {
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
+                {/* <DateSlider data={yy} multiVarSelect={multiVarSelect}
+                  onSelectCallback={(changes) => console.log(changes)} 
+                  callback={(changes) => console.log(changes)}/> */}
               {/* range of two values slider is not native html */
-                timeSlider({data, year, multiVarSelect,
+                yearSlider({data, year, multiVarSelect,
                   // for callback we get { year: "",multiVarSelect }
                   onSelectCallback, callback: (changes) => this.setState(changes)})
               }
