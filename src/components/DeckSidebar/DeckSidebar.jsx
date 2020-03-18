@@ -135,11 +135,18 @@ export default class DeckSidebar extends React.Component {
           className="side-panel">
           <RBAlert alert={alert} />
           <div className="side-pane-header">
-            <h2>{data && data.length ?
-              data.length + " row" + (data.length > 1 ? "s" : "") + "."
-              : "Nothing to show"}
-            </h2>
-            dataset: {this.state.datasetName}
+            {
+              data && data.length && data[0].properties.TotalCases ?
+              <h2>
+                {this.props.TotalCases + " cases"}
+              </h2>
+              :
+              <h2>{data && data.length ?
+                data.length + " row" + (data.length > 1 ? "s" : "") + "."
+                : "Nothing to show"}
+              </h2>
+            }
+            dataset: {this.props.datasetName}
           </div>
           <div>
             <DataInput

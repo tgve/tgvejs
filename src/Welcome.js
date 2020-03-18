@@ -387,11 +387,11 @@ export default class Welcome extends React.Component {
         `&alt=${altitude}`
       )
       this.setState({ lastViewPortChange: new Date() })
-      if(zoom < 6) {
-        this._fetchAndUpdateState('http://eatlas.geoplumber.com/api/covid19r');
-      } else {
-        this._fetchAndUpdateState();
-      }
+      // if(zoom < 6) {
+      //   this._fetchAndUpdateState('http://eatlas.geoplumber.com/api/covid19r');
+      // } else {
+      //   this._fetchAndUpdateState();
+      // }
     }
     const bounds = this.map && this.map.getBounds()
     if (bounds && subsetBoundsChange) {
@@ -477,6 +477,10 @@ export default class Welcome extends React.Component {
           isMobile={isMobile()}
           key="decksidebar"
           alert={alert}
+          TotalCases={this.state.filtered && 
+            this.state.filtered.map(e => e.properties.TotalCases).reduce(
+            (t,v) => t+v
+          )}
           data={this.state.filtered}
           colourCallback={(colourName) =>
             this._generateLayer({ cn: colourName })
