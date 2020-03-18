@@ -7,8 +7,7 @@ import { convertRange } from '../../utils';
 import './style.css'
 
 export default (props) => {
-  const { className, data, marginLeft, marginTop,
-    lineAttrs, plotStyle } = props;
+  const { data, lineAttrs, plotStyle, dark } = props;
   if (!data || !Array.isArray(data) || data.length === 0) return null;
   let isNumeric = true;
   data.forEach(e => {
@@ -105,11 +104,11 @@ export default (props) => {
               y={Y + "%"}
               height={yHeight + "%"}
               fill={(plotStyle && plotStyle.fillColor) || 'rgb(18, 147, 154)'}
-              stroke="black 0.5px"
+              stroke={(dark ? "white" : "black") + " 0.5px"}
             />
             {/* median */}
             <line
-              style={{ stroke: 'black', strokeWidth: 1 }}
+              style={{ stroke: dark ? 'white' : 'black', strokeWidth: 1 }}
               x1={median + "%"} x2={median + "%"}
               y1={Y + "%"} y2={(Y + yHeight) + "%"} {...lineAttrs} />
             {/* outliers */}
@@ -136,7 +135,7 @@ export default (props) => {
                     {/* <line 
                     style={{ stroke: 'white', strokeWidth: 0.5 }}
                   x1={x1 + "%"} y1={"80%"} x2={x1} y2={'82%'} /> */}
-                    <text x={(x1 + 2) + "%"} y={"85%"}
+                    <text fill={dark ? 'white' : 'black'} x={(x1 + 2) + "%"} y={"85%"}
                       // transform="rotate(10)" style={{textAnchor:"end"}}
                       className="d3-axis-labels">{v}</text>
                   </g>

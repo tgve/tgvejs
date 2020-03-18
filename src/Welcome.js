@@ -103,6 +103,7 @@ export default class Welcome extends React.Component {
     }
 
     this.state = {
+      column: 'TotalCases',
       loading: true,
       layers: [],
       backgroundImage: gradient.backgroundImage,
@@ -305,7 +306,7 @@ export default class Welcome extends React.Component {
       options.getFillColor = (d) =>
         colorScale(d, data, column ? column : SPENSER ? 1 : 0)
     }
-    if(!column && geomType === "point") {
+    if(column === 'TotalCases' || (!column && geomType === "point")) {
       layerStyle = 'scatterplot'
       options.getPosition = d => d.geometry.coordinates;
       options.getFillColor = d => colorScale(d, data, 1) //2nd prop

@@ -176,7 +176,7 @@ export default class DeckSidebar extends React.Component {
                 onClick={() => {
                   resetState();
                   typeof (urlCallback) === 'function'
-                    && urlCallback(URL + "/api/stats19");
+                    && urlCallback(URL + "/api/covid19");
                   typeof (this.props.showLegend) === 'function' &&
                   this.props.showLegend(false);
                 }}>Reset</Button>
@@ -232,7 +232,7 @@ export default class DeckSidebar extends React.Component {
               }
               <hr style={{ clear: 'both' }} />
               {columnDomain.length > 1 &&
-              <Boxplot data={columnDomain}/>}
+              <Boxplot dark={dark} data={columnDomain}/>}
 
               <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
