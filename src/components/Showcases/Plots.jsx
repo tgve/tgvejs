@@ -64,7 +64,7 @@ const popPyramid = (options) => {
         tickFormat={v => v === 0 ? 2009 : v - 2 + 2009}
         style={{
           line: { strokeWidth: 0 },
-          text: { fill: '#fff' }
+          text: { fill: options.dark ? '#fff' : '#000', fontWeight: 400 }
         }}
       />
       {/* left={(W / 2) - 10} */}
@@ -73,7 +73,7 @@ const popPyramid = (options) => {
         tickFormat={v => format(".2s")(v < 0 ? -1 * v : v)}
         style={{
           line: { strokeWidth: 0 },
-          text: { fill: '#fff' }
+          text: { fill: options.dark ? '#fff' : '#000', fontWeight: 400 }
         }}
       />
     </XYPlot>

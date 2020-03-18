@@ -1,9 +1,9 @@
 /*minor customization to bootstrap*/
 
-.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover, .nav-tabs>li>a:focus {
+/* .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover, .nav-tabs>li>a:focus {
   background-color: unset;
   color: #a3a5a8;
-}
+} */
 
 .nav-tabs>li.active {
   border-bottom: 2px solid #ddd;
@@ -43,8 +43,8 @@
 .side-panel {
   padding: 20px;
   width: 300px;
-  background-color: #242730;
-  color: #a3a5a8;
+  /* background-color: #242730;
+  color: #a3a5a8; */
   overflow: auto;
   display: flex;
   flex-direction: column;
@@ -54,7 +54,7 @@
 .side-pane-header {
   padding: 10px;
   margin-bottom: 20px;
-  background-color: #29323C;
+  /* background-color: #29323C; */
 }
 
 .side-panel-body {
@@ -72,22 +72,22 @@
 .close-button {
   -webkit-transition: left 250ms, right 250ms;
   transition: left 250ms, right 250ms;
-  color: white
+  /* color: white */
 }
 
-.side-panel .btn, .side-panel .btn-default, .side-panel .dropdown-menu, .open>.dropdown-toggle.btn-default, .side-panel .dropdown-menu>li>a {
+/* .side-panel .btn, .side-panel .btn-default, .side-panel .dropdown-menu, .open>.dropdown-toggle.btn-default, .side-panel .dropdown-menu>li>a {
   background-color: #242730;
   color: #a3a5a8;
-}
+} */
 
 .side-panel .dropdown-menu {
   border: 1px solid #adadad;
 }
 
-.side-panel .dropdown-menu>li>a:hover {
+/* .side-panel .dropdown-menu>li>a:hover {
   background-color: white;
   color: #242730;
-}
+} */
 
 .space {
   flex:1;
@@ -104,7 +104,7 @@
   margin-bottom: 0;
 }
 
-.search-form .form-control, .search-form .input-group-addon {
+/* .search-form .form-control, .search-form .input-group-addon {
   background-color: #242730;
   color: #a3a5a8;
 }

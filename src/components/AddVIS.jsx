@@ -21,8 +21,9 @@ const VIS = ['Vertical Bar', 'Horizontal Bar',
  * @param {String} column 
  * @param {String} vis 
  * @param {Object} plotStyle
+ * @param {Boolean} dark
  */
-function generateVIS(data, column, vis, plotStyle) {
+function generateVIS(data, column, vis, plotStyle, dark) {
   if (!data || data.length === 0 || !isString(column) || !isString(vis)) {
     return;
   }
@@ -53,6 +54,7 @@ function generateVIS(data, column, vis, plotStyle) {
     vis.startsWith("Line")) {
     return (
       <SeriesPlot
+        dark={dark}
         plotStyle={plotStyle}
         data={counts}
         type={
@@ -72,12 +74,12 @@ export default function AddVIS(props) {
   const [vis, setVis] = useState(false)
   const [list, setList] = useState([]);
   // useEffect(() => {
-    // if props.data changes only then it should react to it
-    // setVis(false);
-    // setColumn([])
+  // if props.data changes only then it should react to it
+  // setVis(false);
+  // setColumn([])
   // }, [props.data])
 
-  const { data, onSelectCallback, value,
+  const { data, onSelectCallback, dark,
     noAccordion, plotStyle } = props;
 
   if (!data || data.length === 0) return null;
@@ -118,7 +120,7 @@ export default function AddVIS(props) {
           if (column.length === 0 || vis.length === 0 || !column[0]) return;
           setList([
             ...list,
-            generateVIS(data, column[0].value, vis[0].value, plotStyle)
+            generateVIS(data, column[0].value, vis[0].value, plotStyle, dark)
           ])
           // console.log(column[0].value, vis[0].value);
         }}>Add</Button>
@@ -159,6 +161,6 @@ export default function AddVIS(props) {
           </center>
         }
       </div>
-    </div>
+    </div >
   )
 }

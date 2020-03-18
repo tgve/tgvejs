@@ -30,7 +30,7 @@ export default function MultiLinePlot(options) {
 
   const { plotStyle, title, noXAxis, noYAxis,
     onValueClick, data, legend } = options;
-  
+
   return options.data && options.data.length > 1 &&
     // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
     <div className="unselectable" style={{ position: 'relative', color: '#fff' }}>
@@ -53,15 +53,15 @@ export default function MultiLinePlot(options) {
             tickFormat={v => shortenName(v, 10)}
             position="right" tickLabelAngle={-65} style={{
               line: { strokeWidth: 0 },
-              text: { fill: '#fff' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
+              text: { fill: options.dark ? '#fff' : '#000' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
             }} />}
         {!noYAxis && // if provided dont
           <YAxis
             tickSize={0}
             tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} style={{
               line: { strokeWidth: 0 },
-              title: { fill: '#fff' },
-              text: { fill: '#fff' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
+              title: { fill: options.dark ? '#fff' : '#000' },
+              text: { fill: options.dark ? '#fff' : '#000' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
             }} position="start" title={title} />
         }
         {data.map((line, i) =>

@@ -83,7 +83,7 @@ export default class DeckSidebar extends React.Component {
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data, colourCallback, layerStyle,
       toggleSubsetBoundsChange, urlCallback, alert,
-      onlocationChange, column, toggleOpen, toggleHexPlot } = this.props;
+      onlocationChange, column, dark, toggleOpen, toggleHexPlot } = this.props;
     let plot_data = [];
     let plot_data_multi = [[], []];
     const notEmpty = data && data.length > 1;
@@ -132,9 +132,17 @@ export default class DeckSidebar extends React.Component {
     return (
       <>
         <div
+          style={{
+            color: dark ? "white" : "black",
+            background: dark ? "#242730" : "white"
+          }}
           className="side-panel">
           <RBAlert alert={alert} />
-          <div className="side-pane-header">
+          <div 
+              style={{
+                background: dark ? '#29323C' : '#eee'
+              }}
+              className="side-pane-header">
             {
               data && data.length && data[0].properties.TotalCases ?
               <h2>
@@ -220,7 +228,7 @@ export default class DeckSidebar extends React.Component {
                     onSelectCallback &&
                       onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
                         { what: '' } : { what: 'multi', selected: multiVarSelect })
-                  }))
+                  }, dark))
               }
               <hr style={{ clear: 'both' }} />
               {columnDomain.length > 1 &&
@@ -232,11 +240,12 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-info" />
                 }>
                   {/* pick a column and vis type */}
-                  <AddVIS data={data} />
+                  <AddVIS data={data} dark={dark} />
                   {/* distribution example */}
                   {notEmpty &&
                     data[0].properties.hasOwnProperty(['age_of_casualty']) &&
                     <SeriesPlot
+                      dark={dark}
                       title="Casualty age" noYAxis={true}
                       plotStyle={{ height: 100 }} noLimit={true}
                       type={LineSeries}
@@ -248,6 +257,7 @@ export default class DeckSidebar extends React.Component {
                   }
                   {notEmpty && plot_data_multi[0].length > 0 &&
                     <MultiLinePlot
+                      dark={dark}
                       data={
                         [...plot_data_multi, plot_data]
                       } legend={["Male", "Female", "Total"]}
@@ -284,9 +294,9 @@ export default class DeckSidebar extends React.Component {
                     </>
                   }
                   {/* TODO: example of generating vis based on column
-                  clould now be deleted. */}
-                  {notEmpty && 
-                  <SeriesPlot
+                  cloudl now be deleted. */}
+                  {<SeriesPlot
+                    dark={dark}
                     data={columnPlot.data}
                     type={VerticalBarSeries}
                     onValueClick={(datapoint) => {
@@ -307,7 +317,7 @@ export default class DeckSidebar extends React.Component {
                     plotStyle={{ marginBottom: 100 }} noYAxis={true}
 
                   />}
-                  {popPyramid({ data })}
+                  {popPyramid({ data, dark: dark })}
                 </Tab>
                 <Tab eventKey="2" title={
                   <i style={{ fontSize: '2rem' }}
@@ -414,6 +424,7 @@ export default class DeckSidebar extends React.Component {
                   {
                     data && data.length > 0 &&
                     <Variables
+                      dark={dark}
                       multiVarSelect={multiVarSelect}
                       onSelectCallback={(mvs) => {
                         typeof (onSelectCallback) === 'function' &&
@@ -445,9 +456,17 @@ export default class DeckSidebar extends React.Component {
               <FormGroup>
                 <InputGroup>
                   <FormControl
+                    style={{
+                      background: dark ? '#242730' : 'white',
+                      color: dark ? 'white' : 'black'
+                    }}
                     onChange={(e) => this.setState({ search: e.target.value })}
                     placeholder="fly to..." type="text" />
-                  <InputGroup.Addon>
+                  <InputGroup.Addon
+                    style={{
+                      background: dark ? '#242730' : 'white',
+                      color: dark ? 'white' : 'black'
+                    }}>
                     <Glyphicon glyph="search" />
                   </InputGroup.Addon>
                 </InputGroup>
