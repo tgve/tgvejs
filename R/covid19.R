@@ -34,6 +34,8 @@ covid_sf = st_centroid(covid_sf)
 plot(covid_sf)
 st_write(covid_sf, "covid19.geojson", update=TRUE)
 
+r = st_read("~/Desktop/data/Geo/NUTS_Level_1_January_2018_Ultra_Generalised_Clipped_Boundaries_in_the_United_Kingdom/NUTS_Level_1_January_2018_Ultra_Generalised_Clipped_Boundaries_in_the_United_Kingdom.shp")
+r = st_transform(r, 4326)
 w = st_within(covid_sf,r)
 w[127] = 9
 w = unlist(w) 
