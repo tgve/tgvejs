@@ -307,7 +307,7 @@ export default class Welcome extends React.Component {
       options.getFillColor = (d) =>
         colorScale(d, data, column ? column : SPENSER ? 1 : 0)
     }
-    if(geomType === "point") {
+    if(geomType === "point" && cols.includes("TotalCases")) {
       options.getPosition = d => d.geometry.coordinates;
       options.getFillColor = d => colorScale(d, data, 1) //2nd prop
       options.getRadius = d => +(Object.values(d.properties)[2]) * 30
