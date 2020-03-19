@@ -64,6 +64,7 @@ export default function SeriesPlot(options) {
         setX(null); setY(null); setX1(null); setY1(null);
         setRect(null);
         if(rect) {
+          typeof(onDragSelected) === 'function' && 
           onDragSelected(selected.map(e => 
             dataWithColor[e] && dataWithColor[e].x))
         }

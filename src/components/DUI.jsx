@@ -179,9 +179,10 @@ export default class DUI extends React.Component {
                 }
               </div>
             } */}
-        <AddVIS data={data} noAccordion={true}
+        <AddVIS data={data} noAccordion={true} noLimit={true}
           plotStyle={{
-            width: 620
+            // TODO better sizing needed
+            width: window.innerWidth
           }}
         />
         <p>Data preview:</p>
