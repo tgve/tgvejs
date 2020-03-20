@@ -46,7 +46,12 @@ export default function (props) {
         image: "images/spenser.png",
         body: "England regions",
         api: partURL + '/api/covid19r'
-      }
+      },
+      WORLD : {
+        image: "images/spenser.png",
+        body: "England regions",
+        api: partURL + '/api/covid19w'
+      },
     };
     return (Object.keys(info).map(key =>
       <FlexGridItem key={key} {...itemProps}>
