@@ -80,7 +80,7 @@ export default class DUI extends React.Component {
   _fetchAndUpdateState(aURL) {
     // TODO: more sanity checks?
     const fullURL = aURL ?
-      aURL : url + "/api/stats19";
+      aURL : url + "/api/covid19w";
 
     fetchData(fullURL, (data, error) => {
       if (!error) {
@@ -181,10 +181,9 @@ export default class DUI extends React.Component {
                 }
               </div>
             } */}
-        <AddVIS data={data} noAccordion={true} noLimit={true}
+        <AddVIS data={data} noAccordion={true}
           plotStyle={{
-            // TODO better sizing needed
-            width: window.innerWidth
+            width: 620
           }}
         />
         <p>Data preview:</p>

@@ -23,7 +23,7 @@ const VIS = ['Vertical Bar', 'Horizontal Bar',
  * @param {Object} plotStyle styling of the plot (css)
  * @param {Boolean} noLimit boolean to crop chart
  */
-function generateVIS(data, column, vis, plotStyle, noLimit) {
+function generateVIS(data, column, vis, plotStyle, noLimit, dark) {
   if (!data || data.length === 0 || !isString(column) || !isString(vis)) {
     return;
   }
@@ -122,7 +122,7 @@ export default function AddVIS(props) {
           if (column.length === 0 || vis.length === 0 || !column[0]) return;
           setList([
             ...list,
-            generateVIS(data, column[0].value, vis[0].value, plotStyle, noLimit)
+            generateVIS(data, column[0].value, vis[0].value, plotStyle, noLimit, dark)
           ])
           // console.log(column[0].value, vis[0].value);
         }}>Add</Button>
