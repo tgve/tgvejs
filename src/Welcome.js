@@ -49,7 +49,8 @@ const osmtiles = {
       "tiles": [
         // "http://tile.openstreetmap.org/{z}/{x}/{y}.png",
         // "http://b.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        "http://tile.stamen.com/toner/{z}/{x}/{y}.png"
+        // "http://tile.stamen.com/toner/{z}/{x}/{y}.png"
+        'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg'
       ],
       "tileSize": 256
     }
@@ -64,7 +65,7 @@ const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Consta
 const defualtURL = "/api/covid19";
 
 // Set your mapbox access token here
-const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
+const MAPBOX_ACCESS_TOKEN = process.env.p;
 
 const gradient = {
   height: '200px',
