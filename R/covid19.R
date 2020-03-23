@@ -1,9 +1,7 @@
-# https://www.arcgis.com/sharing/rest/content/items/b684319181f94875a6879bbc833ca3a6/data
-# Locked in ArcGIS servers!
-df = read.csv("~/Downloads/CountyUAs_cases_table.csv")
+df = read.csv("https://www.arcgis.com/sharing/rest/content/items/b684319181f94875a6879bbc833ca3a6/data")
 class(df); names(df)
 # get LAs
-folder = "~/Desktop/data/Geo/Counties_and_UA"
+folder = "Counties_and_UA"
 if(!dir.exists(folder)) {
   dir.create(folder)
 }
@@ -26,21 +24,47 @@ df = df[df$GSS_NM %in% las$ctyua17nm, ]
 m = m[!is.na(m)]
 stopifnot(!any(is.na(m)))
 sfc = st_geometry(las[m,])
-covid_sf = st_as_sf(df, geom=sfc)
+covid19 = st_as_sf(df, geom=sfc)
 # top 30 regions
-# plot(covid_sf[order(df$TotalCases, decreasing = T)[1:30],
+# plot(covid19[order(df$TotalCases, decreasing = T)[1:30],
               # "TotalCases"])
-covid_sf = st_centroid(covid_sf)
-plot(covid_sf)
-st_write(covid_sf, "covid19.geojson", update=TRUE)
+covid19 = st_centroid(covid19)
+# plot(covid19)
+# st_write(covid19, "covid19.geojson", update=TRUE)
 
-r = st_read("~/Desktop/data/Geo/NUTS_Level_1_January_2018_Ultra_Generalised_Clipped_Boundaries_in_the_United_Kingdom/NUTS_Level_1_January_2018_Ultra_Generalised_Clipped_Boundaries_in_the_United_Kingdom.shp")
+r = st_read("https://opendata.arcgis.com/datasets/01fd6b2d7600446d8af768005992f76a_4.geojson")
 r = st_transform(r, 4326)
-w = st_within(covid_sf,r)
+w = st_within(covid19,r)
 w[127] = 9
 w = unlist(w) 
-covid_sf$region = w
-a = aggregate(TotalCases ~ region, covid_sf, sum)
+covid19$region = w
+a = aggregate(TotalCases ~ region, covid19, sum)
+r = r[a$region,]
 r$TotalCases = a[,"TotalCases"]
-st_write(r[, c("nuts118cd", "nuts118nm", "TotalCases")], 
-         "covid19-regions.geojson")
+covid19_regions = r[, c("nuts118cd", "nuts118nm", "TotalCases")]
+# now geojson
+covid19 = geojsonsf::sf_geojson(covid19)
+covid19_regions = geojsonsf::sf_geojson(covid19_regions)
+# st_write(r[, c("nuts118cd", "nuts118nm", "TotalCases")], 
+#          "covid19-regions.geojson")
+
+########### world ###########
+csv = read.csv("https://covid.ourworldindata.org/data/full_data.csv")
+c = read.csv("countries.csv")
+library(sf)
+names(c)
+names(csv)
+c = st_as_sf(c, coords = c("longitude","latitude"))
+csv = csv[tolower(csv$location) %in% tolower(c$name), ]
+m = unlist(lapply(tolower(csv$location), 
+                  function(x) grep(x, tolower(c$name))[1]))
+sfc = st_geometry(c)
+m = m[!is.na(m)]
+sfc = sfc[m]
+csv = st_as_sf(csv, geom = sfc)
+st_write(csv, "covid19-world.geojson")
+
+#### daily no's
+library(rvest)
+daily = read_html("https://www.arcgis.com/home/item.html?id=23258c605db74e6696e72a65513a1770#data")
+daily = html_node(daily$node, "table")

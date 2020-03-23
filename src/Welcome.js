@@ -87,9 +87,12 @@ export default class Welcome extends React.Component {
   constructor(props) {
     super(props)
     const init = {
-      longitude: -1.6362,
-      latitude: 53.8321,
-      zoom: 7,
+      longitude: -1.614,
+      latitude: 52.075,
+      zoom: 6.77,
+      alt: 1.5,
+      bearing: -8.14,
+      pitch: 46.809
     }
     const param = getParamsFromSearch(props.location.search);
     if (param) {
@@ -104,19 +107,19 @@ export default class Welcome extends React.Component {
     }
 
     this.state = {
-      layerStyle: 'scatterplot',
+      layerStyle: 'hex',
       column: 'TotalCases',
       loading: true,
       layers: [],
       backgroundImage: gradient.backgroundImage,
-      radius: 100,
-      elevation: 4,
+      radius: 1000,
+      elevation: 6,
       mapStyle: MAPBOX_ACCESS_TOKEN ? ("mapbox://styles/mapbox/" +
         (props.dark ? "dark" : "basic") + "-v9") : osmtiles,
       initialViewState: init,
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
-      colourName: 'default',
+      colourName: 'inverseDefault',
       iconLimit: 500,
       legend: false
     }
@@ -312,6 +315,7 @@ export default class Welcome extends React.Component {
       options.getPosition = d => d.geometry.coordinates;
       options.getFillColor = d => colorScale(d, data, 1) //2nd prop
       options.getRadius = d => +(Object.values(d.properties)[2]) * 30
+      options.getElevationValue = p => +(p[0].properties.TotalCases)
     }
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options
@@ -491,8 +495,8 @@ export default class Welcome extends React.Component {
             this.setState({
               tooltip: "",
               road_type: "",
-              radius: 100,
-              elevation: 4,
+              radius: 1000,
+              elevation: 16,
               loading: true,
               coords: null,
               layerStyle: url_returned && url_returned.endsWith("covid19w") ?

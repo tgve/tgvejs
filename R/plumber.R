@@ -53,9 +53,7 @@ swagger <- function(req, res){
   plumber::include_html(fname, res)
 }
 
-# source("R/covid19.R")
-covid.file = "covid19.geojson"
-covid19 <- readChar(covid.file, file.info(covid.file)$size)
+source("R/covid19.R")
 #' serve covid19
 #' @get /api/covid19
 get_covid19 <- function(res) {
@@ -72,13 +70,11 @@ get_covid19w <- function(res) {
   res
 }
 
-covid.file = "covid19-regions.geojson"
-covid19.regions <- readChar(covid.file, 
-                            file.info(covid.file)$size)
+
 #' serve covid19-regions
 #' @get /api/covid19r
 get_covid19r <- function(res) {
-  res$body <- covid19.regions
+  res$body <- covid19_regions
   res
 }
 
