@@ -495,7 +495,7 @@ export default class Welcome extends React.Component {
               elevation: 4,
               loading: true,
               coords: null,
-              layerStyle: url_returned.endsWith("covid19w") ?
+              layerStyle: url_returned && url_returned.endsWith("covid19w") ?
               "heatmap" : this.state.layerStyle
             })
             if (geojson_returned) {

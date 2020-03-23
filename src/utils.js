@@ -138,7 +138,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       radiusScale: 6,
       radiusMinPixels: 1,
       radiusMaxPixels: 100,
-      getPosition: d => d.geometry.coordinates,
+      getPosition: d => d && d.geometry && d.geometry.coordinates,
       getRadius: d => Math.sqrt(d.exits),
       getColor: d => [255, 140, 0],
       onHover: renderTooltip

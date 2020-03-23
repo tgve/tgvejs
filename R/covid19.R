@@ -3,7 +3,7 @@
 df = read.csv("~/Downloads/CountyUAs_cases_table.csv")
 class(df); names(df)
 # get LAs
-folder = "~/Downloads/Counties_and_UA"
+folder = "~/Desktop/data/Geo/Counties_and_UA"
 if(!dir.exists(folder)) {
   dir.create(folder)
 }
@@ -42,5 +42,5 @@ w = unlist(w)
 covid_sf$region = w
 a = aggregate(TotalCases ~ region, covid_sf, sum)
 r$TotalCases = a[,"TotalCases"]
-st_write(r[, c("rgn17cd", "rgn17nm", "TotalCases"), ], 
-         "~/Downloads/covid19-regions.geojson")
+st_write(r[, c("nuts118cd", "nuts118nm", "TotalCases")], 
+         "covid19-regions.geojson")
