@@ -49,7 +49,8 @@ covid19_regions = geojsonsf::sf_geojson(covid19_regions)
 #          "covid19-regions.geojson")
 
 ########### world ###########
-csv = read.csv("https://covid.ourworldindata.org/data/full_data.csv")
+csv = read.csv("https://covid.ourworldindata.org/data/full_data.csv", 
+               stringsAsFactors = FALSE)
 c = read.csv("countries.csv")
 library(sf)
 names(c)
@@ -60,10 +61,11 @@ m = unlist(lapply(tolower(csv$location),
                   function(x) grep(x, tolower(c$name))[1]))
 sfc = st_geometry(c)
 m = m[!is.na(m)]
+stopifnot(!any(is.na(m)))
 sfc = sfc[m]
 csv = st_as_sf(csv, geom = sfc)
-unlink("covid19-world.geojson")
-st_write(csv, "covid19-world.geojson")
+covid19_world = geojsonsf::sf_geojson(csv)
+
 
 #### daily no's
 # library(rvest)
