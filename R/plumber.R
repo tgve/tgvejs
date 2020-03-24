@@ -5,7 +5,7 @@ if(is.null(curl::nslookup("r-project.org", error = FALSE))) {
     "Please re-run when you are connected."
   ))
 }
-packages <- c("sf", "geojsonsf", "osmdata", "curl")
+packages <- c("sf", "geojsonsf", "osmdata", "curl", "readxl")
 main.file <- "ac_joined_wy_2009-2017.Rds"
 # https://github.com/layik/eAtlas/releases/
 # download/0.0.1/spenser.geojson
