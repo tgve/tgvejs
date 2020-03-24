@@ -30,6 +30,7 @@ import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
 import MultiLinePlot from '../Showcases/MultiLinePlot';
 import Boxplot from '../Boxplot/Boxplot';
+import Daily from '../covid/Daily';
 // import GenerateUI from '../UI';
 
 const URL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
@@ -47,7 +48,7 @@ export default class DeckSidebar extends React.Component {
       year: "",
       reset: false,
       multiVarSelect: {},
-      barChartVariable: "road_type",
+      barChartVariable: "TotalCases",
       datasetName: props.datasetName
     }
   }
@@ -90,7 +91,7 @@ export default class DeckSidebar extends React.Component {
     plot_data = crashes_plot_data(notEmpty, data, plot_data, plot_data_multi);
     const severity_data = propertyCount(data, "accident_severity");    
     let columnDomain = [];
-    let columnData = notEmpty ?
+    const columnData = notEmpty ?
       xyObjectByProperty(data, column || barChartVariable) : [];
     const geomType = notEmpty && data[0].geometry.type.toLowerCase();
     // console.log(geomType);
@@ -125,7 +126,7 @@ export default class DeckSidebar extends React.Component {
         reset: true,
         year: "",
         multiVarSelect: {},
-        barChartVariable: "road_type",
+        barChartVariable: "TotalCases",
         datasetName: urlOrName || this.state.datasetName
       })
     }
@@ -196,27 +197,6 @@ export default class DeckSidebar extends React.Component {
                   // for callback we get { year: "",multiVarSelect }
                   onSelectCallback, callback: (changes) => this.setState(changes)})
               }
-              {
-                //only if there is such a property
-                data && data.length > 1 && data[0].properties['road_type'] &&
-                <MultiSelect
-                  title={humanize('road_type')}
-                  filter='road_type' // showcase/hardcode section
-                  multiVarSelect={multiVarSelect}
-                  // showcase/hardcode section all_road_types
-                  values={all_road_types.map(e => ({ id: e, value: e }))}
-                  onSelectCallback={(filter) => {
-                    onSelectCallback && onSelectCallback(filter);
-                    this.setState({
-                      multiVarSelect: filter.selected || {} // not ""
-                    })
-                  }}
-                  // sync state
-                  value={multiVarSelect && multiVarSelect['road_type'] &&
-                    Array.from(multiVarSelect['road_type'])
-                      .map(e => ({ id: e, value: e }))}
-                />
-              }
               <br />
               {/* TODO: generate this declaritively too */}
               {
@@ -243,6 +223,7 @@ export default class DeckSidebar extends React.Component {
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
                 }>
+                  <Daily />
                   {/* pick a column and vis type */}
                   <AddVIS data={data} dark={dark} />
                   {/* distribution example */}

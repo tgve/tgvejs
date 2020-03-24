@@ -16,6 +16,7 @@ import Constants from './Constants';
 import { isString, isNumber } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
 import { ArcLayer, PathLayer } from '@deck.gl/layers';
+import { descending } from 'd3-array';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -98,8 +99,7 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
     }
   });
   const sortedMap = typeof Array.from(map.keys())[0] === 'number' ?
-    Array.from(map.keys()).sort() : Array.from(map.keys())
-
+    Array.from(map.keys()).sort(descending) : Array.from(map.keys())  
   return sortedMap.map(key => {
     return (
       {

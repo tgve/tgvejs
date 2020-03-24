@@ -66,8 +66,17 @@ sfc = sfc[m]
 csv = st_as_sf(csv, geom = sfc)
 covid19_world = geojsonsf::sf_geojson(csv)
 
-
+#### UK daily
+url = "https://www.arcgis.com/sharing/rest/content/items/e5fd11150d274bebaaf8fe2a7a2bda11/data"
+daily = list.files(folder, pattern = "xlsx", full.names = TRUE)[1]
+if(!file.exists(file.path(folder, daily))) {
+  download.file(url, extra = '-L',
+                destfile = file.path(folder, "daily.xlsx"))
+  daily = list.files(folder, pattern = "xlsx", full.names = TRUE)[1]
+}
+daily = readxl::read_xlsx(daily)
 #### daily no's
 # library(rvest)
 # daily = read_html("https://www.arcgis.com/home/item.html?id=23258c605db74e6696e72a65513a1770&view=lis#data")
 # daily = html_node(daily, "table")
+

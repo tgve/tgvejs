@@ -107,7 +107,7 @@ export default function SeriesPlot(options) {
               line: { strokeWidth: 0 },
               text: { fill: options.dark ? '#fff' : '#000' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
             }} />}
-        {!noYAxis && // if provided dont
+        {noYAxis && // if provided dont
           <YAxis
             tickSize={0}
             tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} style={{

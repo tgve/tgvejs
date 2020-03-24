@@ -76,6 +76,13 @@ get_covid19r <- function(res) {
   res
 }
 
+#' serve daily cases
+#' @serializer unboxedJSON
+#' @get /api/covid19d
+get_covid19r <- function(res) {
+  daily
+}
+
 accidents <- readRDS(main.file)
 accidents <- sf::st_transform(accidents, 4326)
 # keep using below and avoid dynamic api for dev
