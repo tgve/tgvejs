@@ -61,12 +61,10 @@ get_covid19 <- function(res) {
   res
 }
 
-covid.file = "covid19-world.geojson"
-covid19w <- readChar(covid.file, file.info(covid.file)$size)
 #' serve covid19
 #' @get /api/covid19w
 get_covid19w <- function(res) {
-  res$body <- covid19w
+  res$body <- covid19_world
   res
 }
 

@@ -44,12 +44,12 @@ export default function (props) {
     const info = {
       REGIONS: {
         image: "images/spenser.png",
-        body: "England regions",
+        body: "England regions aggregates.",
         api: partURL + '/api/covid19r'
       },
       WORLD : {
         image: "images/spenser.png",
-        body: "England regions",
+        body: "World daily reported cases.",
         api: partURL + '/api/covid19w'
       },
     };

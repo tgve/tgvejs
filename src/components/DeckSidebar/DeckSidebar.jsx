@@ -129,6 +129,8 @@ export default class DeckSidebar extends React.Component {
         datasetName: urlOrName || this.state.datasetName
       })
     }
+    let d = new Date();
+    d = new Date(d - d.getMinutes() * 60000 - d.getSeconds() * 1000)
     return (
       <>
         <div
@@ -157,6 +159,8 @@ export default class DeckSidebar extends React.Component {
             dataset: {this.props.datasetName}
           </div>
           <div>
+            updated: {d.toLocaleString()}
+            <br/>
             <DataInput
               toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
               urlCallback={(url, geojson, name) => {
