@@ -62,7 +62,8 @@ sfc = st_geometry(c)
 m = m[!is.na(m)]
 sfc = sfc[m]
 csv = st_as_sf(csv, geom = sfc)
-st_write(csv, "covid19-world.geojson", update = TRUE)
+unlink("covid19-world.geojson")
+st_write(csv, "covid19-world.geojson")
 
 #### daily no's
 # library(rvest)
