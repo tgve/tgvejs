@@ -62,9 +62,9 @@ sfc = st_geometry(c)
 m = m[!is.na(m)]
 sfc = sfc[m]
 csv = st_as_sf(csv, geom = sfc)
-st_write(csv, "covid19-world.geojson")
+st_write(csv, "covid19-world.geojson", update = TRUE)
 
 #### daily no's
-library(rvest)
-daily = read_html("https://www.arcgis.com/home/item.html?id=23258c605db74e6696e72a65513a1770#data")
-daily = html_node(daily$node, "table")
+# library(rvest)
+# daily = read_html("https://www.arcgis.com/home/item.html?id=23258c605db74e6696e72a65513a1770&view=lis#data")
+# daily = html_node(daily, "table")
