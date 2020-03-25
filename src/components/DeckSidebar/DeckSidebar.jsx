@@ -147,9 +147,10 @@ export default class DeckSidebar extends React.Component {
               }}
               className="side-pane-header">
             {
-              data && data.length && data[0].properties.TotalCases ?
+              (data && data.length && data[0].properties.TotalCases) ||
+              this.state.TotalCases ?
               <h2>
-                {this.props.TotalCases + " cases"}
+                {(this.state.TotalCases || this.props.TotalCases) + " cases"}
               </h2>
               :
               <h2>{data && data.length ?
@@ -223,7 +224,9 @@ export default class DeckSidebar extends React.Component {
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
                 }>
-                  <Daily />
+                  <Daily dailyCallback={(row) => this.setState({
+                    TotalCases: row.CumCases
+                  })}/>
                   {/* pick a column and vis type */}
                   <AddVIS data={data} dark={dark} />
                   {/* distribution example */}

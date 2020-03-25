@@ -9,6 +9,7 @@ import SeriesPlot from '../Showcases/SeriesPlot';
 const URL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
 
 export default (props) => {
+  const { dailyCallback } = props;
   const [daily, setDaily] = useState(null)
 
   fetchData(URL + "/api/covid19d",
@@ -26,6 +27,8 @@ export default (props) => {
           }))
         ]
       );
+      typeof(dailyCallback) === 'function' &&
+      dailyCallback(data[data.length - 1])
     }
   })
 
