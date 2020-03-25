@@ -17,12 +17,13 @@ const VIS = ['Vertical Bar', 'Horizontal Bar',
  * Generate approprate series/marks for a React-vis
  * type from data and column name.
  * 
- * @param {Object} data 
- * @param {String} column 
- * @param {String} vis 
- * @param {Object} plotStyle
+ * @param {Object} data geojson features to generate counts from
+ * @param {String} column name of column in feature to generate counts from
+ * @param {String} vis type of visualization (react-vis type)
+ * @param {Object} plotStyle styling of the plot (css)
+ * @param {Boolean} noLimit boolean to crop chart
  */
-function generateVIS(data, column, vis, plotStyle) {
+function generateVIS(data, column, vis, plotStyle, noLimit) {
   if (!data || data.length === 0 || !isString(column) || !isString(vis)) {
     return;
   }
@@ -53,6 +54,7 @@ function generateVIS(data, column, vis, plotStyle) {
     vis.startsWith("Line")) {
     return (
       <SeriesPlot
+        noLimit={noLimit}
         plotStyle={plotStyle}
         data={counts}
         type={
@@ -78,7 +80,7 @@ export default function AddVIS(props) {
   // }, [props.data])
 
   const { data, onSelectCallback, value,
-    noAccordion, plotStyle } = props;
+    noAccordion, plotStyle, noLimit } = props;
 
   if (!data || data.length === 0) return null;
 
@@ -118,7 +120,7 @@ export default function AddVIS(props) {
           if (column.length === 0 || vis.length === 0 || !column[0]) return;
           setList([
             ...list,
-            generateVIS(data, column[0].value, vis[0].value, plotStyle)
+            generateVIS(data, column[0].value, vis[0].value, plotStyle, noLimit)
           ])
           // console.log(column[0].value, vis[0].value);
         }}>Add</Button>
@@ -145,7 +147,8 @@ export default function AddVIS(props) {
           </Accordion> :
           <center>
             {list.map((plot, i) =>
-              plot && <div style={{ border: '1px solid' }}>
+              plot && 
+              <div>
                 <Button
                   kind={KIND.secondary} size={SIZE.compact}
                   onClick={() => {
