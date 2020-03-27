@@ -93,7 +93,7 @@ export default class DeckSidebar extends React.Component {
     const columnData = notEmpty ?
       xyObjectByProperty(data, column || barChartVariable) : [];
     const geomType = notEmpty && data[0].geometry.type.toLowerCase();
-    console.log(geomType);
+    // console.log(geomType);
     if(notEmpty && column && (geomType === 'polygon' ||
     geomType === 'multipolygon' || "linestring") &&
       isNumber(data[0].properties[column])) {
@@ -271,7 +271,7 @@ export default class DeckSidebar extends React.Component {
                       />
                     </>
                   }
-                  <Daily data={this.props.daily}/>
+                  <Daily data={this.props.daily} dark={dark}/>
                 </Tab>
                 <Tab eventKey="2" title={
                   <i style={{ fontSize: '2rem' }}
