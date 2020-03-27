@@ -5,12 +5,12 @@ import { Pagination } from 'baseui/pagination';
 import { humanize } from '../utils';
 
 export default function DataTable(props) {
-  const [currentPage, setCurrentPage] = React.useState(1);
+  const [currentPage, setCurrentPage] = React.useState(0);
 
   const { data } = props;
-  if (!data || data.length === 0) return null
-  const numPages = Math.floor(data.length / 10)
-
+  if (!data || data.length === 0) return null  
+  const numPages = data.length > 10 ? Math.floor(data.length / 10) : 1
+  
   const columns = Object.keys(data[0].properties)
     .map(each => humanize(each))
 
