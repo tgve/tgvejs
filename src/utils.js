@@ -110,6 +110,47 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
   })
 }
 
+/**
+ * Function to generate {x:,y:} from two columns. 
+ * 
+ * @param {Object} data 
+ * @param {String} propertyX 
+ * @param {String} propertyY
+ * @param {Boolean} noNulls 
+ */
+const xyObjectFromKeyValue = (data, propertyX, propertyY = 'TotalCases', 
+noNulls = true) => {
+  if (!data || !propertyX || !propertyY) return;
+  //data = [{...data = 12/12/12}]       
+  const map = new Map()
+  data.forEach(feature => {
+    const x = feature.properties[propertyX];
+    const y = feature.properties[propertyY];
+    if (typeof (x) === 'string' && x.split("/")[2]) {
+      x = x.split("/")[2]
+    }
+    if (noNulls && x !== null) { // remove nulls here
+      if (map.get(x)) {
+        map.set(x, map.get(x) + y)
+      } else {
+        map.set(typeof x === 'number' ? +(x) : x, 
+        typeof y === 'number' ? +(y) : y)
+      }
+    }
+  });
+  // const sortedMap = new Map([...map.entries()].sort((a, b) => (a[1] >= b[1]) ? 1 : -1));
+  // console.log(sortedMap);
+
+  return [...map.keys()].map(key => {
+    return (
+      {
+        x: key,
+        y: map.get(key)
+      }
+    )
+  })
+}
+
 const generateDeckLayer = (name, data, renderTooltip, options) => {
   const addOptionsToObject = (opt, obj) => {
     Object.keys(opt).forEach(key =>
@@ -681,6 +722,7 @@ const getMin = (arr) => {
 }
 export {
   getResultsFromGoogleMaps,
+  xyObjectFromKeyValue,
   getParamsFromSearch,
   xyObjectByProperty,
   suggestUIforNumber,

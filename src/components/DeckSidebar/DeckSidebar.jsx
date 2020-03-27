@@ -13,7 +13,7 @@ import {
   searchNominatom,
   humanize, generateLegend, sortNumericArray
 } from '../../utils';
-import { LineSeries, VerticalBarSeries } from 'react-vis';
+import { LineSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
@@ -23,7 +23,7 @@ import Modal from '../Modal';
 import DataTable from '../Table';
 
 import { yearSlider } from '../Showcases/Widgets';
-import { popPyramid, crashes_plot_data } from '../Showcases/Plots';
+import { crashes_plot_data } from '../Showcases/Plots';
 import SeriesPlot from '../Showcases/SeriesPlot';
 import { isEmptyOrSpaces, isNumber } from '../../JSUtils';
 import MultiSelect from '../MultiSelect';
@@ -78,11 +78,10 @@ export default class DeckSidebar extends React.Component {
    * Partly because we like to load from a URL.
    */
   render() {
-    const { elevation,
-      radius, all_road_types, year,
+    const { elevation, radius, year,
       subsetBoundsChange, multiVarSelect, barChartVariable } = this.state;
     const { onChangeRadius, onChangeElevation,
-      onSelectCallback, data, colourCallback, layerStyle,
+      onSelectCallback, data, colourCallback,
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, column, dark, toggleOpen, toggleHexPlot } = this.props;
     let plot_data = [];
@@ -94,7 +93,7 @@ export default class DeckSidebar extends React.Component {
     const columnData = notEmpty ?
       xyObjectByProperty(data, column || barChartVariable) : [];
     const geomType = notEmpty && data[0].geometry.type.toLowerCase();
-    // console.log(geomType);
+    console.log(geomType);
     if(notEmpty && column && (geomType === 'polygon' ||
     geomType === 'multipolygon' || "linestring") &&
       isNumber(data[0].properties[column])) {
@@ -113,14 +112,6 @@ export default class DeckSidebar extends React.Component {
           )
         );
     }
-
-    const columnPlot = {
-      data: columnData,
-      opacity: 1,
-      stroke: 'rgb(72, 87, 104)',
-      fill: 'rgb(18, 147, 154)',
-    }
-
     const resetState = (urlOrName) => {      
       this.setState({
         reset: true,
@@ -224,11 +215,10 @@ export default class DeckSidebar extends React.Component {
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
                 }>
-                  <Daily dailyCallback={(row) => this.setState({
-                    TotalCases: row.CumCases
-                  })}/>
                   {/* pick a column and vis type */}
-                  <AddVIS data={data} dark={dark} />
+                  <AddVIS data={data} dark={dark} plotStyle={{
+                    marginBottom:80
+                  }} />
                   {/* distribution example */}
                   {notEmpty &&
                     data[0].properties.hasOwnProperty(['age_of_casualty']) &&
@@ -281,31 +271,7 @@ export default class DeckSidebar extends React.Component {
                       />
                     </>
                   }
-                  {/* TODO: example of generating vis based on column
-                  cloudl now be deleted. */}
-                  {<SeriesPlot
-                    dark={dark}
-                    data={columnPlot.data}
-                    type={VerticalBarSeries}
-                    onValueClick={(datapoint) => {
-                      // convert back to string
-                      multiVarSelect[column ||
-                        barChartVariable] = new Set([datapoint.x + ""]);
-                      this.setState({ multiVarSelect })
-                      onSelectCallback &&
-                        onSelectCallback({ what: 'multi', selected: multiVarSelect })
-                    }}
-                    onDragSelected={(datapoints) => {
-                      multiVarSelect[column ||
-                        barChartVariable] = new Set(datapoints.map(e => e + ""));
-                      this.setState({ multiVarSelect })
-                      onSelectCallback &&
-                        onSelectCallback({ what: 'multi', selected: multiVarSelect })
-                    }}
-                    plotStyle={{ marginBottom: 100 }} noYAxis={true}
-
-                  />}
-                  {popPyramid({ data, dark: dark })}
+                  <Daily data={this.props.daily}/>
                 </Tab>
                 <Tab eventKey="2" title={
                   <i style={{ fontSize: '2rem' }}

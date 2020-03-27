@@ -9,31 +9,11 @@ import SeriesPlot from '../Showcases/SeriesPlot';
 const URL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
 
 export default (props) => {
-  const { dailyCallback } = props;
-  const [daily, setDaily] = useState(null)
+  const { data } = props;  
 
-  fetchData(URL + "/api/covid19d",
-  (data, error) => {
-    if(!error) {
-      setDaily(
-        [
-          data.map(e => ({
-            x: e.DateVal,
-            y:e.CumCases
-          })),
-          data.map(e => ({
-            x: e.DateVal,
-            y:e.CMODateCount
-          }))
-        ]
-      );
-      typeof(dailyCallback) === 'function' &&
-      dailyCallback(data[data.length - 1])
-    }
-  })
+  if(!data || data.length !== 2 ) return(null)
 
-  if(!daily) return(null)
-  
+  console.log("fiq");
   return(
     <>
       <SeriesPlot
@@ -42,7 +22,7 @@ export default (props) => {
         title="Total cases" noYAxis={true}
         plotStyle={{ height: 200,marginBottom:60 }} noLimit={true}
         type={LineSeries}
-        data={daily[0]}
+        data={data[0]}
       /> 
       <SeriesPlot
         noYAxis={false}
@@ -50,7 +30,7 @@ export default (props) => {
         title="Daily cases" noYAxis={true}
         plotStyle={{ height: 200,marginBottom:60 }} noLimit={true}
         type={LineSeries}
-        data={daily[1]}
+        data={data[1]}
       /> 
     </>
   )

@@ -33,7 +33,7 @@ covid19 = st_centroid(covid19)
 # st_write(covid19, "covid19.geojson", update=TRUE)
 
 r = st_read("https://opendata.arcgis.com/datasets/01fd6b2d7600446d8af768005992f76a_4.geojson")
-r = st_transform(r, 4326)
+# r = st_transform(r, 4326)
 w = st_within(covid19,r)
 w[127] = 9
 w = unlist(w) 
@@ -43,10 +43,12 @@ r = r[a$region,]
 r$TotalCases = a[,"TotalCases"]
 covid19_regions = r[, c("nuts118cd", "nuts118nm", "TotalCases")]
 # now geojson
+names(covid19_regions) = c("code", "name", "TotalCases", "geometry")
+names(covid19) = c("code", "name", "TotalCases", "geom", "region")
 covid19 = geojsonsf::sf_geojson(covid19)
 covid19_regions = geojsonsf::sf_geojson(covid19_regions)
-# st_write(r[, c("nuts118cd", "nuts118nm", "TotalCases")], 
-#          "covid19-regions.geojson")
+# st_write(covid19_regions, 
+#          "covid19-regions-date.geojson")
 
 ########### world ###########
 csv = read.csv("https://covid.ourworldindata.org/data/full_data.csv", 

@@ -7,7 +7,7 @@ import MultiSelect from './MultiSelect';
 import TreeMap from './TreeMap';
 import { humanize } from '../utils';
 import { isString, isNumber } from '../JSUtils';
-import { xyObjectByProperty } from '../utils';
+import { xyObjectByProperty, xyObjectFromKeyValue } from '../utils';
 import SeriesPlot from './Showcases/SeriesPlot';
 
 const VIS = ['Vertical Bar', 'Horizontal Bar',
@@ -27,8 +27,9 @@ function generateVIS(data, column, vis, plotStyle, noLimit, dark) {
   if (!data || data.length === 0 || !isString(column) || !isString(vis)) {
     return;
   }
-  let counts = xyObjectByProperty(data, column)
-
+  let counts = xyObjectFromKeyValue(data, column)
+  console.log(xyObjectFromKeyValue(data, column));
+  
   if (vis === 'Treemap') {
     return (
       <TreeMap

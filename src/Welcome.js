@@ -167,6 +167,23 @@ export default class Welcome extends React.Component {
         //network error?
       }
     })
+    fetchData(URL + "/api/covid19d",
+  (d, error) => {
+    if(!error) {
+      this.setState({
+        daily: [
+          d.map(e => ({
+            x: e.DateVal,
+            y:e.CumCases
+          })),
+          d.map(e => ({
+            x: e.DateVal,
+            y:e.CMODateCount
+          }))
+        ]
+      });
+    }
+  })  
   }
 
   /**
@@ -478,6 +495,7 @@ export default class Welcome extends React.Component {
           </DeckGL>
         </MapGL>
         <DeckSidebarContainer
+          daily={this.state.daily}
           dark={this.props.dark}
           layerStyle={layerStyle}
           isMobile={isMobile()}
