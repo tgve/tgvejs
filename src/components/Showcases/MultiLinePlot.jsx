@@ -33,11 +33,14 @@ export default function MultiLinePlot(options) {
 
   return options.data && options.data.length > 1 &&
     // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
-    <div className="unselectable" style={{ position: 'relative', color: '#fff' }}>
+    <div className="unselectable" 
+      style={{ 
+        position: 'relative', 
+      }}>
       {!options.noLimit &&
         options.data && options.data.length > limit &&
         <h4>Plotting first {limit} values:</h4>}
-      {noYAxis && title &&
+      {title &&
         <h4>{title}</h4>
       }
       <XYPlot xType="ordinal"
@@ -51,9 +54,19 @@ export default function MultiLinePlot(options) {
           <XAxis
             tickSize={0}
             tickFormat={v => shortenName(v, 10)}
-            position="right" tickLabelAngle={-65} style={{
+            tickValues={
+              (data.length > limit)
+                ? data
+                  .filter((item, idx) => {
+                    if ((idx % Math.floor(data.length / limit)) === 0) {
+                      return item.x
+                    }
+                  }).map(item => (item.x))
+                : data.map(item => (item.x))
+            }
+            tickLabelAngle={-65} style={{
               line: { strokeWidth: 0 },
-              text: { fill: options.dark ? '#fff' : '#000' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
+              text: { fill: options.dark ? '#fff' : '#000' } 
             }} />}
         {!noYAxis && // if provided dont
           <YAxis
@@ -61,8 +74,8 @@ export default function MultiLinePlot(options) {
             tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} style={{
               line: { strokeWidth: 0 },
               title: { fill: options.dark ? '#fff' : '#000' },
-              text: { fill: options.dark ? '#fff' : '#000' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
-            }} position="start" title={title} />
+              text: { fill: options.dark ? '#fff' : '#000' } 
+            }} position="end" title={data[0][data[0].length-1].x} />
         }
         {data.map((line, i) =>
           <LineSeries
@@ -75,8 +88,20 @@ export default function MultiLinePlot(options) {
             data={line} />)}
         {hint && <Crosshair
           values={hint}
-          className={'test-class-name'}
-        />}
+          style={'test-class-name'}
+        > 
+          <div style={{color:options.dark ? '#fff' : '#000'}}>
+            <p>{hint[0].x}</p>
+            Cases: {hint[0].y}, Deaths: 
+            <span style={{color:'red'}}>
+              {hint[1].y}
+            </span>, 
+            DailyDeaths: 
+            <span style={{color:'red'}}>
+              {hint[2].y}
+            </span>
+          </div>
+        </Crosshair>}
       </XYPlot>
       <DiscreteColorLegend
         orientation="horizontal" width={W}

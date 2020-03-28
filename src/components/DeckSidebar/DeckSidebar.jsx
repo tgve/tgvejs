@@ -203,6 +203,8 @@ export default class DeckSidebar extends React.Component {
                   }, dark))
               }
               <hr style={{ clear: 'both' }} />
+              {daily && 
+                  <Daily data={daily} dark={dark}/>}
               <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
@@ -264,7 +266,6 @@ export default class DeckSidebar extends React.Component {
                       />
                     </>
                   }
-                  <Daily data={daily} dark={dark}/>
                 </Tab>
                 <Tab eventKey="2" title={
                   <i style={{ fontSize: '2rem' }}

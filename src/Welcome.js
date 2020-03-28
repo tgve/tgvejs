@@ -178,6 +178,14 @@ export default class Welcome extends React.Component {
             d.map(e => ({
               x: e.DateVal,
               y:e.CMODateCount
+            })),
+            d.map(e =>({
+              x: e.DateVal || null,
+              y: e.CumDeaths || 0
+            })),
+            d.map(e =>({
+              x: e.DateVal || null,
+              y: e.DailyDeaths || 0
             }))
           ]
         });

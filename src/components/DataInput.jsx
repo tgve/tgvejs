@@ -9,7 +9,6 @@ import {
   FocusOnce,
 } from 'baseui/modal';
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid';
-import { fetchQuant } from './Showcases/util_quant';
 
 import File from './File'
 import URL from './URL';

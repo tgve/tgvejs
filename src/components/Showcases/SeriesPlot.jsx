@@ -79,7 +79,7 @@ export default function SeriesPlot(options) {
       {options.type !== MarkSeries && !options.noLimit &&
         options.data && options.data.length > limit &&
         <h4>Plotting first {limit} values:</h4>}
-      {noYAxis && title &&
+      {title &&
         <h4>{title}</h4>
       }
       <FlexibleXYPlot xType="ordinal"
@@ -105,15 +105,15 @@ export default function SeriesPlot(options) {
             }
             position="right" tickLabelAngle={-65} style={{
               line: { strokeWidth: 0 },
-              text: { fill: options.dark ? '#fff' : '#000' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
+              text: { fill: options.dark ? '#fff' : '#000' } 
             }} />}
-        {noYAxis && // if provided dont
+        {!noYAxis && // if provided dont
           <YAxis
             tickSize={0}
             tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} style={{
               line: { strokeWidth: 0 },
               title: { fill: options.dark ? '#fff' : '#000' },
-              text: { fill: options.dark ? '#fff' : '#000' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
+              text: { fill: options.dark ? '#fff' : '#000' } 
             }} position="start" title={title} />
         }
         <ReactSeries
