@@ -35,8 +35,8 @@ covid19 = st_centroid(covid19)
 r = st_read("https://opendata.arcgis.com/datasets/01fd6b2d7600446d8af768005992f76a_4.geojson")
 # r = st_transform(r, 4326)
 w = st_within(covid19,r)
-w[127] = 9
-w = unlist(w) 
+w = as.numeric(as.character(w))
+stopifnot(nrow(covid19) == length(w))
 covid19$region = w
 a = aggregate(TotalCases ~ region, covid19, sum)
 r = r[a$region,]
