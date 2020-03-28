@@ -29,7 +29,6 @@ import { isEmptyOrSpaces, isNumber } from '../../JSUtils';
 import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
 import MultiLinePlot from '../Showcases/MultiLinePlot';
-import Boxplot from '../Boxplot/Boxplot';
 import Daily from '../covid/Daily';
 // import GenerateUI from '../UI';
 
@@ -41,10 +40,6 @@ export default class DeckSidebar extends React.Component {
     this.state = {
       radius: 100,
       elevation: 4,
-      // must match the order in plumber.R
-      all_road_types: ["Dual carriageway",
-        "Single carriageway", "Roundabout", "Unknown",
-        "Slip road", "One way street"],
       year: "",
       reset: false,
       multiVarSelect: {},
@@ -54,17 +49,17 @@ export default class DeckSidebar extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { data, alert, loading } = this.props;
+    const { data, alert, loading, daily } = this.props;
     const { elevation, radius, reset,
       barChartVariable } = this.state;
-    // avoid rerender as directly operating on document.get* 
-    // does not look neat. Keeping it React way.
+    // avoid rerender as directly
     if (reset !== nextState.reset ||
       elevation !== nextState.elevation ||
       radius !== nextState.radius ||
       alert !== nextProps.alert ||
       loading !== nextProps.loading ||
-      barChartVariable !== nextState.barChartVariable) return true;
+      barChartVariable !== nextState.barChartVariable ||
+      daily !== nextProps.daily) return true;
     //TODO:  a more functional way is needed        
     if (data && nextProps && nextProps.data &&
       data.length === nextProps.data.length) {
@@ -81,7 +76,7 @@ export default class DeckSidebar extends React.Component {
     const { elevation, radius, year,
       subsetBoundsChange, multiVarSelect, barChartVariable } = this.state;
     const { onChangeRadius, onChangeElevation,
-      onSelectCallback, data, colourCallback,
+      onSelectCallback, data, colourCallback, daily,
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, column, dark, toggleOpen, toggleHexPlot } = this.props;
     let plot_data = [];
@@ -139,9 +134,10 @@ export default class DeckSidebar extends React.Component {
               className="side-pane-header">
             {
               (data && data.length && data[0].properties.TotalCases) ||
-              this.state.TotalCases ?
+              this.state.TotalCases || daily ?
               <h2>
-                {(this.state.TotalCases || this.props.TotalCases) + " cases"}
+                {(this.state.TotalCases || 
+                  daily && daily[0] && daily[0][daily[0].length - 1].y) + " cases"}
               </h2>
               :
               <h2>{data && data.length ?
@@ -207,9 +203,6 @@ export default class DeckSidebar extends React.Component {
                   }, dark))
               }
               <hr style={{ clear: 'both' }} />
-              {columnDomain.length > 1 &&
-              <Boxplot dark={dark} data={columnDomain}/>}
-
               <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
@@ -271,7 +264,7 @@ export default class DeckSidebar extends React.Component {
                       />
                     </>
                   }
-                  <Daily data={this.props.daily} dark={dark}/>
+                  <Daily data={daily} dark={dark}/>
                 </Tab>
                 <Tab eventKey="2" title={
                   <i style={{ fontSize: '2rem' }}

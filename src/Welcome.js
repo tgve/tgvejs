@@ -167,23 +167,22 @@ export default class Welcome extends React.Component {
         //network error?
       }
     })
-    fetchData(URL + "/api/covid19d",
-  (d, error) => {
-    if(!error) {
-      this.setState({
-        daily: [
-          d.map(e => ({
-            x: e.DateVal,
-            y:e.CumCases
-          })),
-          d.map(e => ({
-            x: e.DateVal,
-            y:e.CMODateCount
-          }))
-        ]
-      });
-    }
-  })  
+    fetchData(URL + "/api/covid19d", (d, error) => {
+      if(!error) {        
+        this.setState({
+          daily: [
+            d.map(e => ({
+              x: e.DateVal,
+              y:e.CumCases
+            })),
+            d.map(e => ({
+              x: e.DateVal,
+              y:e.CMODateCount
+            }))
+          ]
+        });
+      }
+    })  
   }
 
   /**
@@ -501,10 +500,6 @@ export default class Welcome extends React.Component {
           isMobile={isMobile()}
           key="decksidebar"
           alert={alert}
-          TotalCases={this.state.filtered && 
-            this.state.filtered.map(e => e.properties.TotalCases).reduce(
-            (t,v) => t+v
-          )}
           data={this.state.filtered}
           colourCallback={(colourName) =>
             this._generateLayer({ cn: colourName })

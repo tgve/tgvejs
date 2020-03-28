@@ -5,14 +5,7 @@ import React, { useState } from 'react';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
 
-import { ATILOGO } from '../utils';
-
 const navs = [
-  {
-    key: 1,
-    to: "fui",
-    title: "DUI"
-  },
   {
     key: 2,
     to: "about",
