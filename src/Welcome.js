@@ -167,30 +167,21 @@ export default class Welcome extends React.Component {
         //network error?
       }
     })
-    fetchData(URL + "/api/covid19d", (d, error) => {
+
+    fetchData(URL + "/api/covid19d", (daily, error) => {
       if(!error) {        
-        this.setState({
-          daily: [
-            d.map(e => ({
-              x: e.DateVal,
-              y:e.CumCases
-            })),
-            d.map(e => ({
-              x: e.DateVal,
-              y:e.CMODateCount
-            })),
-            d.map(e =>({
-              x: e.DateVal || null,
-              y: e.CumDeaths || 0
-            })),
-            d.map(e =>({
-              x: e.DateVal || null,
-              y: e.DailyDeaths || 0
-            }))
-          ]
-        });
+        this.setState({daily});
+        fetchData(URL + "/api/covid19t", (json, error) => {
+          if(!error) {
+            const asObject = {};
+            json.forEach(e => asObject[e.date] = e.number)
+            this.setState({
+              tests: daily.map(e => ({x: e.DateVal, y: asObject[e.DateVal] || 0}))
+            })
+          }
+        })
       }
-    })  
+    })
   }
 
   /**
@@ -502,6 +493,7 @@ export default class Welcome extends React.Component {
           </DeckGL>
         </MapGL>
         <DeckSidebarContainer
+          tests={this.state.tests}
           daily={this.state.daily}
           dark={this.props.dark}
           layerStyle={layerStyle}

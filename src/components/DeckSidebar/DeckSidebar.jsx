@@ -49,7 +49,7 @@ export default class DeckSidebar extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { data, alert, loading, daily } = this.props;
+    const { data, alert, loading, daily, tests } = this.props;
     const { elevation, radius, reset,
       barChartVariable } = this.state;
     // avoid rerender as directly
@@ -59,7 +59,8 @@ export default class DeckSidebar extends React.Component {
       alert !== nextProps.alert ||
       loading !== nextProps.loading ||
       barChartVariable !== nextState.barChartVariable ||
-      daily !== nextProps.daily) return true;
+      daily !== nextProps.daily ||
+      tests !== nextProps.tests) return true;
     //TODO:  a more functional way is needed        
     if (data && nextProps && nextProps.data &&
       data.length === nextProps.data.length) {
@@ -76,7 +77,7 @@ export default class DeckSidebar extends React.Component {
     const { elevation, radius, year,
       subsetBoundsChange, multiVarSelect, barChartVariable } = this.state;
     const { onChangeRadius, onChangeElevation,
-      onSelectCallback, data, colourCallback, daily,
+      onSelectCallback, data, colourCallback, daily, tests,
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, column, dark, toggleOpen, toggleHexPlot } = this.props;
     let plot_data = [];
@@ -137,7 +138,7 @@ export default class DeckSidebar extends React.Component {
               this.state.TotalCases || daily ?
               <h2>
                 {(this.state.TotalCases || 
-                  daily && daily[0] && daily[0][daily[0].length - 1].y) + " cases"}
+                  daily && daily[0] && daily[daily.length - 1].CumCases) + " cases"}
               </h2>
               :
               <h2>{data && data.length ?
@@ -185,7 +186,6 @@ export default class DeckSidebar extends React.Component {
                   // for callback we get { year: "",multiVarSelect }
                   onSelectCallback, callback: (changes) => this.setState(changes)})
               }
-              <br />
               {/* TODO: generate this declaritively too */}
               {
                 severity_data && severity_data.map(each =>
@@ -203,8 +203,8 @@ export default class DeckSidebar extends React.Component {
                   }, dark))
               }
               <hr style={{ clear: 'both' }} />
-              {daily && 
-                  <Daily data={daily} dark={dark}/>}
+              {daily && tests &&
+                  <Daily data={daily} tests={tests} dark={dark}/>}
               <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}

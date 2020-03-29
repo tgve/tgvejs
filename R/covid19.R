@@ -81,4 +81,3 @@ daily = readxl::read_xlsx(daily)
 # library(rvest)
 # daily = read_html("https://www.arcgis.com/home/item.html?id=23258c605db74e6696e72a65513a1770&view=lis#data")
 # daily = html_node(daily, "table")
-

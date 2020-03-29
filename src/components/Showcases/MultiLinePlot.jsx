@@ -23,8 +23,8 @@ const W = 250;
 export default function MultiLinePlot(options) {
   const [hint, setHint] = useState();
 
-  if (!Array.isArray(options.data) ||
-    options.data.length > 10) return null;
+  // if (!Array.isArray(options.data) ||
+  //   options.data.length > 10) return null;
 
   const limit = 10;
 
@@ -55,16 +55,17 @@ export default function MultiLinePlot(options) {
             tickSize={0}
             tickFormat={v => shortenName(v, 10)}
             tickValues={
-              (data.length > limit)
-                ? data
+              (data[0].length > limit)
+                ? data[0]
                   .filter((item, idx) => {
-                    if ((idx % Math.floor(data.length / limit)) === 0) {
+                    if ((idx % Math.floor(data[0].length / limit)) === 0) {
                       return item.x
                     }
                   }).map(item => (item.x))
-                : data.map(item => (item.x))
+                : data[0].map(item => (item.x))
             }
-            tickLabelAngle={-65} style={{
+            tickLabelAngle={-65} 
+            style={{
               line: { strokeWidth: 0 },
               text: { fill: options.dark ? '#fff' : '#000' } 
             }} />}
@@ -74,7 +75,6 @@ export default function MultiLinePlot(options) {
             tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} style={{
               line: { strokeWidth: 0 },
               title: { fill: options.dark ? '#fff' : '#000' },
-              text: { fill: options.dark ? '#fff' : '#000' } 
             }} position="end" title={data[0][data[0].length-1].x} />
         }
         {data.map((line, i) =>
@@ -90,16 +90,13 @@ export default function MultiLinePlot(options) {
           values={hint}
           style={'test-class-name'}
         > 
-          <div style={{color:options.dark ? '#fff' : '#000'}}>
-            <p>{hint[0].x}</p>
-            Cases: {hint[0].y}, Deaths: 
-            <span style={{color:'red'}}>
-              {hint[1].y}
-            </span>, 
-            DailyDeaths: 
-            <span style={{color:'red'}}>
-              {hint[2].y}
-            </span>
+          <div style={{
+              color: options.dark ? '#fff' : '#000'
+            }}>
+            <p>{hint[0] && hint[0].x}</p>
+            {
+              legend.map((e, i) => e + ": " + hint[i].y + " ")
+            }
           </div>
         </Crosshair>}
       </XYPlot>
