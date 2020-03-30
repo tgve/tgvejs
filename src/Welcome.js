@@ -31,7 +31,6 @@ import {
   colorRanges,
   convertRange, getMin, getMax, isURL
 } from './utils';
-import Constants from './Constants';
 import DeckSidebarContainer from
   './components/DeckSidebar/DeckSidebarContainer';
 import history from './history';
@@ -40,6 +39,8 @@ import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
 import { isNumber, isArray } from './JSUtils';
+
+const csv2geojson = require('csv2geojson');
 
 const osmtiles = {
   "version": 8,
@@ -148,6 +149,20 @@ export default class Welcome extends React.Component {
       aURL : // do not get the server to parse it 
       defualtURL;
 
+    fetch(defualtURL)
+    .then(response => response.text())
+    .then(response => {
+      try {
+        csv2geojson.csv2geojson(response, (err, data) => {
+          if (!err) {
+            console.log(data);
+            
+          }
+        })
+      } catch (error) {
+        
+      }
+    })
     fetchData(fullURL, (data, error) => {
       if (!error) {
         // this._updateURL(viewport)
