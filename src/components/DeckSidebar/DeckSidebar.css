@@ -19,8 +19,9 @@
 }
 
 .side-panel-container {
-  top: 44px;
-  height: 95%;
+  top: 0px;
+  bottom: 0px;
+  height: auto;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -35,7 +36,6 @@
 }
 
 .side-panel {
-  padding: 20px;
   width: 300px;
   /* background-color: #242730;
   color: #a3a5a8; */

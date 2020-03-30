@@ -1,38 +1,21 @@
 import React from 'react';
-import {
-  Tabs, Tab, FormGroup, InputGroup,
-  FormControl, Glyphicon, Checkbox
-} from 'react-bootstrap';
 import { Button, KIND, SIZE } from 'baseui/button';
-
 import './DeckSidebar.css';
 import DataInput from '../DataInput';
-import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
-  xyObjectByProperty, percentDiv,
-  searchNominatom,
-  humanize, generateLegend, sortNumericArray
+  xyObjectByProperty, humanize, generateLegend, sortNumericArray
 } from '../../utils';
-import { LineSeries } from 'react-vis';
-import Variables from '../Variables';
 import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
-import { DEV_URL, PRD_URL, LAYERSTYLES } from '../../Constants';
-import ColorPicker from '../ColourPicker';
+import { DEV_URL, PRD_URL } from '../../Constants';
+
 import Modal from '../Modal';
 import DataTable from '../Table';
 
-import { yearSlider } from '../Showcases/Widgets';
 import { crashes_plot_data } from '../Showcases/Plots';
-import SeriesPlot from '../Showcases/SeriesPlot';
-import { isEmptyOrSpaces, isNumber } from '../../JSUtils';
-import MultiSelect from '../MultiSelect';
-import AddVIS from '../AddVIS';
-import MultiLinePlot from '../Showcases/MultiLinePlot';
-import Daily from '../covid/Daily';
+import { isNumber } from '../../JSUtils';
 
-import CovidTabs from "../covid/covid-sidebar/CovidTabs"
-// import GenerateUI from '../UI';
+import LetsBeatCovidAccordion from "../covid/LetsBeatCovidAccordion"
 
 const URL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
 
@@ -131,7 +114,8 @@ export default class DeckSidebar extends React.Component {
           }}
           className="side-panel">
           <RBAlert alert={alert} />
-          <div
+          <img alt="Let's beat covid logo" src={ require("../../img/lets-beat-covid-logo.png")} style={{ width : "100%" }}/>
+          {/* <div
             style={{
               background: dark ? '#29323C' : '#eee'
             }}
@@ -178,10 +162,10 @@ export default class DeckSidebar extends React.Component {
                     this.props.showLegend(false);
                 }}>Reset</Button>
             }
-          </div>
+          </div> */}
           <div className="side-panel-body">
             <div className="side-panel-body-content">
-              <CovidTabs
+              <LetsBeatCovidAccordion
                 data={data}
                 multiVarSelect={multiVarSelect}
                 onSelectCallback={(fieldName, selected) => {
@@ -193,7 +177,10 @@ export default class DeckSidebar extends React.Component {
                     onSelectCallback({
                       what: 'multi', selected: { [fieldName] : new Set([selected]) }
                     });
-                }}></CovidTabs>
+                }} />
+              <div style={{padding : 20}}>
+                Built by MedShr in partnership with NHS, University of Leeds, using <a href="https://github.com/layik/eAtlas">eAtlas</a>
+              </div>
             </div>
           </div>
         </div>

@@ -3,7 +3,6 @@
  */
 import React from "react";
 import ReactDOM from "react-dom";
-import {BrowserRouter} from "react-router-dom";
 
 import App from "./App";
 // brief about serviceworkers from CRA
@@ -22,16 +21,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png")
 });
 
-/**
- * Separating index.js and App.js:
- * 1. doing above like launch configs here
- * 2. keep App.js clear for React application.
- */
-ReactDOM.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
-  document.getElementById("root")
-);
+ReactDOM.render(<App />, document.getElementById("root"));
 
 unregister();

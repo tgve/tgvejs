@@ -14,7 +14,7 @@ export default (props) => {
       <Accordion
         onChange={({ expanded }) => console.log(expanded)}
       >
-        <Panel title="Covid Status">
+        <Panel title="Covid Status" style={{ padding : 5}}>
           <CovidStatus onSelectCallback={props.onSelectCallback}/>
         </Panel>
         <Panel title="Social Distancing">

@@ -40,11 +40,11 @@ export default (props) => {
         className="close-button"
         onClick={() => setOpen(!open)}
         style={{ color: 'white' }}>
-        <div style={{ backgroundColor: '#242730' }}>
+        <div style={{ backgroundColor: 'rgb(1, 22, 43)', padding : 10, cursor : "pointer" }}>
           <i
             style={{ fontSize: '2rem', color: 'white !important' }}
-            className={open ? "fa fa-arrow-circle-left" :
-              "fa fa-arrow-circle-right"} />
+            className={open ? "fa fa-chevron-left" :
+              "fa fa-chevron-right"} />
         </div>
       </div>
     </div>
