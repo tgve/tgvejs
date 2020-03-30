@@ -214,14 +214,14 @@ export default class DeckSidebar extends React.Component {
               <CovidTabs
                 data={data}
                 multiVarSelect={multiVarSelect}
-                onSelectCallback={(selected) => {
+                onSelectCallback={(fieldName, selected) => {
 
                   // this.setState({
                   //   barChartVariable: newBarChartVar
                   // });
                   typeof onSelectCallback === 'function' &&
                     onSelectCallback({
-                      what: 'multi', selected: { "covid_status": new Set([selected]) }
+                      what: 'multi', selected: { [fieldName] : new Set([selected]) }
                     });
                 }}></CovidTabs>
 

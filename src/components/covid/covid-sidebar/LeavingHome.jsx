@@ -7,9 +7,12 @@ export default (props) => {
   return (
     <RadioGroup
       value={value}
-      onChange={e => { setValue(e.target.value); typeof props.onSelectCallback === "function" && props.onSelectCallback(e.target.value) }}
+      onChange={e => { 
+        setValue(e.target.value); 
+        typeof props.onSelectCallback === "function" && 
+          props.onSelectCallback("self_isolation_steps", e.target.value) 
+      }}
       name="number"
-    // align={ALIGN.vertical}
     >
       <Radio value="symptoms">Symptoms</Radio>
       <Radio
