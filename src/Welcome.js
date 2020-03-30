@@ -153,23 +153,23 @@ export default class Welcome extends React.Component {
 
     fetchData(fullURL, (data, error) => {
       fetch(fullURL)
-      .then(response => response.text())
-      .then(response => {
-        csv2geojson.csv2geojson(response, (err, data) => {          
-          this.setState({
-            loading: false,
-            data: data,
-            alert: customError || null
-          })
-          this._fitViewport(data)
-          this._generateLayer()
-          if (!err) {//there is an error from csv2geojson 
-            //about lon/lat validity
-            console.log(data); 
-          }
-        });
-        
-      })
+        .then(response => response.text())
+        .then(response => {
+          csv2geojson.csv2geojson(response, (err, data) => {
+            this.setState({
+              loading: false,
+              data: data,
+              alert: customError || null
+            })
+            this._fitViewport(data)
+            this._generateLayer()
+            if (!err) {//there is an error from csv2geojson 
+              //about lon/lat validity
+              console.log(data);
+            }
+          });
+
+        })
     })
   }
 
@@ -236,9 +236,11 @@ export default class Welcome extends React.Component {
         }
       )
     }
+
+    let layerStyle = "icon"
     // console.log(data.length);
-    let layerStyle = (filter && filter.what ===
-      'layerStyle' && filter.selected) || this.state.layerStyle || 'grid';
+    // let layerStyle = (filter && filter.what ===
+    //   'layerStyle' && filter.selected) || this.state.layerStyle || 'grid';
     if (geomType !== "point") layerStyle = "geojson"
     if (data.length < iconLimit && !column &&
       geomType === "point") layerStyle = 'icon';
@@ -301,12 +303,12 @@ export default class Welcome extends React.Component {
         }; // avoid id
       }
     }
-    const cols = Object.keys(data && data[0] && 
+    const cols = Object.keys(data && data[0] &&
       data[0].properties);
     if (geomType === "polygon" || geomType === "multipolygon") {
       // TODO: remove SPENSER
-      const SPENSER = isArray(cols) && cols.length > 0 && 
-      cols[1] === 'GEOGRAPHY_CODE';
+      const SPENSER = isArray(cols) && cols.length > 0 &&
+        cols[1] === 'GEOGRAPHY_CODE';
       if (SPENSER) {
         options.getElevation = d => (isNumber(d.properties[column]) &&
           column !== 'YEAR' && d.properties[column]) || null
@@ -315,7 +317,7 @@ export default class Welcome extends React.Component {
       options.getFillColor = (d) =>
         colorScale(d, data, column ? column : SPENSER ? 1 : 0)
     }
-    if(geomType === "point" && cols.includes("TotalCases")) {
+    if (geomType === "point" && cols.includes("TotalCases")) {
       options.getPosition = d => d.geometry.coordinates;
       options.getFillColor = d => colorScale(d, data, 1) //2nd prop
       options.getRadius = d => +(Object.values(d.properties)[2]) * 30
@@ -503,7 +505,7 @@ export default class Welcome extends React.Component {
               loading: true,
               coords: null,
               layerStyle: url_returned && url_returned.endsWith("covid19w") ?
-              "heatmap" : this.state.layerStyle
+                "heatmap" : this.state.layerStyle
             })
             if (geojson_returned) {
               // confirm valid geojson

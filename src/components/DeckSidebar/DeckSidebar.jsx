@@ -17,7 +17,7 @@ import { LineSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
-import {DEV_URL, PRD_URL, LAYERSTYLES} from '../../Constants';
+import { DEV_URL, PRD_URL, LAYERSTYLES } from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Modal';
 import DataTable from '../Table';
@@ -30,6 +30,8 @@ import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
 import MultiLinePlot from '../Showcases/MultiLinePlot';
 import Daily from '../covid/Daily';
+
+import CovidTabs from "../covid/covid-sidebar/CovidTabs"
 // import GenerateUI from '../UI';
 
 const URL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
@@ -84,31 +86,32 @@ export default class DeckSidebar extends React.Component {
     let plot_data_multi = [[], []];
     const notEmpty = data && data.length > 1;
     plot_data = crashes_plot_data(notEmpty, data, plot_data, plot_data_multi);
-    const severity_data = propertyCount(data, "accident_severity");    
+    const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
     const columnData = notEmpty ?
       xyObjectByProperty(data, column || barChartVariable) : [];
     const geomType = notEmpty && data[0].geometry.type.toLowerCase();
     // console.log(geomType);
-    if(notEmpty && column && (geomType === 'polygon' ||
-    geomType === 'multipolygon' || "linestring") &&
+    if (notEmpty && column && (geomType === 'polygon' ||
+      geomType === 'multipolygon' || "linestring") &&
       isNumber(data[0].properties[column])) {
-        // we dont need to use generateDomain(data, column)
-        // columnData already has this in its x'es
-        columnDomain = columnData.map(e => e.x);
-        // we will just sort it        
-        columnDomain = sortNumericArray(columnDomain);
-        // console.log(columnDomain);
-        
-        this.props.showLegend(
-          generateLegend(
-            {domain: columnDomain, 
-              title: humanize(column)
-            }
-          )
-        );
+      // we dont need to use generateDomain(data, column)
+      // columnData already has this in its x'es
+      columnDomain = columnData.map(e => e.x);
+      // we will just sort it        
+      columnDomain = sortNumericArray(columnDomain);
+      // console.log(columnDomain);
+
+      this.props.showLegend(
+        generateLegend(
+          {
+            domain: columnDomain,
+            title: humanize(column)
+          }
+        )
+      );
     }
-    const resetState = (urlOrName) => {      
+    const resetState = (urlOrName) => {
       this.setState({
         reset: true,
         year: "",
@@ -128,29 +131,29 @@ export default class DeckSidebar extends React.Component {
           }}
           className="side-panel">
           <RBAlert alert={alert} />
-          <div 
-              style={{
-                background: dark ? '#29323C' : '#eee'
-              }}
-              className="side-pane-header">
+          <div
+            style={{
+              background: dark ? '#29323C' : '#eee'
+            }}
+            className="side-pane-header">
             {
               (data && data.length && data[0].properties.TotalCases) ||
-              this.state.TotalCases || daily ?
-              <h2>
-                {(this.state.TotalCases || 
-                  daily && daily[0] && daily[daily.length - 1].CumCases) + " cases"}
-              </h2>
-              :
-              <h2>{data && data.length ?
-                data.length + " row" + (data.length > 1 ? "s" : "") + "."
-                : "Nothing to show"}
-              </h2>
+                this.state.TotalCases || daily ?
+                <h2>
+                  {(this.state.TotalCases ||
+                    daily && daily[0] && daily[daily.length - 1].CumCases) + " cases"}
+                </h2>
+                :
+                <h2>{data && data.length ?
+                  data.length + " row" + (data.length > 1 ? "s" : "") + "."
+                  : "Nothing to show"}
+                </h2>
             }
             dataset: {this.props.datasetName}
           </div>
           <div>
             updated: {d.toLocaleString()}
-            <br/>
+            <br />
             <DataInput
               toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
               urlCallback={(url, geojson, name) => {
@@ -172,19 +175,21 @@ export default class DeckSidebar extends React.Component {
                   typeof (urlCallback) === 'function'
                     && urlCallback(URL + "/api/covid19");
                   typeof (this.props.showLegend) === 'function' &&
-                  this.props.showLegend(false);
+                    this.props.showLegend(false);
                 }}>Reset</Button>
             }
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
-                {/* <DateSlider data={yy} multiVarSelect={multiVarSelect}
+              {/* <DateSlider data={yy} multiVarSelect={multiVarSelect}
                   onSelectCallback={(changes) => console.log(changes)} 
                   callback={(changes) => console.log(changes)}/> */}
               {/* range of two values slider is not native html */
-                yearSlider({data, year, multiVarSelect,
+                yearSlider({
+                  data, year, multiVarSelect,
                   // for callback we get { year: "",multiVarSelect }
-                  onSelectCallback, callback: (changes) => this.setState(changes)})
+                  onSelectCallback, callback: (changes) => this.setState(changes)
+                })
               }
               {/* TODO: generate this declaritively too */}
               {
@@ -204,7 +209,23 @@ export default class DeckSidebar extends React.Component {
               }
               <hr style={{ clear: 'both' }} />
               {daily && tests &&
-                  <Daily data={daily} tests={tests} dark={dark}/>}
+                <Daily data={daily} tests={tests} dark={dark} />}
+
+              <CovidTabs
+                data={data}
+                multiVarSelect={multiVarSelect}
+                onSelectCallback={(selected) => {
+
+                  // this.setState({
+                  //   barChartVariable: newBarChartVar
+                  // });
+                  typeof onSelectCallback === 'function' &&
+                    onSelectCallback({
+                      what: 'multi', selected: { "covid_status": new Set([selected]) }
+                    });
+                }}></CovidTabs>
+
+
               <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
@@ -212,7 +233,7 @@ export default class DeckSidebar extends React.Component {
                 }>
                   {/* pick a column and vis type */}
                   <AddVIS data={data} dark={dark} plotStyle={{
-                    marginBottom:80
+                    marginBottom: 80
                   }} />
                   {/* distribution example */}
                   {notEmpty &&
@@ -267,15 +288,20 @@ export default class DeckSidebar extends React.Component {
                     </>
                   }
                 </Tab>
+
+
+
                 <Tab eventKey="2" title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-sliders" />
                 }>
+
+
                   {notEmpty &&
                     <div>
                       <ColorPicker colourCallback={(color) =>
-                          typeof colourCallback === 'function' &&
-                          colourCallback(color)} />
+                        typeof colourCallback === 'function' &&
+                        colourCallback(color)} />
                       <input
                         type="range"
                         id="radius"
@@ -309,7 +335,7 @@ export default class DeckSidebar extends React.Component {
                       />
                       <h5>Elevation: {elevation}.</h5>
                     </div>
-                    }
+                  }
                   {notEmpty &&
                     <>
                       <h6>Deck Layer:</h6>
@@ -357,7 +383,7 @@ export default class DeckSidebar extends React.Component {
                       }
                     }}
                   >Subset by map boundary</Checkbox>
-                  
+
                 </Tab>
                 {/* <Tab eventKey="3" title={
                   <i style={{ fontSize: '2rem' }}
