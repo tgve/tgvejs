@@ -7,7 +7,7 @@ export default (props) => {
   return (
     <RadioGroup
       value={value}
-      onChange={e => { setValue(e.target.value); typeof props.onSelectCallback === "function" && props.onSelectCallback(e.target.value) }}
+      onChange={e => { setValue(e.target.value); typeof props.onSelectCallback === "function" && props.onSelectCallback("amount_of_contact", e.target.value) }}
       name="number"
     // align={ALIGN.vertical}
     >
@@ -15,7 +15,6 @@ export default (props) => {
       <Radio value="reduced_contact">Reducing contact with other people</Radio>
       <Radio value="minimal_contact">Zero or minimal contact with other people</Radio>
       <Radio value="none">Symptoms</Radio>
-
     </RadioGroup>
   );
 }

@@ -7,7 +7,7 @@ export default (props) => {
   return (
     <RadioGroup
       value={value}
-      onChange={e => { setValue(e.target.value); typeof props.onSelectCallback === "function" && props.onSelectCallback(e.target.value) }}
+      onChange={e => { setValue(e.target.value); typeof props.onSelectCallback === "function" && props.onSelectCallback("covid_status", e.target.value) }}
       name="number"
     // align={ALIGN.vertical}
     >
