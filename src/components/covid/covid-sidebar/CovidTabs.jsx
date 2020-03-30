@@ -1,12 +1,13 @@
 import * as React from "react";
 import { Tabs, Tab } from "baseui/tabs";
 import { getPropertyValues } from "../../../geojsonutils.js"
-import { RadioGroup, Radio, ALIGN } from "baseui/radio";
-
+import CovidStatus from "./CovidStatus";
+import SocialDistancing from "./SocialDistancing";
+import LeavingHome from "./LeavingHome";
+import WorkCurrent from "./WorkCurrent";
 
 export default (props) => {
     const [activeKey, setActiveKey] = React.useState("0");
-    const [value, setValue] = React.useState("1");
 
     console.log(getPropertyValues({ features: props.data }));
 
@@ -18,26 +19,18 @@ export default (props) => {
             activeKey={activeKey}
         >
 
-            <Tab title="Covid Status">Covid Status
-            <RadioGroup
-                    value={value}
-                    onChange={e => { setValue(e.target.value); typeof props.onSelectCallback === "function" && props.onSelectCallback(e.target.value) }}
-                    name="number"
-                // align={ALIGN.vertical}
-                >
-                    <Radio value="symptoms">Symptoms</Radio>
-                    <Radio
-                        value="2"
-                        description="This is a radio description"
-                    >
-                        Two
-                    </Radio>
-                    <Radio value="3">Three</Radio>
-                </RadioGroup>
+            <Tab title="Covid Status">
+              <CovidStatus onSelectCallback={props.onSelectCallback}/>
             </Tab>
-            <Tab title="Social Distancing">Social  Distancing</Tab>
-            <Tab title="Leaving Home">Leaving Home</Tab>
-            <Tab title="Work Current">Work Current</Tab>
+            <Tab title="Social Distancing">
+              <SocialDistancing onSelectCallback={props.onSelectCallback}/>
+            </Tab>
+            <Tab title="Leaving Home">
+              <LeavingHome onSelectCallback={props.onSelectCallback}/>
+            </Tab>
+            <Tab title="Work Current">
+              <WorkCurrent onSelectCallback={props.onSelectCallback}/>
+            </Tab>
         </Tabs>
     );
 }
