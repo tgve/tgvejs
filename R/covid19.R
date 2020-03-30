@@ -51,15 +51,24 @@ covid19_regions = geojsonsf::sf_geojson(covid19_regions)
 #          "covid19-regions-date.geojson")
 
 ########### world ###########
-csv = read.csv("https://covid.ourworldindata.org/data/full_data.csv", 
+# url changed 
+# https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide
+csv = read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", 
                stringsAsFactors = FALSE)
 c = read.csv("countries.csv")
 library(sf)
-names(c)
-names(csv)
 c = st_as_sf(c, coords = c("longitude","latitude"))
-csv = csv[tolower(csv$location) %in% tolower(c$name), ]
-m = unlist(lapply(tolower(csv$location), 
+csv$countriesAndTerritories = gsub("[^A-Za-z]", "", 
+                                   csv$countriesAndTerritories)
+# underscores were removed.
+csv$countriesAndTerritories = gsub("([a-z])([A-Z])", "\\1 \\2", 
+                                   csv$countriesAndTerritories)
+csv$countriesAndTerritories = gsub("United Statesof America", 
+                                   "United States",
+                                   csv$countriesAndTerritories)
+csv = csv[tolower(csv$countriesAndTerritories) %in% 
+            tolower(c$name), ]
+m = unlist(lapply(tolower(csv$countriesAndTerritories), 
                   function(x) grep(x, tolower(c$name))[1]))
 sfc = st_geometry(c)
 m = m[!is.na(m)]

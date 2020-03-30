@@ -7,7 +7,7 @@ import MultiSelect from './MultiSelect';
 import TreeMap from './TreeMap';
 import { humanize } from '../utils';
 import { isString, isNumber } from '../JSUtils';
-import { xyObjectByProperty, xyObjectFromKeyValue } from '../utils';
+import { xyObjectFromKeyValue } from '../utils';
 import SeriesPlot from './Showcases/SeriesPlot';
 
 const VIS = ['Vertical Bar', 'Horizontal Bar',

@@ -18,12 +18,6 @@
   -webkit-transition: margin 250ms;
 }
 
-.right-side-panel {
-  background-color: #242730;
-  /* max-width: 350px; defined in the component */
-  /* max-height: 350px; again defined in the component */
-}
-
 .side-panel-container {
   top: 44px;
   height: 95%;

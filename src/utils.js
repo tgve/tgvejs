@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScatterplotLayer, HexagonLayer, GeoJsonLayer,
   ScreenGridLayer, GridLayer, LineLayer,
@@ -720,6 +720,21 @@ const getMax = (arr) => {
 const getMin = (arr) => {
   return arr.reduce((max, v) => max <= v ? max : v, Infinity);
 }
+
+const useFetch = (url) => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  async function fetchUrl() {
+    const response = await fetch(url);
+    const json = await response.json();
+    setData(json);
+    setLoading(false);
+  }
+  useEffect(() => {
+    fetchUrl();
+  }, []);
+  return [data, loading];
+}
 export {
   getResultsFromGoogleMaps,
   xyObjectFromKeyValue,
@@ -743,6 +758,7 @@ export {
   fetchData,
   humanize,
   isMobile,
+  useFetch,
   ATILOGO,
   getBbx,
   getMin,

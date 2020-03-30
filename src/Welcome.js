@@ -182,6 +182,11 @@ export default class Welcome extends React.Component {
         })
       }
     })
+    fetchData(URL + "/api/covid19w", (d, e) => {
+      if(!e) {
+        this.setState({world: d.features})
+      }
+    })
   }
 
   /**
@@ -493,6 +498,7 @@ export default class Welcome extends React.Component {
           </DeckGL>
         </MapGL>
         <DeckSidebarContainer
+          world={this.state.world}
           tests={this.state.tests}
           daily={this.state.daily}
           dark={this.props.dark}

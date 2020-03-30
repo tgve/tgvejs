@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import {
   makeWidthFlexible,
   XYPlot, XAxis, YAxis, MarkSeries,
-  Hint
+  Hint,
+  VerticalBarSeries
 } from 'react-vis';
 import { format } from 'd3-format';
 
 import { shortenName } from '../../utils';
+import verticalBarSeries from 'react-vis/dist/plot/series/vertical-bar-series';
 
 const W = 250;
 const FlexibleXYPlot = makeWidthFlexible(XYPlot);
@@ -40,7 +42,11 @@ export default function SeriesPlot(options) {
   return data && data.length > 1 &&
     // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
     <div className="unselectable"
-      style={{ position: 'relative' }}
+      style={{ 
+        position: 'relative',
+        color: options.dark ? "white" : "black",
+        background: options.dark ? "#242730" : "white"
+      }}
       onMouseDown={(e) => {
         if (!x && !y) {
           setX(e.clientX); setY(e.clientY)

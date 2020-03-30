@@ -21,7 +21,6 @@ export default (props) => {
     setStart(start); 
     setEnd(days);
   }
-  console.log(testsSliced, sliced);
 
   sliced = [
     sliced.map(e => ({
