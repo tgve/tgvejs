@@ -14,7 +14,7 @@ export default (props) => {
       <Radio value="no_large_groups">Avoiding large groups of people</Radio>
       <Radio value="reduced_contact">Reducing contact with other people</Radio>
       <Radio value="minimal_contact">Zero or minimal contact with other people</Radio>
-      <Radio value="none">Symptoms</Radio>
+      <Radio value="none">No changes to contact</Radio>
     </RadioGroup>
   );
 }
