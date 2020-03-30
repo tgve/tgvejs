@@ -12,8 +12,8 @@ export default (props) => {
     // align={ALIGN.vertical}
     >
       <Radio value="no_large_groups">Avoiding large groups of people</Radio>
-      <Radio value="reduced_contact">Symptoms</Radio>
-      <Radio value="minimal_contact">Symptoms</Radio>
+      <Radio value="reduced_contact">Reducing contact with other people</Radio>
+      <Radio value="minimal_contact">Zero or minimal contact with other people</Radio>
       <Radio value="none">Symptoms</Radio>
 
     </RadioGroup>
