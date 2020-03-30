@@ -14,14 +14,10 @@ export default (props) => {
       }}
       name="number"
     >
-      <Radio value="symptoms">Symptoms</Radio>
-      <Radio
-        value="2"
-        description="This is a radio description"
-      >
-        Two
-      </Radio>
-      <Radio value="3">Three</Radio>
+      <Radio value="not_leaving_house">Not leaving house at all</Radio>
+      <Radio value="work_and_essentials">Work and essentials</Radio>
+      <Radio value="essentials">Essentials</Radio>
+      <Radio value="none">None</Radio>
     </RadioGroup>
   );
 }
