@@ -11,6 +11,7 @@ export default (props) => {
       name="number"
     // align={ALIGN.vertical}
     >
+      <Radio value="no_symptoms">I am well and have not been exposed to COVID-19</Radio>
       <Radio value="symptoms">I am unwell and think I have COVID-19</Radio>
       <Radio value="self_isolation_after_exposure">I feel well but isolating after COVID-19 exposure</Radio>
       <Radio value="test_positive">I am unwell and tested positive for COVID-19</Radio>
