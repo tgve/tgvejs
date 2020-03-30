@@ -32,7 +32,9 @@ export default React.memo((props) => {
               marginLeft: -16,
               bottom: 0,
               position: 'absolute',
-              fontSize: '2rem', color: 'white !important'
+              fontSize: '2rem',
+              background: dark ? '#242730' : 'white',
+              color: dark ? 'white' : 'black'
             }}
             className={open ? "fa fa-arrow-circle-right" :
               "fa fa-arrow-circle-left"} />
