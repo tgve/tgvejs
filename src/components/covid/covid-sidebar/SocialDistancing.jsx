@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { RadioGroup, Radio } from "baseui/radio";
 
 
@@ -11,14 +11,11 @@ export default (props) => {
       name="number"
     // align={ALIGN.vertical}
     >
-      <Radio value="symptoms">Symptoms</Radio>
-      <Radio
-          value="2"
-          description="This is a radio description"
-      >
-          Two
-      </Radio>
-      <Radio value="3">Three</Radio>
+      <Radio value="no_large_groups">Avoiding large groups of people</Radio>
+      <Radio value="reduced_contact">Symptoms</Radio>
+      <Radio value="minimal_contact">Symptoms</Radio>
+      <Radio value="none">Symptoms</Radio>
+
     </RadioGroup>
   );
 }
