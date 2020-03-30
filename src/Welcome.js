@@ -61,8 +61,7 @@ const osmtiles = {
     "source": "simple-tiles",
   }]
 };
-const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
-const defualtURL = "/api/covid19";
+const defualtURL = "https://letsbeatcovid.net/api/geo";
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -147,7 +146,7 @@ export default class Welcome extends React.Component {
       // TODO: decide which is better.
       // URL + "/api/url?q=" + aURL : // get the server to parse it 
       aURL : // do not get the server to parse it 
-      URL + defualtURL;
+      defualtURL;
 
     fetchData(fullURL, (data, error) => {
       if (!error) {
