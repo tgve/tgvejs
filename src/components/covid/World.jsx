@@ -13,8 +13,7 @@ export default React.memo((props) => {
     world = Object.keys(world)
     .filter(e => world[e] > 30000)
     .map(e => ({x:e, y: world[e]}));
-    console.log(world);
-    
+
     return (
       <div
         style={{
@@ -42,7 +41,9 @@ export default React.memo((props) => {
           <SeriesPlot
             dark={dark}
             title="World(>30k)"
-            plotStyle={{ height: 200, width: 350 }}
+            plotStyle={{ 
+              height: 200, 
+              width: 350 }}
             type={VerticalBarSeries}
             // sorts the results if x is a number
             // TODO: do we want to do this?

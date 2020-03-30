@@ -3,7 +3,7 @@ const breakdown = (data) => {
   
   const map = {}
   data.forEach(feature => {
-    const location = feature.properties["countriesAndTerritories"];
+    const location = feature.properties["countryterritoryCode"];
     const cases = feature.properties["cases"];
     if (location !== null) {
       if (map[location]) {
