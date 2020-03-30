@@ -31,6 +31,7 @@ import {
   colorRanges,
   convertRange, getMin, getMax, isURL
 } from './utils';
+import Constants from './Constants';
 import DeckSidebarContainer from
   './components/DeckSidebar/DeckSidebarContainer';
 import history from './history';
@@ -62,7 +63,8 @@ const osmtiles = {
     "source": "simple-tiles",
   }]
 };
-const defualtURL = "https://letsbeatcovid.net/api/geo";
+const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
+const defualtURL = "/api/lbc";
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -147,59 +149,27 @@ export default class Welcome extends React.Component {
       // TODO: decide which is better.
       // URL + "/api/url?q=" + aURL : // get the server to parse it 
       aURL : // do not get the server to parse it 
-      defualtURL;
+      URL + defualtURL;
 
-    fetch(defualtURL)
-    .then(response => response.text())
-    .then(response => {
-      try {
-        csv2geojson.csv2geojson(response, (err, data) => {
-          if (!err) {
-            console.log(data);
-            
-          }
-        })
-      } catch (error) {
-        
-      }
-    })
     fetchData(fullURL, (data, error) => {
-      if (!error) {
-        // this._updateURL(viewport)
-        this.setState({
-          loading: false,
-          data: data,
-          alert: customError || null
-        })
-        this._fitViewport(data)
-        this._generateLayer()
-      } else {
-        this.setState({
-          loading: false,
-          alert: { content: 'Could not reach: ' + fullURL }
-        })
-        //network error?
-      }
-    })
-
-    fetchData(URL + "/api/covid19d", (daily, error) => {
-      if(!error) {        
-        this.setState({daily});
-        fetchData(URL + "/api/covid19t", (json, error) => {
-          if(!error) {
-            const asObject = {};
-            json.forEach(e => asObject[e.date] = e.number)
-            this.setState({
-              tests: daily.map(e => ({x: e.DateVal, y: asObject[e.DateVal] || 0}))
-            })
+      fetch(fullURL)
+      .then(response => response.text())
+      .then(response => {
+        csv2geojson.csv2geojson(response, (err, data) => {          
+          this.setState({
+            loading: false,
+            data: data,
+            alert: customError || null
+          })
+          this._fitViewport(data)
+          this._generateLayer()
+          if (!err) {//there is an error from csv2geojson 
+            //about lon/lat validity
+            console.log(data); 
           }
-        })
-      }
-    })
-    fetchData(URL + "/api/covid19w", (d, e) => {
-      if(!e) {
-        this.setState({world: d.features})
-      }
+        });
+        
+      })
     })
   }
 

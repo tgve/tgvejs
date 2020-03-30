@@ -12,11 +12,13 @@ cors <- function(res) {
 lbc = read.csv("https://letsbeatcovid.net/api/geo")
 #' @get /api/lbc
 all_geojson <- function(res){
-  # serve it
-  res$setHeader("Content-Type", "text/plain")
-  res$setHeader("Content-Disposition", 'attachment; filename="geo.csv"')
-  res$body = paste0(lbc, collapse="\n")
-  res$toResponse()
+  res$setHeader("Content-Type", "text/csv")
+  con <- textConnection("val","w")
+  write.csv(lbc, con)
+  close(con)
+  
+  res$body <- paste(val, collapse="\n")
+  res
 }
 
 
