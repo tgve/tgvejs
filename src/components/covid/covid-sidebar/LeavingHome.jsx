@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { RadioGroup, Radio } from "baseui/radio";
 
 
@@ -16,10 +16,10 @@ export default (props) => {
     >
       <Radio value="symptoms">Symptoms</Radio>
       <Radio
-          value="2"
-          description="This is a radio description"
+        value="2"
+        description="This is a radio description"
       >
-          Two
+        Two
       </Radio>
       <Radio value="3">Three</Radio>
     </RadioGroup>
