@@ -15,8 +15,15 @@ function getIconName(size) {
   if (size < 1000) {
     return 'marker-100';
   }
+  if (size < 5000) {
+    return 'marker-1000';
+  }
+  if (size < 10000) {
+    return 'marker-5000';
+  }
+
   console.log("Hmmm");
-  return 'marker-1000';
+  return 'marker-10000';
 }
 
 function getIconSize(size) {
