@@ -7,7 +7,7 @@ export default (props) => {
   const {data} = props;
 
   useEffect(() => {
-    typeof props.onSelectCallback && props.onSelectCallback("covid_status", "symptoms");
+    typeof props.onSelectCallback && props.onSelectCallback("covid_status", value);
   }, [data]);
   return (
     <RadioGroup
