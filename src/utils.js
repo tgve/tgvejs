@@ -96,13 +96,10 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
       }
     }
   });
-<<<<<<< HEAD
+
   const sortedMap =
     typeof Array.from(map.keys())[0] === "number" ? Array.from(map.keys()).sort(descending) : Array.from(map.keys());
-=======
-  const sortedMap = typeof Array.from(map.keys())[0] === 'number' ?
-    Array.from(map.keys()).sort(descending) : Array.from(map.keys())
->>>>>>> cd1999071f1045fdb5022cb5162d92108ac6f901
+
   return sortedMap.map(key => {
     return {
       x: key,
@@ -284,7 +281,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       onHover: renderTooltip
     };
     addOptionsToObject(options, heatObject);
-    return (new HeatmapLayer(heatObject))
+    return new HeatmapLayer(heatObject);
   } else if (name === "scatterplot") {
     const scatterObject = {
       id: "scatterplot",
@@ -409,105 +406,74 @@ const suggestUIforNumber = number => {
  * @param {*} str
  */
 
-const humanize = (str) => {
+const humanize = str => {
   switch (str) {
+    case "retired":
+      return "Retired or not working";
 
-    case 'retired':
-      return 'Retired or not working'
+    case "wfh":
+      return "Working or studying from home";
 
+    case "public_transport":
+      return "Commute by Bus Train or Tube";
 
-    case 'wfh':
-      return 'Working or studying from home'
+    case "car":
+      return "Commute by car";
 
+    case "bike_or_walk":
+      return "Commute by bike or walking";
 
-    case 'public_transport':
-      return 'Commute by Bus Train or Tube'
+    case "no_large_groups":
+      return "Avoiding large groups of people";
 
+    case "reduced_contact":
+      return "Reducing contact with other people";
 
-    case 'car':
-      return 'Commute by car'
+    case "minimal_contact":
+      return "Zero or minimal contact with other people";
 
-    case 'bike_or_walk':
-      return 'Commute by bike or walking'
+    case "none":
+      return "None";
 
+    case "not_leaving_house":
+      return "Not leaving my house at all";
 
-    case 'no_large_groups':
-      return 'Avoiding large groups of people'
+    case "work_and_essentials":
+      return "Only go out for work / groceries / pharmacy / exercise";
 
+    case "essentials":
+      return "Only go out for groceries / pharmacy / exercise";
 
+    case "no_symptoms":
+      return "I feel well and don't think I have been exposed to COVID-19";
 
-    case 'reduced_contact':
-      return 'Reducing contact with other people'
+    case "self_isolation_after_exposure":
+      return "I feel well but isolating after COVID-19 exposure";
 
+    case "test_positive":
+      return "I am unwell and tested positive for COVID-19";
 
+    case "symptoms":
+      return "I am unwell and think I have COVID-19";
 
-    case 'minimal_contact':
-      return 'Zero or minimal contact with other people'
+    case "symptoms_not_covid":
+      return "I am unwell but don't think it's COVID-19";
 
+    case "test_positive_recovered":
+      return "I feel better now but tested positive for COVID-19";
 
-
-    case 'none':
-      return 'None'
-
-
-    case 'not_leaving_house':
-      return 'Not leaving my house at all'
-
-
-
-    case 'work_and_essentials':
-      return 'Only go out for work / groceries / pharmacy / exercise'
-
-
-
-    case 'essentials':
-      return 'Only go out for groceries / pharmacy / exercise'
-
-
-    case 'no_symptoms':
-      return 'I feel well and don\'t think I have been exposed to COVID-19'
-
-
-
-    case 'self_isolation_after_exposure':
-      return 'I feel well but isolating after COVID-19 exposure'
-
-
-
-    case 'test_positive':
-      return 'I am unwell and tested positive for COVID-19'
-
-
-
-    case 'symptoms':
-      return 'I am unwell and think I have COVID-19'
-
-
-
-    case 'symptoms_not_covid':
-      return "I am unwell but don't think it's COVID-19"
-
-
-
-    case 'test_positive_recovered':
-      return 'I feel better now but tested positive for COVID-19'
-
-
-
-    case 'symptoms_recovered':
-      return 'I feel better now but think I had COVID-19'
-
+    case "symptoms_recovered":
+      return "I feel better now but think I had COVID-19";
 
     default:
-      if (!str) return str
-      let frags = str.split('_');
+      if (!str) return str;
+      let frags = str.split("_");
       for (let i = 0; i < frags.length; i++) {
         frags[i] = frags[i].charAt(0).toUpperCase() + frags[i].slice(1);
       }
-      return frags.join(' ');
+      return frags.join(" ");
   }
-
-}
+};
 
 const shortenName = (name, n = 26) => {
   if (isNumber(name)) {
