@@ -19,7 +19,7 @@
  */
 import React from "react";
 import DeckGL from "deck.gl";
-import MapGL, {NavigationControl, FlyToInterpolator} from "react-map-gl";
+import MapGL, { NavigationControl, FlyToInterpolator } from "react-map-gl";
 import centroid from "@turf/centroid";
 import bbox from "@turf/bbox";
 import _ from "underscore";
@@ -43,8 +43,8 @@ import history from "./history";
 
 import "./App.css";
 import Tooltip from "./components/Tooltip";
-import {sfType} from "./geojsonutils";
-import {isNumber, isArray} from "./JSUtils";
+import { sfType } from "./geojsonutils";
+import { isNumber, isArray } from "./JSUtils";
 
 const csv2geojson = require("csv2geojson");
 
@@ -98,9 +98,9 @@ export default class Welcome extends React.Component {
     const init = {
       longitude: -1.614,
       latitude: 52.075,
-      zoom: 6.77,
+      zoom: 2.77,
       alt: 1.5,
-      bearing: -8.14,
+      bearing: 0.0,
       pitch: 46.809
     };
 
@@ -182,8 +182,8 @@ export default class Welcome extends React.Component {
     // TODO: more sanity checks?
     const fullURL = aURL
       ? // TODO: decide which is better.
-        // URL + "/api/url?q=" + aURL : // get the server to parse it
-        aURL // do not get the server to parse it
+      // URL + "/api/url?q=" + aURL : // get the server to parse it
+      aURL // do not get the server to parse it
       : URL + defualtURL;
 
     fetchData(fullURL, (data, error) => {
@@ -220,20 +220,20 @@ export default class Welcome extends React.Component {
    * TODO: other
    */
   _generateLayer(values = {}) {
-    const {radius, elevation, filter, cn} = values;
+    const { radius, elevation, filter, cn } = values;
 
     if (filter && filter.what === "mapstyle") {
       this.setState({
         mapStyle: !MAPBOX_ACCESS_TOKEN
           ? osmtiles
           : filter && filter.what === "mapstyle"
-          ? "mapbox://styles/mapbox/" + filter.selected + "-v9"
-          : this.state.mapStyle
+            ? "mapbox://styles/mapbox/" + filter.selected + "-v9"
+            : this.state.mapStyle
       });
       return;
     }
     let data = this.state.data && this.state.data.features;
-    const {colourName, iconLimit} = this.state;
+    const { colourName, iconLimit } = this.state;
     let column = (filter && filter.what === "column" && filter.selected) || this.state.column;
 
     if (!data) return;
@@ -387,16 +387,16 @@ export default class Welcome extends React.Component {
       transitionInterpolator: new FlyToInterpolator()
       // transitionEasing: d3.easeCubic
     };
-    this.setState({viewport});
+    this.setState({ viewport });
   }
 
-  _renderTooltip({x, y, object}) {
+  _renderTooltip({ x, y, object }) {
     const hoveredObject = object;
     // console.log(hoveredObject && hoveredObject.points[0].properties.speed_limit);
     // console.log(hoveredObject)
     // return
     if (!hoveredObject) {
-      this.setState({tooltip: ""});
+      this.setState({ tooltip: "" });
       return;
     }
     this.setState({
@@ -408,21 +408,21 @@ export default class Welcome extends React.Component {
   }
 
   _updateURL(viewport) {
-    const {latitude, longitude, zoom, bearing, pitch, altitude} = viewport;
-    const {subsetBoundsChange, lastViewPortChange} = this.state;
+    const { latitude, longitude, zoom, bearing, pitch, altitude } = viewport;
+    const { subsetBoundsChange, lastViewPortChange } = this.state;
 
     //if we do history.replace/push 100 times in less than 30 secs
     // browser will crash
     if (new Date() - lastViewPortChange > 1000) {
       history.push(
         `/?lat=${latitude.toFixed(3)}` +
-          `&lng=${longitude.toFixed(3)}` +
-          `&zoom=${zoom.toFixed(2)}` +
-          `&bea=${bearing}` +
-          `&pit=${pitch}` +
-          `&alt=${altitude}`
+        `&lng=${longitude.toFixed(3)}` +
+        `&zoom=${zoom.toFixed(2)}` +
+        `&bea=${bearing}` +
+        `&pit=${pitch}` +
+        `&alt=${altitude}`
       );
-      this.setState({lastViewPortChange: new Date()});
+      this.setState({ lastViewPortChange: new Date() });
       // if(zoom < 6) {
       //   this._fetchAndUpdateState('http://eatlas.geoplumber.com/api/covid19r');
       // } else {
@@ -433,7 +433,7 @@ export default class Welcome extends React.Component {
     if (bounds && subsetBoundsChange) {
       const box = getBbx(bounds);
       // console.log("bounds", box);
-      const {xmin, ymin, xmax, ymax} = box;
+      const { xmin, ymin, xmax, ymax } = box;
       fetchData(URL + defualtURL + xmin + "/" + ymin + "/" + xmax + "/" + ymax, (data, error) => {
         if (!error) {
           // console.log(data.features);
@@ -482,20 +482,20 @@ export default class Welcome extends React.Component {
           mapStyle={mapStyle}
           onViewportChange={viewport => {
             this._updateURL(viewport);
-            this.setState({viewport});
+            this.setState({ viewport });
           }}
           height={((_.has(this.state.viewport, "height") && this.state.viewport.height) || window.innerHeight) + "px"}
           width={((_.has(this.state.viewport, "width") && this.state.viewport.width) || window.innerWidth) + "px"}
           //crucial bit below
           viewState={viewport ? viewport : initialViewState}
-          // mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
+        // mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
         >
           <div
             className="mapboxgl-ctrl-top-right"
             style={{
               zIndex: 9
             }}>
-            <NavigationControl {...viewport} onViewportChange={viewport => this.setState({viewport})} />
+            <NavigationControl {...viewport} onViewportChange={viewport => this.setState({ viewport })} />
           </div>
           <DeckGL
             viewState={viewport ? viewport : initialViewState}
@@ -507,7 +507,7 @@ export default class Welcome extends React.Component {
             // section=using-the-built-in-event-handling
             onClick={e => {
               if (!e.layer && coords) {
-                this.setState({coords: null});
+                this.setState({ coords: null });
                 this._generateLayer();
               }
             }}>
@@ -524,7 +524,7 @@ export default class Welcome extends React.Component {
           key="decksidebar"
           alert={alert}
           data={this.state.filtered}
-          colourCallback={colourName => this._generateLayer({cn: colourName})}
+          colourCallback={colourName => this._generateLayer({ cn: colourName })}
           urlCallback={(url_returned, geojson_returned) => {
             this.setState({
               tooltip: "",
@@ -545,16 +545,16 @@ export default class Welcome extends React.Component {
                 this._generateLayer();
               } catch (error) {
                 // load up default
-                this._fetchAndUpdateState(undefined, {content: error.message});
+                this._fetchAndUpdateState(undefined, { content: error.message });
               }
             } else {
               this._fetchAndUpdateState(url_returned);
             }
           }}
           column={this.state.column}
-          onSelectCallback={selected => this._generateLayer({filter: selected})}
-          onChangeRadius={value => this._generateLayer({radius: value})}
-          onChangeElevation={value => this._generateLayer({elevation: value})}
+          onSelectCallback={selected => this._generateLayer({ filter: selected })}
+          onChangeRadius={value => this._generateLayer({ radius: value })}
+          onChangeElevation={value => this._generateLayer({ elevation: value })}
           toggleSubsetBoundsChange={value => {
             this.setState({
               loading: true,
@@ -565,7 +565,7 @@ export default class Welcome extends React.Component {
           onlocationChange={bboxLonLat => {
             this._fitViewport(bboxLonLat);
           }}
-          showLegend={legend => this.setState({legend})}
+          showLegend={legend => this.setState({ legend })}
           datasetName={defualtURL}
         />
         {legend && (geomType === "polygon" || geomType === "multipolygon") && (

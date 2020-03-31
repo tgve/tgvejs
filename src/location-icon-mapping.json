@@ -139,8 +139,22 @@
     "height": 128,
     "anchorY": 128
   },
+  "marker-5000": {
+    "x": 512,
+    "y": 0,
+    "width": 128,
+    "height": 128,
+    "anchorY": 128
+  },
+  "marker-10000": {
+    "x": 648,
+    "y": 0,
+    "width": 128,
+    "height": 128,
+    "anchorY": 128
+  },
   "marker": {
-    "x": 384,
+    "x": 51,
     "y": 512,
     "width": 128,
     "height": 128,
