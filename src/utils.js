@@ -99,7 +99,7 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
     }
   });
   const sortedMap = typeof Array.from(map.keys())[0] === 'number' ?
-    Array.from(map.keys()).sort(descending) : Array.from(map.keys())  
+    Array.from(map.keys()).sort(descending) : Array.from(map.keys())
   return sortedMap.map(key => {
     return (
       {
@@ -118,8 +118,8 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
  * @param {String} propertyY
  * @param {Boolean} noNulls 
  */
-const xyObjectFromKeyValue = (data, propertyX, propertyY = 'TotalCases', 
-noNulls = true) => {
+const xyObjectFromKeyValue = (data, propertyX, propertyY = 'TotalCases',
+  noNulls = true) => {
   if (!data || !propertyX || !propertyY) return;
   //data = [{...data = 12/12/12}]       
   const map = new Map()
@@ -133,8 +133,8 @@ noNulls = true) => {
       if (map.get(x)) {
         map.set(x, map.get(x) + y)
       } else {
-        map.set(typeof x === 'number' ? +(x) : x, 
-        typeof y === 'number' ? +(y) : y)
+        map.set(typeof x === 'number' ? +(x) : x,
+          typeof y === 'number' ? +(y) : y)
       }
     }
   });
@@ -289,7 +289,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, heatObject);
     return (new HeatmapLayer(heatObject))
-  } else if (name === "scatterplot") {    
+  } else if (name === "scatterplot") {
     const scatterObject = {
       id: 'scatterplot',
       data,
@@ -406,12 +406,103 @@ const suggestUIforNumber = (number) => {
  * @param {*} str 
  */
 const humanize = (str) => {
-  if (!str) return str
-  let frags = str.split('_');
-  for (let i = 0; i < frags.length; i++) {
-    frags[i] = frags[i].charAt(0).toUpperCase() + frags[i].slice(1);
+  switch (str) {
+
+    case 'retired':
+      return 'Retired or not working'
+
+
+    case 'wfh':
+      return 'Working or studying from home'
+
+
+    case 'public_transport':
+      return 'Commute by Bus Train or Tube'
+
+
+    case 'car':
+      return 'Commute by car'
+
+    case 'bike_or_walk':
+      return 'Commute by bike or walking'
+
+
+    case 'no_large_groups':
+      return 'Avoiding large groups of people'
+
+
+
+    case 'reduced_contact':
+      return 'Reducing contact with other people'
+
+
+
+    case 'minimal_contact':
+      return 'Zero or minimal contact with other people'
+
+
+
+    case 'none':
+      return 'None'
+
+
+    case 'not_leaving_house':
+      return 'Not leaving my house at all'
+
+
+
+    case 'work_and_essentials':
+      return 'Only go out for work / groceries / pharmacy / exercise'
+
+
+
+    case 'essentials':
+      return 'Only go out for groceries / pharmacy / exercise'
+
+
+    case 'no_symptoms':
+      return 'I feel well and don\'t think I have been exposed to COVID-19'
+
+
+
+    case 'self_isolation_after_exposure':
+      return 'I feel well but isolating after COVID-19 exposure'
+
+
+
+    case 'test_positive':
+      return 'I am unwell and tested positive for COVID-19'
+
+
+
+    case 'symptoms':
+      return 'I am unwell and think I have COVID-19'
+
+
+
+    case 'symptoms_not_covid':
+      return "I am unwell but don't think it's COVID-19"
+
+
+
+    case 'test_positive_recovered':
+      return 'I feel better now but tested positive for COVID-19'
+
+
+
+    case 'symptoms_recovered':
+      return 'I feel better now but think I had COVID-19'
+
+
+    default:
+      if (!str) return str
+      let frags = str.split('_');
+      for (let i = 0; i < frags.length; i++) {
+        frags[i] = frags[i].charAt(0).toUpperCase() + frags[i].slice(1);
+      }
+      return frags.join(' ');
   }
-  return frags.join(' ');
+
 }
 
 const shortenName = (name, n = 26) => {

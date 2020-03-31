@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { RadioGroup, Radio } from "baseui/radio";
 
 
 export default (props) => {
   const [value, setValue] = useState("symptoms");
+
+
   return (
     <RadioGroup
       value={value}
