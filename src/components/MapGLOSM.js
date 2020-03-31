@@ -16,8 +16,8 @@ export default class MapGLOSM extends Component {
   render() {
     return (
       <ReactMapGL
-        height={global.window.innerHeight - 54 + "px"}
-        width={global.window.innerWidth + "px"}
+        height={window.innerHeight - 54 + "px"}
+        width={window.innerWidth + "px"}
         mapStyle={{
           version: 8,
           name: "OSM",

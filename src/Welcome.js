@@ -103,7 +103,12 @@ export default class Welcome extends React.Component {
       bearing: -8.14,
       pitch: 46.809
     };
-    const param = getParamsFromSearch(global.window.location.search);
+
+    let param = {};
+
+    if (typeof window !== "undefined") {
+      param = getParamsFromSearch(window.location.search);
+    }
 
     if (param) {
       //lat=53.814&lng=-1.534&zoom=11.05&bea=0&pit=55&alt=1.5
@@ -141,11 +146,13 @@ export default class Welcome extends React.Component {
 
   componentDidMount() {
     this._fetchAndUpdateState();
-    global.window.addEventListener("resize", this._handleOnWindowResize);
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", this._handleOnWindowResize);
+    }
   }
 
   componentWillUnmount() {
-    global.window.removeEventListener("resize", this._handleOnWindowResize);
+    window.removeEventListener("resize", this._handleOnWindowResize);
   }
 
   _handleOnWindowResize = () => {
@@ -153,8 +160,8 @@ export default class Welcome extends React.Component {
       this.setState(
         {
           viewport: Object.assign({}, this.state.viewport, {
-            width: global.window.innerWidth,
-            height: global.window.innerHeight
+            width: window.innerWidth,
+            height: window.innerHeight
           })
         },
         () => console.log(123)
@@ -477,12 +484,8 @@ export default class Welcome extends React.Component {
             this._updateURL(viewport);
             this.setState({viewport});
           }}
-          height={
-            ((_.has(this.state.viewport, "height") && this.state.viewport.height) || global.window.innerHeight) + "px"
-          }
-          width={
-            ((_.has(this.state.viewport, "width") && this.state.viewport.width) || global.window.innerWidth) + "px"
-          }
+          height={((_.has(this.state.viewport, "height") && this.state.viewport.height) || window.innerHeight) + "px"}
+          width={((_.has(this.state.viewport, "width") && this.state.viewport.width) || window.innerWidth) + "px"}
           //crucial bit below
           viewState={viewport ? viewport : initialViewState}
           // mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}

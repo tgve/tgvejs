@@ -19,13 +19,13 @@ export default class Tooltip extends React.Component {
   }
 
   componentWillMount() {
-    global.window.addEventListener('resize', this._handleWindowSizeChange.bind(this));
+    window.addEventListener('resize', this._handleWindowSizeChange.bind(this));
   }
 
   // make sure to remove the listener
   // when the component is not mounted anymore
   componentWillUnmount() {
-    global.window.removeEventListener('resize', this._handleWindowSizeChange.bind(this));
+    window.removeEventListener('resize', this._handleWindowSizeChange.bind(this));
   }
 
   _handleWindowSizeChange = () => {
@@ -120,8 +120,8 @@ export default class Tooltip extends React.Component {
     }
     // console.log(crashes_data);
     
-    const w = global.window.innerWidth;
-    const y = global.window.innerHeight;
+    const w = window.innerWidth;
+    const y = window.innerHeight;
     const n_topy = isMobile ? 10 :
       topy + (WIDTH + BAR_HEIGHT) > y ? topy - WIDTH : topy;
     const n_left = isMobile ? 10 :
