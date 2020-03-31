@@ -8,6 +8,7 @@ module.exports = {
     path: path.resolve(__dirname, "./", "dist"),
     publicPath: "/",
     filename: "App.js",
+    libraryTarget: "umd",
     globalObject: "this"
   },
 
