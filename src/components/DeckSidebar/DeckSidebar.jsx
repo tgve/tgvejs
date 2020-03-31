@@ -10,6 +10,7 @@ import { crashes_plot_data } from '../Showcases/Plots';
 import { isNumber } from '../../JSUtils';
 
 import LetsBeatCovidAccordion from "../covid/LetsBeatCovidAccordion"
+import logoUrl from "../../img/logo.png";
 
 export default class DeckSidebar extends React.Component {
   constructor(props) {
@@ -107,7 +108,8 @@ export default class DeckSidebar extends React.Component {
           }}
           className="side-panel">
           <RBAlert alert={alert} />
-          <img alt="Let's beat covid logo" src={require("../../img/lets-beat-covid-logo.png")} style={{ width: "100%" }} />
+        
+          <img alt="Let's beat covid logo" src={logoUrl} style={{ width: "100%" }} />
           {/* <div
             style={{
               background: dark ? '#29323C' : '#eee'
@@ -175,7 +177,7 @@ export default class DeckSidebar extends React.Component {
               <div style={{ padding: 20 }}>
                 Developed by MedShr, NHS doctors and Leeds University Institute of Data Analytics, using <a href="https://github.com/layik/eAtlas">eAtlas</a>
               </div>
-              <div style={{ padding: "0px 20px" }}>
+              <div style={{ padding: "0px 20px 20px" }}>
                 <img alt="MedShr Logo" src={require("../../img/medshr-logo.svg")} style={{ margin: "0px 5px" }} />
                 <img alt="Health Education England Logo" src={require("../../img/health-education-england.png")} style={{ margin: "0px 5px" }} />
                 <img alt="NHS Logo" src={require("../../img/NHS.png")} style={{ margin: "0px 5px" }} />
