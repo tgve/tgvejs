@@ -1,6 +1,6 @@
 {
   "name": "eatlas-letsbeatcovid",
-  "version": "0.1.10",
+  "version": "0.2.0",
   "main": "dist/App.js",
   "module": "dist/App.js",
   "dependencies": {
