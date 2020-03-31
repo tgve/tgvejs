@@ -103,7 +103,7 @@ export default class Welcome extends React.Component {
       bearing: -8.14,
       pitch: 46.809
     };
-    const param = getParamsFromSearch(window.location.search);
+    const param = getParamsFromSearch(global.window.location.search);
 
     if (param) {
       //lat=53.814&lng=-1.534&zoom=11.05&bea=0&pit=55&alt=1.5
@@ -136,26 +136,32 @@ export default class Welcome extends React.Component {
     this._renderTooltip = this._renderTooltip.bind(this);
     this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
     this._fitViewport = this._fitViewport.bind(this);
+    this._handleOnWindowResize = this._handleOnWindowResize.bind(this);
   }
 
   componentDidMount() {
     this._fetchAndUpdateState();
-    window.addEventListener(
-      "resize",
-      _.debounce(
-        function onResize() {
-          // <-- debounce
-          this.setState({
-            viewport: Object.assign({}, this.state.viewport, {
-              width: window.innerWidth,
-              height: window.innerHeight
-            })
-          });
-        }.bind(this)
+    global.window.addEventListener("resize", this._handleOnWindowResize);
+  }
+
+  componentWillUnmount() {
+    global.window.removeEventListener("resize", this._handleOnWindowResize);
+  }
+
+  _handleOnWindowResize = () => {
+    _.debounce(
+      this.setState(
+        {
+          viewport: Object.assign({}, this.state.viewport, {
+            width: global.window.innerWidth,
+            height: global.window.innerHeight
+          })
+        },
+        () => console.log(123)
       ),
       100
     );
-  }
+  };
 
   /**
    * Main function to fetch data and update state.
@@ -471,8 +477,12 @@ export default class Welcome extends React.Component {
             this._updateURL(viewport);
             this.setState({viewport});
           }}
-          height={((_.has(this.state.viewport, "height") && this.state.viewport.height) || window.innerHeight) + "px"}
-          width={((_.has(this.state.viewport, "width") && this.state.viewport.width) || window.innerWidth) + "px"}
+          height={
+            ((_.has(this.state.viewport, "height") && this.state.viewport.height) || global.window.innerHeight) + "px"
+          }
+          width={
+            ((_.has(this.state.viewport, "width") && this.state.viewport.width) || global.window.innerWidth) + "px"
+          }
           //crucial bit below
           viewState={viewport ? viewport : initialViewState}
           // mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}

@@ -5,9 +5,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import App from "./App";
-// brief about serviceworkers from CRA
-// https://stackoverflow.com/a/49314454/11101153
-import {unregister} from "./registerServiceWorker";
 
 // keep leaflet for now in case.
 
@@ -22,5 +19,3 @@ L.Icon.Default.mergeOptions({
 });
 
 ReactDOM.render(<App />, document.getElementById("root"));
-
-unregister();

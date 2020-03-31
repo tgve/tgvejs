@@ -22,6 +22,7 @@ const engine = new Styletron();
  * Up to this point we are still not using SSR
  */
 function App() {
+  console.log(333, global.window);
   const [dark, setDark] = useState(false);
 
   return (

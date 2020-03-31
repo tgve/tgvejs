@@ -1,23 +1,15 @@
 import React from 'react';
-import { Button, KIND, SIZE } from 'baseui/button';
 import './DeckSidebar.css';
-import DataInput from '../DataInput';
 import {
   xyObjectByProperty, humanize, generateLegend, sortNumericArray
 } from '../../utils';
 import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
-import { DEV_URL, PRD_URL } from '../../Constants';
-
-import Modal from '../Modal';
-import DataTable from '../Table';
 
 import { crashes_plot_data } from '../Showcases/Plots';
 import { isNumber } from '../../JSUtils';
 
 import LetsBeatCovidAccordion from "../covid/LetsBeatCovidAccordion"
-
-const URL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
 
 export default class DeckSidebar extends React.Component {
   constructor(props) {
