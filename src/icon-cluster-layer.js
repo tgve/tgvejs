@@ -12,9 +12,11 @@ function getIconName(size) {
   if (size < 100) {
     return `marker-${Math.floor(size / 10)}0`;
   }
+  if (size < 1000) {
+    return 'marker-100';
+  }
   console.log("Hmmm");
-
-  return 'marker-100';
+  return 'marker-1000';
 }
 
 function getIconSize(size) {
@@ -65,6 +67,7 @@ export default class IconClusterLayer extends CompositeLayer {
   renderLayers() {
     const { data } = this.state;
     const { iconAtlas, iconMapping, sizeScale } = this.props;
+
 
     return new IconLayer(
       this.getSubLayerProps({
