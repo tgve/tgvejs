@@ -177,9 +177,15 @@ export default class DeckSidebar extends React.Component {
                     onSelectCallback({
                       what: 'multi', selected: { [fieldName] : new Set([selected]) }
                     });
-                }} />
+              }} />
+              
               <div style={{padding : 20}}>
-                Built by MedShr in partnership with NHS, University of Leeds, using <a href="https://github.com/layik/eAtlas">eAtlas</a>
+                Developed by MedShr, NHS doctors and Leeds University Institute of Data Analytics, using <a href="https://github.com/layik/eAtlas">eAtlas</a>
+              </div>
+              <div style={{padding : "0px 20px" }}>
+                <img alt="MedShr Logo" src={require("../../img/medshr-logo.svg")} style={{margin : "0px 5px"}}/>
+                <img alt="Health Education England Logo" src={require("../../img/health-education-england.png")} style={{margin : "0px 5px"}}/>
+                <img alt="NHS Logo" src={require("../../img/NHS.png")} style={{margin : "0px 5px"}}/>
               </div>
             </div>
           </div>
