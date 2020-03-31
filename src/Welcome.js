@@ -152,22 +152,23 @@ export default class Welcome extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this._handleOnWindowResize);
+    if (typeof window !== "undefined") {
+      window.removeEventListener("resize", this._handleOnWindowResize);
+    }
   }
 
   _handleOnWindowResize = () => {
-    _.debounce(
-      this.setState(
-        {
+    if (typeof window !== "undefined") {
+      _.debounce(
+        this.setState({
           viewport: Object.assign({}, this.state.viewport, {
             width: window.innerWidth,
             height: window.innerHeight
           })
-        },
-        () => console.log(123)
-      ),
-      100
-    );
+        }),
+        100
+      );
+    }
   };
 
   /**
@@ -484,8 +485,16 @@ export default class Welcome extends React.Component {
             this._updateURL(viewport);
             this.setState({viewport});
           }}
-          height={((_.has(this.state.viewport, "height") && this.state.viewport.height) || window.innerHeight) + "px"}
-          width={((_.has(this.state.viewport, "width") && this.state.viewport.width) || window.innerWidth) + "px"}
+          height={
+            ((_.has(this.state.viewport, "height") && this.state.viewport.height) ||
+              (typeof window !== "undefined" && window.innerHeight) ||
+              0) + "px"
+          }
+          width={
+            ((_.has(this.state.viewport, "width") && this.state.viewport.width) ||
+              (typeof window !== "undefined" && window.innerWidth) ||
+              0) + "px"
+          }
           //crucial bit below
           viewState={viewport ? viewport : initialViewState}
           // mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
