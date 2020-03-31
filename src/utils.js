@@ -527,12 +527,12 @@ const percentDiv = (title, left, cb, dark) => {
 const isURL = str => {
   var a = document.createElement("a");
   a.href = str;
-  return a.host && a.host !== (typeof window !== "undefined" && window.location.host);
+  return a.host && a.host !== window.location.host;
 };
 
 const isMobile = function() {
   var check = false;
-  if (typeof window !== "undefined" && window.innerWidth < 640) return true;
+  if (window.innerWidth < 640) return true;
   (function(a) {
     if (
       /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
@@ -543,7 +543,7 @@ const isMobile = function() {
       )
     )
       check = true;
-  })(navigator.userAgent || navigator.vendor || (typeof window !== "undefined" && window.opera));
+  })(navigator.userAgent || navigator.vendor || window.opera);
   return check;
 };
 
