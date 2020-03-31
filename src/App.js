@@ -9,6 +9,8 @@ import {Provider as StyletronProvider} from "styletron-react";
 import {BaseProvider, LightTheme, DarkTheme} from "baseui";
 import {Client as Styletron} from "styletron-engine-atomic";
 
+import "regenerator-runtime/runtime.js";
+
 import "./react-vis.css";
 
 import "./App.css";
