@@ -9,9 +9,11 @@ function getIconName(size) {
   if (size < 10) {
     return `marker-${size}`;
   }
-  if (size < 1000) {
+  if (size < 100) {
     return `marker-${Math.floor(size / 10)}0`;
   }
+  console.log("Hmmm");
+
   return 'marker-100';
 }
 
