@@ -8,14 +8,15 @@ import WorkCurrent from "./WorkCurrent";
 
 export default (props) => {
 
-    console.log(getPropertyValues({ features: props.data }));
+    const data = getPropertyValues({ features: props.data });
 
     return (
       <Accordion
+        initialState={{expanded : ["0"]}}
         onChange={({ expanded }) => console.log(expanded)}
       >
         <Panel title="Covid Status" style={{ padding : 5}}>
-          <CovidStatus onSelectCallback={props.onSelectCallback}/>
+          <CovidStatus onSelectCallback={props.onSelectCallback} data={data}/>
         </Panel>
         <Panel title="Social Distancing">
           <SocialDistancing onSelectCallback={props.onSelectCallback}/>

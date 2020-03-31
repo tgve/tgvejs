@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { RadioGroup, Radio } from "baseui/radio";
 
 
 export default (props) => {
   const [value, setValue] = useState("symptoms");
+  const {data} = props;
+
+  useEffect(() => {
+    typeof props.onSelectCallback && props.onSelectCallback("covid_status", "symptoms");
+  }, [data]);
   return (
     <RadioGroup
       value={value}
