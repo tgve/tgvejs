@@ -166,7 +166,13 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     return (new GeoJsonLayer(geojsonObj))
   } else if (name === 'icon') {
     // console.log(data);
-
+    /**
+     * There are three files the layer need to display the icons:
+     * (1) location-icon-atlas.png which is in /public
+     * (2) ./location-icon-mapping.json which deals with mapping the icon to pixels on (1)
+     * (3) ./icon-cluster-layer.json which is a DeckGL CompositLayer component that
+     * does the clustering.
+     */
     //icon from https://github.com/uber/deck.gl/blob/8d5b4df9e4ad41eaa1d06240c5fddb922576ee21/website/src/static/images/icon-atlas.png
     const iconObj = {
       id: 'icon-layer',
