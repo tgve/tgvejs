@@ -9,7 +9,7 @@ import {Provider as StyletronProvider} from "styletron-react";
 import {BaseProvider, LightTheme, DarkTheme} from "baseui";
 import {Client as Styletron} from "styletron-engine-atomic";
 
-import "../node_modules/react-vis/dist/style.css";
+import "./react-vis.css";
 
 import "./App.css";
 
