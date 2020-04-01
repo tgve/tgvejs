@@ -72,14 +72,6 @@ const osmtiles = {
 };
 
 // ===== When using Rscript run.R =====
-// const URL = process.env.NODE_ENV === "development" ? Constants.DEV_URL : Constants.PRD_URL;
-// const defaultURL = "/api/lbc";
-
-// ==== When building for production ====
-// const URL = "";
-// const defaultURL = "/api/geo";
-
-// ===== When using Rscript run.R =====
 const URL = process.env.NODE_ENV === "development" ? Constants.DEV_URL : Constants.PRD_URL;
 const defaultURL = "/api/lbc";
 

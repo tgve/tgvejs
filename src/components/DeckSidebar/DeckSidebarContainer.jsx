@@ -47,6 +47,11 @@ export default (props) => {
     </div>
   )
   
+  let togglerClassString = "close-button";
+  if(!open)  {
+    togglerClassString += " sidebar-is-closed";
+  };
+
   return (
     <div className="side-panel-container"
       style={{ marginLeft: open ? 0 : '-320px' }}>
@@ -65,7 +70,7 @@ export default (props) => {
       {props.world && <World isMobile={props.isMobile} 
         data={props.world} dark={props.dark}/>}
       <div
-        className="close-button"
+        className={togglerClassString}
         onClick={() => setOpen(!open)}
         style={{ color: 'white' }}>
         <div style={{ backgroundColor: 'rgb(1, 22, 43)', padding : 10, cursor : "pointer" }}>

@@ -21,6 +21,7 @@
 .side-panel-container {
   top: 0px;
   bottom: 100px;
+  max-width:90%;
   height: auto;
   display: -webkit-box;
   display: -webkit-flex;
@@ -67,6 +68,14 @@
   -webkit-transition: left 250ms, right 250ms;
   transition: left 250ms, right 250ms;
   /* color: white */
+}
+
+.close-button.sidebar-is-closed {
+  /* shows the label with the selected filter */
+  position: fixed;
+  top: 20px;
+  left: 0;
+  max-width: 80%;
 }
 
 /* .side-panel .btn, .side-panel .btn-default, .side-panel .dropdown-menu, .open>.dropdown-toggle.btn-default, .side-panel .dropdown-menu>li>a {
