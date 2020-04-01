@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { RadioGroup, Radio } from "baseui/radio";
-
+import covidConstants from "../../../covid-constants";
 
 export default (props) => {
   const [value, setValue] = useState("not_leaving_house");
@@ -20,10 +20,11 @@ export default (props) => {
       }}
       name="number"
     >
-      <Radio value="not_leaving_house">Not leaving house at all</Radio>
-      <Radio value="work_and_essentials">Work and essentials</Radio>
-      <Radio value="essentials">Essentials</Radio>
-      <Radio value="none">None</Radio>
+      {
+        covidConstants.leaving_home.responses.map( x => (
+          <Radio value={x.id}>{x.label}</Radio>
+        ))
+      }
     </RadioGroup>
   );
 }

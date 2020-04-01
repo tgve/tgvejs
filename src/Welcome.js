@@ -149,7 +149,9 @@ export default class Welcome extends React.Component {
       lastViewPortChange: new Date(),
       colourName: "inverseDefault",
       iconLimit: 500,
-      legend: false
+      legend: false,
+      // letsbeatcovid
+      currentlySelected: ""
     };
     this._generateLayer = this._generateLayer.bind(this);
     this._renderTooltip = this._renderTooltip.bind(this);
@@ -571,7 +573,11 @@ export default class Welcome extends React.Component {
             }
           }}
           column={this.state.column}
-          onSelectCallback={selected => this._generateLayer({filter: selected})}
+          onSelectCallback={selected => {
+            this._generateLayer({filter: selected});
+            this.setState({currentlySelected: selected});
+          }}
+          currentlySelected={this.state.currentlySelected}
           onChangeRadius={value => this._generateLayer({radius: value})}
           onChangeElevation={value => this._generateLayer({elevation: value})}
           toggleSubsetBoundsChange={value => {

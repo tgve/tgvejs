@@ -6,6 +6,8 @@ import SocialDistancing from "./SocialDistancing";
 import LeavingHome from "./LeavingHome";
 import WorkCurrent from "./WorkCurrent";
 
+import covidConstants from "../../../covid-constants";
+
 export default (props) => {
 
     const data = getPropertyValues({ features: props.data });
@@ -16,16 +18,16 @@ export default (props) => {
         onChange={({ expanded }) => console.log(expanded)}
       >
         {/* Note `data` is passed in so we can listen for the data to be loaded in useEffect */}
-        <Panel title="Covid Status" style={{ padding : 5}}>
+        <Panel title={covidConstants.covid_status.sidebarHeading} style={{ padding : 5}}>
           <CovidStatus onSelectCallback={props.onSelectCallback} data={data}/>
         </Panel>
-        <Panel title="Social Distancing">
+        <Panel title={covidConstants.amount_of_contact.sidebarHeading}>
           <SocialDistancing onSelectCallback={props.onSelectCallback}/>
         </Panel>
-        <Panel title="Leaving Home">
+        <Panel title={covidConstants.leaving_home.sidebarHeading}>
           <LeavingHome onSelectCallback={props.onSelectCallback}/>
         </Panel>
-        <Panel title="Work Current">
+        <Panel title={covidConstants.work_current.sidebarHeading}>
           <WorkCurrent onSelectCallback={props.onSelectCallback}/>
         </Panel>
       </Accordion>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { RadioGroup, Radio } from "baseui/radio";
-
+import covidConstants from "../../../covid-constants";
 
 export default (props) => {
   const [value, setValue] = useState("no_large_groups");
@@ -16,12 +16,12 @@ export default (props) => {
       value={value}
       onChange={e => { setValue(e.target.value); typeof props.onSelectCallback === "function" && props.onSelectCallback("amount_of_contact", e.target.value) }}
       name="number"
-    // align={ALIGN.vertical}
     >
-      <Radio value="no_large_groups">Avoiding large groups of people</Radio>
-      <Radio value="reduced_contact">Reducing contact with other people</Radio>
-      <Radio value="minimal_contact">Zero or minimal contact with other people</Radio>
-      <Radio value="none">No changes to contact</Radio>
+      {
+        covidConstants.amount_of_contact.responses.map( x => (
+          <Radio value={x.id}>{x.label}</Radio>
+        ))
+      }
     </RadioGroup>
   );
 }
