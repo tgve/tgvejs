@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { RadioGroup, Radio } from "baseui/radio";
 
 
 export default (props) => {
-  const [value, setValue] = useState("symptoms");
+  const [value, setValue] = useState("not_leaving_house");
+  const {data} = props;
+  
+  useEffect(() => {
+    typeof props.onSelectCallback && props.onSelectCallback("self_isolation_steps", value);
+  }, [data]);
+
   return (
     <RadioGroup
       value={value}

@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { RadioGroup, Radio } from "baseui/radio";
 
 
 export default (props) => {
-  const [value, setValue] = useState("symptoms");
+  const [value, setValue] = useState("no_large_groups");
+
+  const {data} = props;
+  
+  useEffect(() => {
+    typeof props.onSelectCallback && props.onSelectCallback("amount_of_contact", value);
+  }, [data]);
+
   return (
     <RadioGroup
       value={value}

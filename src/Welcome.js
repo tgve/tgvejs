@@ -70,8 +70,22 @@ const osmtiles = {
     }
   ]
 };
+
+// ===== When using Rscript run.R =====
+// const URL = process.env.NODE_ENV === "development" ? Constants.DEV_URL : Constants.PRD_URL;
+// const defaultURL = "/api/lbc";
+
+// ==== When building for production ====
+// const URL = "";
+// const defaultURL = "/api/geo";
+
+// ===== When using Rscript run.R =====
 const URL = process.env.NODE_ENV === "development" ? Constants.DEV_URL : Constants.PRD_URL;
-const defualtURL = "/api/lbc";
+const defaultURL = "/api/lbc";
+
+// ==== When building for production ====
+// const URL = "";
+// const defaultURL = "/api/geo";
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -180,17 +194,21 @@ export default class Welcome extends React.Component {
     if (aURL && !isURL(aURL)) return;
     if (customError && typeof customError !== "object") return;
     // TODO: more sanity checks?
+
+    console.log(URL);
     const fullURL = aURL
       ? // TODO: decide which is better.
         // URL + "/api/url?q=" + aURL : // get the server to parse it
         aURL // do not get the server to parse it
-      : URL + defualtURL;
+      : URL + defaultURL;
 
     fetchData(fullURL, (data, error) => {
+      console.log(data);
       fetch(fullURL)
         .then(response => response.text())
         .then(response => {
           csv2geojson.csv2geojson(response, (err, data) => {
+            console.log(data);
             this.setState({
               loading: false,
               data: data,
@@ -434,7 +452,7 @@ export default class Welcome extends React.Component {
       const box = getBbx(bounds);
       // console.log("bounds", box);
       const {xmin, ymin, xmax, ymax} = box;
-      fetchData(URL + defualtURL + xmin + "/" + ymin + "/" + xmax + "/" + ymax, (data, error) => {
+      fetchData(URL + defaultURL + xmin + "/" + ymin + "/" + xmax + "/" + ymax, (data, error) => {
         if (!error) {
           console.log("DATA ON FETCH", data);
           // console.log(data.features);
@@ -567,7 +585,7 @@ export default class Welcome extends React.Component {
             this._fitViewport(bboxLonLat);
           }}
           showLegend={legend => this.setState({legend})}
-          datasetName={defualtURL}
+          datasetName={defaultURL}
         />
         {legend && (geomType === "polygon" || geomType === "multipolygon") && (
           <div className="right-side-panel mapbox-legend">{legend}</div>

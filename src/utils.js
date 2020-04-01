@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import {
   ScatterplotLayer,
   HexagonLayer,
@@ -12,15 +12,16 @@ import {
 import {
   interpolateOrRd // schemeBlues
 } from "d3-scale-chromatic";
+import iconAtlasImgUrl from "./img/lets-beat-covid-sprites.png";
 
 import qs from "qs"; // warning: importing it otherways would cause minificatino issue.
 
 import mapping from "./location-icon-mapping.json";
 import Constants from "./Constants";
-import { isString, isNumber } from "./JSUtils.js";
+import {isString, isNumber} from "./JSUtils.js";
 import IconClusterLayer from "./icon-cluster-layer";
-import { ArcLayer, PathLayer } from "@deck.gl/layers";
-import { descending } from "d3-array";
+import {ArcLayer, PathLayer} from "@deck.gl/layers";
+import {descending} from "d3-array";
 
 const getResultsFromGoogleMaps = (string, callback) => {
   if (typeof string === "string" && typeof callback === "function") {
@@ -206,7 +207,8 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       id: "icon-layer",
       data,
       pickable: true,
-      iconAtlas: "test.png", // default = location-icon-atlas.png
+      // iconAtlas: "sprites-lets-beat-covid.png", // default = location-icon-atlas.png ---- TODO: change back to test.png
+      iconAtlas: iconAtlasImgUrl,
       iconMapping: mapping,
       sizeScale: 60,
       getPosition: d => d.geometry.coordinates,
@@ -370,7 +372,7 @@ const getBbx = bounds => {
     ymax = bounds._sw.lat;
     ymin = bounds._ne.lat;
   }
-  return { xmin, ymin, xmax, ymax };
+  return {xmin, ymin, xmax, ymax};
 };
 
 const suggestDeckLayer = geojson => {
@@ -384,7 +386,7 @@ const suggestUIforNumber = number => {
   // "buttongroups",
   // "dropdown",
   // "slider"])
-  const { UI_LIST } = Constants;
+  const {UI_LIST} = Constants;
   if (!number) return UI_LIST[1];
   if (number === 1) {
     return UI_LIST[0];
@@ -508,7 +510,7 @@ const percentDiv = (title, left, cb, dark) => {
         margin: "10px 2px",
         border: "1px solid gray"
       }}>
-      <span style={{ position: "absolute", left: "10%" }}>{title}</span>
+      <span style={{position: "absolute", left: "10%"}}>{title}</span>
       <div
         style={{
           width: left + "%",
@@ -530,10 +532,10 @@ const isURL = str => {
   return a.host && a.host !== window.location.host;
 };
 
-const isMobile = function () {
+const isMobile = function() {
   var check = false;
   if (window.innerWidth < 640) return true;
-  (function (a) {
+  (function(a) {
     if (
       /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
         a
@@ -693,7 +695,7 @@ const ATILOGO = (dark = true) => (
         id="logo-line-1"
         data-svg-origin="0.8190000057220459 0.7929999828338623"
         transform="matrix(1,0,0,1,0,0)"
-        style={{ zIndex: 0, visibility: "inherit", opacity: 1 }}>
+        style={{zIndex: 0, visibility: "inherit", opacity: 1}}>
         <path
           d="M273.346,71.521 L233.737,71.521 C235.771,58.945 242.738,52.485 253.966,52.485 C265.183,52.485 272.837,60.128 273.346,71.521 M299.694,83.932 C299.694,52.816 282.185,33.27 254.131,33.27 C226.425,33.27 207.72,52.816 207.72,81.718 C207.72,111.985 226.08,131.363 254.983,131.363 C277.938,131.363 293.744,120.479 299.529,100.424 L272.495,100.424 C269.775,107.735 263.987,111.475 255.493,111.475 C242.573,111.475 234.588,103.654 233.902,90.05 L299.529,90.05 C299.694,87.327 299.694,84.948 299.694,83.932"
           id="Fill-13"></path>
@@ -708,7 +710,7 @@ const ATILOGO = (dark = true) => (
         id="logo-line-2"
         transform="matrix(1,0,0,1,169,149)"
         data-svg-origin="0.9760000109672546 0.0860000029206276"
-        style={{ zIndex: 0, visibility: "inherit", opacity: 1 }}>
+        style={{zIndex: 0, visibility: "inherit", opacity: 1}}>
         <path
           d="M831.16,79.656 C831.16,94.445 823.69,104.3 812.635,104.3 C801.586,104.3 794.45,94.279 794.45,78.804 C794.45,63.671 801.928,53.308 812.814,53.308 C824.03,53.308 831.16,63.506 831.16,79.656 M855.82,108.724 L855.82,35.289 L832.87,35.289 L832.87,46.848 C825.9,37.158 818.078,33.076 807.029,33.076 C784.253,33.076 768.268,52.112 768.268,78.97 C768.268,106.169 783.222,124.202 805.668,124.202 C817.571,124.202 825.05,120.451 831.85,111.281 L831.85,120.972 C831.85,137.794 826.24,145.106 813.486,145.106 C804.306,145.106 798.025,140.515 797.504,133.382 L772.173,133.382 C773.877,152.076 789.175,163.125 813.145,163.125 C835.42,163.125 849.19,154.121 853.95,136.268 C855.65,129.631 855.82,127.087 855.82,108.724"
           id="Fill-22"></path>
@@ -742,7 +744,7 @@ const ATILOGO = (dark = true) => (
         id="logo-line-3"
         transform="matrix(1,0,0,1,24,297)"
         data-svg-origin="0.7670000195503235 0.34700000286102295"
-        style={{ zIndex: 0, visibility: "inherit", opacity: 1 }}>
+        style={{zIndex: 0, visibility: "inherit", opacity: 1}}>
         <path
           d="M592.476,71.073 L552.866,71.073 C554.9,58.497 561.868,52.037 573.096,52.037 C584.313,52.037 591.966,59.68 592.476,71.073 M618.824,83.484 C618.824,52.368 601.315,32.822 573.261,32.822 C545.552,32.822 526.849,52.368 526.849,81.273 C526.849,111.537 545.21,130.915 574.113,130.915 C597.068,130.915 612.874,120.031 618.659,99.976 L591.625,99.976 C588.902,107.29 583.117,111.028 574.623,111.028 C561.702,111.028 553.718,103.206 553.032,89.602 L618.659,89.602 C618.824,86.879 618.824,84.501 618.824,83.484"
           id="Fill-10"></path>
@@ -781,7 +783,7 @@ const ATILOGO = (dark = true) => (
  */
 const generateLegend = options => {
   //quick check
-  const { domain, interpolate = interpolateOrRd, title } = options;
+  const {domain, interpolate = interpolateOrRd, title} = options;
   if (!domain || !Array.isArray(domain) || !isNumber(domain[0])) return;
   const jMax = domain[domain.length - 1],
     jMin = domain[0];
@@ -791,7 +793,7 @@ const generateLegend = options => {
     legend.push(
       <>
         {i === 0 && <i>{(title === humanize("Mean.Travel.Time..Seconds.") ? +jMin / 300 : jMin).toFixed(2)}</i>}
-        <span key={i} style={{ background: interpolate(i / 10) }}></span>
+        <span key={i} style={{background: interpolate(i / 10)}}></span>
         {i === 9 && <i>{(title === humanize("Mean.Travel.Time..Seconds.") ? +jMax / 300 : jMax).toFixed(2)}</i>}
       </>
     );

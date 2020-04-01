@@ -1,10 +1,10 @@
-import { CompositeLayer } from '@deck.gl/core';
-import { IconLayer } from '@deck.gl/layers';
-import Supercluster from 'supercluster';
+import {CompositeLayer} from "@deck.gl/core";
+import {IconLayer} from "@deck.gl/layers";
+import Supercluster from "supercluster";
 
 function getIconName(size) {
   if (size === 0) {
-    return '';
+    return "";
   }
   if (size < 10) {
     return `marker-${size}`;
@@ -13,17 +13,17 @@ function getIconName(size) {
     return `marker-${Math.floor(size / 10)}0`;
   }
   if (size < 1000) {
-    return 'marker-100';
+    return "marker-100";
   }
   if (size < 5000) {
-    return 'marker-1000';
+    return "marker-1000";
   }
   if (size < 10000) {
-    return 'marker-5000';
+    return "marker-5000";
   }
 
   console.log("Hmmm");
-  return 'marker-10000';
+  return "marker-10000";
 }
 
 function getIconSize(size) {
@@ -31,22 +31,22 @@ function getIconSize(size) {
 }
 
 export default class IconClusterLayer extends CompositeLayer {
-  shouldUpdateState({ changeFlags }) {
+  shouldUpdateState({changeFlags}) {
     return changeFlags.somethingChanged;
   }
 
-  updateState({ props, oldProps, changeFlags }) {
+  updateState({props, oldProps, changeFlags}) {
     const rebuildIndex = changeFlags.dataChanged || props.sizeScale !== oldProps.sizeScale;
 
     if (rebuildIndex) {
-      const index = new Supercluster({ maxZoom: 16, radius: props.sizeScale });
+      const index = new Supercluster({maxZoom: 16, radius: props.sizeScale});
       index.load(
         props.data.map(d => ({
-          geometry: { coordinates: props.getPosition(d) },
+          geometry: {coordinates: props.getPosition(d)},
           properties: d
         }))
       );
-      this.setState({ index });
+      this.setState({index});
     }
 
     const z = Math.floor(this.context.viewport.zoom);
@@ -58,13 +58,11 @@ export default class IconClusterLayer extends CompositeLayer {
     }
   }
 
-  getPickingInfo({ info, mode }) {
+  getPickingInfo({info, mode}) {
     const pickedObject = info.object && info.object.properties;
     if (pickedObject) {
-      if (pickedObject.cluster && mode !== 'hover') {
-        info.objects = this.state.index
-          .getLeaves(pickedObject.cluster_id, 25)
-          .map(f => f.properties);
+      if (pickedObject.cluster && mode !== "hover") {
+        info.objects = this.state.index.getLeaves(pickedObject.cluster_id, 25).map(f => f.properties);
       }
       info.object = pickedObject;
     }
@@ -72,13 +70,12 @@ export default class IconClusterLayer extends CompositeLayer {
   }
 
   renderLayers() {
-    const { data } = this.state;
-    const { iconAtlas, iconMapping, sizeScale } = this.props;
-
+    const {data} = this.state;
+    const {iconAtlas, iconMapping, sizeScale} = this.props;
 
     return new IconLayer(
       this.getSubLayerProps({
-        id: 'icon',
+        id: "icon",
         data,
         iconAtlas,
         iconMapping,

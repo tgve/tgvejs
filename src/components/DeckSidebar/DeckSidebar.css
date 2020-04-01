@@ -20,7 +20,7 @@
 
 .side-panel-container {
   top: 0px;
-  bottom: 0px;
+  bottom: 100px;
   height: auto;
   display: -webkit-box;
   display: -webkit-flex;

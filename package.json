@@ -3,6 +3,7 @@
   "version": "0.1.17",
   "main": "dist/App.js",
   "module": "dist/App.js",
+  "homepage" : "/eAtlas",
   "dependencies": {
     "@turf/bbox": "^6.0.1",
     "@turf/bezier-spline": "^6.0.3",

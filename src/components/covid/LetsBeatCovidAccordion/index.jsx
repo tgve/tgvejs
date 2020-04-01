@@ -15,6 +15,7 @@ export default (props) => {
         initialState={{expanded : ["0"]}}
         onChange={({ expanded }) => console.log(expanded)}
       >
+        {/* Note `data` is passed in so we can listen for the data to be loaded in useEffect */}
         <Panel title="Covid Status" style={{ padding : 5}}>
           <CovidStatus onSelectCallback={props.onSelectCallback} data={data}/>
         </Panel>
