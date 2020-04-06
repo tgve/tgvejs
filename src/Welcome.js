@@ -32,18 +32,18 @@ const MAPBOX_ACCESS_TOKEN =
 // Initial viewport settings
 
 // ===== When using Rscript run.R =====
-// const URL = process.env.NODE_ENV === "development" ? Constants.DEV_URL : Constants.PRD_URL;
-// const defaultURL = "/api/lbc";
+const URL = process.env.NODE_ENV === "development" ? Constants.DEV_URL : Constants.PRD_URL;
+const defaultURL = "/api/lbc";
 
 // ==== When building for production ====
-const URL = "";
-const defaultURL = "/api/geo";
+// const URL = "";
+// const defaultURL = "/api/geo";
 
 const initialViewState = {
   longitude: 0.1278,
   latitude: 51.5074,
-  zoom: 2,
-  minZoom: 2,
+  zoom: 3,
+  minZoom: 3,
   pitch: 0,
   bearing: 0
 };
@@ -80,13 +80,15 @@ class Welcome extends React.Component {
   }
 
   render() {
+    console.log("render, data: ", this.state.data);
     const layerProps = {
       data: this.state.data.features,
       pickable: true,
       getPosition: d => d.geometry.coordinates,
       iconAtlas: SPRITES_IMG_URL,
       iconMapping: ICON_MAPPING,
-      filter: `${this.state.filterPrimary}_${this.state.filterSecondary}`
+      filterPrimary: this.state.filterPrimary,
+      filterSecondary: this.state.filterSecondary
     };
 
     const iconClusterLayer = new IconClusterLayer({...layerProps, id: "icon-cluster", sizeScale: 60});

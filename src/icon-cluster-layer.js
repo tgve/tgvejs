@@ -13,15 +13,16 @@ function getIconSize(size) {
   return Math.min(100, size) / 100 + 1;
 }
 
-function getClusterTotalForCurrentFilter(clusterItems, filter) {
-  console.log(clusterItems, filter);
-  let total = 0;
+function getClusterPctForCurrentFilter(clusterItems, filter, filterPrimary) {
+  let numerator = 0;
+  let denominator = 0;
 
   clusterItems.forEach(item => {
-    total += parseInt(item.properties.properties[filter]);
+    numerator += parseInt(item.properties.properties[filter]);
+    denominator += parseInt(item.properties.properties[`${filterPrimary}_total_responses`]);
   });
 
-  return total;
+  return numerator / denominator;
 }
 
 export default class IconClusterLayer extends CompositeLayer {
@@ -30,8 +31,11 @@ export default class IconClusterLayer extends CompositeLayer {
   }
 
   updateState({props, oldProps, changeFlags}) {
+    console.log("changeFlags", changeFlags);
     const rebuildIndex =
-      props.filter !== oldProps.filter || changeFlags.dataChanged || props.sizeScale !== oldProps.sizeScale;
+      props.filterSecondary !== oldProps.filterSecondary ||
+      changeFlags.dataChanged ||
+      props.sizeScale !== oldProps.sizeScale;
 
     if (rebuildIndex) {
       const index = new Supercluster({maxZoom: 16, radius: props.sizeScale});
@@ -66,7 +70,7 @@ export default class IconClusterLayer extends CompositeLayer {
 
   renderLayers() {
     const {data} = this.state;
-    const {iconAtlas, iconMapping, sizeScale, filter} = this.props;
+    const {iconAtlas, iconMapping, sizeScale, filterPrimary, filterSecondary} = this.props;
 
     return new IconLayer(
       this.getSubLayerProps({
@@ -77,16 +81,21 @@ export default class IconClusterLayer extends CompositeLayer {
         sizeScale,
         getPosition: d => d.geometry.coordinates,
         getIcon: d => {
+          // return "marker-30";
+          // ==== TODO: This bit is the slow bit ===
           let value = 0;
-          // console.log("Get icon", filter);
+
+          const filter = `${filterPrimary}_${filterSecondary}`;
 
           if (d.properties.cluster) {
             const clusterItems = this.state.index.getLeaves(d.properties.cluster_id);
-            value = getClusterTotalForCurrentFilter(clusterItems, filter);
+            value = getClusterPctForCurrentFilter(clusterItems, filter, filterPrimary);
           } else {
-            value = parseInt(d.properties.properties[filter]);
+            value =
+              parseInt(d.properties.properties[filter]) / d.properties.properties[`${filterPrimary}_total_responses`];
           }
 
+          value = Math.floor(value * 100);
           return getIconName(value);
         },
         getSize: d => getIconSize(d.properties.cluster ? d.properties.point_count : 1)
