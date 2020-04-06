@@ -176,8 +176,6 @@ export default class Tooltip extends React.Component {
           return obj;
         }, {});
 
-      console.log(filtered, "heyo")
-
       DATA = Object.keys(filtered)
         .map(p => {
           return ([humanize(p), humanize(props[p])])

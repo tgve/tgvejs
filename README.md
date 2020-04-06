@@ -1,4 +1,16 @@
 
+# Lets Beat Covid supplement
+
+- Pre build checklist:
+
+	1. Ensure package.json has: "homepage" : "/eAtlas"
+	2. In `src/Welcome.js`, ensure URL="" and defaultURL="/api/geo"
+
+- run `npm run build`
+- take the output `build` folder in the root dir and rename it to `eAtlas`
+- move this `eAtlas` folder into the root of `beat-covid` repo
+- to test locally on beat-covid, ensure you have cloud sql proxy running 
+
 # eAtlas · [![Build Status](https://travis-ci.org/layik/eAtlas.svg)](https://travis-ci.org/layik/eAtlas) [![Project Status: WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#)
 
 Currently this is just a “WIP” as we explore and gather requirements of

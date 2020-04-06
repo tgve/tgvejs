@@ -19,7 +19,7 @@ import qs from "qs"; // warning: importing it otherways would cause minificatino
 import mapping from "./location-icon-mapping.json";
 import Constants from "./Constants";
 import {isString, isNumber} from "./JSUtils.js";
-import IconClusterLayer from "./icon-cluster-layer";
+// import IconClusterLayer from "./icon-cluster-layer";
 import {ArcLayer, PathLayer} from "@deck.gl/layers";
 import {descending} from "d3-array";
 
@@ -203,6 +203,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     // console.log(data);
 
     //icon from https://github.com/uber/deck.gl/blob/8d5b4df9e4ad41eaa1d06240c5fddb922576ee21/website/src/static/images/icon-atlas.png
+    console.log("TODO:11111", data);
     const iconObj = {
       id: "icon-layer",
       data,
@@ -219,7 +220,10 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       onHover: renderTooltip
     };
     addOptionsToObject(options, iconObj);
-    return new IconClusterLayer(iconObj);
+    console.log("Creating icon cluster layer");
+    console.log(data);
+    return null;
+    // return new IconClusterLayer(iconObj);
   } else if (name === "sgrid") {
     const sgridObject = {
       id: "screen_grid",

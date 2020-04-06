@@ -20,6 +20,7 @@ export default (props) => {
   const [hex, setHex] = useState(false);
 
   const getSelectedCategoryString = (currentlySelectedObj) => {
+    console.log(currentlySelectedObj);
     const selectedCategoryId = Object.keys(currentlySelectedObj.selected)[0];
     return covidConstants[selectedCategoryId].sidebarHeading;
   }

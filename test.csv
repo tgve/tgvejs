@@ -1,0 +1,7 @@
+id,city,point_latitude,point_longitude,covid_status_no_symptoms,covid_status_self_isolation_after_exposure,covid_status_test_positive,covid_status_symptoms,covid_status_symptoms_not_covid,covid_status_test_positive_recovered,covid_status_symptoms_recovered,self_isolation_steps_not_leaving_house,self_isolation_steps_work_and_essentials,self_isolation_steps_essentials,self_isolation_steps_none,amount_of_contact_no_large_groups,amount_of_contact_reduced_contact,amount_of_contact_minimal_contact,amount_of_contact_none,current_work_retired,current_work_wfh,current_work_public_transport,current_work_car,current_work_bike_or_walk
+0003751f-81a2-4678-99c3-6cde9292889c,London,59.8944,30.2642,0,0,30,30,30,30,30,30,30,30,30,30,30,30,30,30,55,77,30,30
+0003751f-81a2-4678-99c3-6cde9292889c,London,59.8944,30.2642,0,0,30,30,30,12,14,22,30,12,12,30,3,22,30,30,22,77,30,30
+000939f6-3b00-42f4-ad6e-d657b366c1de,London,33.8081,-83.4777,0,0,30,30,30,12,14,22,30,30,12,1,1,30,1,30,30,55,30,30
+000d23b0-e29b-4a17-84e6-94862f4d4de9,London,55.0032,-1.6339,0,0,30,30,30,30,30,6,33,30,30,30,1,30,30,4,30,30,22,30
+000d58c7-c6e1-45be-bc32-3aaf763911df,London,48.19,17.7275,0,0,30,30,30,30,1,1,1,22,3,30,30,30,30,4,30,30,30,11
+000f39c9-18a4-49a8-a28c-b82084785bc3,London,51.55,0.1667,12,13,55,33,30,30,30,30,30,44,3,30,30,30,30,30,30,30,30,30

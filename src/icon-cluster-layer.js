@@ -2,32 +2,26 @@ import {CompositeLayer} from "@deck.gl/core";
 import {IconLayer} from "@deck.gl/layers";
 import Supercluster from "supercluster";
 
-function getIconName(size) {
-  if (size === 0) {
+function getIconName(pct) {
+  if (pct === 0) {
     return "";
   }
-  if (size < 10) {
-    return `marker-${size}`;
-  }
-  if (size < 100) {
-    return `marker-${Math.floor(size / 10)}0`;
-  }
-  if (size < 1000) {
-    return "marker-100";
-  }
-  if (size < 5000) {
-    return "marker-1000";
-  }
-  if (size < 10000) {
-    return "marker-5000";
-  }
-
-  console.log("Hmmm");
-  return "marker-10000";
+  return `marker-${pct}`;
 }
 
 function getIconSize(size) {
   return Math.min(100, size) / 100 + 1;
+}
+
+function getClusterTotalForCurrentFilter(clusterItems, filter) {
+  console.log(clusterItems, filter);
+  let total = 0;
+
+  clusterItems.forEach(item => {
+    total += parseInt(item.properties.properties[filter]);
+  });
+
+  return total;
 }
 
 export default class IconClusterLayer extends CompositeLayer {
@@ -36,7 +30,8 @@ export default class IconClusterLayer extends CompositeLayer {
   }
 
   updateState({props, oldProps, changeFlags}) {
-    const rebuildIndex = changeFlags.dataChanged || props.sizeScale !== oldProps.sizeScale;
+    const rebuildIndex =
+      props.filter !== oldProps.filter || changeFlags.dataChanged || props.sizeScale !== oldProps.sizeScale;
 
     if (rebuildIndex) {
       const index = new Supercluster({maxZoom: 16, radius: props.sizeScale});
@@ -71,7 +66,7 @@ export default class IconClusterLayer extends CompositeLayer {
 
   renderLayers() {
     const {data} = this.state;
-    const {iconAtlas, iconMapping, sizeScale} = this.props;
+    const {iconAtlas, iconMapping, sizeScale, filter} = this.props;
 
     return new IconLayer(
       this.getSubLayerProps({
@@ -81,7 +76,19 @@ export default class IconClusterLayer extends CompositeLayer {
         iconMapping,
         sizeScale,
         getPosition: d => d.geometry.coordinates,
-        getIcon: d => getIconName(d.properties.cluster ? d.properties.point_count : 1),
+        getIcon: d => {
+          let value = 0;
+          // console.log("Get icon", filter);
+
+          if (d.properties.cluster) {
+            const clusterItems = this.state.index.getLeaves(d.properties.cluster_id);
+            value = getClusterTotalForCurrentFilter(clusterItems, filter);
+          } else {
+            value = parseInt(d.properties.properties[filter]);
+          }
+
+          return getIconName(value);
+        },
         getSize: d => getIconSize(d.properties.cluster ? d.properties.point_count : 1)
       })
     );

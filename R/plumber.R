@@ -9,8 +9,12 @@ cors <- function(res) {
 }
 
 # read the csv and let it serve it
-lbc = read.csv("https://letsbeatcovid.net/api/geo")
-# lbc = lbc[1:5000] # TODO: For puroposes of dev 
+# --- Developing from api ---
+# lbc = read.csv("https://letsbeatcovid.net/api/geo")
+
+# --- Developing from file ---
+lbc = read.csv("test.csv")
+
 #' @get /api/lbc
 all_geojson <- function(res){
   res$setHeader("Content-Type", "text/csv")

@@ -34,7 +34,7 @@ export default {
     ]
   },
 
-  leaving_home: {
+  self_isolation_steps: {
     sidebarHeading: "Leaving the house",
     responses: [
       {
@@ -84,7 +84,7 @@ export default {
     ]
   },
 
-  work_current: {
+  current_work: {
     sidebarHeading: "Current work (or study)",
     responses: [
       {
