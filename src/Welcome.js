@@ -18,6 +18,7 @@ const OpenCovidSidebarButton = styled.button`
   position: fixed;
   left: 0px;
   top: 10px;
+  max-width: 95%;
   display: flex;
   align-items: center;
   background: black;
@@ -32,12 +33,12 @@ const MAPBOX_ACCESS_TOKEN =
 // Initial viewport settings
 
 // ===== When using Rscript run.R =====
-const URL = process.env.NODE_ENV === "development" ? Constants.DEV_URL : Constants.PRD_URL;
-const defaultURL = "/api/lbc";
+// const URL = process.env.NODE_ENV === "development" ? Constants.DEV_URL : Constants.PRD_URL;
+// const defaultURL = "/api/lbc";
 
 // ==== When building for production ====
-// const URL = "";
-// const defaultURL = "/api/geo";
+const URL = "";
+const defaultURL = "/api/geo";
 
 const initialViewState = {
   longitude: 0.1278,
@@ -73,10 +74,13 @@ class Welcome extends React.Component {
       });
   }
   setFilters(filterPrimary, filterSecondary) {
-    this.setState({
-      filterPrimary,
-      filterSecondary
-    });
+    this.setState(
+      {
+        filterPrimary,
+        filterSecondary
+      },
+      () => console.log(filterPrimary, filterSecondary)
+    );
   }
 
   render() {
@@ -91,7 +95,7 @@ class Welcome extends React.Component {
       filterSecondary: this.state.filterSecondary
     };
 
-    const iconClusterLayer = new IconClusterLayer({...layerProps, id: "icon-cluster", sizeScale: 60});
+    const iconClusterLayer = new IconClusterLayer({...layerProps, id: "icon-cluster", sizeScale: 70});
     const layers = [iconClusterLayer];
 
     return (
@@ -99,7 +103,7 @@ class Welcome extends React.Component {
         <DeckGL initialViewState={initialViewState} controller={true} layers={layers}>
           <StaticMap
             mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
-            mapStyle={"mapbox://styles/emyungmedshr/ck8ohsq813l661inxxw7yodhg"}
+            mapStyle={"mapbox://styles/emyungmedshr/ck8pno2eh0zio1jo17iw7mmdt"}
           />
         </DeckGL>
 

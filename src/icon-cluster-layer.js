@@ -3,9 +3,6 @@ import {IconLayer} from "@deck.gl/layers";
 import Supercluster from "supercluster";
 
 function getIconName(pct) {
-  if (pct === 0) {
-    return "";
-  }
   return `marker-${pct}`;
 }
 
@@ -17,6 +14,7 @@ function getClusterPctForCurrentFilter(clusterItems, filter, filterPrimary) {
   let numerator = 0;
   let denominator = 0;
 
+  // if it is slow, this might be the area to speed up
   clusterItems.forEach(item => {
     numerator += parseInt(item.properties.properties[filter]);
     denominator += parseInt(item.properties.properties[`${filterPrimary}_total_responses`]);
@@ -81,8 +79,6 @@ export default class IconClusterLayer extends CompositeLayer {
         sizeScale,
         getPosition: d => d.geometry.coordinates,
         getIcon: d => {
-          // return "marker-30";
-          // ==== TODO: This bit is the slow bit ===
           let value = 0;
 
           const filter = `${filterPrimary}_${filterSecondary}`;
