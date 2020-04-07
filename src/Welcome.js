@@ -33,12 +33,12 @@ const MAPBOX_ACCESS_TOKEN =
 // Initial viewport settings
 
 // ===== When using Rscript run.R =====
-// const URL = process.env.NODE_ENV === "development" ? Constants.DEV_URL : Constants.PRD_URL;
-// const defaultURL = "/api/lbc";
+const URL = process.env.NODE_ENV === "development" ? Constants.DEV_URL : Constants.PRD_URL;
+const defaultURL = "/api/lbc";
 
 // ==== When building for production ====
-const URL = "";
-const defaultURL = "/api/geo";
+// const URL = "";
+// const defaultURL = "/api/geo";
 
 const initialViewState = {
   longitude: 0.1278,
@@ -74,17 +74,13 @@ class Welcome extends React.Component {
       });
   }
   setFilters(filterPrimary, filterSecondary) {
-    this.setState(
-      {
-        filterPrimary,
-        filterSecondary
-      },
-      () => console.log(filterPrimary, filterSecondary)
-    );
+    this.setState({
+      filterPrimary,
+      filterSecondary
+    });
   }
 
   render() {
-    console.log("render, data: ", this.state.data);
     const layerProps = {
       data: this.state.data.features,
       pickable: true,

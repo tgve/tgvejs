@@ -29,7 +29,6 @@ export default class IconClusterLayer extends CompositeLayer {
   }
 
   updateState({props, oldProps, changeFlags}) {
-    console.log("changeFlags", changeFlags);
     const rebuildIndex =
       props.filterSecondary !== oldProps.filterSecondary ||
       changeFlags.dataChanged ||

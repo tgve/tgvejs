@@ -203,7 +203,6 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     // console.log(data);
 
     //icon from https://github.com/uber/deck.gl/blob/8d5b4df9e4ad41eaa1d06240c5fddb922576ee21/website/src/static/images/icon-atlas.png
-    console.log("TODO:11111", data);
     const iconObj = {
       id: "icon-layer",
       data,
@@ -220,8 +219,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       onHover: renderTooltip
     };
     addOptionsToObject(options, iconObj);
-    console.log("Creating icon cluster layer");
-    console.log(data);
+
     return null;
     // return new IconClusterLayer(iconObj);
   } else if (name === "sgrid") {
@@ -483,11 +481,7 @@ const humanize = str => {
 
 const shortenName = (name, n = 26) => {
   if (isNumber(name)) {
-    return parseFloat(
-      Number.parseFloat(name)
-        .toFixed(2)
-        .toString()
-    );
+    return parseFloat(Number.parseFloat(name).toFixed(2).toString());
   }
   if (!name || name.length <= n || !isString(name)) return name;
   let shortened = name.trim();
@@ -536,10 +530,10 @@ const isURL = str => {
   return a.host && a.host !== window.location.host;
 };
 
-const isMobile = function() {
+const isMobile = function () {
   var check = false;
   if (window.innerWidth < 640) return true;
-  (function(a) {
+  (function (a) {
     if (
       /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
         a
