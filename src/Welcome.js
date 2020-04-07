@@ -33,12 +33,12 @@ const MAPBOX_ACCESS_TOKEN =
 // Initial viewport settings
 
 // ===== When using Rscript run.R =====
-const URL = process.env.NODE_ENV === "development" ? Constants.DEV_URL : Constants.PRD_URL;
-const defaultURL = "/api/lbc";
+// const URL = process.env.NODE_ENV === "development" ? Constants.DEV_URL : Constants.PRD_URL;
+// const defaultURL = "/api/lbc";
 
 // ==== When building for production ====
-// const URL = "";
-// const defaultURL = "/api/geo";
+const URL = "";
+const defaultURL = "/api/geo";
 
 const initialViewState = {
   longitude: 0.1278,
