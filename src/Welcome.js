@@ -27,6 +27,13 @@ const OpenCovidSidebarButton = styled.button`
   padding: 10px;
 `;
 
+const maxBounds = {
+  minLongitude: -17.781974,
+  maxLongitude: 4.06257,
+  minLatitude: 46.095734,
+  maxLatitude: 63.509375
+};
+
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiZW15dW5nbWVkc2hyIiwiYSI6ImNrOGs4NmphcjAycmYzZm51aTM3Z281aDUifQ.-Enbhu8pF2CIra4iFGFs8A";
@@ -38,13 +45,13 @@ const MAPBOX_ACCESS_TOKEN =
 
 // ==== When building for production ====
 const URL = "";
-const defaultURL = "/api/geo";
+const defaultURL = "/api/statuses-by-city";
 
 const initialViewState = {
-  longitude: 0.1278,
-  latitude: 51.5074,
-  zoom: 3,
-  minZoom: 3,
+  longitude: -4.092765,
+  latitude: 53.942548,
+  zoom: 5,
+  minZoom: 5,
   pitch: 0,
   bearing: 0
 };
@@ -80,6 +87,27 @@ class Welcome extends React.Component {
     });
   }
 
+  _onViewStateChange({viewState}) {
+    let latitude = viewState.latitude,
+      longitude = viewState.longitude;
+
+    if (viewState.longitude < maxBounds.minLongitude) {
+      longitude = maxBounds.minLongitude;
+    } else if (viewState.longitude > maxBounds.maxLongitude) {
+      longitude = maxBounds.maxLongitude;
+    } else if (viewState.latitude < maxBounds.minLatitude) {
+      latitude = maxBounds.minLatitude;
+    } else if (viewState.latitude > maxBounds.maxLatitude) {
+      latitude = maxBounds.maxLatitude;
+    }
+
+    return {
+      ...viewState,
+      longitude,
+      latitude
+    };
+  }
+
   render() {
     const layerProps = {
       data: this.state.data.features,
@@ -96,7 +124,11 @@ class Welcome extends React.Component {
 
     return (
       <div>
-        <DeckGL initialViewState={initialViewState} controller={true} layers={layers}>
+        <DeckGL
+          initialViewState={initialViewState}
+          controller={true}
+          layers={layers}
+          onViewStateChange={this._onViewStateChange}>
           <StaticMap
             mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
             mapStyle={"mapbox://styles/emyungmedshr/ck8pno2eh0zio1jo17iw7mmdt"}

@@ -36,7 +36,8 @@
     "styled-components": "^5.0.1",
     "styletron-engine-atomic": "^1.4.6",
     "styletron-react": "^5.2.7",
-    "underscore": "^1.9.2"
+    "underscore": "^1.9.2",
+    "viewport-mercator-project": "^7.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

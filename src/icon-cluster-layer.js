@@ -3,6 +3,9 @@ import {IconLayer} from "@deck.gl/layers";
 import Supercluster from "supercluster";
 
 function getIconName(pct) {
+  if (pct > 0 && pct < 1) {
+    return `marker-<1`;
+  }
   return `marker-${pct}`;
 }
 
@@ -87,10 +90,17 @@ export default class IconClusterLayer extends CompositeLayer {
             value = getClusterPctForCurrentFilter(clusterItems, filter, filterPrimary);
           } else {
             value =
-              parseInt(d.properties.properties[filter]) / d.properties.properties[`${filterPrimary}_total_responses`];
+              parseFloat(d.properties.properties[filter]) / d.properties.properties[`${filterPrimary}_total_responses`];
           }
 
-          value = Math.floor(value * 100);
+          // this assignment below holds the pct / 100
+          value = value * 100;
+
+          // round values above 1, need to preserve decimals between 0 and 1 to render <1
+          if (value > 1) {
+            value = Math.floor(value);
+          }
+
           return getIconName(value);
         },
         getSize: d => getIconSize(d.properties.cluster ? d.properties.point_count : 1)
