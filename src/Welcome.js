@@ -28,10 +28,10 @@ const OpenCovidSidebarButton = styled.button`
 `;
 
 const maxBounds = {
-  minLongitude: -17.781974,
-  maxLongitude: 4.06257,
-  minLatitude: 46.095734,
-  maxLatitude: 63.509375
+  minLongitude: -14.252347,
+  maxLongitude: 5.134772,
+  minLatitude: 48.719508,
+  maxLatitude: 62.451088
 };
 
 // Set your mapbox access token here
