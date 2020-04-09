@@ -119,7 +119,7 @@ class Welcome extends React.Component {
       filterSecondary: this.state.filterSecondary
     };
 
-    const iconClusterLayer = new IconClusterLayer({...layerProps, id: "icon-cluster", sizeScale: 70});
+    const iconClusterLayer = new IconClusterLayer({...layerProps, id: "icon-cluster", sizeScale: 90});
     const layers = [iconClusterLayer];
 
     return (
