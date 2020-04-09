@@ -2,7 +2,13 @@ import {CompositeLayer} from "@deck.gl/core";
 import {IconLayer} from "@deck.gl/layers";
 import Supercluster from "supercluster";
 
+const MIN_COUNT_TO_RENDER_CLUSTER = 10;
+
 function getIconName(pct) {
+  if (pct < 0) {
+    // pct is negative when length of a cluster does not meet the min count
+    return ``;
+  }
   if (pct > 0 && pct < 1) {
     return `marker-<1`;
   }
@@ -16,6 +22,12 @@ function getIconSize(size) {
 function getClusterPctForCurrentFilter(clusterItems, filter, filterPrimary) {
   let numerator = 0;
   let denominator = 0;
+
+  if (clusterItems.length < MIN_COUNT_TO_RENDER_CLUSTER) {
+    // if there are not enough points in the cluster, make the pct negative
+    // this negative value is then handled in getIconName
+    return -1;
+  }
 
   // if it is slow, this might be the area to speed up
   clusterItems.forEach(item => {
