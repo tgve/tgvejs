@@ -178,14 +178,13 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       id: 'icon-layer',
       data,
       pickable: true,
-      iconAtlas: './location-icon-atlas.png',
+      iconAtlas: './src/location-icon-atlas.png',
       iconMapping: mapping,
       sizeScale: 60,
       getPosition: d => d.geometry.coordinates,
       wrapLongitude: true,
       // getIcon: d => 'marker-1',
       // getSize: d => 5,
-      // getColor: d => [Math.sqrt(d.exits), 140, 0],
       onHover: renderTooltip
     }
     addOptionsToObject(options, iconObj)
