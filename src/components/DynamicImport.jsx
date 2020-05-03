@@ -2,8 +2,11 @@ import { Component } from 'react'
 //https://tylermcginnis.com/react-router-code-splitting/
 //we can further add our laoding spinner here.
 export default class DynamicImport extends Component {
-  state = {
-    component: null
+  constructor(props) {
+    super(props);
+    this.state = {
+      component: null
+    }
   }
   componentDidMount () {
     this.props.load()

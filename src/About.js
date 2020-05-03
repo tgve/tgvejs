@@ -9,7 +9,12 @@ import marked from "marked";
  * Up to this point we are still not using SSR
  */
 class About extends Component {
-  state = { markdown: null }
+  constructor(props) {
+    super(props);
+    this.state = {
+      markdown: null
+    }
+  }
   componentDidMount() {
     const readmePath = require("./notes.md");
 

@@ -28,7 +28,7 @@ export default class Tooltip extends React.Component {
     window.removeEventListener('resize', this._handleWindowSizeChange.bind(this));
   }
 
-  _handleWindowSizeChange = () => {
+  _handleWindowSizeChange () {
     this.forceUpdate()
   };
 

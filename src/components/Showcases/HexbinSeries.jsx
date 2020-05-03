@@ -3,11 +3,14 @@ import { Slider } from 'baseui/slider';
 import { XYPlot, XAxis, YAxis, HexbinSeries, Hint } from 'react-vis';
 
 export default class HexHeatmap extends Component {
-  state = {
-    hoveredNode: null,
-    radius: 10,
-    offset: 0,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      hoveredNode: null,
+      radius: 10,
+      offset: 0,
+    }
+  }
   render() {
     const { data, options } = this.props;
     const { radius, hoveredNode } = this.state;

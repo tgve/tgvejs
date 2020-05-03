@@ -11,27 +11,12 @@ import { Client as Styletron } from 'styletron-engine-atomic';
 import Welcome from './Welcome';
 import Header from './components/Header';
 import About from './About';
-import DynamicImport from './components/DynamicImport';
 
 import '../node_modules/react-vis/dist/style.css';
 
 import './App.css';
 
 const engine = new Styletron();
-
-/**
- * Code splitting.
- * @param {*} props 
- */
-const DUI = (props) => (
-  <DynamicImport load={() => import('./components/DUI')}>
-    {
-      (Component) => Component === null
-        ? <div className="loader" style={{ zIndex: 999 }} />
-        : <Component {...props} />
-    }
-  </DynamicImport>
-)
 
 /**
  * Separate the Header and the main content.
@@ -47,7 +32,6 @@ class App extends Component {
           <BaseProvider theme={DarkTheme}>
             <Switch>
               <Route exact path="/" component={Welcome} />
-              <Route exact path="/fui" component={DUI} />
               <Route exact path="/about" component={About} />
             </Switch>
           </BaseProvider>

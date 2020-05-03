@@ -2,9 +2,14 @@ import * as React from 'react';
 import { FileUploader } from 'baseui/file-uploader';
 
 export default class Uploader extends React.Component {
-  state = { progressAmount: 0 };
+  constructor(props) {
+    super(props);
+    this.state = {
+      progressAmount: 0
+    }
+  }
 
-  handleDrop = (acceptedFiles, rejectedFiles) => {
+  handleDrop (acceptedFiles, rejectedFiles) {
     const { contentCallback } = this.props;
     const textType = /text.*/;
     const file = acceptedFiles[0]
@@ -34,7 +39,7 @@ export default class Uploader extends React.Component {
 
   // startProgress method is only illustrative. Use the progress info returned
   // from your upload endpoint. If unavailable, do not provide a progressAmount.
-  startProgress = () => {
+  startProgress () {
     this.intervalId = setInterval(() => {
       if (this.state.progressAmount >= 100) {
         this.reset();
@@ -45,7 +50,7 @@ export default class Uploader extends React.Component {
   };
 
   // reset the component to its original state. use this to cancel/retry the upload.
-  reset = () => {
+  reset () {
     clearInterval(this.intervalId);
     this.setState({ progressAmount: 0 });
   };
