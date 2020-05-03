@@ -1,2 +1,4 @@
+import React from 'react';
+
 import App from './App';
-export default App;
+export default (data) => <App data={data}/>;

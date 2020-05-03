@@ -7,6 +7,9 @@ export default class Uploader extends React.Component {
     this.state = {
       progressAmount: 0
     }
+    this.reset = this.reset.bind(this);
+    this.handleDrop = this.handleDrop.bind(this)
+    this.startProgress = this.startProgress.bind(this)
   }
 
   handleDrop (acceptedFiles, rejectedFiles) {

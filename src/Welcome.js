@@ -92,7 +92,7 @@ export default class Welcome extends React.Component {
       pitch: 55,
       bearing: 0,
     }
-    const param = getParamsFromSearch(props.location.search);
+    const param = getParamsFromSearch(props.location ? props.location.search : window.location.search);
     if (param) {
       //lat=53.814&lng=-1.534&zoom=11.05&bea=0&pit=55&alt=1.5
       Object.keys(param).forEach(key => {

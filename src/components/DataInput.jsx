@@ -8,12 +8,9 @@ import {
   ModalButton,
   FocusOnce,
 } from 'baseui/modal';
-import { FlexGrid, FlexGridItem } from 'baseui/flex-grid';
-import { fetchQuant, fetchSPENSER } from './Showcases/util_quant';
 
 import File from './File'
 import URL from './URL';
-import Card from './Card';
 import { DEV_URL, PRD_URL } from '../Constants';
 
 /**
@@ -39,45 +36,6 @@ const partURL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
 export default function (props) {
   const [isOpen, setOpen] = React.useState(false);
   const { urlCallback, toggleOpen } = props;
-
-  function cards() {
-    const info = {
-      // SPENSER2: {
-      //   image: "images/spenser.png",
-      //   body: "SPENSER Manchester 2011 - 2020.",
-      //   api: fetchSPENSER
-      // },
-      SPENSER: {
-        image: "images/spenser.png",
-        body: "SPENSER Cambridge sample.",
-        api: partURL + '/api/spenser'
-      },
-      QUANT: {
-        image: "images/quant.png",
-        body: "QUANT HS2 scenario example.",
-        api: fetchQuant // a function
-      },
-    };
-    return (Object.keys(info).map(key =>
-      <FlexGridItem key={key} {...itemProps}>
-        {
-          <Card button="Load" title={key} image={info[key]['image']}
-            body={info[key]['body']} loadCallback={() => {
-              const api = info[key]['api'];
-              // if api is function call and provied
-              // geojson returned in case of quant for instance.
-              api && typeof (api) === 'function' ?
-                api((geojson, apiURL) => urlCallback(undefined, geojson, apiURL)) :
-                typeof (urlCallback) === 'function'
-                && urlCallback(api)
-              setOpen(false);
-            }} />
-        }
-      </FlexGridItem>
-
-    ))
-  }
-
 
   return (
     <React.Fragment>
@@ -123,13 +81,6 @@ export default function (props) {
               });
             }
           }} />
-          <FlexGrid
-            flexGridColumnCount={3}
-            flexGridColumnGap="scale800"
-            flexGridRowGap="scale800"
-          >
-            {cards()}
-          </FlexGrid>
         </ModalBody>
         <ModalFooter>
           <ModalButton onClick={() => {

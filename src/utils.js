@@ -168,7 +168,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     // console.log(data);
     /**
      * There are three files the layer need to display the icons:
-     * (1) location-icon-atlas.png which is in /public
+     * (1) location-icon-atlas.png which needs to be in src for npm package
      * (2) ./location-icon-mapping.json which deals with mapping the icon to pixels on (1)
      * (3) ./icon-cluster-layer.json which is a DeckGL CompositLayer component that
      * does the clustering.
@@ -178,7 +178,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       id: 'icon-layer',
       data,
       pickable: true,
-      iconAtlas: 'location-icon-atlas.png',
+      iconAtlas: './location-icon-atlas.png',
       iconMapping: mapping,
       sizeScale: 60,
       getPosition: d => d.geometry.coordinates,
