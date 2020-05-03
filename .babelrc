@@ -1,4 +1,9 @@
 {
   "presets": ["@babel/preset-react", "@babel/preset-env"],
-  "plugins": ["@babel/plugin-proposal-object-rest-spread"]
+  "plugins": ["@babel/plugin-proposal-object-rest-spread"],
+  "ignore": [
+    "**/__tests__", 
+    "**/*.test.js",
+    "**/__snapshots__"
+  ]
 }
