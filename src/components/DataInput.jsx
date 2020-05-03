@@ -11,7 +11,6 @@ import {
 
 import File from './File'
 import URL from './URL';
-import { DEV_URL, PRD_URL } from '../Constants';
 
 /**
  * The package is by mapbox. 
@@ -30,8 +29,6 @@ import { DEV_URL, PRD_URL } from '../Constants';
  * 
  */
 const csv2geojson = require('csv2geojson');
-
-const partURL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
 
 export default function (props) {
   const [isOpen, setOpen] = React.useState(false);
