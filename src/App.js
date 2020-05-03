@@ -3,15 +3,15 @@
  */
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider as StyletronProvider } from 'styletron-react';
+import { BaseProvider, DarkTheme } from 'baseui';
+import { Client as Styletron } from 'styletron-engine-atomic';
 
 import Welcome from './Welcome';
 import Header from './components/Header';
 import About from './About';
 import DynamicImport from './components/DynamicImport';
-
-import { Provider as StyletronProvider } from 'styletron-react';
-import { BaseProvider, DarkTheme } from 'baseui';
-import { Client as Styletron } from 'styletron-engine-atomic';
 
 import '../node_modules/react-vis/dist/style.css';
 
@@ -40,6 +40,7 @@ const DUI = (props) => (
 class App extends Component {
   render() {
     return (
+      <BrowserRouter>
       <main>
         <Header />
         <StyletronProvider value={engine}>
@@ -52,6 +53,7 @@ class App extends Component {
           </BaseProvider>
         </StyletronProvider>
       </main>
+      </BrowserRouter>
     )
   }
 }
