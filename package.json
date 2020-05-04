@@ -1,8 +1,13 @@
 {
   "name": "eatlas",
   "description": "Turing Geovisualization Engine (TGVE) front-end npm package.",
-  "version": "0.1.0",
-  "author": "Layik Hama <layik.hama@gmail.com>",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "L Hama <layik.hama@gmail.com>",
+  "contributors": [
+    "R Beecham <r.beecham@leeds.ac.uk>",
+    "N Lomax <n.m.lomax@leeds.ac.uk>"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -44,7 +49,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --env=jsdom --coverage",
-    "dist": "rm -rf dist && NODE_ENV=production node_modules/.bin/babel src/ --out-dir dist"
+    "dist": "rm -rf dist && NODE_ENV=production node_modules/.bin/babel src/ --out-dir dist --copy-files --no-copy-ignored"
   },
   "eslintConfig": {
     "extends": "react-app"
