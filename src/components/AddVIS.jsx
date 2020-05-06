@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, KIND, SIZE } from 'baseui/button';
 import { Accordion, Panel } from 'baseui/accordion';
 import { VerticalBarSeries, HorizontalBarSeries, LineSeries } from 'react-vis';
@@ -8,7 +8,7 @@ import TreeMap from './TreeMap';
 import { humanize } from '../utils';
 import { isString, isNumber } from '../JSUtils';
 import { xyObjectByProperty } from '../utils';
-import SeriesPlot from './Showcases/SeriesPlot';
+import SeriesPlot from './showcase/SeriesPlot';
 
 const VIS = ['Vertical Bar', 'Horizontal Bar',
   'Line', 'Pop. Pyramid', 'Treemap'];

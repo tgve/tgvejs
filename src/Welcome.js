@@ -33,7 +33,7 @@ import {
 } from './utils';
 import Constants from './Constants';
 import DeckSidebarContainer from
-  './components/DeckSidebar/DeckSidebarContainer';
+  './components/decksidebar/DeckSidebarContainer';
 import history from './history';
 
 import './App.css';
@@ -413,7 +413,7 @@ export default class Welcome extends React.Component {
     // console.log(geomType, legend);
 
     return (
-      <div id="html2pdf">
+      <div>
         {/* just a little catch to hide the loader 
         when no basemap is presetn */}
         <div className="loader" style={{
@@ -431,7 +431,7 @@ export default class Welcome extends React.Component {
             this._updateURL(viewport)
             this.setState({ viewport })
           }}
-          height={window.innerHeight - 54 + 'px'}
+          height={window.innerHeight + 'px'}
           width={window.innerWidth + 'px'}
           //crucial bit below
           viewState={viewport ? viewport : initialViewState}

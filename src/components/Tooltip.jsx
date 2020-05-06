@@ -2,9 +2,9 @@ import React from 'react';
 import { LineSeries } from 'react-vis';
 import { Table } from 'baseui/table';
 import { humanize } from '../utils';
-import SeriesPlot from './Showcases/SeriesPlot';
+import SeriesPlot from './showcase/SeriesPlot';
 import { propertyCountByProperty } from '../geojsonutils';
-import MultiLinePlot from './Showcases/MultiLinePlot';
+import MultiLinePlot from './showcase/MultiLinePlot';
 
 const WIDTH = 220;
 const BAR_HEIGHT = 80;

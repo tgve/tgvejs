@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ascending, quantile } from 'd3-array';
 
 import { isNumber } from '../../JSUtils';
@@ -7,8 +7,7 @@ import { convertRange } from '../../utils';
 import './style.css'
 
 export default (props) => {
-  const { className, data, marginLeft, marginTop,
-    lineAttrs, plotStyle } = props;
+  const { data, lineAttrs, plotStyle } = props;
   if (!data || !Array.isArray(data) || data.length === 0) return null;
   let isNumeric = true;
   data.forEach(e => {

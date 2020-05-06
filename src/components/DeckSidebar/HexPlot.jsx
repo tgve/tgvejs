@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import HexbinSeries from '../Showcases/HexbinSeries';
+import HexbinSeries from '../showcase/HexbinSeries';
 
 import { coordsAsXY } from '../../geojsonutils';
 

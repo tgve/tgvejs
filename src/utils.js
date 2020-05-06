@@ -289,10 +289,6 @@ const convertRange = (oldValue = 2, values = {
   oldMax: 10, oldMin: 1,
   newMax: 1, newMin: 0
 }) => {
-  // thanks to https://stackoverflow.com/a/929107/2332101
-  // OldRange = (OldMax - OldMin)  
-  // NewRange = (NewMax - NewMin)  
-  // NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
   let value = (((oldValue - values.oldMin) * (values.newMax - values.newMin))
     / (values.oldMax - values.oldMin)) + values.newMin
   return +value.toFixed(2)
@@ -317,10 +313,6 @@ const getParamsFromSearch = (search) => {
 
 const getBbx = (bounds) => {
   if (!bounds) return null;
-  // xmin = -1.6449
-  // ymin = 53.82925
-  // xmax = -1.6270
-  // ymax = 53.8389
   let xmin = bounds._sw.lng;
   let xmax = bounds._ne.lng;
   let ymin = bounds._sw.lat;
@@ -336,18 +328,7 @@ const getBbx = (bounds) => {
   return ({ xmin, ymin, xmax, ymax })
 }
 
-const suggestDeckLayer = (geojson) => {
-  // basic version should suggest a layer
-  // based on the geojson data types
-  // go through each feature? in case of features.
-
-}
-const suggestUIforNumber = (number) => {
-  // "checkbox",     
-  // "radio",        
-  // "buttongroups", 
-  // "dropdown",     
-  // "slider"])      
+const suggestUIforNumber = (number) => {   
   const { UI_LIST } = Constants;
   if (!number) return UI_LIST[1];
   if (number === 1) {
@@ -690,7 +671,6 @@ export {
   xyObjectByProperty,
   suggestUIforNumber,
   generateDeckLayer,
-  suggestDeckLayer,
   sortNumericArray,
   colorRangeNames,
   searchNominatom,

@@ -7,7 +7,6 @@ import { BaseProvider, DarkTheme } from 'baseui';
 import { Client as Styletron } from 'styletron-engine-atomic';
 
 import Welcome from './Welcome';
-import Header from './components/Header';
 
 import './App.css';
 
@@ -21,7 +20,6 @@ class App extends Component {
   render() {
     return (
       <main>
-        <Header />
         <StyletronProvider value={engine}>
           <BaseProvider theme={DarkTheme}>
             <Welcome data={this.props.data}/>
