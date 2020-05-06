@@ -3,10 +3,10 @@
   "description": "Turing Geovisualization Engine (TGVE) front-end npm package.",
   "version": "0.0.1",
   "main": "index.js",
-  "author": "L Hama <layik.hama@gmail.com>",
+  "author": "L Hama (https://github.com/layik)",
   "contributors": [
-    "Dr. R Beecham <r.beecham@leeds.ac.uk>",
-    "Dr. N Lomax <n.m.lomax@leeds.ac.uk>"
+    "Dr. R Beecham",
+    "Dr. N Lomax"
   ],
   "license": "MIT",
   "repository": {
