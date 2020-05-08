@@ -350,7 +350,6 @@ input[type=range]::-ms-thumb {
   border-radius: 15px;
   background: #ffffff;
   cursor: pointer;
-  height: 11.4px;
 }
 input[type=range]:focus::-ms-fill-lower {
   background: rgba(48, 113, 169, 0.78);

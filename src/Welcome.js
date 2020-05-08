@@ -31,7 +31,6 @@ import {
   colorRanges,
   convertRange, getMin, getMax, isURL
 } from './utils';
-import Constants from './Constants';
 import DeckSidebarContainer from
   './components/decksidebar/DeckSidebarContainer';
 import history from './history';
@@ -60,8 +59,6 @@ const osmtiles = {
     "source": "simple-tiles",
   }]
 };
-const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
-const defualtURL = "/api/stats19";
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -105,6 +102,8 @@ export default class Welcome extends React.Component {
     }
 
     this.state = {
+      dat: props.data,
+      defualtURL: props.defualtURL,
       loading: true,
       layers: [],
       backgroundImage: gradient.backgroundImage,
@@ -131,20 +130,18 @@ export default class Welcome extends React.Component {
   /**
    * Main function to fetch data and update state.
    * 
-   * @param {String} aURL to use if not default `/api/stats19` is used.
+   * @param {String} aURL to use if not state.defaultURL is used.
    * @param {Object} customError to use in case of urlCallback object/urls.
    */
-  _fetchAndUpdateState(aURL, customError) {
-    if (aURL && !isURL(aURL)) return;
+  _fetchAndUpdateState(aURL = this.state.defualtURL, customError) {
+    if (aURL && !isURL(aURL)) {
+      if(this.state.loading) {
+        this.setState({loading: false})
+      }
+      return
+    };
     if (customError && typeof (customError) !== 'object') return;
-    // TODO: more sanity checks?
-    const fullURL = aURL ?
-      // TODO: decide which is better.
-      // URL + "/api/url?q=" + aURL : // get the server to parse it 
-      aURL : // do not get the server to parse it 
-      URL + defualtURL;
-
-    fetchData(fullURL, (data, error) => {
+    fetchData(aURL, (data, error) => {
       if (!error) {
         // this._updateURL(viewport)
         this.setState({
@@ -159,7 +156,7 @@ export default class Welcome extends React.Component {
 
         this.setState({
           loading: false,
-          alert: { content: 'Could not reach: ' + fullURL }
+          alert: { content: 'Could not reach: ' + aURL }
         })
         //network error?
       }
@@ -351,9 +348,6 @@ export default class Welcome extends React.Component {
 
   _renderTooltip({ x, y, object }) {
     const hoveredObject = object;
-    // console.log(hoveredObject && hoveredObject.points[0].properties.speed_limit);
-    // console.log(hoveredObject)
-    // return
     if (!hoveredObject) {
       this.setState({ tooltip: "" })
       return;
@@ -389,7 +383,7 @@ export default class Welcome extends React.Component {
       const box = getBbx(bounds)
       // console.log("bounds", box);
       const { xmin, ymin, xmax, ymax } = box;
-      fetchData(URL + defualtURL + xmin + "/" +
+      fetchData(thi.state.defualtURL + xmin + "/" +
         ymin + "/" + xmax + "/" + ymax,
         (data, error) => {
           if (!error) {
@@ -414,8 +408,6 @@ export default class Welcome extends React.Component {
 
     return (
       <div>
-        {/* just a little catch to hide the loader 
-        when no basemap is presetn */}
         <div className="loader" style={{
           zIndex: loading ? 999 : -1,
           visibility: typeof mapStyle === 'string' &&
@@ -512,7 +504,7 @@ export default class Welcome extends React.Component {
             this._fitViewport(bboxLonLat)
           }}
           showLegend={(legend) => this.setState({ legend })}
-          datasetName={defualtURL}
+          datasetName={this.state.defualtURL}
         />
         {
           legend && (geomType === 'polygon' ||
