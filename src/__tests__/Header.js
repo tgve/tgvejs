@@ -1,16 +1,16 @@
 import React from 'react';
 import {shallow, mount} from 'enzyme';
-import { Navbar, Nav } from 'react-bootstrap';
+import { Navbar } from 'react-bootstrap';
 import { BrowserRouter } from 'react-router-dom';
 
 import Header from '../components/Header';
 
 test('Shallow and mount', () => {
   const header = shallow(<Header />);
-  // console.log(header.text());
+  console.log(header.text());
   // console.log(header.debug());
-  const route = header.find('Route').prop('children')();
-  expect(route.key).toBeNull(); 
+  // const route = header.find('Route').prop('children')();
+  // expect(route.key).toBeNull(); 
   const m = mount(<BrowserRouter><Header /></BrowserRouter>);
   // console.log(m.props());
   expect(m.contains(BrowserRouter)).toEqual(true);

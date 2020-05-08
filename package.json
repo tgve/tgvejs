@@ -46,7 +46,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --updateSnapshot",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --env=jsdom --coverage",
     "dist": "rm -rf dist && NODE_ENV=production node_modules/.bin/babel src/ --out-dir dist --copy-files --no-copy-ignored"
