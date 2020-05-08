@@ -21,6 +21,5 @@ test('App - should create snapshot', () => {
   expect(tree).toMatchSnapshot(); 
 
   const m = shallow(<App />);
-  console.log(m.find(BaseProvider).children());
   expect(m.find(BaseProvider).prop('theme')).toEqual(DarkTheme);
 })
