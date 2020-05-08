@@ -84,7 +84,7 @@ const describeFeatureVariables = (feature) => {
       DateTime.fromFormat(value + '', 'dd/MM/yyyy').isValid ||
       DateTime.fromISO(value).isValid || // "19-2-1999"
       DateTime.fromHTTP(value).isValid ||
-      DateTime.fromMillis(value).isValid) {
+      (typeof value === Number && DateTime.fromMillis(value).isValid)) {
       v_type = Date
     } else if (isNumber(value)) {
       v_type = Number

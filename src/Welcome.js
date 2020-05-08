@@ -102,8 +102,6 @@ export default class Welcome extends React.Component {
     }
 
     this.state = {
-      dat: props.data,
-      defualtURL: props.defualtURL,
       loading: true,
       layers: [],
       backgroundImage: gradient.backgroundImage,
@@ -117,14 +115,30 @@ export default class Welcome extends React.Component {
       iconLimit: 500,
       legend: false
     }
+    
     this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
     this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
     this._fitViewport = this._fitViewport.bind(this);
   }
 
+  componentDidUpdate(nextProps) {
+    // props change
+    const { data, defaultURL } = nextProps;
+    if(JSON.stringify(data) !== JSON.stringify(this.props.data) ||
+      defaultURL !== this.props.defaultURL) {
+      this._generateLayer()
+    }
+  }
+
   componentDidMount() {
-    this._fetchAndUpdateState()
+    const {defaultURL} = this.props 
+    if (defaultURL)  {
+      this._fetchAndUpdateState(defaultURL);
+    } else {
+      this._generateLayer();
+      this.setState({loading: false}) 
+    }
   }
 
   /**
@@ -133,7 +147,7 @@ export default class Welcome extends React.Component {
    * @param {String} aURL to use if not state.defaultURL is used.
    * @param {Object} customError to use in case of urlCallback object/urls.
    */
-  _fetchAndUpdateState(aURL = this.state.defualtURL, customError) {
+  _fetchAndUpdateState(aURL, customError) {    
     if (aURL && !isURL(aURL)) {
       if(this.state.loading) {
         this.setState({loading: false})
@@ -184,7 +198,9 @@ export default class Welcome extends React.Component {
       })
       return;
     }
-    let data = this.state.data && this.state.data.features
+    let data = this.state.data ? this.state.data.features : 
+    this.props.data && this.props.data.features;
+    
     const { colourName, iconLimit } = this.state;
     let column = (filter && filter.what === 'column' && filter.selected) ||
       this.state.column;
@@ -383,7 +399,7 @@ export default class Welcome extends React.Component {
       const box = getBbx(bounds)
       // console.log("bounds", box);
       const { xmin, ymin, xmax, ymax } = box;
-      fetchData(thi.state.defualtURL + xmin + "/" +
+      fetchData(this.props.defaultURL + xmin + "/" +
         ymin + "/" + xmax + "/" + ymax,
         (data, error) => {
           if (!error) {
@@ -504,7 +520,7 @@ export default class Welcome extends React.Component {
             this._fitViewport(bboxLonLat)
           }}
           showLegend={(legend) => this.setState({ legend })}
-          datasetName={this.state.defualtURL}
+          datasetName={this.props.defaultURL}
         />
         {
           legend && (geomType === 'polygon' ||
