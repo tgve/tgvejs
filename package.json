@@ -2,7 +2,7 @@
   "name": "eatlas",
   "description": "Turing Geovisualization Engine (TGVE) front-end npm package.",
   "version": "0.0.1",
-  "main": "index.js",
+  "main": "dist/index.js",
   "author": "L Hama (https://github.com/layik)",
   "contributors": [
     "Dr. R Beecham",
@@ -29,9 +29,7 @@
     "luxon": "^1.22.0",
     "marked": "^0.7.0",
     "prop-types": "^15.6.2",
-    "react": "^16.13.0",
     "react-bootstrap": "^0.32.4",
-    "react-dom": "^16.13.0",
     "react-leaflet": "^2.6.1",
     "react-leaflet-control": "^2.1.2",
     "react-map-gl": "^4.1.16",
@@ -59,6 +57,10 @@
     "not ie <= 11",
     "not op_mini all"
   ],
+  "peerDependencies": {
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.6",
@@ -70,6 +72,8 @@
     "enzyme-adapter-react-16": "^1.15.2",
     "geckodriver": "^1.19.1",
     "mocha": "^6.2.2",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
     "react-test-renderer": "^16.13.0",
     "selenium-webdriver": "^4.0.0-alpha.7",
     "sinon": "^7.5.0",
