@@ -1,7 +1,7 @@
 {
   "name": "eatlas",
   "description": "Turing Geovisualization Engine (TGVE) front-end npm package.",
-  "version": "0.0.21",
+  "version": "0.0.211",
   "main": "dist/index.js",
   "author": "L Hama (https://github.com/layik)",
   "contributors": [
@@ -15,7 +15,7 @@
   },
   "files": [
     "README.md",
-    "lib/"
+    "dist/"
   ],
   "dependencies": {
     "@turf/bbox": "^6.0.1",
