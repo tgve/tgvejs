@@ -16,6 +16,7 @@ import Constants from './Constants';
 import { isString, isNumber } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
 import { ArcLayer, PathLayer } from '@deck.gl/layers';
+import BarLayer from './components/CustomLayers/BarLayer'
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -273,6 +274,15 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, textObject);
     return (new TextLayer(textObject))
+  } else if (name === "barvis") {
+    const barvisObject = {
+      id: 'barvis-layer',
+      data,
+      pickable: true,
+      onHover: renderTooltip,
+    }
+    addOptionsToObject(options, barvisObject);
+    return (new BarLayer(barvisObject))
   }
 
   return (null)
