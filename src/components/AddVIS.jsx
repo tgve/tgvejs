@@ -17,13 +17,14 @@ const VIS = ['Vertical Bar', 'Horizontal Bar',
  * Generate approprate series/marks for a React-vis
  * type from data and column name.
  * 
- * @param {Object} data 
- * @param {String} column 
- * @param {String} vis 
- * @param {Object} plotStyle
- * @param {Boolean} dark
+ * @param {Object} data geojson features to generate counts from
+ * @param {String} column name of column in feature to generate counts from
+ * @param {String} vis type of visualization (react-vis type)
+ * @param {Object} plotStyle styling of the plot (css)
+ * @param {Boolean} noLimit boolean to crop chart
+ * @param {Boolean} dark boolean to switch theme
  */
-function generateVIS(data, column, vis, plotStyle, dark) {
+function generateVIS(data, column, vis, plotStyle, noLimit, dark) {
   if (!data || data.length === 0 || !isString(column) || !isString(vis)) {
     return;
   }
@@ -55,6 +56,7 @@ function generateVIS(data, column, vis, plotStyle, dark) {
     return (
       <SeriesPlot
         dark={dark}
+        noLimit={noLimit}
         plotStyle={plotStyle}
         data={counts}
         type={
@@ -80,7 +82,7 @@ export default function AddVIS(props) {
   // }, [props.data])
 
   const { data, onSelectCallback, dark,
-    noAccordion, plotStyle } = props;
+    noAccordion, plotStyle, noLimit } = props;
 
   if (!data || data.length === 0) return null;
 
@@ -120,7 +122,7 @@ export default function AddVIS(props) {
           if (column.length === 0 || vis.length === 0 || !column[0]) return;
           setList([
             ...list,
-            generateVIS(data, column[0].value, vis[0].value, plotStyle, dark)
+            generateVIS(data, column[0].value, vis[0].value, plotStyle, dark, noLimit)
           ])
           // console.log(column[0].value, vis[0].value);
         }}>Add</Button>
@@ -147,7 +149,8 @@ export default function AddVIS(props) {
           </Accordion> :
           <center>
             {list.map((plot, i) =>
-              plot && <div style={{ border: '1px solid' }}>
+              plot && 
+              <div>
                 <Button
                   kind={KIND.secondary} size={SIZE.compact}
                   onClick={() => {

@@ -24,5 +24,6 @@ define("LAYERSTYLES", [
   "line",
   "path",
   "scatterplot",
-  "sgrid"
+  "sgrid",
+  "barvis"
 ])     
