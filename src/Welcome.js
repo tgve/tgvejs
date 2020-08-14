@@ -27,8 +27,8 @@ import _ from 'underscore';
 import {
   fetchData, generateDeckLayer,
   getParamsFromSearch, getBbx,
-  isMobile, colorScale,
-  colorRanges,
+  isMobile, colorScale, 
+  colorRanges, generateDomain,
   convertRange, getMin, getMax, isURL
 } from './utils';
 import Constants from './Constants';
@@ -242,11 +242,9 @@ export default class Welcome extends React.Component {
       lightSettings: LIGHT_SETTINGS,
       colorRange: colorRanges(cn || colourName)
     };
-    if (layerStyle === 'geojson') {
-      options.getFillColor = (d) => colorScale(d, data) //first prop
-    }
-    let columnNameOrIndex =
-      (filter && filter.what === 'column' && filter.selected) || column || 1;
+    // generate a domain
+    const columnNameOrIndex =
+    (filter && filter.what === 'column' && filter.selected) || column || 1;    
     if (layerStyle === 'heatmap') {
       options.getPosition = d => d.geometry.coordinates
       // options.getWeight = d => d.properties[columnNameOrIndex]
@@ -294,19 +292,10 @@ export default class Welcome extends React.Component {
         }; // avoid id
       }
     }
-    if (geomType === "polygon" || geomType === "multipolygon") {
-      const cols = Object.keys(data[0] && data[0].properties && 
-        data[0].properties);
-      // TODO: remove SPENSER
-      const SPENSER = isArray(cols) && cols.length > 0 && 
-      cols[1] === 'GEOGRAPHY_CODE';
-      if (SPENSER) {
-        options.getElevation = d => (isNumber(d.properties[column]) &&
-          column !== 'YEAR' && d.properties[column]) || null
-      }
-      // TODO: allow user to specify column.
-      options.getFillColor = (d) =>
-        colorScale(d, data, column ? column : SPENSER ? 1 : 0)
+    const domain = generateDomain(data, columnNameOrIndex);
+    if (geomType === "polygon" || geomType === "multipolygon" || layerStyle === 'geojson') {
+      console.log(domain, columnNameOrIndex);
+      options.getFillColor = (d) => colorScale(d, columnNameOrIndex, domain)
     }
     if (layerStyle === 'barvis') {
       const getColor = (party) => {

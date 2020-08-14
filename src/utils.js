@@ -17,6 +17,7 @@ import { isString, isNumber } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
 import { ArcLayer, PathLayer } from '@deck.gl/layers';
 import BarLayer from './components/CustomLayers/BarLayer'
+import { isArray } from 'underscore';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -461,43 +462,22 @@ function hexToRgb(hex) {
 
 /**
  * Generate colour scale for unique set of values
- * based on the index of the values in an array.
+ * based on the index of a value in an array domain of the set.
  * 
  * @param {object} d particular property to get color for from features
- * @param {*} features features in a geojson featureset
  * @param {*} p index/name of column to generate color scale with
+ * @param {Array} domain output from generateDomain
  * @param {Number} alpha value to add to colour pallete
  */
-const colorScale = (d, features, p = 0, alpha = 180) => {
-  if (!d || !features || features.length === 0) return null;
-  const x = isNumber(p) ? Object.keys(d.properties)[p] : p;
-  let domainIsNumeric = true;
-  let domain = features.map(feature => {
-    // uber move to show isochrones
-    const i = feature.properties[x];
-    if (isNumber(i) &&
-      p === 'Mean.Travel.Time..Seconds.') {
-      return (Math.floor(i / 300))
-    } else if (domainIsNumeric && !isNumber(i)) {
-      // stop getting here if already been
-      domainIsNumeric = false;
-    }
-    return isNumber(i) ? +(i) : i
-  })
-  domain = Array.from(new Set(domain))
-  // sort the domain if possible
-  if (domainIsNumeric) {
-    domain = domain.sort((a, b) => { return (a - b) })
-  }
-  const index = domain.indexOf(isNumber(d.properties[x]) &&
-    p === 'Mean.Travel.Time..Seconds.' ?
-    Math.floor(d.properties[x] / 300) : d.properties[x])
-  // console.log(domain, index)
-  let col = interpolateOrRd(index / domain.length);
-  col = col.substring(4, col.length - 1)
+const colorScale = (d, p = 0, domain, alpha = 180) => {
+  if (!d || !isArray(domain) || !domain.length) return null;
+  console.log(p);
+  const index = domain.indexOf(d.properties[p])
+  let rgb = interpolateOrRd(index / domain.length);
+  rgb = rgb.substring(4, rgb.length - 1)
     .replace(/ /g, '')
     .split(',').map(x => +x); // deck.gl 8 int not strings
-  return [...col, alpha]
+  return [...rgb, alpha]
 }
 
 const colorRangeNames = ['inverseDefault', 'yellowblue', 'greens',
@@ -658,13 +638,12 @@ const generateLegend = (options) => {
  * @param {*} column 
  */
 const generateDomain = (data, column) => {
-  if (!data || !Array.isArray(data) || !column ||
-    !isString(column) || data.length === 0) return;
-
+  if (!data || !Array.isArray(data) || !column || !data.length) return;
+  
   let domainIsNumeric = true;
   let domain = data.map(feature => {
     // uber move to show isochrones
-    const i = feature.properties[column];
+    const i = feature.properties[column] || 0; // eliminate nulls
     if (isNumber(i) &&
       column === 'Mean.Travel.Time..Seconds.') {
       return (Math.floor(i / 300));
