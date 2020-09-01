@@ -22,6 +22,8 @@ jobs:
 
         - name: Clean build
           run: npm run build
+          env:
+            CI: false
 
         - name: Run deploy script
           run: |
