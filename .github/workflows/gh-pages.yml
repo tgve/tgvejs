@@ -23,7 +23,7 @@ jobs:
         - name: Run deploy script
           run: |
             git config user.name "layik" && git config user.email "layik.hama@gmail.com"
-            git checkout gh-pages
+            git checkout --orphan gh-pages
             git --work-tree build add --all
             git --work-tree dist commit -m 'Deploy'
             git push origin HEAD:gh-pages --force
