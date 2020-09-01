@@ -20,6 +20,10 @@ jobs:
         - name: Clean install dependencies
           run: npm ci
 
+        - name: Prep for https://layik.github.io/eAtlas/ ROOT
+          run: |
+            sed -i 's/0.0.0.0/layik.github.io\/eAtlas/' src/Constants.js
+
         - name: Clean build
           run: npm run build
           env:
@@ -31,6 +35,7 @@ jobs:
             git checkout --orphan gh-pages
             git --work-tree build add --all
             git --work-tree build commit -m 'Deploy'
+            sed -i 's:\"/static:\"/eAtlas/static:g' build/index.html
             git push origin HEAD:gh-pages --force
             rm -r build
             git checkout -f master
