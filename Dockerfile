@@ -1,4 +1,4 @@
-FROM ubuntu:xenial
+FROM ubuntu:bionic
 
 RUN apt-get update \ 
 	&& apt-get install -y --no-install-recommends \
@@ -20,7 +20,7 @@ RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
 
 ## Now install R and littler, and create a link for littler in /usr/local/bin
 ## To install 3.5 we need 
-RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/'
+RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
 
 ## Default CRAN repo is now set by R itself, and littler knows about it too
 ## r-cran-docopt is not currently in c2d4u so we install from source
