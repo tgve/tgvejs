@@ -20,6 +20,7 @@ RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
 
 ## Now install R and littler, and create a link for littler in /usr/local/bin
 ## To install 3.5 we need 
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
 RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
 
 ## Default CRAN repo is now set by R itself, and littler knows about it too
