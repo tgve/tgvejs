@@ -19,6 +19,9 @@ RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
 	&& /usr/sbin/update-locale LANG=en_US.UTF-8
 
 ## Now install R and littler, and create a link for littler in /usr/local/bin
+## To install 3.5 we need 
+RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/'
+
 ## Default CRAN repo is now set by R itself, and littler knows about it too
 ## r-cran-docopt is not currently in c2d4u so we install from source
 ## Note: we need wget as the build env is too old for libcurl (we think, precise was)
