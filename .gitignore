@@ -27,6 +27,8 @@ yarn-debug.log*
 yarn-error.log*
 /dft*
 dft*
+/notes
+tiles
 
 # xls by accident
 *.xls*
@@ -39,6 +41,6 @@ layik*
 
 spenser.*
 quant*
-msoa_*geojson
+*.geojson
 
 /data
