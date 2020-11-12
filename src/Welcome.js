@@ -27,7 +27,7 @@ import _ from 'underscore';
 import {
   fetchData, generateDeckLayer,
   getParamsFromSearch, getBbx,
-  isMobile, colorScale, 
+  isMobile, colorScale, OSMTILES,
   colorRanges, generateDomain,
   convertRange, getMin, getMax, isURL
 } from './utils';
@@ -41,25 +41,6 @@ import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
 import { isNumber, isArray } from './JSUtils';
 
-const osmtiles = {
-  "version": 8,
-  "sources": {
-    "simple-tiles": {
-      "type": "raster",
-      "tiles": [
-        // "http://tile.openstreetmap.org/{z}/{x}/{y}.png",
-        // "http://b.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        "http://tile.stamen.com/toner/{z}/{x}/{y}.png"
-      ],
-      "tileSize": 256
-    }
-  },
-  "layers": [{
-    "id": "simple-tiles",
-    "type": "raster",
-    "source": "simple-tiles",
-  }]
-};
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 const defualtURL = "/api/stats19";
 
@@ -110,7 +91,8 @@ export default class Welcome extends React.Component {
       backgroundImage: gradient.backgroundImage,
       radius: 100,
       elevation: 4,
-      mapStyle: MAPBOX_ACCESS_TOKEN ? "mapbox://styles/mapbox/dark-v9" : osmtiles,
+      mapStyle: MAPBOX_ACCESS_TOKEN ? 
+      "mapbox://styles/mapbox/dark-v9" : OSMTILES,
       initialViewState: init,
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
@@ -182,7 +164,7 @@ export default class Welcome extends React.Component {
 
     if (filter && filter.what === 'mapstyle') {
       this.setState({
-        mapStyle: !MAPBOX_ACCESS_TOKEN ? osmtiles :
+        mapStyle: !MAPBOX_ACCESS_TOKEN ? OSMTILES :
           filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
       })
       return;
@@ -298,29 +280,8 @@ export default class Welcome extends React.Component {
       options.getFillColor = (d) => colorScale(d, columnNameOrIndex, domain)
     }
     if (layerStyle === 'barvis') {
-      const getColor = (party) => {
-        if (!party) return null;
-        switch (party) {
-          case "lab":
-            return [255, 0, 0]
-          case "con":
-            return [0, 0, 255]
-          case "snp":
-            return [0, 0, 0]
-          case "ld":
-            return [253, 187 , 48]
-          case "pc":
-            return [63, 132, 40]
-          case "dup":
-            return [0, 0, 255]
-          default:
-            return [0, 0, 0];
-        }
-      }
       options.getPosition = d => [d.geometry.coordinates[0],
       d.geometry.coordinates[1], 0]
-      if (data[0].properties.first_party) options.getColor = d => 
-      getColor(d.properties.first_party.toLowerCase())
       if (data[0].properties.result) options.getRotationAngle = d => 
       d.properties.result.includes("gain from") ? 45 : 1
       options.getScale = d => 200
@@ -370,7 +331,7 @@ export default class Welcome extends React.Component {
     const { x, y, object} = params;
     const hoveredObject = object;
     // console.log(hoveredObject && hoveredObject.points[0].properties.speed_limit);
-    console.log(params)
+    // console.log(params)
     // return
     if (!hoveredObject) {
       this.setState({ tooltip: "" })
