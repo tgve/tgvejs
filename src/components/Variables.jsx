@@ -34,9 +34,7 @@ export default class Variables extends Component {
       n: SHOWN_ITEMS
     }
     this._geoJSONPropsOrValues = this._geoJSONPropsOrValues.bind(this);
-    this._showSelectedVars = this._showSelectedVars.bind(this);
     this._generateList = this._generateList.bind(this);
-    this._processData = this._processData.bind(this);
     this._multiSelect = this._multiSelect.bind(this);
     this._showTopn = this._showTopn.bind(this);
     this._shorten = this._shorten.bind(this);
@@ -46,7 +44,7 @@ export default class Variables extends Component {
   componentDidMount() {
     const { data } = this.props;
     if (!data || data.length === 0) return (null);
-    this._processData(data);
+    this._generateList();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -55,7 +53,7 @@ export default class Variables extends Component {
 
     if (data.length !== prevProps.data.length ||
       this.state.showAll !== prevState.showAll) {
-      this._processData(data);
+      this._generateList();
     }
   }
 
@@ -134,27 +132,13 @@ export default class Variables extends Component {
           </i>
         </span>
       )
-    return (list)
+    this.setState({ list });
   }
 
   _shorten(key, n = 10) {
     if (typeof (key) !== 'string') return key
     return key.length < n ? humanize(key) :
       humanize(key).substring(0, n) + "...";
-  }
-
-  /**
-   * As state changes regenerate key/vlaues
-   * @param {*} data 
-   */
-  _processData(data) {
-    const list = this._generateList();
-    this.setState({
-      list,
-      // if we do following, exploring variables becomes less useful
-      // key: null,    // reset sublist
-      // sublist: null // reset sublist
-    });
   }
 
   /**
@@ -251,7 +235,7 @@ export default class Variables extends Component {
     return (
       <div style={this.props.style}>
         Dataset:
-          <div>
+        <div>
           <div className="tagcloud">
             {
               //show main GeoJSON key if there is one chosen
@@ -293,13 +277,6 @@ export default class Variables extends Component {
               this._geoJSONPropsOrValues(shownSublist, selected, key, sublist)
             }
           </div>
-          <div className="tagcloud">
-            {
-              // simplest logic
-              // if you click me, I will remove myself from the list
-              this._showSelectedVars(selected, key)
-            }
-          </div>
         </div>
       </div>
     )
@@ -307,17 +284,24 @@ export default class Variables extends Component {
 
   _multiSelect(key, selected, sublist, onSelectCallback) {
     return key &&
-      <MultiSelect title="Choose value" multiVarSelect={selected} values={sublist && sublist.length > 0 &&
-        sublist.map(e => ({ id: e.key, value: e.key }))} filter={key} onSelectCallback={(filter) => {
+      <MultiSelect
+        title="Choose value"
+        multiVarSelect={selected}
+        values={sublist && sublist.length > 0 &&
+          sublist.map(e => ({ id: e.key, value: e.key }))
+        }
+        filter={key}
+        onSelectCallback={(filter) => {
           typeof (onSelectCallback) === 'function' &&
             onSelectCallback(filter.selected || {});
           this.setState({
             selected: filter.selected || {} // not ""
           });
-        } }
+        }}
         // sync state
         value={selected && selected[key] && Array.from(selected[key])
-          .map(e => ({ id: e, value: e }))} />;
+          .map(e => ({ id: e, value: e }))}
+      />;
   }
 
   _button(showAll, title = "Show all", n) {
