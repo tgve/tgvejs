@@ -232,8 +232,31 @@ export default class Variables extends Component {
         <h3>There are no columns to inspect or filter.</h3>
       )
     }
+    const description = describeFeatureVariables(data[0]); // describe first feature
+
     return (
       <div style={this.props.style}>
+        <div>
+          {/* Current solution goes back to when application was 
+            developed without component libraries in mind (like baseweb).
+            This revamp will be using baseweb.
+            
+            Minimalist approach: 
+            using search + multi-select for both 
+            column names and their chosen values.  */
+          }
+          Column to filter:
+          <MultiSelect
+            multiVarSelect={selected}
+            values={Object.keys(data[0].properties)
+              .map(e => ({
+                // Format: Column Name [String]
+                id: humanize(e) + " [" + description[e].name + "]",
+                value: e
+              }))
+            }
+          />
+        </div>
         Dataset:
         <div>
           <div className="tagcloud">
