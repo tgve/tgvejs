@@ -195,6 +195,9 @@ export default class Welcome extends React.Component {
               const nextValue = each === "date" ?
                 d.properties[each].split("/")[2] : d.properties[each] + ""
               // each from selected must be in d.properties
+              // *****************************
+              // compare string to string
+              // *****************************
               if (!selected[each].has(nextValue)) {
                 return false
               }

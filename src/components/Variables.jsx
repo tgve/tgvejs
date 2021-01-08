@@ -108,7 +108,7 @@ export default class Variables extends Component {
                   title={"Available (" + columnValues.length + ")"}
                   filter={key}
                   multiVarSelect={multiVarSelect}
-                  values={columnValues.map(e => ({ id: e, value: e }))}
+                  values={columnValues.map(e => ({ id: e + "", value: e + ""}))}
                   onSelectCallback={(filter) => {
                     typeof (onSelectCallback) === 'function' &&
                       onSelectCallback(filter.selected || {});
