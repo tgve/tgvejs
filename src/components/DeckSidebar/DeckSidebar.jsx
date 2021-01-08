@@ -17,7 +17,7 @@ import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
-import {DEV_URL, PRD_URL, LAYERSTYLES} from '../../Constants';
+import { DEV_URL, PRD_URL, LAYERSTYLES } from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Modal';
 import DataTable from '../Table';
@@ -81,36 +81,37 @@ export default class DeckSidebar extends React.Component {
       radius, all_road_types, year,
       subsetBoundsChange, multiVarSelect, barChartVariable } = this.state;
     const { onChangeRadius, onChangeElevation,
-      onSelectCallback, data, colourCallback, layerStyle,
+      onSelectCallback, data, colourCallback, unfilteredData,
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, column, toggleOpen, toggleHexPlot } = this.props;
     let plot_data = [];
     let plot_data_multi = [[], []];
     const notEmpty = data && data.length > 1;
     plot_data = crashes_plot_data(notEmpty, data, plot_data, plot_data_multi);
-    const severity_data = propertyCount(data, "accident_severity");    
+    const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
     let columnData = notEmpty ?
       xyObjectByProperty(data, column || barChartVariable) : [];
     const geomType = notEmpty && data[0].geometry.type.toLowerCase();
     // console.log(geomType);
-    if(notEmpty && column && (geomType === 'polygon' ||
-    geomType === 'multipolygon' || "linestring") &&
+    if (notEmpty && column && (geomType === 'polygon' ||
+      geomType === 'multipolygon' || "linestring") &&
       isNumber(data[0].properties[column])) {
-        // we dont need to use generateDomain(data, column)
-        // columnData already has this in its x'es
-        columnDomain = columnData.map(e => e.x);
-        // we will just sort it        
-        columnDomain = sortNumericArray(columnDomain);
-        // console.log(columnDomain);
-        
-        this.props.showLegend(
-          generateLegend(
-            {domain: columnDomain, 
-              title: humanize(column)
-            }
-          )
-        );
+      // we dont need to use generateDomain(data, column)
+      // columnData already has this in its x'es
+      columnDomain = columnData.map(e => e.x);
+      // we will just sort it        
+      columnDomain = sortNumericArray(columnDomain);
+      // console.log(columnDomain);
+
+      this.props.showLegend(
+        generateLegend(
+          {
+            domain: columnDomain,
+            title: humanize(column)
+          }
+        )
+      );
     }
 
     const columnPlot = {
@@ -120,7 +121,7 @@ export default class DeckSidebar extends React.Component {
       fill: 'rgb(18, 147, 154)',
     }
 
-    const resetState = (urlOrName) => {      
+    const resetState = (urlOrName) => {
       this.setState({
         reset: true,
         year: "",
@@ -163,19 +164,21 @@ export default class DeckSidebar extends React.Component {
                   typeof (urlCallback) === 'function'
                     && urlCallback(URL + "/api/stats19");
                   typeof (this.props.showLegend) === 'function' &&
-                  this.props.showLegend(false);
+                    this.props.showLegend(false);
                 }}>Reset</Button>
             }
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
-                {/* <DateSlider data={yy} multiVarSelect={multiVarSelect}
+              {/* <DateSlider data={yy} multiVarSelect={multiVarSelect}
                   onSelectCallback={(changes) => console.log(changes)} 
                   callback={(changes) => console.log(changes)}/> */}
               {/* range of two values slider is not native html */
-                yearSlider({data, year, multiVarSelect,
+                yearSlider({
+                  data, year, multiVarSelect,
                   // for callback we get { year: "",multiVarSelect }
-                  onSelectCallback, callback: (changes) => this.setState(changes)})
+                  onSelectCallback, callback: (changes) => this.setState(changes)
+                })
               }
               {
                 //only if there is such a property
@@ -217,15 +220,15 @@ export default class DeckSidebar extends React.Component {
               }
               <hr style={{ clear: 'both' }} />
               {columnDomain.length > 1 &&
-              <Boxplot data={columnDomain}/>}
+                <Boxplot data={columnDomain} />}
 
-              <Tabs defaultActiveKey={"1"} id="main-tabs">
+              <Tabs defaultActiveKey={"3"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
                 }>
                   {/* pick a column and vis type */}
-                  <AddVIS data={data} plotStyle={{width: 240, margin:20}}/>
+                  <AddVIS data={data} plotStyle={{ width: 240, margin: 20 }} />
                   {/* distribution example */}
                   {notEmpty &&
                     data[0].properties.hasOwnProperty(['age_of_casualty']) &&
@@ -278,28 +281,28 @@ export default class DeckSidebar extends React.Component {
                   }
                   {/* TODO: example of generating vis based on column
                   clould now be deleted. */}
-                  {notEmpty && 
-                  <SeriesPlot
-                    data={columnPlot.data}
-                    type={VerticalBarSeries}
-                    onValueClick={(datapoint) => {
-                      // convert back to string
-                      multiVarSelect[column ||
-                        barChartVariable] = new Set([datapoint.x + ""]);
-                      this.setState({ multiVarSelect })
-                      onSelectCallback &&
-                        onSelectCallback({ what: 'multi', selected: multiVarSelect })
-                    }}
-                    onDragSelected={(datapoints) => {
-                      multiVarSelect[column ||
-                        barChartVariable] = new Set(datapoints.map(e => e + ""));
-                      this.setState({ multiVarSelect })
-                      onSelectCallback &&
-                        onSelectCallback({ what: 'multi', selected: multiVarSelect })
-                    }}
-                    plotStyle={{ marginBottom: 100 }} noYAxis={true}
+                  {notEmpty &&
+                    <SeriesPlot
+                      data={columnPlot.data}
+                      type={VerticalBarSeries}
+                      onValueClick={(datapoint) => {
+                        // convert back to string
+                        multiVarSelect[column ||
+                          barChartVariable] = new Set([datapoint.x + ""]);
+                        this.setState({ multiVarSelect })
+                        onSelectCallback &&
+                          onSelectCallback({ what: 'multi', selected: multiVarSelect })
+                      }}
+                      onDragSelected={(datapoints) => {
+                        multiVarSelect[column ||
+                          barChartVariable] = new Set(datapoints.map(e => e + ""));
+                        this.setState({ multiVarSelect })
+                        onSelectCallback &&
+                          onSelectCallback({ what: 'multi', selected: multiVarSelect })
+                      }}
+                      plotStyle={{ marginBottom: 100 }} noYAxis={true}
 
-                  />}
+                    />}
                   {popPyramid({ data })}
                 </Tab>
                 <Tab eventKey="2" title={
@@ -309,8 +312,8 @@ export default class DeckSidebar extends React.Component {
                   {notEmpty &&
                     <div>
                       <ColorPicker colourCallback={(color) =>
-                          typeof colourCallback === 'function' &&
-                          colourCallback(color)} />
+                        typeof colourCallback === 'function' &&
+                        colourCallback(color)} />
                       <input
                         type="range"
                         id="radius"
@@ -344,7 +347,7 @@ export default class DeckSidebar extends React.Component {
                       />
                       <h5>Elevation: {elevation}.</h5>
                     </div>
-                    }
+                  }
                   {notEmpty &&
                     <>
                       <h6>Deck Layer:</h6>
@@ -392,7 +395,7 @@ export default class DeckSidebar extends React.Component {
                       }
                     }}
                   >Subset by map boundary</Checkbox>
-                  
+
                 </Tab>
                 {/* <Tab eventKey="3" title={
                   <i style={{ fontSize: '2rem' }}
@@ -405,7 +408,7 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-filter" />
                 }>
                   {
-                    data && data.length > 0 &&
+                    unfilteredData && unfilteredData.length > 0 &&
                     <Variables
                       multiVarSelect={multiVarSelect}
                       onSelectCallback={(mvs) => {
@@ -415,7 +418,7 @@ export default class DeckSidebar extends React.Component {
                               { what: '' } : { what: 'multi', selected: mvs })
                         this.setState({ multiVarSelect: mvs })
                       }}
-                      data={data} />
+                      unfilteredData={unfilteredData} />
                   }
                 </Tab>
               </Tabs>
