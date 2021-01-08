@@ -63,7 +63,18 @@ export default class Variables extends Component {
           type={TYPE.search}
           multi={true}
           onChange={({ value }) => {
-            // sync with multiVarSelect
+            // sync with multiVarSelect 
+            // here we remove any key in multiVarSelect that is not 
+            // in the values here
+            const columnsArray = value.map(e => e.value)
+            Object.keys(multiVarSelect).map(key => {
+              //delete any that is not in value
+              if (!columnsArray.includes(key)) {
+                delete multiVarSelect[key]
+              }
+            })
+            typeof (onSelectCallback) === 'function' &&
+              onSelectCallback(multiVarSelect)
             this.setState({
               columns: value
             })
