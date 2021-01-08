@@ -24,7 +24,7 @@ import { Select, TYPE } from 'baseui/select';
 import MultiSelect from './MultiSelect';
 
 export default class Variables extends Component {
-  
+
   constructor(props) {
     super(props);
     this.state = {}
@@ -32,15 +32,17 @@ export default class Variables extends Component {
 
   render() {
     const { columns } = this.state;
-    const { data, onSelectCallback, multiVarSelect } = this.props;
+    const { onSelectCallback, multiVarSelect,
+      unfilteredData } = this.props;
 
-    if (data && Object.keys(data[0].properties)
+    if (unfilteredData && Object.keys(unfilteredData[0].properties)
       .filter(p => !isEmptyOrSpaces(p)).length === 0) {
       return (
         <h3>There are no columns to inspect or filter.</h3>
       )
     }
-    const description = describeFeatureVariables(data[0]); // describe first feature
+    // describe first feature
+    const description = describeFeatureVariables(unfilteredData[0]);
 
     return (
       <div style={this.props.style}>
@@ -67,7 +69,7 @@ export default class Variables extends Component {
             })
           }}
           value={columns}
-          options={Object.keys(data[0].properties)
+          options={Object.keys(unfilteredData[0].properties)
             .filter(e => e !== "date") // hardcode
             .map(e => ({
               // Format: Column Name [String]
@@ -80,7 +82,7 @@ export default class Variables extends Component {
           columns && columns.map(e => e.value)
             .map(key => {
               const columnValues = [];
-              data.forEach(feature =>
+              unfilteredData.forEach(feature =>
                 Object.keys(feature.properties).forEach(property =>
                   property === key && feature.properties[key] &&
                   !columnValues.includes(feature.properties[key]) &&
