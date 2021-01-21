@@ -16,7 +16,7 @@ import Constants from './Constants';
 import { isString, isNumber } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
 import { ArcLayer, PathLayer } from '@deck.gl/layers';
-import BarLayer from './components/CustomLayers/BarLayer'
+import BarLayer from './components/customlayers/BarLayer'
 import { isArray } from 'underscore';
 
 const getResultsFromGoogleMaps = (string, callback) => {

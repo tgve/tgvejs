@@ -8,7 +8,7 @@ import TreeMap from './TreeMap';
 import { humanize } from '../utils';
 import { isString, isNumber } from '../JSUtils';
 import { xyObjectByProperty } from '../utils';
-import SeriesPlot from './Showcases/SeriesPlot';
+import SeriesPlot from './showcases/SeriesPlot';
 
 const VIS = ['Vertical Bar', 'Horizontal Bar',
   'Line', 'Pop. Pyramid', 'Treemap'];

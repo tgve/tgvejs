@@ -13,8 +13,6 @@ import Header from './components/Header';
 import About from './About';
 import DynamicImport from './components/DynamicImport';
 
-import '../node_modules/react-vis/dist/style.css';
-
 import './App.css';
 
 const engine = new Styletron();

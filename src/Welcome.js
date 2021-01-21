@@ -33,7 +33,7 @@ import {
 } from './utils';
 import Constants from './Constants';
 import DeckSidebarContainer from
-  './components/DeckSidebar/DeckSidebarContainer';
+  './components/decksidebar/DeckSidebarContainer';
 import history from './history';
 
 import './App.css';
