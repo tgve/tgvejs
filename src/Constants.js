@@ -6,7 +6,7 @@ function define(name, value) {
 }
 
 // TODO: change to domain name 
-define("PRD_URL", 'http://layik.github.io/eAtlas');
+define("PRD_URL", 'https://layik.github.io/eAtlas');
 define("DEV_URL", 'http://localhost:8000');
 define("UI_LIST", [
   "checkbox",
