@@ -28,37 +28,17 @@ import {
   fetchData, generateDeckLayer,
   getParamsFromSearch, getBbx,
   isMobile, colorScale,
-  colorRanges,
+  colorRanges, OSMTILES,
   convertRange, getMin, getMax, isURL
 } from './utils';
 import DeckSidebarContainer from
-  './components/decksidebar/DeckSidebarContainer';
+  './components/deckSidebar/DeckSidebarContainer';
 import history from './history';
 
 import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
 import { isNumber, isArray } from './JSUtils';
-
-const osmtiles = {
-  "version": 8,
-  "sources": {
-    "simple-tiles": {
-      "type": "raster",
-      "tiles": [
-        // "http://tile.openstreetmap.org/{z}/{x}/{y}.png",
-        // "http://b.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        "http://tile.stamen.com/toner/{z}/{x}/{y}.png"
-      ],
-      "tileSize": 256
-    }
-  },
-  "layers": [{
-    "id": "simple-tiles",
-    "type": "raster",
-    "source": "simple-tiles",
-  }]
-};
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -107,7 +87,7 @@ export default class Welcome extends React.Component {
       backgroundImage: gradient.backgroundImage,
       radius: 100,
       elevation: 4,
-      mapStyle: MAPBOX_ACCESS_TOKEN ? "mapbox://styles/mapbox/dark-v9" : osmtiles,
+      mapStyle: MAPBOX_ACCESS_TOKEN ? "mapbox://styles/mapbox/dark-v9" : OSMTILES,
       initialViewState: init,
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
@@ -193,7 +173,7 @@ export default class Welcome extends React.Component {
 
     if (filter && filter.what === 'mapstyle') {
       this.setState({
-        mapStyle: !MAPBOX_ACCESS_TOKEN ? osmtiles :
+        mapStyle: !MAPBOX_ACCESS_TOKEN ? OSMTILES :
           filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
       })
       return;
@@ -344,17 +324,18 @@ export default class Welcome extends React.Component {
 
   _fitViewport(newData, bboxLonLat) {
     const data = newData || this.state.data;
-    if (!data || data.length === 0) return;
-    const center = centroid(data).geometry.coordinates;
+    if ((!data || data.length === 0) && !bboxLonLat) return;
     const bounds = bboxLonLat ?
       bboxLonLat.bbox : bbox(data)
-    // console.log(center, bounds);
+    const center = bboxLonLat ? 
+    [bboxLonLat.lon, bboxLonLat.lat] : centroid(data).geometry.coordinates;
 
-    this.map.fitBounds(bounds)
+    this.map.fitBounds(bounds, {padding:'100px'})
+
     const viewport = {
       ...this.state.viewport,
-      longitude: bboxLonLat ? bboxLonLat.lon : center[0],
-      latitude: bboxLonLat ? bboxLonLat.lat : center[1],
+      longitude: center[0],
+      latitude: center[1],
       transitionDuration: 500,
       transitionInterpolator: new FlyToInterpolator(),
       // transitionEasing: d3.easeCubic
@@ -420,7 +401,7 @@ export default class Welcome extends React.Component {
     const { tooltip, viewport, initialViewState,
       loading, mapStyle, alert,
       layerStyle, geomType, legend, coords } = this.state;
-    // console.log(geomType, legend);
+    console.log(mapStyle);
 
     return (
       <div>
@@ -517,7 +498,7 @@ export default class Welcome extends React.Component {
             this._fetchAndUpdateState();
           }}
           onlocationChange={(bboxLonLat) => {
-            this._fitViewport(bboxLonLat)
+            this._fitViewport(undefined, bboxLonLat)
           }}
           showLegend={(legend) => this.setState({ legend })}
           datasetName={this.props.defaultURL}

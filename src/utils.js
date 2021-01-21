@@ -665,6 +665,28 @@ const getMax = (arr) => {
 const getMin = (arr) => {
   return arr.reduce((max, v) => max <= v ? max : v, Infinity);
 }
+
+const OSMTILES = {
+  "version": 8,
+  "sources": {
+    "simple-tiles": {
+      "type": "raster",
+      "tiles": [
+        // "http://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        // "http://b.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        // "http://tile.stamen.com/toner/{z}/{x}/{y}.png"
+        'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg'
+      ],
+      "tileSize": 256
+    }
+  },
+  "layers": [{
+    "id": "simple-tiles",
+    "type": "raster",
+    "source": "simple-tiles",
+  }]
+};
+
 export {
   getResultsFromGoogleMaps,
   getParamsFromSearch,
@@ -686,6 +708,7 @@ export {
   fetchData,
   humanize,
   isMobile,
+  OSMTILES,
   ATILOGO,
   getBbx,
   getMin,

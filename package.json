@@ -18,32 +18,31 @@
     "dist/"
   ],
   "dependencies": {
-    "@turf/bbox": "^6.0.1",
-    "@turf/bezier-spline": "^6.0.3",
-    "@turf/centroid": "^6.0.2",
+    "@turf/bbox": "^6.2.0",
+    "@turf/bezier-spline": "^6.2.0",
+    "@turf/centroid": "^6.2.0",
     "baseui": "^7.8.0",
     "csv2geojson": "^5.1.1",
-    "d3-array": "^2.4.0",
-    "d3-format": "^1.4.3",
-    "d3-scale": "^3.2.1",
+    "d3-array": "^2.9.1",
+    "d3-format": "^1.4.5",
+    "d3-scale": "^3.2.3",
     "d3-scale-chromatic": "^1.5.0",
     "d3-shape": "^1.3.7",
-    "deck.gl": "^8.0.17",
-    "leaflet": "^1.6.0",
-    "luxon": "^1.22.0",
+    "deck.gl": "^8.3.14",
+    "luxon": "^1.25.0",
     "marked": "^0.7.0",
     "prop-types": "^15.6.2",
     "react-bootstrap": "^0.32.4",
-    "react-leaflet": "^2.6.1",
+    "react-leaflet": "^2.8.0",
     "react-leaflet-control": "^2.1.2",
-    "react-map-gl": "^4.1.16",
+    "react-map-gl": "^6.0.3",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^3.4.0",
+    "react-scripts": "^4.0.1",
     "react-vis": "^1.11.7",
     "styletron-engine-atomic": "^1.4.6",
     "styletron-react": "^5.2.7",
-    "underscore": "^1.9.2"
+    "underscore": "^1.12.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -61,27 +60,32 @@
     "not ie <= 11",
     "not op_mini all"
   ],
+  "externals": {
+    "react": "commonjs react",
+    "react-dom": "commonjs react-dom"
+  },
+  "output": {
+    "libraryTarget": "commonjs2"
+  },
   "peerDependencies": {
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0"
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.6",
-    "@babel/plugin-proposal-object-rest-spread": "^7.9.6",
-    "@babel/preset-env": "^7.9.6",
-    "@babel/preset-react": "^7.9.4",
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10",
     "chromedriver": "^78.0.1",
     "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.2",
-    "geckodriver": "^1.19.1",
-    "mocha": "^6.2.2",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "react-test-renderer": "^16.13.0",
-    "selenium-webdriver": "^4.0.0-alpha.7",
+    "enzyme-adapter-react-16": "^1.15.6",
+    "geckodriver": "^1.21.1",
+    "mocha": "^8.2.1",
+    "react-test-renderer": "^16.14.0",
+    "selenium-webdriver": "^4.0.0-alpha.8",
     "sinon": "^7.5.0",
     "uglifyjs-webpack-plugin": "^2.2.0",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.12"
   }
 }
