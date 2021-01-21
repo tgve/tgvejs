@@ -366,18 +366,17 @@ exports[`App - should create snapshot 1`] = `
                   role="tablist"
                 >
                   <li
-                    className=""
+                    className="active"
                     role="presentation"
                   >
                     <a
                       aria-controls="main-tabs-pane-1"
-                      aria-selected={false}
+                      aria-selected={true}
                       href="#"
                       id="main-tabs-tab-1"
                       onClick={[Function]}
                       onKeyDown={[Function]}
                       role="tab"
-                      tabIndex={-1}
                     >
                       <i
                         className="fa fa-info"
@@ -414,17 +413,18 @@ exports[`App - should create snapshot 1`] = `
                     </a>
                   </li>
                   <li
-                    className="active"
+                    className=""
                     role="presentation"
                   >
                     <a
                       aria-controls="main-tabs-pane-3"
-                      aria-selected={true}
+                      aria-selected={false}
                       href="#"
                       id="main-tabs-tab-3"
                       onClick={[Function]}
                       onKeyDown={[Function]}
                       role="tab"
+                      tabIndex={-1}
                     >
                       <i
                         className="fa fa-filter"
@@ -441,9 +441,9 @@ exports[`App - should create snapshot 1`] = `
                   className="tab-content"
                 >
                   <div
-                    aria-hidden={true}
+                    aria-hidden={false}
                     aria-labelledby="main-tabs-tab-1"
-                    className="fade tab-pane"
+                    className="fade tab-pane active in"
                     id="main-tabs-pane-1"
                     role="tabpanel"
                   />
@@ -616,9 +616,9 @@ exports[`App - should create snapshot 1`] = `
                     </div>
                   </div>
                   <div
-                    aria-hidden={false}
+                    aria-hidden={true}
                     aria-labelledby="main-tabs-tab-3"
-                    className="fade tab-pane active in"
+                    className="fade tab-pane"
                     id="main-tabs-pane-3"
                     role="tabpanel"
                   />
