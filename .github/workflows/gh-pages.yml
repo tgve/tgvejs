@@ -33,12 +33,7 @@ jobs:
           run: |
             git config user.name "layik" && git config user.email "layik.hama@gmail.com"
             git checkout --orphan gh-pages
-            sed -i 's:static:eAtlas/static:g' build/index.html
-            sed -i 's/<head>/<head><base href=\"https:\/\/layik.github.io\/eAtlas\/\">/' build/index.html
             git --work-tree build add --all
             git --work-tree build commit -m 'Deploy'
             git push origin HEAD:gh-pages --force
-            rm -r build
-            git checkout -f master
-            git branch -D gh-pages
 
