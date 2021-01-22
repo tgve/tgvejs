@@ -39,10 +39,11 @@ layik*
 
 spenser.*
 quant*
-msoa_*geojson
+*.geojson
 
 /data
 /dist
 /R
 /public
-/notes
+notes
+
