@@ -38,7 +38,7 @@ const DUI = (props) => (
 class App extends Component {
   render() {
     return (
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
       <main>
         <Header />
         <StyletronProvider value={engine}>
