@@ -72,6 +72,27 @@ const fetchData = (url, callback) => {
 }
 
 /**
+ * 
+ * Simple fetch check of URL
+ * 
+ * @param {*} URL 
+ * @param {*} callback 
+ */
+const checkURLReachable = (URL, callback) => {
+  fetch(URL)
+  .then((response) => {
+    if(response.ok) {
+      callback(true)
+    } else {
+      callback(false)
+    }
+  })
+  .catch((error) => {
+    console.log('There has been a problem with your fetch operation: ' + error.message);
+  });
+}
+
+/**
  * Function to count frequency of values of `property` given.
  * 
  * TODO: Double check to see if it is slightly different
@@ -702,6 +723,7 @@ export {
   xyObjectByProperty,
   suggestUIforNumber,
   generateDeckLayer,
+  checkURLReachable,
   suggestDeckLayer,
   sortNumericArray,
   colorRangeNames,

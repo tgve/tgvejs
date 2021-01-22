@@ -27,3 +27,7 @@ define("LAYERSTYLES", [
   "sgrid",
   "barvis"
 ])     
+
+// define("GHURL", "https://layik.github.io/eAtlas")
+// define("STATS19SAMPLEURL", 
+// "https://github.com/layik/eAtlas/releases/download/0.0.1/stats19.json")

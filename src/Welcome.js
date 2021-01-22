@@ -39,7 +39,7 @@ import history from './history';
 import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
-import { isNumber, isArray } from './JSUtils';
+import { isNumber } from './JSUtils';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 const defualtURL = "/api/stats19";
@@ -312,17 +312,18 @@ export default class Welcome extends React.Component {
 
   _fitViewport(newData, bboxLonLat) {
     const data = newData || this.state.data;
-    if (!data || data.length === 0) return;
-    const center = centroid(data).geometry.coordinates;
+    if ((!data || data.length === 0) && !bboxLonLat) return;
     const bounds = bboxLonLat ?
       bboxLonLat.bbox : bbox(data)
-    // console.log(center, bounds);
+    const center = bboxLonLat ? 
+    [bboxLonLat.lon, bboxLonLat.lat] : centroid(data).geometry.coordinates;
 
-    this.map.fitBounds(bounds)
+    this.map.fitBounds(bounds, {padding:'100px'})
+
     const viewport = {
       ...this.state.viewport,
-      longitude: bboxLonLat ? bboxLonLat.lon : center[0],
-      latitude: bboxLonLat ? bboxLonLat.lat : center[1],
+      longitude: center[0],
+      latitude: center[1],
       transitionDuration: 500,
       transitionInterpolator: new FlyToInterpolator(),
       // transitionEasing: d3.easeCubic
@@ -491,7 +492,7 @@ export default class Welcome extends React.Component {
             this._fetchAndUpdateState();
           }}
           onlocationChange={(bboxLonLat) => {
-            this._fitViewport(bboxLonLat)
+            this._fitViewport(undefined, bboxLonLat)
           }}
           showLegend={(legend) => this.setState({ legend })}
           datasetName={defualtURL}
