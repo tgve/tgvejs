@@ -98,7 +98,8 @@ export default class Welcome extends React.Component {
       lastViewPortChange: new Date(),
       colourName: 'default',
       iconLimit: 500,
-      legend: false
+      legend: false,
+      width: window.innerWidth, height: window.innerHeight
     }
     this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
@@ -108,6 +109,10 @@ export default class Welcome extends React.Component {
 
   componentDidMount() {
     this._fetchAndUpdateState()
+    window.addEventListener('resize', this._resize);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._resize);
   }
 
   /**
@@ -413,8 +418,8 @@ export default class Welcome extends React.Component {
             this._updateURL(viewport)
             this.setState({ viewport })
           }}
-          height={window.innerHeight - 54 + 'px'}
-          width={window.innerWidth + 'px'}
+          height={this.state.height - 54 + 'px'}
+          width={this.state.width + 'px'}
           //crucial bit below
           viewState={viewport ? viewport : initialViewState}
         // mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
@@ -507,4 +512,7 @@ export default class Welcome extends React.Component {
       </div>
     );
   }
+  _resize = () => {
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
+  };
 }
