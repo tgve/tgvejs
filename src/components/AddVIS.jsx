@@ -122,7 +122,6 @@ export default function AddVIS(props) {
             ...list,
             generateVIS(data, column[0].value, vis[0].value, plotStyle, noLimit)
           ])
-          // console.log(column[0].value, vis[0].value);
         }}>Add</Button>
       <div className="visArea">
         {!noAccordion ?

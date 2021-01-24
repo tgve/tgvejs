@@ -26,7 +26,6 @@ export default class GeoJSONComponent extends React.Component {
 
     _fetchData() {
         const url = this.props.fetchURL ? this.props.fetchURL : 'http://localhost:8000/api/data'
-        // console.log("fetching... " + url)
         fetch(url)
             .then((response) => {
                 if (response.status !== 200) {

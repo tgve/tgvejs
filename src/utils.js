@@ -25,7 +25,6 @@ const getResultsFromGoogleMaps = (string, callback) => {
     let fullURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" +
       string
       + "&key=WRONG_KEY";
-    // console.log(fullURL);
     fetch(fullURL)
       .then((response) => {
         if (response.status !== 200) {
@@ -58,7 +57,6 @@ const fetchData = (url, callback) => {
     .then((response) => {
       try {
         const json = JSON.parse(response);
-        // console.log(json);
         callback(json)
       } catch (error) {
         callback(undefined, error)
@@ -188,7 +186,6 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     addOptionsToObject(options, geojsonObj)
     return (new GeoJsonLayer(geojsonObj))
   } else if (name === 'icon') {
-    // console.log(data);
     /**
      * There are three files the layer need to display the icons:
      * (1) location-icon-atlas.png which is in /public
@@ -492,7 +489,6 @@ function hexToRgb(hex) {
  */
 const colorScale = (d, p = 0, domain, alpha = 180) => {
   if (!d || !isArray(domain) || !domain.length) return null;
-  console.log(p);
   const index = domain.indexOf(d.properties[p])
   let rgb = interpolateOrRd(index / domain.length);
   rgb = rgb.substring(4, rgb.length - 1)

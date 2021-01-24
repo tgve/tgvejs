@@ -88,7 +88,6 @@ export default class DeckSidebar extends React.Component {
     let columnData = notEmpty ?
       xyObjectByProperty(data, column || barChartVariable) : [];
     const geomType = notEmpty && data[0].geometry.type.toLowerCase();
-    // console.log(geomType);
     if (notEmpty && column && (geomType === 'polygon' ||
       geomType === 'multipolygon' || "linestring") &&
       isNumber(data[0].properties[column])) {
@@ -97,7 +96,6 @@ export default class DeckSidebar extends React.Component {
       columnDomain = columnData.map(e => e.x);
       // we will just sort it        
       columnDomain = sortNumericArray(columnDomain);
-      // console.log(columnDomain);
 
       this.props.showLegend(
         generateLegend(
@@ -226,6 +224,7 @@ export default class DeckSidebar extends React.Component {
                     notEmpty &&
                     Object.keys(data[0].properties)
                       .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
+                      this.props.layerStyle !== "grid" &&
                     <>
                       <h6>Column for layer:</h6>
                       <MultiSelect
@@ -368,12 +367,6 @@ export default class DeckSidebar extends React.Component {
                   >Subset by map boundary</Checkbox>
 
                 </Tab>
-                {/* <Tab eventKey="3" title={
-                  <i style={{ fontSize: '2rem' }}
-                    className="fa fa-tasks" />
-                }>
-                  Tab 3
-                </Tab> */}
                 <Tab eventKey="3" title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-filter" >{
@@ -400,9 +393,7 @@ export default class DeckSidebar extends React.Component {
             <div className="space"></div>
             <form className="search-form" onSubmit={(e) => {
               e.preventDefault();
-              // console.log(this.state.search);
               searchNominatom(this.state.search, (json) => {
-                // console.log(json && json.length > 0 && json[0].boundingbox);
                 let bbox = json && json.length > 0 && json[0].boundingbox;
                 bbox = bbox && bbox.map(num => +(num))
                 typeof onlocationChange === 'function' && bbox &&

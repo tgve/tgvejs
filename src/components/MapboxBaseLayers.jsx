@@ -21,7 +21,6 @@ export default class MapboxBaseLayers extends React.Component {
     render() { 
         const {selected, bases} = this.state;
         const {onSelectCallback} = this.props;
-        // console.log(selected);
         
         return(
             <RBDropDown

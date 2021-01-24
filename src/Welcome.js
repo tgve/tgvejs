@@ -219,7 +219,6 @@ export default class Welcome extends React.Component {
         }
       )
     }
-    // console.log(data.length);
     let layerStyle = (filter && filter.what ===
       'layerStyle' && filter.selected) || this.state.layerStyle || 'grid';
     if (geomType !== "point") layerStyle = "geojson"
@@ -245,7 +244,6 @@ export default class Welcome extends React.Component {
       options.getColor = d => [235, 170, 20]
       options.getPath = d => d.geometry.coordinates
       options.onClick = (info) => {
-        // console.log(info);
         if (info && info.hasOwnProperty('coordinate')) {
           if (['path', 'arc', 'line'].includes(this.state.layerStyle) &&
             info.object.geometry.coordinates) {
@@ -284,7 +282,6 @@ export default class Welcome extends React.Component {
     }
     const domain = generateDomain(data, columnNameOrIndex);
     if (geomType === "polygon" || geomType === "multipolygon" || layerStyle === 'geojson') {
-      console.log(domain, columnNameOrIndex);
       options.getFillColor = (d) => colorScale(d, columnNameOrIndex, domain)
     }
     if (layerStyle === 'barvis') {
@@ -339,8 +336,6 @@ export default class Welcome extends React.Component {
   _renderTooltip(params) {
     const { x, y, object } = params;
     const hoveredObject = object;
-    // console.log(hoveredObject && hoveredObject.points[0].properties.speed_limit);
-    // console.log(params)
     // return
     if (!hoveredObject) {
       this.setState({ tooltip: "" })
@@ -375,13 +370,11 @@ export default class Welcome extends React.Component {
     const bounds = this.map && this.map.getBounds()
     if (bounds && subsetBoundsChange) {
       const box = getBbx(bounds)
-      // console.log("bounds", box);
       const { xmin, ymin, xmax, ymax } = box;
       fetchData(URL + defualtURL + xmin + "/" +
         ymin + "/" + xmax + "/" + ymax,
         (data, error) => {
           if (!error) {
-            // console.log(data.features);
             this.setState({
               data: data.features,
             })

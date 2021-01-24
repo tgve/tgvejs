@@ -133,9 +133,7 @@ export default function SeriesPlot(options) {
                 setSelected([...selected, index]);
               }
               // TODO see how one can detect "leaving"
-              // outside the box but rect is dragging
-              // console.log("DEselect ", index);
-              // setSelected(selected.filter(e => e !== index));
+              // outside the box but rect is dragging              // setSelected(selected.filter(e => e !== index));
             } else {
               if (!rect) {              
                 setSelected([index]); // single hover

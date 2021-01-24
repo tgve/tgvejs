@@ -13,11 +13,6 @@ export default class RBSlider extends Component {
         this.myInput = React.createRef()
     }
 
-    componentDidMount() {
-        // console.log(this.myInput.current);
-        
-    }
-
     _handleChange(event) {
         if (typeof (this.props.onChange) === 'function') {
             this.props.onChange(event.target.value)

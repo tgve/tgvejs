@@ -28,7 +28,6 @@ const DateSlider = (props) => {
           date: data[value-1] + "",
           multiVarSelect
         });
-        console.log(data[value-1], data);
         typeof (onSelectCallback) === 'function' &&
           onSelectCallback({ selected: multiVarSelect, what: 'multi' });
       }}
