@@ -40,10 +40,6 @@ export default class DeckSidebar extends React.Component {
     this.state = {
       radius: 100,
       elevation: 4,
-      // must match the order in plumber.R
-      all_road_types: ["Dual carriageway",
-        "Single carriageway", "Roundabout", "Unknown",
-        "Slip road", "One way street"],
       year: "",
       reset: false,
       multiVarSelect: {},
@@ -77,9 +73,8 @@ export default class DeckSidebar extends React.Component {
    * Partly because we like to load from a URL.
    */
   render() {
-    const { elevation,
-      radius, all_road_types, year,
-      subsetBoundsChange, multiVarSelect, barChartVariable } = this.state;
+    const { elevation, radius, year, subsetBoundsChange, 
+      multiVarSelect, barChartVariable } = this.state;
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data, colourCallback, unfilteredData,
       toggleSubsetBoundsChange, urlCallback, alert,
@@ -170,36 +165,12 @@ export default class DeckSidebar extends React.Component {
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
-              {/* <DateSlider data={yy} multiVarSelect={multiVarSelect}
-                  onSelectCallback={(changes) => console.log(changes)} 
-                  callback={(changes) => console.log(changes)}/> */}
               {/* range of two values slider is not native html */
                 yearSlider({
                   data, year, multiVarSelect,
                   // for callback we get { year: "",multiVarSelect }
                   onSelectCallback, callback: (changes) => this.setState(changes)
                 })
-              }
-              {
-                //only if there is such a property
-                data && data.length > 1 && data[0].properties['road_type'] &&
-                <MultiSelect
-                  title={humanize('road_type')}
-                  filter='road_type' // showcase/hardcode section
-                  multiVarSelect={multiVarSelect}
-                  // showcase/hardcode section all_road_types
-                  values={all_road_types.map(e => ({ id: e, value: e }))}
-                  onSelectCallback={(filter) => {
-                    onSelectCallback && onSelectCallback(filter);
-                    this.setState({
-                      multiVarSelect: filter.selected || {} // not ""
-                    })
-                  }}
-                  // sync state
-                  value={multiVarSelect && multiVarSelect['road_type'] &&
-                    Array.from(multiVarSelect['road_type'])
-                      .map(e => ({ id: e, value: e }))}
-                />
               }
               <br />
               {/* TODO: generate this declaritively too */}
@@ -405,7 +376,10 @@ export default class DeckSidebar extends React.Component {
                 </Tab> */}
                 <Tab eventKey="3" title={
                   <i style={{ fontSize: '2rem' }}
-                    className="fa fa-filter" />
+                    className="fa fa-filter" >{
+                      multiVarSelect && Object.keys(multiVarSelect).length ?
+                      Object.keys(multiVarSelect).length : ""
+                    }</i>
                 }>
                   {
                     unfilteredData && unfilteredData.length > 0 &&
