@@ -182,11 +182,6 @@
 	line-height: 30px;
 	}
 
-.leaflet-container {
-	width: inherit;
-	height: calc(100% - 50px);
-}
-
 html, body, main, .App, #root {
   height: 100%;
 }

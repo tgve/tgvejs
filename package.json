@@ -18,7 +18,7 @@
     "dist/"
   ],
   "dependencies": {
-    "@turf/bbox": "^6.2.0",
+    "@turf/bbox": "^6.3.0",
     "@turf/bezier-spline": "^6.2.0",
     "@turf/centroid": "^6.2.0",
     "baseui": "^7.8.0",
@@ -50,7 +50,8 @@
     "test": "react-scripts test --updateSnapshot",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --env=jsdom --coverage",
-    "dist": "rm -rf dist && NODE_ENV=production node_modules/.bin/babel src/ --out-dir dist --copy-files --no-copy-ignored"
+    "dist": "rm -rf dist && NODE_ENV=production node_modules/.bin/babel src/ --out-dir dist --copy-files --no-copy-ignored",
+    "watch": "watch 'yarn run dist' ./src"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -86,6 +87,7 @@
     "selenium-webdriver": "^4.0.0-alpha.8",
     "sinon": "^7.5.0",
     "uglifyjs-webpack-plugin": "^2.2.0",
+    "watch": "^1.0.2",
     "webpack-cli": "^3.3.12"
   }
 }

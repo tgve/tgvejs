@@ -32,13 +32,13 @@ import {
   convertRange, getMin, getMax, isURL
 } from './utils';
 import DeckSidebarContainer from
-  './components/deckSidebar/DeckSidebarContainer';
+  './components/decksidebar/DeckSidebarContainer';
 import history from './history';
 
 import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
-import { isNumber, isArray } from './JSUtils';
+import { isNumber, isArray, isDate } from './JSUtils';
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -119,6 +119,7 @@ export default class Welcome extends React.Component {
       this._generateLayer();
       this.setState({loading: false}) 
     }
+    window.addEventListener('resize', () => this.forceUpdate())
   }
 
   /**
@@ -203,8 +204,8 @@ export default class Welcome extends React.Component {
             const selected = filter.selected;
             // selected.var > Set()
             for (let each of Object.keys(selected)) {
-              const nextValue = each === "date" ?
-                d.properties[each].split("/")[2] : d.properties[each] + ""
+              const nextValue = isDate(d.properties[each]) ?
+               (new Date(d.properties[each])).getFullYear : d.properties[each] + ""
               // each from selected must be in d.properties
               if (!selected[each].has(nextValue)) {
                 return false
@@ -399,9 +400,9 @@ export default class Welcome extends React.Component {
 
   render() {
     const { tooltip, viewport, initialViewState,
-      loading, mapStyle, alert,
+      loading, mapStyle, alert, data,
       layerStyle, geomType, legend, coords } = this.state;
-    console.log(mapStyle);
+    // console.log(mapStyle);
 
     return (
       <div>
@@ -457,6 +458,7 @@ export default class Welcome extends React.Component {
           isMobile={isMobile()}
           key="decksidebar"
           alert={alert}
+          unfilteredData={data && data.features}
           data={this.state.filtered}
           colourCallback={(colourName) =>
             this._generateLayer({ cn: colourName })
@@ -512,5 +514,9 @@ export default class Welcome extends React.Component {
         }
       </div>
     );
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', () => this.forceUpdate())
   }
 }
