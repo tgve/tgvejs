@@ -37,7 +37,7 @@ RUN apt-get update \
 
 # RUN apt-get install -y r-cran-devtools r-cran-sf r-cran-plumber
 
-RUN R -e 'install.packages(c("geojsonsf", "devtools", "sf", "curl"), repos="http://cran.us.r-project.org")'
+RUN R -e 'install.packages(c("geojsonsf", "devtools", "sf", "curl", "plumber"), repos="http://cran.us.r-project.org")'
 # RUN R -e 'devtools::install_github("ATFutures/geoplumber")'
 
 # add node/npm
