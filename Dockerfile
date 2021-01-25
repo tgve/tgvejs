@@ -26,6 +26,8 @@ RUN apt-get update \
     libprotobuf-dev \
     libnetcdf-dev \
     libsqlite3-dev \
+    # required for plumber
+    libsodium-dev \ 
     libssl-dev \
     libudunits2-dev \
     netcdf-bin \
