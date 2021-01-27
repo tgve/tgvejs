@@ -8,6 +8,7 @@ import {
 import {
   interpolateOrRd, // schemeBlues
 } from 'd3-scale-chromatic';
+import {scaleThreshold} from 'd3-scale';
 
 import qs from 'qs'; // warning: importing it otherways would cause minificatino issue.
 
@@ -131,6 +132,25 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
   })
 }
 
+const COLOR_RANGE = scaleThreshold()
+  .domain([-0.6, -0.45, -0.3, -0.15, 0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.05, 1.2])
+  .range([
+    [65, 182, 196],
+    [127, 205, 187],
+    [199, 233, 180],
+    [237, 248, 177],
+    // zero
+    [255, 255, 204],
+    [255, 237, 160],
+    [254, 217, 118],
+    [254, 178, 76],
+    [253, 141, 60],
+    [252, 78, 42],
+    [227, 26, 28],
+    [189, 0, 38],
+    [128, 0, 38]
+  ]);
+
 const generateDeckLayer = (name, data, renderTooltip, options) => {
   const addOptionsToObject = (opt, obj) => {
     Object.keys(opt).forEach(key =>
@@ -176,12 +196,15 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       extruded: true,
       lineWidthScale: 20,
       lineWidthMinPixels: 2,
-      getFillColor: [160, 160, 180, 200],
-      getLineColor: [255, 160, 180, 200],
+      // getFillColor: [160, 160, 180, 200],
+      // getLineColor: [255, 160, 180, 200],
       getRadius: 100,
       getLineWidth: 1,
       getElevation: 30,
-      onHover: renderTooltip
+      onHover: renderTooltip,
+      // for default repo only
+      getElevation: f => Math.sqrt(f.properties.valuePerSqm) * 10,
+      // getFillColor: f => COLOR_RANGE(f.properties.growth),
     }
     addOptionsToObject(options, geojsonObj)
     return (new GeoJsonLayer(geojsonObj))
@@ -656,16 +679,25 @@ const generateLegend = (options) => {
  */
 const generateDomain = (data, column) => {
   if (!data || !Array.isArray(data) || !column || !data.length) return;
-  
   let domainIsNumeric = true;
-  let domain = data.map(feature => {
+  let domain = [];
+  data.forEach(feature => {
     // uber move to show isochrones
-    const i = feature.properties[column] || 0; // eliminate nulls
+    const i = feature.properties[
+      isNumber(column) ? Object.keys(feature.properties)[column] : column
+    ]; // eliminate nulls
+    if(!i) return;
     if (isNumber(i) &&
       column === 'Mean.Travel.Time..Seconds.') {
-      return (Math.floor(i / 300));
+        domain.push(Math.floor(i / 300));
+    } else {
+      if(isNumber(i)) {
+        domain.push(+(i))
+      } else {
+        domainIsNumeric = false;
+        domain.push(i)
+      }
     }
-    return isNumber(i) ? +(i) : i;
   });
   domain = Array.from(new Set(domain));
   // sort the domain if possible
@@ -730,6 +762,7 @@ export {
   getCentroid,
   shortenName,
   colorRanges,
+  COLOR_RANGE,
   percentDiv,
   iconJSType,
   colorScale,

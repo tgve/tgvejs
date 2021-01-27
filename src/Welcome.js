@@ -29,7 +29,7 @@ import {
   getParamsFromSearch, getBbx,
   isMobile, colorScale, OSMTILES,
   colorRanges, generateDomain,
-  convertRange, getMin, getMax, isURL
+  convertRange, getMin, getMax, isURL, COLOR_RANGE
 } from './utils';
 import Constants from './Constants';
 import DeckSidebarContainer from
@@ -42,7 +42,7 @@ import { sfType } from './geojsonutils';
 import { isNumber } from './JSUtils';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
-const defualtURL = "/api/stats19";
+const defualtURL = process.env.REACT_APP_DEFAULT_URL || (URL + "/api/stats19");
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -129,7 +129,7 @@ export default class Welcome extends React.Component {
       // TODO: decide which is better.
       // URL + "/api/url?q=" + aURL : // get the server to parse it 
       aURL : // do not get the server to parse it 
-      URL + defualtURL;
+      defualtURL;
 
     fetchData(fullURL, (data, error) => {
       if (!error) {
@@ -282,7 +282,14 @@ export default class Welcome extends React.Component {
     }
     const domain = generateDomain(data, columnNameOrIndex);
     if (geomType === "polygon" || geomType === "multipolygon" || layerStyle === 'geojson') {
-      options.getFillColor = (d) => colorScale(d, columnNameOrIndex, domain)
+      if(domain && domain.length > 50) {
+        options.getFillColor = d => COLOR_RANGE(d.properties[
+          isNumber(columnNameOrIndex) ? 
+          Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex
+        ])
+      } else{
+        options.getFillColor = (d) => colorScale(d, columnNameOrIndex, domain)
+      }
     }
     if (layerStyle === 'barvis') {
       options.getPosition = d => [d.geometry.coordinates[0],
@@ -371,7 +378,7 @@ export default class Welcome extends React.Component {
     if (bounds && subsetBoundsChange) {
       const box = getBbx(bounds)
       const { xmin, ymin, xmax, ymax } = box;
-      fetchData(URL + defualtURL + xmin + "/" +
+      fetchData(defualtURL + xmin + "/" +
         ymin + "/" + xmax + "/" + ymax,
         (data, error) => {
           if (!error) {

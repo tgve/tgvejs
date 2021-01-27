@@ -133,7 +133,9 @@ export default class DeckSidebar extends React.Component {
               data.length + " row" + (data.length > 1 ? "s" : "") + "."
               : "Nothing to show"}
             </h2>
-            dataset: {this.state.datasetName}
+            <h6 className="truncate"> 
+              dataset: {this.state.datasetName} 
+            </h6>
           </div>
           <div>
             <DataInput
