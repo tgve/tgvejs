@@ -34,6 +34,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "vancouver": "REACT_APP_DEFAULT_URL=https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/geojson/vancouver-blocks.json react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --updateSnapshot",
     "eject": "react-scripts eject",
@@ -56,5 +57,6 @@
     "react-test-renderer": "^16.13.0",
     "selenium-webdriver": "^4.0.0-alpha.7",
     "sinon": "^7.5.0"
-  }
+  },
+  "homepage": "https://layik.github.io/eAtlas"
 }

@@ -1,0 +1,37 @@
+name: Deploy to github pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+    gh-pages-deploy:
+      name: Deploying to gh-pages
+      runs-on: ubuntu-latest
+      steps:
+        - name: Setup Node.js for use with actions
+          uses: actions/setup-node@v1
+          with:
+            version:  12.x
+        - name: Checkout branch
+          uses: actions/checkout@v2
+
+        - name: Clean install dependencies
+          run: npm ci
+    
+        - name: Clean build
+          run: npm run build
+          env:
+            CI: false
+            REACT_APP_DEFAULT_URL: https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/geojson/vancouver-blocks.json 
+            REACT_APP_MAPBOX_ACCESS_TOKEN: ${{secrets.MAPBOX_KEY}}
+
+        - name: Run deploy script
+          run: |
+            git config user.name "layik" && git config user.email "layik.hama@gmail.com"
+            git checkout --orphan gh-pages
+            git --work-tree build add --all
+            git --work-tree build commit -m 'Deploy'
+            git push origin HEAD:gh-pages --force
+

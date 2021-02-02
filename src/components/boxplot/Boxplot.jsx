@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ascending, quantile } from 'd3-array';
 
 import { isNumber } from '../../JSUtils';
@@ -34,9 +34,7 @@ export default (props) => {
   // https://www.purplemath.com/modules/boxwhisk3.htm
   let min = +(q1 - 1.5 * interQuantileRange).toFixed(2)
   let max = +(q1 + 1.5 * interQuantileRange).toFixed(2)
-  // console.log(min, max, q1, q3, interQuantileRange);
   const outliers = data_sorted.filter(e => e > max || e < min)
-  // console.log(outliers);
 
   // rescale variables according to screensize
   const Y = 5, yHeight = 60, yMiddle = Y + (yHeight / 2);
@@ -55,7 +53,6 @@ export default (props) => {
       }
     })
   }
-  // console.log(scale);
 
   return (
     <div style={{

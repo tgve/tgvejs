@@ -8,6 +8,7 @@ import {
 import {
   interpolateOrRd, // schemeBlues
 } from 'd3-scale-chromatic';
+import {scaleThreshold} from 'd3-scale';
 
 import qs from 'qs'; // warning: importing it otherways would cause minificatino issue.
 
@@ -16,7 +17,8 @@ import Constants from './Constants';
 import { isString, isNumber } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
 import { ArcLayer, PathLayer } from '@deck.gl/layers';
-import BarLayer from './components/CustomLayers/BarLayer'
+import BarLayer from './components/customlayers/BarLayer'
+import { isArray } from 'underscore';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -24,7 +26,6 @@ const getResultsFromGoogleMaps = (string, callback) => {
     let fullURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" +
       string
       + "&key=WRONG_KEY";
-    // console.log(fullURL);
     fetch(fullURL)
       .then((response) => {
         if (response.status !== 200) {
@@ -57,7 +58,6 @@ const fetchData = (url, callback) => {
     .then((response) => {
       try {
         const json = JSON.parse(response);
-        // console.log(json);
         callback(json)
       } catch (error) {
         callback(undefined, error)
@@ -68,6 +68,27 @@ const fetchData = (url, callback) => {
       callback(null, error)
     });
 
+}
+
+/**
+ * 
+ * Simple fetch check of URL
+ * 
+ * @param {*} URL 
+ * @param {*} callback 
+ */
+const checkURLReachable = (URL, callback) => {
+  fetch(URL)
+  .then((response) => {
+    if(response.ok) {
+      callback(true)
+    } else {
+      callback(false)
+    }
+  })
+  .catch((error) => {
+    console.log('There has been a problem with your fetch operation: ' + error.message);
+  });
 }
 
 /**
@@ -110,6 +131,25 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
     )
   })
 }
+
+const COLOR_RANGE = scaleThreshold()
+  .domain([-0.6, -0.45, -0.3, -0.15, 0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.05, 1.2])
+  .range([
+    [65, 182, 196],
+    [127, 205, 187],
+    [199, 233, 180],
+    [237, 248, 177],
+    // zero
+    [255, 255, 204],
+    [255, 237, 160],
+    [254, 217, 118],
+    [254, 178, 76],
+    [253, 141, 60],
+    [252, 78, 42],
+    [227, 26, 28],
+    [189, 0, 38],
+    [128, 0, 38]
+  ]);
 
 const generateDeckLayer = (name, data, renderTooltip, options) => {
   const addOptionsToObject = (opt, obj) => {
@@ -156,17 +196,19 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       extruded: true,
       lineWidthScale: 20,
       lineWidthMinPixels: 2,
-      getFillColor: [160, 160, 180, 200],
-      getLineColor: [255, 160, 180, 200],
+      // getFillColor: [160, 160, 180, 200],
+      // getLineColor: [255, 160, 180, 200],
       getRadius: 100,
       getLineWidth: 1,
       getElevation: 30,
-      onHover: renderTooltip
+      onHover: renderTooltip,
+      // for default repo only
+      getElevation: f => Math.sqrt(f.properties.valuePerSqm) * 10,
+      // getFillColor: f => COLOR_RANGE(f.properties.growth),
     }
     addOptionsToObject(options, geojsonObj)
     return (new GeoJsonLayer(geojsonObj))
   } else if (name === 'icon') {
-    // console.log(data);
     /**
      * There are three files the layer need to display the icons:
      * (1) location-icon-atlas.png which is in /public
@@ -461,43 +503,21 @@ function hexToRgb(hex) {
 
 /**
  * Generate colour scale for unique set of values
- * based on the index of the values in an array.
+ * based on the index of a value in an array domain of the set.
  * 
  * @param {object} d particular property to get color for from features
- * @param {*} features features in a geojson featureset
  * @param {*} p index/name of column to generate color scale with
+ * @param {Array} domain output from generateDomain
  * @param {Number} alpha value to add to colour pallete
  */
-const colorScale = (d, features, p = 0, alpha = 180) => {
-  if (!d || !features || features.length === 0) return null;
-  const x = isNumber(p) ? Object.keys(d.properties)[p] : p;
-  let domainIsNumeric = true;
-  let domain = features.map(feature => {
-    // uber move to show isochrones
-    const i = feature.properties[x];
-    if (isNumber(i) &&
-      p === 'Mean.Travel.Time..Seconds.') {
-      return (Math.floor(i / 300))
-    } else if (domainIsNumeric && !isNumber(i)) {
-      // stop getting here if already been
-      domainIsNumeric = false;
-    }
-    return isNumber(i) ? +(i) : i
-  })
-  domain = Array.from(new Set(domain))
-  // sort the domain if possible
-  if (domainIsNumeric) {
-    domain = domain.sort((a, b) => { return (a - b) })
-  }
-  const index = domain.indexOf(isNumber(d.properties[x]) &&
-    p === 'Mean.Travel.Time..Seconds.' ?
-    Math.floor(d.properties[x] / 300) : d.properties[x])
-  // console.log(domain, index)
-  let col = interpolateOrRd(index / domain.length);
-  col = col.substring(4, col.length - 1)
+const colorScale = (d, p = 0, domain, alpha = 180) => {
+  if (!d || !isArray(domain) || !domain.length) return null;
+  const index = domain.indexOf(d.properties[p])
+  let rgb = interpolateOrRd(index / domain.length);
+  rgb = rgb.substring(4, rgb.length - 1)
     .replace(/ /g, '')
     .split(',').map(x => +x); // deck.gl 8 int not strings
-  return [...col, alpha]
+  return [...rgb, alpha]
 }
 
 const colorRangeNames = ['inverseDefault', 'yellowblue', 'greens',
@@ -658,18 +678,26 @@ const generateLegend = (options) => {
  * @param {*} column 
  */
 const generateDomain = (data, column) => {
-  if (!data || !Array.isArray(data) || !column ||
-    !isString(column) || data.length === 0) return;
-
+  if (!data || !Array.isArray(data) || !column || !data.length) return;
   let domainIsNumeric = true;
-  let domain = data.map(feature => {
+  let domain = [];
+  data.forEach(feature => {
     // uber move to show isochrones
-    const i = feature.properties[column];
+    const i = feature.properties[
+      isNumber(column) ? Object.keys(feature.properties)[column] : column
+    ]; // eliminate nulls
+    if(!i) return;
     if (isNumber(i) &&
       column === 'Mean.Travel.Time..Seconds.') {
-      return (Math.floor(i / 300));
+        domain.push(Math.floor(i / 300));
+    } else {
+      if(isNumber(i)) {
+        domain.push(+(i))
+      } else {
+        domainIsNumeric = false;
+        domain.push(i)
+      }
     }
-    return isNumber(i) ? +(i) : i;
   });
   domain = Array.from(new Set(domain));
   // sort the domain if possible
@@ -695,12 +723,35 @@ const getMax = (arr) => {
 const getMin = (arr) => {
   return arr.reduce((max, v) => max <= v ? max : v, Infinity);
 }
+
+const OSMTILES = {
+  "version": 8,
+  "sources": {
+    "simple-tiles": {
+      "type": "raster",
+      "tiles": [
+        // "http://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        // "http://b.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        // "http://tile.stamen.com/toner/{z}/{x}/{y}.png"
+        'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg'
+      ],
+      "tileSize": 256
+    }
+  },
+  "layers": [{
+    "id": "simple-tiles",
+    "type": "raster",
+    "source": "simple-tiles",
+  }]
+};
+
 export {
   getResultsFromGoogleMaps,
   getParamsFromSearch,
   xyObjectByProperty,
   suggestUIforNumber,
   generateDeckLayer,
+  checkURLReachable,
   suggestDeckLayer,
   sortNumericArray,
   colorRangeNames,
@@ -711,10 +762,12 @@ export {
   getCentroid,
   shortenName,
   colorRanges,
+  COLOR_RANGE,
   percentDiv,
   iconJSType,
   colorScale,
   fetchData,
+  OSMTILES,
   humanize,
   isMobile,
   ATILOGO,

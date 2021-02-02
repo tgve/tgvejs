@@ -107,8 +107,11 @@
 /* .search-form .form-control, .search-form .input-group-addon {
   background-color: #242730;
   color: #a3a5a8;
-}
+}*/
 
-/* #main-tabs {
-  background: white;
-} */
+.truncate {
+  width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -6,7 +6,7 @@ function define(name, value) {
 }
 
 // TODO: change to domain name 
-define("PRD_URL", 'http://0.0.0.0');
+define("PRD_URL", 'https://layik.github.io/eAtlas');
 define("DEV_URL", 'http://localhost:8000');
 define("UI_LIST", [
   "checkbox",
@@ -27,3 +27,7 @@ define("LAYERSTYLES", [
   "sgrid",
   "barvis"
 ])     
+
+// define("GHURL", "https://layik.github.io/eAtlas")
+// define("STATS19SAMPLEURL", 
+// "https://github.com/layik/eAtlas/releases/download/0.0.1/stats19.json")

@@ -27,41 +27,22 @@ import _ from 'underscore';
 import {
   fetchData, generateDeckLayer,
   getParamsFromSearch, getBbx,
-  isMobile, colorScale,
-  colorRanges,
-  convertRange, getMin, getMax, isURL
+  isMobile, colorScale, OSMTILES,
+  colorRanges, generateDomain,
+  convertRange, getMin, getMax, isURL, COLOR_RANGE
 } from './utils';
 import Constants from './Constants';
 import DeckSidebarContainer from
-  './components/DeckSidebar/DeckSidebarContainer';
+  './components/decksidebar/DeckSidebarContainer';
 import history from './history';
 
 import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
-import { isNumber, isArray } from './JSUtils';
+import { isNumber } from './JSUtils';
 
-const osmtiles = {
-  "version": 8,
-  "sources": {
-    "simple-tiles": {
-      "type": "raster",
-      "tiles": [
-        // "http://tile.openstreetmap.org/{z}/{x}/{y}.png",
-        // "http://b.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        "http://tile.stamen.com/toner/{z}/{x}/{y}.png"
-      ],
-      "tileSize": 256
-    }
-  },
-  "layers": [{
-    "id": "simple-tiles",
-    "type": "raster",
-    "source": "simple-tiles",
-  }]
-};
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
-const defualtURL = "/api/stats19";
+const defualtURL = process.env.REACT_APP_DEFAULT_URL || (URL + "/api/stats19");
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -111,13 +92,14 @@ export default class Welcome extends React.Component {
       radius: 100,
       elevation: 4,
       mapStyle: MAPBOX_ACCESS_TOKEN ? ("mapbox://styles/mapbox/" +
-        (props.dark ? "dark" : "streets") + "-v9") : osmtiles,
+        (props.dark ? "dark" : "streets") + "-v9") : OSMTILES,
       initialViewState: init,
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
       colourName: 'default',
       iconLimit: 500,
-      legend: false
+      legend: false,
+      width: window.innerWidth, height: window.innerHeight
     }
     this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
@@ -127,6 +109,10 @@ export default class Welcome extends React.Component {
 
   componentDidMount() {
     this._fetchAndUpdateState()
+    window.addEventListener('resize', this._resize);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._resize);
   }
 
   /**
@@ -143,7 +129,7 @@ export default class Welcome extends React.Component {
       // TODO: decide which is better.
       // URL + "/api/url?q=" + aURL : // get the server to parse it 
       aURL : // do not get the server to parse it 
-      URL + defualtURL;
+      defualtURL;
 
     fetchData(fullURL, (data, error) => {
       if (!error) {
@@ -181,7 +167,7 @@ export default class Welcome extends React.Component {
 
     if (filter && filter.what === 'mapstyle') {
       this.setState({
-        mapStyle: !MAPBOX_ACCESS_TOKEN ? osmtiles :
+        mapStyle: !MAPBOX_ACCESS_TOKEN ? OSMTILES :
           filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
       })
       return;
@@ -212,6 +198,9 @@ export default class Welcome extends React.Component {
               const nextValue = each === "date" ?
                 d.properties[each].split("/")[2] : d.properties[each] + ""
               // each from selected must be in d.properties
+              // *****************************
+              // compare string to string
+              // *****************************
               if (!selected[each].has(nextValue)) {
                 return false
               }
@@ -228,7 +217,6 @@ export default class Welcome extends React.Component {
         }
       )
     }
-    // console.log(data.length);
     let layerStyle = (filter && filter.what ===
       'layerStyle' && filter.selected) || this.state.layerStyle || 'grid';
     if (geomType !== "point") layerStyle = "geojson"
@@ -241,10 +229,8 @@ export default class Welcome extends React.Component {
       lightSettings: LIGHT_SETTINGS,
       colorRange: colorRanges(cn || colourName)
     };
-    if (layerStyle === 'geojson') {
-      options.getFillColor = (d) => colorScale(d, data) //first prop
-    }
-    let columnNameOrIndex =
+    // generate a domain
+    const columnNameOrIndex =
       (filter && filter.what === 'column' && filter.selected) || column || 1;
     if (layerStyle === 'heatmap') {
       options.getPosition = d => d.geometry.coordinates
@@ -256,7 +242,6 @@ export default class Welcome extends React.Component {
       options.getColor = d => [235, 170, 20]
       options.getPath = d => d.geometry.coordinates
       options.onClick = (info) => {
-        // console.log(info);
         if (info && info.hasOwnProperty('coordinate')) {
           if (['path', 'arc', 'line'].includes(this.state.layerStyle) &&
             info.object.geometry.coordinates) {
@@ -293,46 +278,22 @@ export default class Welcome extends React.Component {
         }; // avoid id
       }
     }
-    if (geomType === "polygon" || geomType === "multipolygon") {
-      const cols = Object.keys(data[0] && data[0].properties && 
-        data[0].properties);
-      // TODO: remove SPENSER
-      const SPENSER = isArray(cols) && cols.length > 0 && 
-      cols[1] === 'GEOGRAPHY_CODE';
-      if (SPENSER) {
-        options.getElevation = d => (isNumber(d.properties[column]) &&
-          column !== 'YEAR' && d.properties[column]) || null
+    const domain = generateDomain(data, columnNameOrIndex);
+    if (geomType === "polygon" || geomType === "multipolygon" || layerStyle === 'geojson') {
+      if(domain && domain.length > 50) {
+        options.getFillColor = d => COLOR_RANGE(d.properties[
+          isNumber(columnNameOrIndex) ? 
+          Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex
+        ])
+      } else{
+        options.getFillColor = (d) => colorScale(d, columnNameOrIndex, domain)
       }
-      // TODO: allow user to specify column.
-      options.getFillColor = (d) =>
-        colorScale(d, data, column ? column : SPENSER ? 1 : 0)
     }
     if (layerStyle === 'barvis') {
-      const getColor = (party) => {
-        if (!party) return null;
-        switch (party) {
-          case "lab":
-            return [255, 0, 0]
-          case "con":
-            return [0, 0, 255]
-          case "snp":
-            return [0, 0, 0]
-          case "ld":
-            return [253, 187 , 48]
-          case "pc":
-            return [63, 132, 40]
-          case "dup":
-            return [0, 0, 255]
-          default:
-            return [0, 0, 0];
-        }
-      }
       options.getPosition = d => [d.geometry.coordinates[0],
       d.geometry.coordinates[1], 0]
-      if (data[0].properties.first_party) options.getColor = d => 
-      getColor(d.properties.first_party.toLowerCase())
-      if (data[0].properties.result) options.getRotationAngle = d => 
-      d.properties.result.includes("gain from") ? 45 : 1
+      if (data[0].properties.result) options.getRotationAngle = d =>
+        d.properties.result.includes("gain from") ? 45 : 1
       options.getScale = d => 200
     }
     const alayer = generateDeckLayer(
@@ -358,17 +319,18 @@ export default class Welcome extends React.Component {
 
   _fitViewport(newData, bboxLonLat) {
     const data = newData || this.state.data;
-    if (!data || data.length === 0) return;
-    const center = centroid(data).geometry.coordinates;
+    if ((!data || data.length === 0) && !bboxLonLat) return;
     const bounds = bboxLonLat ?
       bboxLonLat.bbox : bbox(data)
-    // console.log(center, bounds);
+    const center = bboxLonLat ? 
+    [bboxLonLat.lon, bboxLonLat.lat] : centroid(data).geometry.coordinates;
 
-    this.map.fitBounds(bounds)
+    this.map.fitBounds(bounds, {padding:'100px'})
+
     const viewport = {
       ...this.state.viewport,
-      longitude: bboxLonLat ? bboxLonLat.lon : center[0],
-      latitude: bboxLonLat ? bboxLonLat.lat : center[1],
+      longitude: center[0],
+      latitude: center[1],
       transitionDuration: 500,
       transitionInterpolator: new FlyToInterpolator(),
       // transitionEasing: d3.easeCubic
@@ -377,10 +339,8 @@ export default class Welcome extends React.Component {
   }
 
   _renderTooltip(params) {
-    const { x, y, object} = params;
+    const { x, y, object } = params;
     const hoveredObject = object;
-    // console.log(hoveredObject && hoveredObject.points[0].properties.speed_limit);
-    console.log(params)
     // return
     if (!hoveredObject) {
       this.setState({ tooltip: "" })
@@ -415,13 +375,11 @@ export default class Welcome extends React.Component {
     const bounds = this.map && this.map.getBounds()
     if (bounds && subsetBoundsChange) {
       const box = getBbx(bounds)
-      // console.log("bounds", box);
       const { xmin, ymin, xmax, ymax } = box;
-      fetchData(URL + defualtURL + xmin + "/" +
+      fetchData(defualtURL + xmin + "/" +
         ymin + "/" + xmax + "/" + ymax,
         (data, error) => {
           if (!error) {
-            // console.log(data.features);
             this.setState({
               data: data.features,
             })
@@ -436,9 +394,8 @@ export default class Welcome extends React.Component {
 
   render() {
     const { tooltip, viewport, initialViewState,
-      loading, mapStyle, alert,
+      loading, mapStyle, alert, data, filtered,
       layerStyle, geomType, legend, coords } = this.state;
-    // console.log(geomType, legend);
 
     return (
       <div id="html2pdf">
@@ -459,8 +416,8 @@ export default class Welcome extends React.Component {
             this._updateURL(viewport)
             this.setState({ viewport })
           }}
-          height={window.innerHeight - 54 + 'px'}
-          width={window.innerWidth + 'px'}
+          height={this.state.height - 54 + 'px'}
+          width={this.state.width + 'px'}
           //crucial bit below
           viewState={viewport ? viewport : initialViewState}
         // mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
@@ -497,7 +454,8 @@ export default class Welcome extends React.Component {
           isMobile={isMobile()}
           key="decksidebar"
           alert={alert}
-          data={this.state.filtered}
+          unfilteredData={data && data.features}
+          data={filtered}
           colourCallback={(colourName) =>
             this._generateLayer({ cn: colourName })
           }
@@ -538,7 +496,7 @@ export default class Welcome extends React.Component {
             this._fetchAndUpdateState();
           }}
           onlocationChange={(bboxLonLat) => {
-            this._fitViewport(bboxLonLat)
+            this._fitViewport(undefined, bboxLonLat)
           }}
           showLegend={(legend) => this.setState({ legend })}
           datasetName={defualtURL}
@@ -553,4 +511,7 @@ export default class Welcome extends React.Component {
       </div>
     );
   }
+  _resize = () => {
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
+  };
 }
