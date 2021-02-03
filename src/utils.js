@@ -19,6 +19,7 @@ import IconClusterLayer from './icon-cluster-layer';
 import { ArcLayer, PathLayer } from '@deck.gl/layers';
 import BarLayer from './components/customlayers/BarLayer'
 import { isArray } from 'underscore';
+import csv2geojson from 'csv2geojson';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -56,11 +57,21 @@ const fetchData = (url, callback) => {
   fetch(url) // [0] => "", [1] => roads and [2] => qfactor
     .then((response) => response.text())
     .then((response) => {
-      try {
-        const json = JSON.parse(response);
-        callback(json)
-      } catch (error) {
-        callback(undefined, error)
+      if(url.endsWith("csv")) {
+        csv2geojson.csv2geojson(response, (err, data) => {
+          if (!err) {
+            typeof (callback) === 'function'
+              && callback(data)
+          }
+        })
+      } else {
+        //assume json
+        try {
+          const json = JSON.parse(response);
+          callback(json)
+        } catch (error) {
+          callback(undefined, error)
+        }
       }
     })
     .catch((error) => {
@@ -108,8 +119,8 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
   const map = new Map()
   data.forEach(feature => {
     let value = feature.properties[property];
-    if (typeof (value) === 'string' && value.split("/")[2]) {
-      value = value.split("/")[2]
+    if (new Date(value) && new Date(value).getFullYear()) {
+      value = new Date(value).getFullYear()
     }
     if (noNulls && value !== null) { // remove nulls here
       if (map.get(value)) {

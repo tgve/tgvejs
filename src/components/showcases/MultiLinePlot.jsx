@@ -23,17 +23,16 @@ const W = 250;
 export default function MultiLinePlot(options) {
   const [hint, setHint] = useState();
 
-  if (!Array.isArray(options.data) ||
-    options.data.length > 10) return null;
-
   const limit = 10;
 
   const { plotStyle, title, noXAxis, noYAxis,
     onValueClick, data, legend } = options;
 
-  return options.data && options.data.length > 1 &&
-    // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
-    <div className="unselectable" style={{ position: 'relative', color: '#fff' }}>
+  if (!Array.isArray(data) || data.length > limit) return null;
+  
+  // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
+  return <div 
+    className="unselectable" style={{ position: 'relative', color: '#fff' }}>
       {!options.noLimit &&
         options.data && options.data.length > limit &&
         <h4>Plotting first {limit} values:</h4>}

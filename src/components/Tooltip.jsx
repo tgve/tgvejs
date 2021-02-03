@@ -5,6 +5,7 @@ import { humanize } from '../utils';
 import SeriesPlot from './showcases/SeriesPlot';
 import { propertyCountByProperty } from '../geojsonutils';
 import MultiLinePlot from './showcases/MultiLinePlot';
+import { isArray } from '../JSUtils';
 
 const WIDTH = 220;
 const BAR_HEIGHT = 80;
@@ -62,8 +63,10 @@ export default class Tooltip extends React.Component {
         if (feature.properties.hasOwnProperty('accident_severity')) {
           aKey.severity = feature.properties.accident_severity;
         }
-        if (feature.properties.hasOwnProperty('date')) {
-          aKey.year = feature.properties.date.split("/")[2];
+        if (feature.properties.hasOwnProperty('date') &&
+        new Date(feature.properties.date) &&
+        new Date(feature.properties.date).getFullYear()) {
+          aKey.year = new Date(feature.properties.date).getFullYear();
         }
         return (aKey)
       });
@@ -150,11 +153,14 @@ export default class Tooltip extends React.Component {
             <MultiLinePlot
               data={[...severity_data_separate, crashes_data]}
               legend={[...severity_keys, 'Total']}
-              title="Crashes" noYAxis={true}
+              title="Crashes" noYAxis={true} dark={true}
               plotStyle={{ height: 100, marginBottom: 50 }}
             /> :
-            <SeriesPlot title={severity_keys.length === 1 && severity_keys[0]} 
-            data= {crashes_data} type= {LineSeries} />
+            <SeriesPlot 
+              dark={true} noYAxis={true}
+              title={isArray(severity_keys) && 
+                severity_keys.length === 1 && severity_keys[0]} 
+              data= {crashes_data} type= {LineSeries} />
           }
         </div>
       </div >

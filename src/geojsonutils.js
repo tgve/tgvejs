@@ -76,15 +76,7 @@ const describeFeatureVariables = (feature) => {
     let v_type = String;
     const value = feature.properties[key];
 
-    if (isDate(value) ||
-      DateTime.fromFormat(value + '', 'MMMM dd yyyy').isValid ||
-      DateTime.fromFormat(value + '', 'MMMM d yyyy').isValid ||
-      DateTime.fromFormat(value + '', 'MMM d yyyy').isValid ||
-      DateTime.fromFormat(value + '', 'MMM dd yyyy').isValid ||
-      DateTime.fromFormat(value + '', 'dd/MM/yyyy').isValid ||
-      DateTime.fromISO(value).isValid || // "19-2-1999"
-      DateTime.fromHTTP(value).isValid ||
-      (typeof value === Number && DateTime.fromMillis(value).isValid)) {
+    if (isStringDate(value)) {
       v_type = Date
     } else if (isNumber(value)) {
       v_type = Number
@@ -190,9 +182,9 @@ const propertyCountByProperty = (data, key, list, key2) => {
   if (!data || !key || !list || !key2 || key === key2) return;
   let sub_data = {} // create object based on key2 values
   data.forEach(feature => {
-    const k2 = key2 === 'date' &&
-      DateTime.fromFormat(feature.properties[key2] + '', 'dd/MM/yyyy').isValid ?
-      feature.properties[key2].split("/")[2] : feature.properties[key2];
+    const k2 = new Date(feature.properties[key2]) &&
+    new Date(feature.properties[key2]).getFullYear() ? 
+    new Date(feature.properties[key2]).getFullYear() : feature.properties[key2];
     Object.keys(feature.properties).forEach(each => {
       if (each === key) {
         // create object based on key2 values
@@ -233,8 +225,24 @@ export {
   getPropertyValues,
   getKeyColumns,
   propertyCount,
+  isStringDate,
   properties,
   coordsAsXY,
   isONSCode,
   sfType
+}
+
+function isStringDate(value) {
+  return isDate(value) ||
+    DateTime.fromFormat(value + '', 'MMMM dd yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'MMMM d yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'MMM d yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'MMM dd yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'dd/MM/yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'dd-MM-yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'yyyy/mm/dd').isValid ||
+    DateTime.fromFormat(value + '', 'yyyy-mm-dd').isValid ||
+    DateTime.fromISO(value).isValid || // "19-2-1999"
+    DateTime.fromHTTP(value).isValid ||
+    (typeof value === Number && DateTime.fromMillis(value).isValid);
 }
