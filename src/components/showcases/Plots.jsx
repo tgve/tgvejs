@@ -1,13 +1,16 @@
 import React from 'react';
 import {
-  XYPlot, XAxis, YAxis, HorizontalRectSeries
+  XYPlot, XAxis, YAxis, HorizontalRectSeries,
+  DiscreteColorLegend
 } from 'react-vis';
 import { format } from 'd3-format';
 
 import { propertyCountByProperty } from '../../geojsonutils';
 import { xyObjectByProperty } from '../../utils';
 
-const W = 250;
+const W = 250, 
+COLOR_F = 'rgb(18, 147, 154)', 
+COLOR_M = 'rgb(239, 93, 40)';
 
 /**
  * Generate a population pyramid using Rect-vis series objects.
@@ -46,37 +49,46 @@ const popPyramid = (options) => {
     })
   })
   return (
-    <XYPlot
-      margin={{ left: options.margin || 60 }} // default is 40
-      height={options.plotStyle && options.plotStyle.height || W}
-      width={options.plotStyle && options.plotStyle.width || W} >
-      <HorizontalRectSeries
-        color='rgb(18, 147, 154)'
-        stroke='black'
-        data={mf_array_female} />
-      <HorizontalRectSeries
-        color='rgb(239, 93, 40)'
-        stroke='black'
-        data={mf_array_male} />
+    <>
+      <XYPlot
+        margin={{ left: options.margin || 60 }} // default is 40
+        height={options.plotStyle && options.plotStyle.height || W}
+        width={options.plotStyle && options.plotStyle.width || W} >
+        <HorizontalRectSeries
+          color={COLOR_F}
+          stroke='black'
+          data={mf_array_female} />
+        <HorizontalRectSeries
+          color={COLOR_M}
+          stroke='black'
+          data={mf_array_male} />
 
-      <YAxis
-        tickSize={0}
-        tickFormat={v => v === 0 ? 2009 : v - 2 + 2009}
-        style={{
-          line: { strokeWidth: 0 },
-          text: { fill: options.dark ? '#fff' : '#000', fontWeight: 400 }
-        }}
-      />
-      {/* left={(W / 2) - 10} */}
-      <XAxis
-        tickSize={0}
-        tickFormat={v => format(".2s")(v < 0 ? -1 * v : v)}
-        style={{
-          line: { strokeWidth: 0 },
-          text: { fill: options.dark ? '#fff' : '#000', fontWeight: 400 }
-        }}
-      />
-    </XYPlot>
+        <YAxis
+          tickSize={0}
+          tickFormat={v => v === 0 ? 2009 : v - 2 + 2009}
+          style={{
+            line: { strokeWidth: 0 },
+            text: { fill: options.dark ? '#fff' : '#000', fontWeight: 400 }
+          }}
+        />
+        {/* left={(W / 2) - 10} */}
+        <XAxis
+          tickSize={0}
+          tickFormat={v => format(".2s")(v < 0 ? -1 * v : v)}
+          style={{
+            line: { strokeWidth: 0 },
+            text: { fill: options.dark ? '#fff' : '#000', fontWeight: 400 }
+          }}
+        />
+      </XYPlot>
+      <DiscreteColorLegend
+        orientation="horizontal" width={W}
+        items={[
+          {title:"Male", color:COLOR_M}, 
+          {title: "Female", color:COLOR_F}
+          ]}
+        />
+    </>
   )
 }
 
