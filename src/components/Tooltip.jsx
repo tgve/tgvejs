@@ -167,33 +167,37 @@ export default class Tooltip extends React.Component {
     return (tooltip)
   }
 
-  _listPropsAndValues(hoveredObject) {
+  _listPropsAndValues(hoveredObject, all = false, n = 6) {
     let DATA = []
     const props = hoveredObject.properties;
-    if(props) {
-      DATA = Object.keys(props)
-      .map(p => {
-        return([humanize(p), props[p]])
-      })
+    if (props) {
+      const keys = Object.keys(props)
+      DATA = keys
+        .slice(1, all ? keys.length : n)
+        .map(p => {
+          return ([humanize(p), props[p]])
+        })
     } else { // two points passed go through first one
-      DATA = Object.keys(hoveredObject.points[0].properties)
-      .map(p => {
-        let points = [
-          humanize(p), 
-          hoveredObject.points[0].properties[p],
-        ]
-        if(hoveredObject.points[1]) {
-          points.push(hoveredObject.points[1].properties[p])
-        }
-        return(points)
-      })
+      const keys = Object.keys(hoveredObject.points[0].properties);
+      DATA = keys
+        .slice(1, all ? keys.length : n) // miss accident_index
+        .map(p => {
+          let points = [
+            humanize(p),
+            hoveredObject.points[0].properties[p],
+          ]
+          if (hoveredObject.points[1]) {
+            points.push(hoveredObject.points[1].properties[p])
+          }
+          return (points)
+        })
     }
-    return <Table style={{maxWidth: '320px'}} 
-    columns={
-      hoveredObject.points && 
-      hoveredObject.points.length === 2 ? 
-      ['Property', 'Value p1', 'Value p2'] : ['Property', 'Value'] 
-    } data={DATA} />
+    return <Table style={{ maxWidth: '320px' }}
+      columns={
+        hoveredObject.points &&
+          hoveredObject.points.length === 2 ?
+          ['Property', 'Value p1', 'Value p2'] : ['Property', 'Value']
+      } data={DATA} />
 
   }
 }
