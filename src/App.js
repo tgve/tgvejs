@@ -1,11 +1,11 @@
 /**
  * geoplumber R package code.
  */
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider as StyletronProvider } from 'styletron-react';
-import { BaseProvider, DarkTheme } from 'baseui';
+import { BaseProvider, LightTheme, DarkTheme } from 'baseui';
 import { Client as Styletron } from 'styletron-engine-atomic';
 
 import Welcome from './Welcome';
@@ -35,17 +35,25 @@ const DUI = (props) => (
  * Separate the Header and the main content.
  * Up to this point we are still not using SSR
  */
-class App extends Component {
-  render() {
+function App() {
+    const [dark, setDark] = useState(true)
+    
     return (
       <BrowserRouter basename={process.env.PUBLIC_URL}>
       <main>
-        <Header />
+        <Header dark={dark}
+        toggleTheme={() => setDark(!dark)}/>
         <StyletronProvider value={engine}>
-          <BaseProvider theme={DarkTheme}>
+          <BaseProvider theme={dark ? DarkTheme : LightTheme}>
             <Switch>
-              <Route exact path="/" component={Welcome} />
-              <Route exact path="/fui" component={DUI} />
+              <Route exact path="/" component={(props) => <Welcome 
+              {...props}
+              dark={dark}
+              />} />
+              <Route exact path="/fui" component={(props) => <DUI 
+              {...props}
+              dark={dark}
+              />} />
               <Route exact path="/about" component={About} />
             </Switch>
           </BaseProvider>
@@ -53,7 +61,6 @@ class App extends Component {
       </main>
       </BrowserRouter>
     )
-  }
 }
 
 export default App;

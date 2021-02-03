@@ -18,5 +18,5 @@ test('Shallow and mount', () => {
   // ....
   // ..
   const nb = h.find(Navbar).children();
-  expect(nb.prop('inverse')).toEqual(true); 
+  expect(nb.prop('inverse')).toEqual(false); // not inverse in branch theme
 })

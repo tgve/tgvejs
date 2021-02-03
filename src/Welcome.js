@@ -91,8 +91,8 @@ export default class Welcome extends React.Component {
       backgroundImage: gradient.backgroundImage,
       radius: 100,
       elevation: 4,
-      mapStyle: MAPBOX_ACCESS_TOKEN ?
-        "mapbox://styles/mapbox/dark-v9" : OSMTILES,
+      mapStyle: MAPBOX_ACCESS_TOKEN ? ("mapbox://styles/mapbox/" +
+        (props.dark ? "dark" : "streets") + "-v9") : OSMTILES,
       initialViewState: init,
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
@@ -142,8 +142,6 @@ export default class Welcome extends React.Component {
         this._fitViewport(data)
         this._generateLayer()
       } else {
-        console.log(error);
-
         this.setState({
           loading: false,
           alert: { content: 'Could not reach: ' + fullURL }
@@ -451,6 +449,7 @@ export default class Welcome extends React.Component {
           </DeckGL>
         </MapGL>
         <DeckSidebarContainer
+          dark={this.props.dark}
           layerStyle={layerStyle}
           isMobile={isMobile()}
           key="decksidebar"

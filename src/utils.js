@@ -446,7 +446,7 @@ const shortenName = (name, n = 26) => {
   return (shortened);
 }
 
-const percentDiv = (title, left, cb) => {
+const percentDiv = (title, left, cb, dark) => {
   return (
     <div
       key={title}
@@ -457,7 +457,7 @@ const percentDiv = (title, left, cb) => {
         position: 'relative',
         float: 'left',
         width: '30%',
-        color: 'white',
+        color: dark ? 'white' : 'black',
         margin: '10px 2px',
         border: '1px solid gray',
       }}>
@@ -606,9 +606,9 @@ const searchNominatom = (location, callback) => {
   })
 }
 
-const ATILOGO = () => (
+const ATILOGO = (dark = true) => (
   <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-    <g id="ATI_logo_black_ATI_logo_black_W1024px" fill="#ffffff">
+    <g id="ATI_logo_black_ATI_logo_black_W1024px" fill={dark ? "#ffffff" : '#000000'}>
       <g id="logo-line-1" data-svg-origin="0.8190000057220459 0.7929999828338623" transform="matrix(1,0,0,1,0,0)" style={{ zIndex: 0, visibility: 'inherit', opacity: 1 }}>
         <path d="M273.346,71.521 L233.737,71.521 C235.771,58.945 242.738,52.485 253.966,52.485 C265.183,52.485 272.837,60.128 273.346,71.521 M299.694,83.932 C299.694,52.816 282.185,33.27 254.131,33.27 C226.425,33.27 207.72,52.816 207.72,81.718 C207.72,111.985 226.08,131.363 254.983,131.363 C277.938,131.363 293.744,120.479 299.529,100.424 L272.495,100.424 C269.775,107.735 263.987,111.475 255.493,111.475 C242.573,111.475 234.588,103.654 233.902,90.05 L299.529,90.05 C299.694,87.327 299.694,84.948 299.694,83.932" id="Fill-13"></path>
         <path d="M117.531,128.642 L143.027,128.642 L143.027,83.08 C143.027,63.192 148.647,53.667 160.371,53.667 C171.081,53.667 175.162,59.62 175.162,74.751 L175.162,128.642 L200.658,128.642 L200.658,72.031 C200.658,57.749 198.622,50.437 193.181,44.156 C187.738,37.861 178.392,33.78 169.209,33.78 C159.354,33.78 149.664,38.713 143.027,47.042 L143.027,0.793 L117.531,0.793 L117.531,128.642" id="Fill-12"></path>

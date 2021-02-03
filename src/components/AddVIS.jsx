@@ -22,8 +22,9 @@ const VIS = ['Vertical Bar', 'Horizontal Bar',
  * @param {String} vis type of visualization (react-vis type)
  * @param {Object} plotStyle styling of the plot (css)
  * @param {Boolean} noLimit boolean to crop chart
+ * @param {Boolean} dark boolean to switch theme
  */
-function generateVIS(data, column, vis, plotStyle, noLimit) {
+function generateVIS(data, column, vis, plotStyle, noLimit, dark) {
   if (!data || data.length === 0 || !isString(column) || !isString(vis)) {
     return;
   }
@@ -54,6 +55,7 @@ function generateVIS(data, column, vis, plotStyle, noLimit) {
     vis.startsWith("Line")) {
     return (
       <SeriesPlot
+        dark={dark}
         noLimit={noLimit}
         plotStyle={plotStyle}
         data={counts}
@@ -74,12 +76,12 @@ export default function AddVIS(props) {
   const [vis, setVis] = useState(false)
   const [list, setList] = useState([]);
   // useEffect(() => {
-    // if props.data changes only then it should react to it
-    // setVis(false);
-    // setColumn([])
+  // if props.data changes only then it should react to it
+  // setVis(false);
+  // setColumn([])
   // }, [props.data])
 
-  const { data, onSelectCallback, value,
+  const { data, onSelectCallback, dark,
     noAccordion, plotStyle, noLimit } = props;
 
   if (!data || data.length === 0) return null;
@@ -120,7 +122,7 @@ export default function AddVIS(props) {
           if (column.length === 0 || vis.length === 0 || !column[0]) return;
           setList([
             ...list,
-            generateVIS(data, column[0].value, vis[0].value, plotStyle, noLimit)
+            generateVIS(data, column[0].value, vis[0].value, plotStyle, dark, noLimit)
           ])
         }}>Add</Button>
       <div className="visArea">
@@ -161,6 +163,6 @@ export default function AddVIS(props) {
           </center>
         }
       </div>
-    </div>
+    </div >
   )
 }

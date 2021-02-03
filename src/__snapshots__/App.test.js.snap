@@ -245,6 +245,41 @@ exports[`App - should create snapshot 1`] = `
             </a>
           </li>
         </ul>
+        <ul
+          className="nav navbar-nav navbar-right"
+          role={null}
+        >
+          <li
+            className=""
+            role="presentation"
+          >
+            <a
+              href="#"
+              onClick={[Function]}
+              onKeyDown={[Function]}
+              role="button"
+            >
+              <svg
+                aria-hidden="true"
+                height="24"
+                viewBox="0 0 24 24"
+                width="24"
+              >
+                <g
+                  transform="matrix( 1 0 0 1 4 1 )"
+                >
+                  <path
+                    clip-rule="evenodd"
+                    d="M15.3999 11C15.7999 10.1 16 9 16 8C16 3.6 12.4 0 8 0C3.6 0 0 3.6 0 8C0 9.1 0.200098 10.1 0.600098 11L2.19995 15L13.8 15L15.3999 11ZM11 22L12.6001 18L3.3999 18L5 22L11 22Z"
+                    fill="#fff"
+                    fill-rule="evenodd"
+                    opacity="1"
+                  />
+                </g>
+              </svg>
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
@@ -313,9 +348,20 @@ exports[`App - should create snapshot 1`] = `
       >
         <div
           className="side-panel"
+          style={
+            Object {
+              "background": "#242730",
+              "color": "white",
+            }
+          }
         >
           <div
             className="side-pane-header"
+            style={
+              Object {
+                "background": "#29323C",
+              }
+            }
           >
             <h2>
               Nothing to show
@@ -642,10 +688,22 @@ exports[`App - should create snapshot 1`] = `
                     className="form-control"
                     onChange={[Function]}
                     placeholder="fly to..."
+                    style={
+                      Object {
+                        "background": "#242730",
+                        "color": "white",
+                      }
+                    }
                     type="text"
                   />
                   <span
                     className="input-group-addon"
+                    style={
+                      Object {
+                        "background": "#242730",
+                        "color": "white",
+                      }
+                    }
                   >
                     <span
                       className="glyphicon glyphicon-search"
