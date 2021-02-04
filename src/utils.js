@@ -20,6 +20,7 @@ import { ArcLayer, PathLayer } from '@deck.gl/layers';
 import BarLayer from './components/customlayers/BarLayer'
 import { isArray } from 'underscore';
 import csv2geojson from 'csv2geojson';
+import { isStringDate } from './geojsonutils';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -122,7 +123,7 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
     if (new Date(value) && new Date(value).getFullYear()) {
       value = new Date(value).getFullYear()
     }
-    if (noNulls && value !== null) { // remove nulls here
+    if (noNulls && value) { // remove nulls here
       if (map.get(value)) {
         map.set(value, map.get(value) + 1)
       } else {
