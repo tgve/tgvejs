@@ -5,12 +5,13 @@ import {
 } from 'react-vis';
 import { format } from 'd3-format';
 
-import { propertyCountByProperty } from '../../geojsonutils';
+import { isStringDate, propertyCountByProperty } from '../../geojsonutils';
 import { xyObjectByProperty } from '../../utils';
+import { isArray } from '../../JSUtils';
 
-const W = 250, 
-COLOR_F = 'rgb(18, 147, 154)', 
-COLOR_M = 'rgb(239, 93, 40)';
+const W = 250,
+  COLOR_F = 'rgb(18, 147, 154)',
+  COLOR_M = 'rgb(239, 93, 40)';
 
 /**
  * Generate a population pyramid using Rect-vis series objects.
@@ -84,44 +85,61 @@ const popPyramid = (options) => {
       <DiscreteColorLegend
         orientation="horizontal" width={W}
         items={[
-          {title:"Male", color:COLOR_M}, 
-          {title: "Female", color:COLOR_F}
-          ]}
-        />
+          { title: "Male", color: COLOR_M },
+          { title: "Female", color: COLOR_F }
+        ]}
+      />
     </>
   )
 }
 
-function crashes_plot_data(notEmpty, data, plot_data, plot_data_multi) {
+/**
+ * Function looks at date for two properties and generates a react-vis
+ * ready two-dimensional array of the two propties. Currently it is semi-hard-coded.
+ * 
+ * A function like this is meant to make converting geojson data object given,
+ * to charting library ready format to be consumed.
+ * 
+ * @param {Object} data 
+ * @param {String} column 
+ */
+function arrayOfYearAndProperty(data, column = "sex_of_casualty") {
+  const notEmpty = isArray(data) && data.length > 0;
+  let plot_data = [];
+  const plot_data_multi = [[], []];
+
   if (notEmpty) {
-    Object.keys(data[1].properties).forEach(each => {
-      if (each.match(/date|datetime|datestamp|timestamp/g) &&
-        typeof (data[1].properties[each]) === 'string' &&
-        data[1].properties[each].split("/")[2]) { //date in 09/01/2019 HARDCODE
-        plot_data = xyObjectByProperty(data, "date");
-        const mf = propertyCountByProperty(data, "sex_of_casualty", plot_data.map(e => e.x), "date");
-        plot_data.length > 1 && // more than one years
-          Object.keys(mf)
-            //2009: {Male: 3295, Female: 2294}
-            .forEach(k => {
+    // return 0 for 1 item array or generate random
+    const n = data.length === 1 ? 0 :
+      Math.floor((Math.random() * (data.length - 1)) + 1);
+    const timeCols = Object.keys(data[n].properties)
+      .filter(each => isStringDate(data[n].properties[each]));
+    if (timeCols.length > 0) {
+      plot_data = xyObjectByProperty(data, timeCols[0]);
+      const mf = propertyCountByProperty(data, column, plot_data.map(e => e.x), timeCols[0]);
+      // mf === 2009: {Male: 3295, Female: 2294}
+      plot_data.length > 1 && // more than one years
+        Object.keys(mf)
+          .forEach(y => { // year
+            if (y && mf[y].Male && mf[y].Female) {
               plot_data_multi[0]
                 .push({
-                  x: k,
-                  y: mf[k].Male
+                  x: +(y),
+                  y: mf[y].Male
                 });
               plot_data_multi[1]
                 .push({
-                  x: k,
-                  y: mf[k].Female
+                  x: +(y),
+                  y: mf[y].Female
                 });
-            });
-      }
-    });
+            }
+          });
+    }
   }
-  return plot_data;
+  return [...plot_data_multi, plot_data];
 }
 
 export {
-  crashes_plot_data,
+  arrayOfYearAndProperty,
   popPyramid
 }

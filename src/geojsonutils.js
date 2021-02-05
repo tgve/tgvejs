@@ -1,6 +1,5 @@
 import {
-  isNumber, isBoolean, isObject,
-  isDate, isString
+  isNumber, isBoolean, isObject, isString
 } from './JSUtils';
 
 const { DateTime } = require("luxon");
@@ -233,8 +232,7 @@ export {
 }
 
 function isStringDate(value) {
-  return isDate(value) ||
-    DateTime.fromFormat(value + '', 'MMMM dd yyyy').isValid ||
+  return DateTime.fromFormat(value + '', 'MMMM dd yyyy').isValid ||
     DateTime.fromFormat(value + '', 'MMMM d yyyy').isValid ||
     DateTime.fromFormat(value + '', 'MMM d yyyy').isValid ||
     DateTime.fromFormat(value + '', 'MMM dd yyyy').isValid ||

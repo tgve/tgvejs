@@ -6,6 +6,7 @@ import {
 import { format } from 'd3-format';
 
 import { shortenName } from '../../utils';
+import { isArray } from '../../JSUtils';
 
 const W = 250;
 
@@ -29,7 +30,15 @@ export default function MultiLinePlot(options) {
     onValueClick, data, legend } = options;
 
   if (!Array.isArray(data) || data.length > limit) return null;
-  
+  // TODO: react-vis does not support unequal line starts/ends
+  // therefore stop if not all equal lengths
+  // we get all lengths and make a set, if they are equal
+  // the set should be of 1 only as they will all be the same
+  // if not we return empty otherwise react-vis currently
+  // cannot handle it properly
+  const lengths = Array.from(new Set(data.map(e => isArray(e) && e.length)))
+  if(lengths.length > 1) return null
+
   // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
   return <div 
     className="unselectable" style={{ position: 'relative', color: '#fff' }}>

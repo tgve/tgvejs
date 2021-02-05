@@ -23,7 +23,7 @@ import Modal from '../Modal';
 import DataTable from '../Table';
 
 import { yearSlider } from '../showcases/Widgets';
-import { popPyramid, crashes_plot_data } from '../showcases/Plots';
+import { popPyramid, arrayOfYearAndProperty } from '../showcases/Plots';
 import SeriesPlot from '../showcases/SeriesPlot';
 import { isEmptyOrSpaces, isNumber } from '../../JSUtils';
 import MultiSelect from '../MultiSelect';
@@ -79,10 +79,8 @@ export default class DeckSidebar extends React.Component {
       onSelectCallback, data, colourCallback, unfilteredData,
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, column, dark, toggleOpen, toggleHexPlot } = this.props;
-    let plot_data = [];
-    let plot_data_multi = [[], []];
     const notEmpty = data && data.length > 1;
-    plot_data = crashes_plot_data(notEmpty, data, plot_data, plot_data_multi);
+    const plot_data_multi = arrayOfYearAndProperty(data);
     const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
     let columnData = notEmpty ?
@@ -225,9 +223,8 @@ export default class DeckSidebar extends React.Component {
                   {notEmpty && plot_data_multi[0].length > 0 &&
                     <MultiLinePlot
                       dark={dark}
-                      data={
-                        [...plot_data_multi, plot_data]
-                      } legend={["Male", "Female", "Total"]}
+                      data={plot_data_multi} 
+                      legend={["Male", "Female", "Total"]}
                       title="Crashes" noYAxis={true}
                       plotStyle={{ height: 100, marginBottom: 50 }}
                     />
