@@ -57,11 +57,13 @@ export default function MultiLinePlot(options) {
         {!noYAxis && // if provided dont
           <YAxis
             tickSize={0}
-            tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} style={{
+            tickLabelAngle={-45} tickFormat={v => format(".2s")(v)} 
+            style={{
               line: { strokeWidth: 0 },
               title: { fill: options.dark ? '#fff' : '#000' },
               text: { fill: options.dark ? '#fff' : '#000' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }
-            }} position="start" title={title} />
+            }} 
+            position="start" title={title} />
         }
         {data.map((line, i) =>
           <LineSeries

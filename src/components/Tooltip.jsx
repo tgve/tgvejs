@@ -1,11 +1,8 @@
 import React from 'react';
-import { LineSeries } from 'react-vis';
 import { Table } from 'baseui/table';
 import { humanize } from '../utils';
-import SeriesPlot from './showcases/SeriesPlot';
-import { propertyCountByProperty } from '../geojsonutils';
-import MultiLinePlot from './showcases/MultiLinePlot';
-import { isArray } from '../JSUtils';
+import { getPropertyValues, propertyCountByProperty } from '../geojsonutils';
+import Plot from './showcases/Plot';
 
 const WIDTH = 220;
 const BAR_HEIGHT = 80;
@@ -52,74 +49,33 @@ export default class Tooltip extends React.Component {
     // {cluster: true, cluster_id: 8, point_count: 54, 
     // point_count_abbreviated: 54}
 
-    let list;
-    let severity_keys = [];
-    let crashes_data = [];
-    let severity_data = [];
     let severity_data_separate = [];    
     if (!type_feature && !cluster) {
-      list = hoveredObject.points.map(feature => {
-        const aKey = {}
-        if (feature.properties.hasOwnProperty('accident_severity')) {
-          aKey.severity = feature.properties.accident_severity;
-        }
-        if (feature.properties.hasOwnProperty('date') &&
-        new Date(feature.properties.date) &&
-        new Date(feature.properties.date).getFullYear()) {
-          aKey.year = new Date(feature.properties.date).getFullYear();
-        }
-        return (aKey)
-      });
-      const map = new Map()
-      // aggregate severity and years
-      list.forEach(element => {
-        if (element.hasOwnProperty('severity')) {
-          if (map.get(element.severity)) {
-            map.set(element.severity, map.get(element.severity) + 1)
-          } else {
-            map.set(element.severity, 1)
-          }
-        }
-        if (element.hasOwnProperty('year')) {
-          if (map.get(element.year)) {
-            map.set(element.year, map.get(element.year) + 1)
-          } else {
-            map.set(element.year, 1)
-          }
-        }
-      });
-      // list severity and year counts
-      Array.from(map.keys()).forEach(key => {
-        // console.log(key, [ ...map.keys() ]);
-        if (parseInt(key)) { // TODO: replace with moment check - is it year?
-          crashes_data.push({ x: key, y: map.get(key) })
-        } else {
-          // {x: serious, y: 20}
-          // {x: slight: y: 21}
-          severity_data.push({ x: key, y: map.get(key) })
-        }
-      })
       // separate the severity into [[],[]] arrays
-      severity_keys = Array.from(new Set(severity_data.map(e => e.x)));
+      const severity_keys = getPropertyValues(
+        {features:hoveredObject.points}, "accident_severity");
       const severity_by_year = propertyCountByProperty(hoveredObject.points,
         "accident_severity", severity_keys, "date");
-      // now turn it into [[],[]]
       //{2009: {Slight: 1}, 2010: {Slight: 3}, 2012: {Slight: 4}, 
       // 2013: {Slight: 3}, 2014: {Serious: 1}, 2015: {Slight: 6}, 
       // 2016: {Serious: 1, Slight: 2}, 2017: {Slight: 1}}
-      Object.keys(severity_by_year).forEach(y => {
-        severity_by_year[y] &&
-        Object.keys(severity_by_year[y]).forEach(kk => {
-          // get index of kk
-          const index = severity_keys.indexOf(kk);
-          if(!severity_data_separate[index]) {
-            severity_data_separate[index] = [];
+      // now turn it into [{},{}]
+      severity_keys.forEach((name, i) => {
+        Object.keys(severity_by_year).forEach(y => {
+          if(y && severity_by_year[y][name]) {
+            if(!severity_data_separate[i]) {
+              severity_data_separate[i] = {x:[], y:[], name: name};
+            }
+            // 2016: {Serious: 1, Slight: 2}
+            severity_data_separate[i].x.push(+(y));
+            severity_data_separate[i].y.push(severity_by_year[y][name]);
           }
-          // 2016: {Serious: 1, Slight: 2}
-          severity_data_separate[index].push({
-            x: +(y), y: severity_by_year[y][kk]
-          })
         })
+      })
+      severity_data_separate.map(e => {
+        if(e.x.length > 1) {
+          e.mode = 'line'
+        }
       })
     }
     // console.log(crashes_data);
@@ -149,18 +105,10 @@ export default class Tooltip extends React.Component {
             this._listPropsAndValues(hoveredObject)
           }
           {
-            severity_data_separate.length > 1 ?
-            <MultiLinePlot
-              data={[...severity_data_separate, crashes_data]}
-              legend={[...severity_keys, 'Total']}
-              title="Crashes" noYAxis={true} dark={true}
-              plotStyle={{ height: 100, marginBottom: 50 }}
-            /> :
-            <SeriesPlot 
-              dark={true} noYAxis={true}
-              title={isArray(severity_keys) && 
-                severity_keys.length === 1 && severity_keys[0]} 
-              data= {crashes_data} type= {LineSeries} />
+            <Plot 
+              width={300}
+              data={severity_data_separate} 
+              dark={true} />
           }
         </div>
       </div >
