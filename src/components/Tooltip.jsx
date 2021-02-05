@@ -2,7 +2,7 @@ import React from 'react';
 import { Table } from 'baseui/table';
 import { humanize } from '../utils';
 import { getPropertyValues, propertyCountByProperty } from '../geojsonutils';
-import Plot from './showcases/Plot';
+import Plot from './showcases/GenericPlotly';
 
 const WIDTH = 220;
 const BAR_HEIGHT = 80;
@@ -36,7 +36,8 @@ export default class Tooltip extends React.Component {
    * 2. properties of `.type === 'Feature'`.
    */
   render() {
-    const { topx, topy, hoveredObject } = this.props;
+    const { topx, topy, hoveredObject,
+    column1 = "accident_severity", column2 = "date" } = this.props;
     const { isMobile } = this.state;
     // console.log(topx, topy);
     // console.log(hoveredObject)
@@ -53,9 +54,9 @@ export default class Tooltip extends React.Component {
     if (!type_feature && !cluster) {
       // separate the severity into [[],[]] arrays
       const severity_keys = getPropertyValues(
-        {features:hoveredObject.points}, "accident_severity");
+        {features:hoveredObject.points}, column1);
       const severity_by_year = propertyCountByProperty(hoveredObject.points,
-        "accident_severity", severity_keys, "date");
+        column1, severity_keys, column2);
       //{2009: {Slight: 1}, 2010: {Slight: 3}, 2012: {Slight: 4}, 
       // 2013: {Slight: 3}, 2014: {Serious: 1}, 2015: {Slight: 6}, 
       // 2016: {Serious: 1, Slight: 2}, 2017: {Slight: 1}}
@@ -106,7 +107,7 @@ export default class Tooltip extends React.Component {
           }
           {
             <Plot 
-              width={300}
+              width={WIDTH}
               data={severity_data_separate} 
               dark={true} />
           }
