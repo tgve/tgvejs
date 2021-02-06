@@ -7,8 +7,9 @@ import {
 import { format } from 'd3-format';
 
 import { shortenName } from '../../utils';
+import { PLOT_W } from '../../Constants';
 
-const W = 250;
+const W = PLOT_W;
 const FlexibleXYPlot = makeWidthFlexible(XYPlot);
 
 export default function SeriesPlot(options) {

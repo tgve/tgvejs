@@ -173,7 +173,7 @@ export default class DeckSidebar extends React.Component {
             <div className="side-panel-body-content">
               {/* range of two values slider is not native html */
                 yearSlider({
-                  data, year, multiVarSelect,
+                  data: unfilteredData, year, multiVarSelect,
                   // for callback we get { year: "",multiVarSelect }
                   onSelectCallback, callback: (changes) => this.setState(changes)
                 })

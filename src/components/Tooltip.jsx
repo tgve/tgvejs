@@ -38,37 +38,38 @@ export default class Tooltip extends React.Component {
    */
   render() {
     const { topx, topy, hoveredObject,
-    column1 = "accident_severity", column2 = "date" } = this.props;
+      column1 = "accident_severity", column2 = "date" } = this.props;
     const { isMobile } = this.state;
     // console.log(topx, topy);
     // console.log(hoveredObject)
-    
+
     if (!hoveredObject) return null;
 
-    const type_feature = hoveredObject.type && 
-    hoveredObject.type === 'Feature';
-    const cluster = hoveredObject && hoveredObject.cluster 
+    const type_feature = hoveredObject.type &&
+      hoveredObject.type === 'Feature';
+    const cluster = hoveredObject && hoveredObject.cluster
     // {cluster: true, cluster_id: 8, point_count: 54, 
     // point_count_abbreviated: 54}
 
-    let severity_data_separate = [];    
+    let severity_data_separate = [];
     if (!type_feature && !cluster) {
       // separate the severity into [[],[]] arrays
-      const severity_keys = getPropertyValues(
-        {features:hoveredObject.points}, column1);
-      const severity_by_year = propertyCountByProperty(hoveredObject.points,
-        column1, severity_keys, column2);
+      const severity_keys = column1 && getPropertyValues(
+        { features: hoveredObject.points }, column1);
+      const severity_by_year = column1 && column2 &&
+        propertyCountByProperty(hoveredObject.points,
+          column1, severity_keys, column2);
       //{2009: {Slight: 1}, 2010: {Slight: 3}, 2012: {Slight: 4}, 
       // 2013: {Slight: 3}, 2014: {Serious: 1}, 2015: {Slight: 6}, 
       // 2016: {Serious: 1, Slight: 2}, 2017: {Slight: 1}}
       // now turn it into [{},{}]
-      severity_keys.forEach((name, i) => {
+      severity_keys && severity_keys.forEach((name, i) => {
         Object.keys(severity_by_year).forEach(y => {
-          if(y && severity_by_year[y][name]) {
-            if(!severity_data_separate[i]) {
+          if (y && severity_by_year[y][name]) {
+            if (!severity_data_separate[i]) {
               severity_data_separate[i] = {
-                x:[], y:[], name: name,
-                marker: { color: interpolateReds(i/severity_keys.length)}
+                x: [], y: [], name: name,
+                marker: { color: interpolateReds(i / severity_keys.length) }
               };
             }
             // 2016: {Serious: 1, Slight: 2}
@@ -78,19 +79,19 @@ export default class Tooltip extends React.Component {
         })
       })
       severity_data_separate.map(e => {
-        if(e.x.length > 1) {
+        if (e.x.length > 1) {
           e.mode = 'lines'
         }
       })
     }
     // console.log(crashes_data);
-    
+
     const w = window.innerWidth;
     const y = window.innerHeight;
     const n_topy = isMobile ? 10 :
       topy + (WIDTH + BAR_HEIGHT) > y ? topy - WIDTH : topy;
     const n_left = isMobile ? 10 :
-      topx + WIDTH > w ? topx - WIDTH : topx;    
+      topx + WIDTH > w ? topx - WIDTH : topx;
     const tooltip =
       <div
         className="xyz" style={{
@@ -98,7 +99,7 @@ export default class Tooltip extends React.Component {
           left: topx + WIDTH > w ? n_left : topx
         }}>
         <div>
-          <b>Total: {cluster ? hoveredObject.point_count : 
+          <b>Total: {cluster ? hoveredObject.point_count :
             type_feature ? 1 : hoveredObject.points.length}</b>
         </div>
         <div>
@@ -109,13 +110,13 @@ export default class Tooltip extends React.Component {
             !cluster && (type_feature || hoveredObject.points.length <= 2) &&
             this._listPropsAndValues(hoveredObject)
           }
-          {
-            <Plot 
+          {severity_data_separate &&
+            <Plot
               title={`${humanize(column1)} by ${humanize(column2)}`}
               width={WIDTH}
-              data={severity_data_separate} 
-              dark={true} 
-              xaxis={{tickformat:'d'}}/>
+              data={severity_data_separate}
+              dark={true}
+              xaxis={{ tickformat: 'd' }} />
           }
         </div>
       </div >

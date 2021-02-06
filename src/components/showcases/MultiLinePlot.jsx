@@ -7,8 +7,9 @@ import { format } from 'd3-format';
 
 import { shortenName } from '../../utils';
 import { isArray } from '../../JSUtils';
+import { PLOT_W } from '../../Constants';
 
-const W = 250;
+const W = PLOT_W;
 
 /**
  * React Hook to generate a multi line plot. Requires: 

@@ -8,8 +8,9 @@ import { format } from 'd3-format';
 import { isStringDate, propertyCountByProperty } from '../../geojsonutils';
 import { xyObjectByProperty } from '../../utils';
 import { isArray } from '../../JSUtils';
+import { PLOT_W } from '../../Constants';
 
-const W = 250,
+const W = PLOT_W,
   COLOR_F = 'rgb(18, 147, 154)',
   COLOR_M = 'rgb(239, 93, 40)';
 
