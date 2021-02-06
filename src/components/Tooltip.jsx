@@ -3,6 +3,7 @@ import { Table } from 'baseui/table';
 import { humanize } from '../utils';
 import { getPropertyValues, propertyCountByProperty } from '../geojsonutils';
 import Plot from './showcases/GenericPlotly';
+import { interpolateReds } from 'd3-scale-chromatic';
 
 const WIDTH = 220;
 const BAR_HEIGHT = 80;
@@ -65,7 +66,10 @@ export default class Tooltip extends React.Component {
         Object.keys(severity_by_year).forEach(y => {
           if(y && severity_by_year[y][name]) {
             if(!severity_data_separate[i]) {
-              severity_data_separate[i] = {x:[], y:[], name: name};
+              severity_data_separate[i] = {
+                x:[], y:[], name: name,
+                marker: { color: interpolateReds(i/severity_keys.length)}
+              };
             }
             // 2016: {Serious: 1, Slight: 2}
             severity_data_separate[i].x.push(+(y));
@@ -75,7 +79,7 @@ export default class Tooltip extends React.Component {
       })
       severity_data_separate.map(e => {
         if(e.x.length > 1) {
-          e.mode = 'line'
+          e.mode = 'lines'
         }
       })
     }
@@ -107,9 +111,11 @@ export default class Tooltip extends React.Component {
           }
           {
             <Plot 
+              title={`${humanize(column1)} by ${humanize(column2)}`}
               width={WIDTH}
               data={severity_data_separate} 
-              dark={true} />
+              dark={true} 
+              xaxis={{tickformat:'d'}}/>
           }
         </div>
       </div >

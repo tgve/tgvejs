@@ -23,17 +23,23 @@ import { isArray } from '../../JSUtils';
  * @param {Object} props 
  */
 export default function Plotly(props) {
-  const { data, width = 250, height = 200, title= "Plot",
-dark} = props;
-
-  if(!data || !isArray(data) || data.length === 0) return null
+  const { data, width = 250, height = 200, title = "Plot",
+    dark, xaxis = {}, yaxis = {}} = props; // Object.assign errs on undefined
   
+  const axes = { visible: true, color: dark && '#fff',
+  tickformat: ',d' }
+  if (!data || !isArray(data) || data.length === 0) return null
+
   return (
     <Plot
       data={data}
-      layout={{ width, height, title, 
-        margin: {t:30,r:20,b:50,l:20},
-        paper_bgcolor: dark && '#000', plot_bgcolor: dark && '#000'
+      layout={{
+        width, height, title: {text: title, font: {color: dark && '#fff'}},
+        margin: { t: 30, r: 20, b: 50, l: 20 },
+        paper_bgcolor: dark && '#000', plot_bgcolor: dark && '#000',
+        xaxis: Object.assign(axes, xaxis), 
+        yaxis: Object.assign(axes, yaxis),
+        legend: {x: 0.35, y: -0.35, orientation: 'h'}
       }}
     />
   );
