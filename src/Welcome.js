@@ -99,7 +99,8 @@ export default class Welcome extends React.Component {
       colourName: 'default',
       iconLimit: 500,
       legend: false,
-      width: window.innerWidth, height: window.innerHeight
+      width: window.innerWidth, height: window.innerHeight,
+      tooltipColumns: {column1: "accident_severity" , column2: "date"}
     }
     this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
@@ -350,6 +351,7 @@ export default class Welcome extends React.Component {
       tooltip:
         // react did not like x and y props.
         <Tooltip
+          {...this.state.tooltipColumns}
           isMobile={isMobile()}
           topx={x} topy={y} hoveredObject={hoveredObject} />
     })
