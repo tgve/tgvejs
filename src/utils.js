@@ -120,9 +120,6 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
   const map = new Map()
   data.forEach(feature => {
     let value = feature.properties[property];
-    if (new Date(value) && new Date(value).getFullYear()) {
-      value = new Date(value).getFullYear()
-    }
     if (noNulls && value) { // remove nulls here
       if (map.get(value)) {
         map.set(value, map.get(value) + 1)

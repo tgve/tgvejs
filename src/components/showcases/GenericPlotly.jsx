@@ -24,23 +24,26 @@ import { isArray } from '../../JSUtils';
  */
 export default function Plotly(props) {
   const { data, width = 250, height = 200, title = "Plot",
-    dark, xaxis = {}, yaxis = {}} = props; // Object.assign errs on undefined
+    dark, xaxis = {}, yaxis = {},
+    displayModeBar } = props; // Object.assign errs on undefined
   
-  const axes = { visible: true, color: dark && '#fff',
-  tickformat: ',d' }
-  if (!data || !isArray(data) || data.length === 0) return null
+  const axes = { visible: true, color: dark && '#fff'}
+  const sColor = {color: dark && '#fff'};
 
+  if (!data || !isArray(data) || data.length === 0) return null
   return (
     <Plot
       data={data}
       layout={{
-        width, height, title: {text: title, font: {color: dark && '#fff'}},
-        margin: { t: 30, r: 20, b: 50, l: 20 },
-        paper_bgcolor: dark && '#000', plot_bgcolor: dark && '#000',
+        width, height, title: {text: title, font: sColor},
+        margin: { t: 30, r: 20, b: 50, l: 30 },
+        paper_bgcolor: dark && '#0000', plot_bgcolor: dark && '#0000',
         xaxis: Object.assign(axes, xaxis), 
-        yaxis: Object.assign(axes, yaxis),
-        legend: {x: 0.35, y: -0.35, orientation: 'h'}
+        yaxis: Object.assign(sColor, yaxis),
+        legend: {x: 0.35, y: -0.35, orientation: 'h',
+        font: sColor}
       }}
+      config={{displayModeBar: !displayModeBar && false}}
     />
   );
 }

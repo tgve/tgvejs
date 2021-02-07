@@ -17,7 +17,9 @@ import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
-import { DEV_URL, PRD_URL, LAYERSTYLES } from '../../Constants';
+import {
+  DEV_URL, PRD_URL, LAYERSTYLES, TURQUOISE_RANGE
+} from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Modal';
 import DataTable from '../Table';
@@ -28,9 +30,10 @@ import SeriesPlot from '../showcases/SeriesPlot';
 import { isEmptyOrSpaces, isNumber } from '../../JSUtils';
 import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
-import MultiLinePlot from '../showcases/MultiLinePlot';
 import Boxplot from '../boxplot/Boxplot';
-// import GenerateUI from '../UI';
+import GenericPlotly from '../showcases/GenericPlotly';
+import { scaleSequential } from 'd3-scale';
+import { Slider } from 'baseui/slider';
 
 const URL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
 
@@ -73,7 +76,7 @@ export default class DeckSidebar extends React.Component {
    * Partly because we like to load from a URL.
    */
   render() {
-    const { elevation, radius, year, subsetBoundsChange, 
+    const { elevation, radius, year, subsetBoundsChange,
       multiVarSelect, barChartVariable } = this.state;
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data, colourCallback, unfilteredData,
@@ -112,9 +115,9 @@ export default class DeckSidebar extends React.Component {
       fill: 'rgb(18, 147, 154)',
     }
 
-    const resetState = (urlOrName) => {
+    const resetState = (urlOrName, button) => {
       this.setState({
-        reset: true,
+        reset: !button,
         year: "",
         multiVarSelect: {},
         barChartVariable: "road_type",
@@ -139,8 +142,8 @@ export default class DeckSidebar extends React.Component {
               data.length + " row" + (data.length > 1 ? "s" : "") + "."
               : "Nothing to show"}
             </h2>
-            <h6 className="truncate"> 
-              dataset: {this.state.datasetName} 
+            <h6 className="truncate">
+              dataset: {this.state.datasetName}
             </h6>
           </div>
           <div>
@@ -161,9 +164,9 @@ export default class DeckSidebar extends React.Component {
               <Button
                 kind={KIND.secondary} size={SIZE.compact}
                 onClick={() => {
-                  resetState();
+                  resetState(undefined, true);
                   typeof (urlCallback) === 'function'
-                    && urlCallback(URL + "/api/stats19");
+                    && urlCallback();
                   typeof (this.props.showLegend) === 'function' &&
                     this.props.showLegend(false);
                 }}>Reset</Button>
@@ -173,7 +176,7 @@ export default class DeckSidebar extends React.Component {
             <div className="side-panel-body-content">
               {/* range of two values slider is not native html */
                 yearSlider({
-                  data, year, multiVarSelect,
+                  data: unfilteredData, year, multiVarSelect,
                   // for callback we get { year: "",multiVarSelect }
                   onSelectCallback, callback: (changes) => this.setState(changes)
                 })
@@ -205,7 +208,7 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-info" />
                 }>
                   {/* pick a column and vis type */}
-                  <AddVIS data={data} dark={dark} plotStyle={{width: 240, margin:20}}/>
+                  <AddVIS data={data} dark={dark} plotStyle={{ width: 240, margin: 20 }} />
                   {/* distribution example */}
                   {notEmpty &&
                     data[0].properties.hasOwnProperty(['age_of_casualty']) &&
@@ -220,20 +223,26 @@ export default class DeckSidebar extends React.Component {
                       data={xyObjectByProperty(data, "age_of_casualty")}
                     />
                   }
-                  {notEmpty && plot_data_multi[0].length > 0 &&
-                    <MultiLinePlot
-                      dark={dark}
-                      data={plot_data_multi} 
-                      legend={["Male", "Female", "Total"]}
-                      title="Crashes" noYAxis={true}
-                      plotStyle={{ height: 100, marginBottom: 50 }}
-                    />
+                  {notEmpty && plot_data_multi[0].length &&
+                    <GenericPlotly dark={true}
+                      yaxis={{ showgrid: false }}
+                      xaxis={{ showgrid: false }}
+                      data={
+                        plot_data_multi.map((e, i) => ({
+                          showlegend: false,
+                          x: e.map(e => e.x)
+                            // TODO: more robust sorting of dates
+                            .sort((a, b) => new Date(a) - new Date(b)),
+                          y: e.map(e => e.y),
+                          name: ["Male", "Female", "Total"][i],
+                          marker: { color: scaleSequential(TURQUOISE_RANGE)(i / plot_data_multi.length) }
+                        }))} title="Sex of Casualty" />
                   }
                   {
                     notEmpty &&
                     Object.keys(data[0].properties)
                       .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
-                      this.props.layerStyle !== "grid" &&
+                    this.props.layerStyle !== "grid" &&
                     <>
                       <h6>Column for layer:</h6>
                       <MultiSelect
@@ -293,38 +302,30 @@ export default class DeckSidebar extends React.Component {
                       <ColorPicker colourCallback={(color) =>
                         typeof colourCallback === 'function' &&
                         colourCallback(color)} />
-                      <input
-                        type="range"
-                        id="radius"
+                      <h5>Radius</h5>
+                      <Slider
+                        value={[radius]}
                         min={50}
                         max={1000}
                         step={50}
-                        value={radius}
-                        onChange={(e) => {
-                          this.setState({
-                            radius: e.target.value,
-                          })
+                        onChange={({ value }) => {
+                          this.setState({ radius: value[0] });
                           typeof (onChangeRadius) === 'function' &&
-                            onChangeRadius(e.target.value)
+                            onChangeRadius(value[0])
                         }}
                       />
-                      <h5>Radius: {radius}.</h5>
-                      <input
-                        type="range"
-                        id="elevation"
+                      <h5>Elevation</h5>
+                      <Slider
+                        value={[elevation]}
                         min={2}
                         max={8}
                         step={2}
-                        value={elevation}
-                        onChange={(e) => {
-                          this.setState({
-                            elevation: e.target.value
-                          })
+                        onChange={({ value }) => {
+                          this.setState({ elevation: value[0] });
                           typeof (onChangeElevation) === 'function' &&
-                            onChangeElevation(e.target.value)
+                            onChangeRadius(value[0])
                         }}
                       />
-                      <h5>Elevation: {elevation}.</h5>
                     </div>
                   }
                   {notEmpty &&
@@ -380,7 +381,7 @@ export default class DeckSidebar extends React.Component {
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-filter" >{
                       multiVarSelect && Object.keys(multiVarSelect).length ?
-                      Object.keys(multiVarSelect).length : ""
+                        Object.keys(multiVarSelect).length : ""
                     }</i>
                 }>
                   {

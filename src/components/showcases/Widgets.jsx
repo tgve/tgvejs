@@ -3,6 +3,7 @@ import { Slider } from 'baseui/slider';
 
 import GenerateUI from '../UI';
 import { DateTime } from "luxon";
+import { getPropertyValues } from '../../geojsonutils';
 
 const DateSlider = (props) => {
   const {data, multiVarSelect, onSelectCallback,
@@ -52,48 +53,60 @@ const DateSlider = (props) => {
   </>)
 }
 
+/**
+ * Currently this function works with one/two format three-piece-date
+ * like yyyy-mm-dd to generate a slider returing the year as the value.
+ * 
+ * TODO: needs better (can be strict) form of 
+ * handling date. Explicitly state year/number (could be months)
+ * 
+ * @param {*} options 
+ */
 const yearSlider = (options) => {
-  const {data, year, multiVarSelect, onSelectCallback,
-    callback} = options;  
-  return data && data.length > 1 &&
+  const { data, year, multiVarSelect, onSelectCallback,
+    callback } = options;
+
+  if (!(data && data.length > 1 &&
     (data[0].properties.date || data[0].properties['YEAR']) &&
-    (DateTime.fromFormat(data[0].properties.date + '', 'dd/MM/yyyy').isValid ||
-      DateTime.fromFormat(data[0].properties['YEAR'] + '', 'yyyy').isValid) &&
-    <GenerateUI
-      title={
-        // TODO: change min max labels dynamically
-        // so should all the values generated
-        <h5>Year(s): {year ? year : "2009 - 2017"}.
+    (DateTime.fromFormat(data[0].properties.date + '', 'yyyy-mm-dd').isValid ||
+      DateTime.fromFormat(data[0].properties['YEAR'] + '', 'yyyy').isValid))) {
+    return null
+  }
+  const years = getPropertyValues({ features: data }, "date")
+    // returned 2009-01-02, convert to 2009
+    .map(e => +(e.split("-")[0])).sort()
+  return <GenerateUI
+    title={
+      <h5>Year(s): {year ? year :
+        (years[0] + " - " + years[years.length - 1])}
         {year &&
-            <i style={{ fontSize: '2rem' }} className="fa fa-trash"
-              onClick={() => {                         
-                multiVarSelect.date ? 
+          <i style={{ fontSize: '2rem' }} className="fa fa-trash"
+            onClick={() => {
+              multiVarSelect.date ?
                 delete multiVarSelect.date : delete multiVarSelect.YEAR;
-                typeof (onSelectCallback) === 'function' &&
-                  onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
-                    { what: '' } : { what: 'multi', selected: multiVarSelect });
-                callback({
-                  year: "",
-                  multiVarSelect
-                });
-              }} />}
-        </h5>}
-      sublist={data[0].properties.date ?
-        Array.apply(null, { length: 9 }).map(Number.call, Number).map(d => d + 2009) :
-        Array.apply(null, { length: 31 }).map(Number.call, Number).map(d => d + 2020)}
-      suggested="slider"
-      onChange={(value) => {
-        // the kye is one of `date` or `YEAR`
-        // keep it the same in delete
-        multiVarSelect[data[0].properties.date ?
-          'date' : 'YEAR'] = new Set([value + ""]);
-        callback({
-          year: value + "",
-          multiVarSelect
-        });
-        typeof (onSelectCallback) === 'function' &&
-          onSelectCallback({ selected: multiVarSelect, what: 'multi' });
-      }} />;
+              typeof (onSelectCallback) === 'function' &&
+                onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
+                  { what: '' } : { what: 'multi', selected: multiVarSelect });
+              callback({
+                year: "",
+                multiVarSelect
+              });
+            }} />}
+      </h5>}
+    sublist={[...new Set(years)]}
+    suggested="slider"
+    onChange={(value) => {
+      // the kye is one of `date` or `YEAR`
+      // keep it the same in delete
+      multiVarSelect[data[0].properties.date ?
+        'date' : 'YEAR'] = new Set([value + ""]);
+      callback({
+        year: value + "",
+        multiVarSelect
+      });
+      typeof (onSelectCallback) === 'function' &&
+        onSelectCallback({ selected: multiVarSelect, what: 'multi' });
+    }} />;
 }
 
 export {

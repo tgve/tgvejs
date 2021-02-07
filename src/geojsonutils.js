@@ -173,15 +173,19 @@ const propertyCount = (data, key, list) => {
  * 
  * @param {Object} data features to loop through. 
  * @param {String} key a particular property as key
- * @param {Object} list of values to return their counts
  * @param {String} key2 a different property as key
+ * @param {Boolean} year extract year out of Date string?
+ * 
  * @returns {Object} 
  */
-const propertyCountByProperty = (data, key, list, key2) => {
-  if (!data || !key || !list || !key2 || key === key2) return;
+const propertyCountByProperty = (data, key, key2, year = true) => {
+  if (!data || !key || !key2 || key === key2) return;
   let sub_data = {} // create object based on key2 values
   data.forEach(feature => {
-    const k2 = new Date(feature.properties[key2]) &&
+    /**
+     * TODO: 
+     */
+    const k2 = year && new Date(feature.properties[key2]) &&
     new Date(feature.properties[key2]).getFullYear() ? 
     new Date(feature.properties[key2]).getFullYear() : feature.properties[key2];
     Object.keys(feature.properties).forEach(each => {

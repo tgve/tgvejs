@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-
 import { makeWidthFlexible, Treemap } from 'react-vis';
+
+import { PLOT_W } from '../Constants';
+
 const FlexibleTreemap = makeWidthFlexible(Treemap); 
 
-const H = 250;
+const H = PLOT_W;
 /**
  * props.data needs to be in this formard
  * {

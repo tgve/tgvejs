@@ -31,7 +31,7 @@ import {
   colorRanges, generateDomain,
   convertRange, getMin, getMax, isURL, COLOR_RANGE
 } from './utils';
-import Constants from './Constants';
+import Constants, { LIGHT_SETTINGS } from './Constants';
 import DeckSidebarContainer from
   './components/decksidebar/DeckSidebarContainer';
 import history from './history';
@@ -54,25 +54,10 @@ const gradient = {
   backgroundImage: 'linear-gradient(to top, red , yellow)' /* Standard syntax (must be last) */
 }
 
-const LIGHT_SETTINGS = {
-  lightsPosition: [-0.144528, 49.739968, 8000, -3.807751, 54.104682, 8000],
-  ambientRatio: 0.4,
-  diffuseRatio: 0.6,
-  specularRatio: 0.2,
-  lightsStrength: [0.8, 0.0, 0.8, 0.0],
-  numberOfLights: 2
-};
-
 export default class Welcome extends React.Component {
   constructor(props) {
     super(props)
-    const init = {
-      longitude: -1.6362,
-      latitude: 53.8321,
-      zoom: 10,
-      pitch: 55,
-      bearing: 0,
-    }
+    const init = Constants.DECKGL_INIT
     const param = getParamsFromSearch(props.location.search);
     if (param) {
       //lat=53.814&lng=-1.534&zoom=11.05&bea=0&pit=55&alt=1.5
@@ -197,7 +182,7 @@ export default class Welcome extends React.Component {
             // selected.var > Set()
             for (let each of Object.keys(selected)) {
               const nextValue = each === "date" ?
-                d.properties[each].split("/")[2] : d.properties[each] + ""
+                d.properties[each].split("-")[0] : d.properties[each] + ""
               // each from selected must be in d.properties
               // *****************************
               // compare string to string
@@ -339,6 +324,11 @@ export default class Welcome extends React.Component {
     this.setState({ viewport })
   }
 
+  /**
+   * Currently the tooltip focuses on aggregated layer (grid).
+   * 
+   * @param {Object} params passed from DeckGL layer. 
+   */
   _renderTooltip(params) {
     const { x, y, object } = params;
     const hoveredObject = object;
