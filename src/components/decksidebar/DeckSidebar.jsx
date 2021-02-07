@@ -17,7 +17,8 @@ import { LineSeries, VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
-import { DEV_URL, PRD_URL, LAYERSTYLES } from '../../Constants';
+import { DEV_URL, PRD_URL, LAYERSTYLES,
+TURQUOISE_RANGE } from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Modal';
 import DataTable from '../Table';
@@ -28,9 +29,9 @@ import SeriesPlot from '../showcases/SeriesPlot';
 import { isEmptyOrSpaces, isNumber } from '../../JSUtils';
 import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
-import MultiLinePlot from '../showcases/MultiLinePlot';
 import Boxplot from '../boxplot/Boxplot';
-// import GenerateUI from '../UI';
+import GenericPlotly from '../showcases/GenericPlotly';
+import { scaleSequential } from 'd3-scale';
 
 const URL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
 
@@ -220,14 +221,20 @@ export default class DeckSidebar extends React.Component {
                       data={xyObjectByProperty(data, "age_of_casualty")}
                     />
                   }
-                  {notEmpty && plot_data_multi[0].length > 0 &&
-                    <MultiLinePlot
-                      dark={dark}
-                      data={plot_data_multi} 
-                      legend={["Male", "Female", "Total"]}
-                      title="Crashes" noYAxis={true}
-                      plotStyle={{ height: 100, marginBottom: 50 }}
-                    />
+                  {notEmpty && plot_data_multi[0].length &&
+                    <GenericPlotly dark={true}
+                      yaxis={{ showgrid: false }}
+                      xaxis={{ showgrid: false }}
+                      data={
+                        plot_data_multi.map((e, i) => ({
+                          showlegend: false,
+                          x: e.map(e => e.x)
+                            // TODO: more robust sorting of dates
+                            .sort((a, b) => new Date(a) - new Date(b)),
+                          y: e.map(e => e.y),
+                          name: ["Male", "Female", "Total"][i],
+                          marker: { color: scaleSequential(TURQUOISE_RANGE)(i / plot_data_multi.length) }
+                        }))} title="Sex of Casualty" />
                   }
                   {
                     notEmpty &&

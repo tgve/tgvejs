@@ -3,7 +3,8 @@ import { Table } from 'baseui/table';
 import { humanize } from '../utils';
 import { getPropertyValues, propertyCountByProperty } from '../geojsonutils';
 import Plot from './showcases/GenericPlotly';
-import { interpolateReds } from 'd3-scale-chromatic';
+import { scaleSequential } from 'd3-scale';
+import { TURQUOISE_RANGE } from '../Constants';
 
 const WIDTH = 220;
 const BAR_HEIGHT = 80;
@@ -57,8 +58,7 @@ export default class Tooltip extends React.Component {
       const severity_keys = column1 && getPropertyValues(
         { features: hoveredObject.points }, column1);
       const severity_by_year = column1 && column2 &&
-        propertyCountByProperty(hoveredObject.points,
-          column1, severity_keys, column2);
+        propertyCountByProperty(hoveredObject.points, column1, column2);
       //{2009: {Slight: 1}, 2010: {Slight: 3}, 2012: {Slight: 4}, 
       // 2013: {Slight: 3}, 2014: {Serious: 1}, 2015: {Slight: 6}, 
       // 2016: {Serious: 1, Slight: 2}, 2017: {Slight: 1}}
@@ -69,11 +69,11 @@ export default class Tooltip extends React.Component {
             if (!severity_data_separate[i]) {
               severity_data_separate[i] = {
                 x: [], y: [], name: name,
-                marker: { color: interpolateReds(i / severity_keys.length) }
+                marker: { color: scaleSequential(TURQUOISE_RANGE)(i / severity_keys.length) }
               };
             }
             // 2016: {Serious: 1, Slight: 2}
-            severity_data_separate[i].x.push(+(y));
+            severity_data_separate[i].x.push(y);
             severity_data_separate[i].y.push(severity_by_year[y][name]);
           }
         })
@@ -107,16 +107,15 @@ export default class Tooltip extends React.Component {
             // Simple logic, if points and less two points or less,
             // or not poingts, hard to expect React-vis generating plot.
             // so list the values of the non-point or list both points.
-            !cluster && (type_feature || hoveredObject.points.length <= 2) &&
-            this._listPropsAndValues(hoveredObject)
-          }
-          {severity_data_separate &&
+            !cluster && (type_feature || hoveredObject.points.length <= 2) ?
+            this._listPropsAndValues(hoveredObject) :
             <Plot
               title={`${humanize(column1)} by ${humanize(column2)}`}
               width={WIDTH}
               data={severity_data_separate}
               dark={true}
-              xaxis={{ tickformat: 'd' }} />
+              xaxis={{ tickformat: 'd', showgrid: false }}
+              yaxis={{ showgrid: false }} />
           }
         </div>
       </div >

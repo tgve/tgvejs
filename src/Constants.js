@@ -50,3 +50,5 @@ define("LIGHT_SETTINGS", {
 })
 
 define("PLOT_W", 250)
+
+define("TURQUOISE_RANGE", ['#12939A','#1293FF'])

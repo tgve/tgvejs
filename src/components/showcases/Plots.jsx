@@ -106,8 +106,7 @@ const popPyramid = (options) => {
  */
 function arrayOfYearAndProperty(data, column = "sex_of_casualty") {
   const notEmpty = isArray(data) && data.length > 0;
-  let plot_data = [];
-  const plot_data_multi = [[], []];
+  const plot_data_multi = [[], [], []];
 
   if (notEmpty) {
     // return 0 for 1 item array or generate random
@@ -116,28 +115,32 @@ function arrayOfYearAndProperty(data, column = "sex_of_casualty") {
     const timeCols = Object.keys(data[n].properties)
       .filter(each => isStringDate(data[n].properties[each]));
     if (timeCols.length > 0) {
-      plot_data = xyObjectByProperty(data, timeCols[0]);
-      const mf = propertyCountByProperty(data, column, plot_data.map(e => e.x), timeCols[0]);
+      const mf = propertyCountByProperty(data, column, timeCols[0]);
       // mf === 2009: {Male: 3295, Female: 2294}
-      plot_data.length > 1 && // more than one years
+      mf && Object.keys(mf).length > 1 && // more than one years
         Object.keys(mf)
           .forEach(y => { // year
             if (y && mf[y].Male && mf[y].Female) {
               plot_data_multi[0]
                 .push({
-                  x: +(y),
+                  x: y,
                   y: mf[y].Male
                 });
               plot_data_multi[1]
                 .push({
-                  x: +(y),
+                  x: y,
                   y: mf[y].Female
                 });
+              plot_data_multi[2]
+                .push({
+                  x: y,
+                  y: mf[y].Male + mf[y].Female
+                })
             }
           });
     }
   }
-  return [...plot_data_multi, plot_data];
+  return plot_data_multi;
 }
 
 export {
