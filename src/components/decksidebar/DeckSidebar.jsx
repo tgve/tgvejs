@@ -13,7 +13,7 @@ import {
   searchNominatom,
   humanize, generateLegend, sortNumericArray
 } from '../../utils';
-import { LineSeries, VerticalBarSeries } from 'react-vis';
+import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
@@ -82,14 +82,15 @@ export default class DeckSidebar extends React.Component {
       onSelectCallback, data, colourCallback, unfilteredData,
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, column, dark, toggleOpen, toggleHexPlot } = this.props;
-    const notEmpty = data && data.length > 1;
+    
+    if(!data || !data.length > 1) return null;
+
     const plot_data_multi = arrayOfYearAndProperty(data);
     const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
-    let columnData = notEmpty ?
-      xyObjectByProperty(data, column || barChartVariable) : [];
-    const geomType = notEmpty && data[0].geometry.type.toLowerCase();
-    if (notEmpty && column && (geomType === 'polygon' ||
+    let columnData = xyObjectByProperty(data, column || barChartVariable) || [];
+    const geomType = data[0].geometry.type.toLowerCase();
+    if (column && (geomType === 'polygon' ||
       geomType === 'multipolygon' || "linestring") &&
       isNumber(data[0].properties[column])) {
       // we dont need to use generateDomain(data, column)
@@ -124,6 +125,10 @@ export default class DeckSidebar extends React.Component {
         datasetName: urlOrName || this.state.datasetName
       })
     }
+
+    const data_by_age = data[0].properties.hasOwnProperty(['age_of_casualty']) && 
+    xyObjectByProperty(data, "age_of_casualty")
+
     return (
       <>
         <div
@@ -210,36 +215,35 @@ export default class DeckSidebar extends React.Component {
                   {/* pick a column and vis type */}
                   <AddVIS data={data} dark={dark} plotStyle={{ width: 240, margin: 20 }} />
                   {/* distribution example */}
-                  {notEmpty &&
-                    data[0].properties.hasOwnProperty(['age_of_casualty']) &&
-                    <SeriesPlot
-                      dark={dark}
-                      title="Casualty age" noYAxis={true}
-                      plotStyle={{ height: 100 }} noLimit={true}
-                      type={LineSeries}
-                      // sorts the results if x is a number
-                      // TODO: do we want to do this?
-                      // also think about sorting according to y
-                      data={xyObjectByProperty(data, "age_of_casualty")}
-                    />
+                  {data_by_age &&
+                    <GenericPlotly dark={dark}
+                      yaxis={{ showgrid: false }}
+                      xaxis={{ showgrid: false }}
+                      data={[{
+                        // showlegend: false,
+                        x: data_by_age.map(e => +(e.x)),
+                        y: data_by_age.map(e => +(e.y)),
+                        marker: { color: TURQUOISE_RANGE[0] }
+                      }]}
+                      title={humanize("age_of_casualty")} />
                   }
-                  {notEmpty && plot_data_multi[0].length &&
-                    <GenericPlotly dark={true}
+                  {plot_data_multi[0].length &&
+                    <GenericPlotly dark={dark}
                       yaxis={{ showgrid: false }}
                       xaxis={{ showgrid: false }}
                       data={
-                        plot_data_multi.map((e, i) => ({
+                        plot_data_multi.map((r, i) => ({
+                          mode: 'lines',
                           showlegend: false,
-                          x: e.map(e => e.x)
+                          x: r.map(e => e.x)
                             // TODO: more robust sorting of dates
                             .sort((a, b) => new Date(a) - new Date(b)),
-                          y: e.map(e => e.y),
+                          y: r.map(e => e.y),
                           name: ["Male", "Female", "Total"][i],
                           marker: { color: scaleSequential(TURQUOISE_RANGE)(i / plot_data_multi.length) }
                         }))} title="Sex of Casualty" />
                   }
                   {
-                    notEmpty &&
                     Object.keys(data[0].properties)
                       .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
                     this.props.layerStyle !== "grid" &&
@@ -269,6 +273,20 @@ export default class DeckSidebar extends React.Component {
                   }
                   {/* TODO: example of generating vis based on column
                   cloudl now be deleted. */}
+                  
+                  {/* { //wait until onDragSelected of Plotly is configured.
+                    columnData &&
+                    <GenericPlotly dark={dark}
+                      yaxis={{ showgrid: false }}
+                      xaxis={{ showgrid: false }}
+                      data={[{
+                        showlegend: false, type: 'bar',
+                        x: columnData.map(e => e.x),
+                        y: columnData.map(e => e.y),
+                        marker: { color: TURQUOISE_RANGE[0] }
+                      }]}
+                      title={humanize(column)} />
+                  } */}
                   {<SeriesPlot
                     dark={dark}
                     data={columnPlot.data}
@@ -297,8 +315,7 @@ export default class DeckSidebar extends React.Component {
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-sliders" />
                 }>
-                  {notEmpty &&
-                    <div>
+                  {<div>
                       <ColorPicker colourCallback={(color) =>
                         typeof colourCallback === 'function' &&
                         colourCallback(color)} />
@@ -328,8 +345,7 @@ export default class DeckSidebar extends React.Component {
                       />
                     </div>
                   }
-                  {notEmpty &&
-                    <>
+                  {<>
                       <h6>Deck Layer:</h6>
                       <MultiSelect
                         title="Choose Layer"
