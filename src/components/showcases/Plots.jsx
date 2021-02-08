@@ -27,8 +27,7 @@ const popPyramid = (options) => {
   if (!options || !options.data || !options.data[0] ||
     !options.data[0].properties.date ||
     !options.data[0].properties.sex_of_casualty) return;
-  const mf = propertyCountByProperty(options.data, "sex_of_casualty",
-    ["Male", "Female"], "date");
+  const mf = propertyCountByProperty(options.data, "sex_of_casualty", "date");
   const mf_array_male = [];
   const mf_array_female = [];
   if (Object.keys(mf).length === 1) return;
@@ -105,7 +104,7 @@ const popPyramid = (options) => {
  * @param {String} column 
  */
 function arrayOfYearAndProperty(data, column = "sex_of_casualty") {
-  const notEmpty = isArray(data) && data.length > 0;
+  const notEmpty = isArray(data) && data.length > 0 && column;
   const plot_data_multi = [[], [], []];
 
   if (notEmpty) {
