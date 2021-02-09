@@ -40,7 +40,10 @@ function App() {
     
     return (
       <BrowserRouter basename={process.env.PUBLIC_URL}>
-      <main>
+      <main style={{
+        background: dark ? '#242730' : 'white',
+        margin: 'auto', color: dark ? '#a3a5a8' : 'black'
+      }}>
         <Header dark={dark}
         toggleTheme={() => setDark(!dark)}/>
         <StyletronProvider value={engine}>

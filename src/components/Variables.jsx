@@ -26,7 +26,8 @@ import MultiSelect from './MultiSelect';
 export default function Variables(props) {
   const { onSelectCallback, multiVarSelect,
     unfilteredData } = props;
-  const [columns, setColumns] = useState(Object.keys(multiVarSelect))
+  const [columns, setColumns] = useState(multiVarSelect && 
+    Object.keys(multiVarSelect))
 
   if (!unfilteredData || !unfilteredData[0]) return null;
 

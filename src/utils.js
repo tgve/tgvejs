@@ -21,6 +21,7 @@ import BarLayer from './components/customlayers/BarLayer'
 import { isArray } from 'underscore';
 import csv2geojson from 'csv2geojson';
 import { isStringDate } from './geojsonutils';
+import { ascending } from 'd3-array';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -121,17 +122,21 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
   data.forEach(feature => {
     let value = feature.properties[property];
     if (noNulls && value) { // remove nulls here
-      if (map.get(value)) {
-        map.set(value, map.get(value) + 1)
+      const isNumValue = +(value) ? +(value) : value
+      if (map.get(isNumValue)) {
+        map.set(isNumValue, map.get(isNumValue) + 1)
       } else {
-        map.set(typeof value === 'number' ? +(value) : value, 1)
+        map.set(isNumValue, 1)
       }
     }
   });
-  const sortedMap = typeof Array.from(map.keys())[0] === 'number' ?
-    Array.from(map.keys()).sort() : Array.from(map.keys())
 
-  return sortedMap.map(key => {
+  const sortedArray = Array.from(map.keys());
+
+  if(!sortedArray || !sortedArray.length) return;
+  sortedArray.sort(ascending)
+  
+  return sortedArray.map(key => {
     return (
       {
         x: key,
