@@ -20,8 +20,8 @@ import { ArcLayer, PathLayer } from '@deck.gl/layers';
 import BarLayer from './components/customlayers/BarLayer'
 import { isArray } from 'underscore';
 import csv2geojson from 'csv2geojson';
-import { isStringDate } from './geojsonutils';
 import { ascending } from 'd3-array';
+import atlas from './img/location-icon-atlas.png';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -235,7 +235,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       id: 'icon-layer',
       data,
       pickable: true,
-      iconAtlas: 'location-icon-atlas.png',
+      iconAtlas: atlas,
       iconMapping: mapping,
       sizeScale: 60,
       getPosition: d => d.geometry.coordinates,

@@ -206,8 +206,9 @@ export default class Welcome extends React.Component {
     let layerStyle = (filter && filter.what ===
       'layerStyle' && filter.selected) || this.state.layerStyle || 'grid';
     if (geomType !== "point") layerStyle = "geojson"
-    if (data.length < iconLimit && !column &&
-      geomType === "point") layerStyle = 'icon';
+    const switchToIcon = data.length < iconLimit && !column && 
+    (!filter || filter.what !== 'layerStyle') && geomType === "point";
+    if (switchToIcon) layerStyle = 'icon';
     const options = {
       radius: radius ? radius : this.state.radius,
       cellSize: radius ? radius : this.state.radius,
@@ -287,8 +288,12 @@ export default class Welcome extends React.Component {
     )
 
     this.setState({
+      alert: switchToIcon ? { content: 'Switched to icon mode. ' } : null,
       loading: false,
-      layerStyle, geomType,
+      // do not save if not given else leave it as it is
+      layerStyle: filter && filter.what ===
+        'layerStyle' ? filter.selected : this.state.layerStyle,  
+      geomType,
       tooltip: "",
       filtered: data,
       layers: [alayer],
