@@ -1,6 +1,6 @@
 {
   "name": "eatlas",
-  "version": "0.1.0",
+  "version": "0.0.211",
   "private": true,
   "dependencies": {
     "@turf/bbox": "^6.0.1",
