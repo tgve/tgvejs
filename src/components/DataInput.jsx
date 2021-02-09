@@ -128,7 +128,7 @@ export default function (props) {
             flexGridColumnGap="scale800"
             flexGridRowGap="scale800"
           >
-            {cards()}
+            {!process.env.NO_CARDS && cards()}
           </FlexGrid>
         </ModalBody>
         <ModalFooter>

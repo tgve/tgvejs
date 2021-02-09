@@ -6,13 +6,66 @@ import {
 import { format } from 'd3-format';
 
 import { isStringDate, propertyCountByProperty } from '../../geojsonutils';
-import { xyObjectByProperty } from '../../utils';
 import { isArray } from '../../JSUtils';
-import { PLOT_W } from '../../Constants';
+import { PLOT_W, TURQUOISE_RANGE } from '../../Constants';
+import { xyObjectByProperty, humanize } from '../../utils';
+import { scaleSequential } from 'd3-scale';
+
+import GenericPlotly from './GenericPlotly';
 
 const W = PLOT_W,
   COLOR_F = 'rgb(18, 147, 154)',
   COLOR_M = 'rgb(239, 93, 40)';
+
+
+const plotByPropertyByDate = (data, property, dark) => {
+  if (!data || !isArray(data) || !data.length || !property) return null;
+
+  const plot_data_multi = arrayOfYearAndProperty(data, property);
+
+  return (
+    <GenericPlotly dark={dark}
+      yaxis={{ showgrid: false }}
+      xaxis={{ showgrid: false }}
+      data={
+        plot_data_multi.map((r, i) => ({
+          mode: 'lines',
+          showlegend: false,
+          x: r.map(e => e.x)
+            // TODO: more robust sorting of dates
+            .sort((a, b) => new Date(a) - new Date(b)),
+          y: r.map(e => e.y),
+          name: ["Male", "Female", "Total"][i],
+          marker: { color: scaleSequential(TURQUOISE_RANGE)(i / plot_data_multi.length) }
+        }))} title="Sex of Casualty" />
+  )
+}
+/**
+ * 
+ * @param {Object} data 
+ * @param {String} property 
+ * @param {Boolean} dark 
+ */
+const plotByProperty = (data, property, dark) => {
+  if (!data || !isArray(data) || !data.length) return null;
+
+  const data_by_prop = data[0].properties.hasOwnProperty(property) &&
+    xyObjectByProperty(data, property)
+
+  console.log(data_by_prop);
+  return (
+    <GenericPlotly dark={dark}
+      yaxis={{ showgrid: false }}
+      xaxis={{ showgrid: false }}
+      data={[{
+        // showlegend: false,
+        x: data_by_prop.map(e => +(e.x)),
+        y: data_by_prop.map(e => +(e.y)),
+        marker: { color: TURQUOISE_RANGE[0] }
+      }]}
+      title={humanize(property)} />
+  )
+}
 
 /**
  * Generate a population pyramid using Rect-vis series objects.
@@ -23,7 +76,7 @@ const W = PLOT_W,
  * 
  * @param {Object} options 
  */
-const popPyramid = (options) => {
+const popPyramidPlot = (options) => {
   if (!options || !options.data || !options.data[0] ||
     !options.data[0].properties.date ||
     !options.data[0].properties.sex_of_casualty) return;
@@ -103,7 +156,7 @@ const popPyramid = (options) => {
  * @param {Object} data 
  * @param {String} column 
  */
-function arrayOfYearAndProperty(data, column = "sex_of_casualty") {
+const arrayOfYearAndProperty = (data, column) => {
   const notEmpty = isArray(data) && data.length > 0 && column;
   const plot_data_multi = [[], [], []];
 
@@ -144,5 +197,7 @@ function arrayOfYearAndProperty(data, column = "sex_of_casualty") {
 
 export {
   arrayOfYearAndProperty,
-  popPyramid
+  plotByPropertyByDate,
+  plotByProperty,
+  popPyramidPlot
 }
