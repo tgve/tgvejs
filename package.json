@@ -1,6 +1,6 @@
 {
   "name": "eatlas",
-  "version": "0.1.0",
+  "version": "0.0.211",
   "private": true,
   "dependencies": {
     "@turf/bbox": "^6.0.1",
@@ -36,8 +36,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "vancouver": "REACT_APP_DEFAULT_URL=https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/geojson/vancouver-blocks.json react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test --updateSnapshot",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --env=jsdom --coverage"
