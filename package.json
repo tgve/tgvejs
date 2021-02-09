@@ -36,7 +36,6 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "vancouver": "REACT_APP_DEFAULT_URL=https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/geojson/vancouver-blocks.json react-scripts start",
     "build": "react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test --updateSnapshot",
     "eject": "react-scripts eject",
