@@ -36,8 +36,6 @@ import AddVIS from '../AddVIS';
 import Boxplot from '../boxplot/Boxplot';
 import { Slider } from 'baseui/slider';
 
-const URL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
-
 export default class DeckSidebar extends React.Component {
   constructor(props) {
     super(props)
@@ -77,6 +75,7 @@ export default class DeckSidebar extends React.Component {
    * Partly because we like to load from a URL.
    */
   render() {
+    console.log("ping");
     const { elevation, radius, year, subsetBoundsChange,
       multiVarSelect, barChartVariable } = this.state;
     const { onChangeRadius, onChangeElevation,
@@ -84,13 +83,14 @@ export default class DeckSidebar extends React.Component {
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, column, dark, toggleOpen, toggleHexPlot } = this.props;
 
-    if (!data || !data.length > 1) return null;
+    const notEmpty = data && data.length > 1;
 
     const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
-    let columnData = xyObjectByProperty(data, column || barChartVariable) || [];
-    const geomType = data[0].geometry.type.toLowerCase();
-    if (column && (geomType === 'polygon' ||
+    let columnData = notEmpty ? 
+    xyObjectByProperty(data, column || barChartVariable) : [];
+    const geomType = notEmpty && data[0].geometry.type.toLowerCase();
+    if (notEmpty && column && (geomType === 'polygon' ||
       geomType === 'multipolygon' || "linestring") &&
       isNumber(data[0].properties[column])) {
       // we dont need to use generateDomain(data, column)
@@ -214,7 +214,7 @@ export default class DeckSidebar extends React.Component {
                   {/* distribution example */}
                   {plotByProperty(data, "age_of_casualty", dark)}
                   {plotByPropertyByDate(data, "sex_of_casualty", dark)}
-                  {
+                  {notEmpty &&
                     Object.keys(data[0].properties)
                       .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
                     this.props.layerStyle !== "grid" &&
