@@ -17,9 +17,7 @@ import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
-import {
-  DEV_URL, PRD_URL, LAYERSTYLES,
-} from '../../Constants';
+import { LAYERSTYLES } from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Modal';
 import DataTable from '../Table';
@@ -75,7 +73,6 @@ export default class DeckSidebar extends React.Component {
    * Partly because we like to load from a URL.
    */
   render() {
-    console.log("ping");
     const { elevation, radius, year, subsetBoundsChange,
       multiVarSelect, barChartVariable } = this.state;
     const { onChangeRadius, onChangeElevation,

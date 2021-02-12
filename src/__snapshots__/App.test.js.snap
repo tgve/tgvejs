@@ -238,7 +238,7 @@ exports[`App - should create snapshot 1`] = `
             role="presentation"
           >
             <a
-              href="https://github.com/layik/eAtlas"
+              href="https://github.com/layik"
               onClick={[Function]}
               onKeyDown={[Function]}
             >
