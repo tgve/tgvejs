@@ -1,7 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`App - should create snapshot 1`] = `
-<main>
+<main
+  style={
+    Object {
+      "background": "#242730",
+      "color": "#a3a5a8",
+      "margin": "auto",
+    }
+  }
+>
   <nav
     className="navbar navbar-inverse"
   >
@@ -366,12 +374,6 @@ exports[`App - should create snapshot 1`] = `
             <h2>
               Nothing to show
             </h2>
-            <h6
-              className="truncate"
-            >
-              dataset: 
-              https://layik.github.io/eAtlas/api/stats19
-            </h6>
           </div>
           <div>
             <button
@@ -382,17 +384,6 @@ exports[`App - should create snapshot 1`] = `
             >
               Add data
             </button>
-            <i
-              className="fa fa-table"
-              onClick={[Function]}
-              style={
-                Object {
-                  "cursor": "pointer",
-                  "fontSize": "1.5em",
-                  "margin": 5,
-                }
-              }
-            />
           </div>
           <div
             className="side-panel-body"
@@ -583,34 +574,6 @@ exports[`App - should create snapshot 1`] = `
                           className="bf ae bi cq ag cr b8"
                         />
                       </div>
-                    </div>
-                    <div
-                      className="checkbox"
-                    >
-                      <label
-                        title=""
-                      >
-                        <input
-                          disabled={false}
-                          onChange={[Function]}
-                          type="checkbox"
-                        />
-                        Hex Plot
-                      </label>
-                    </div>
-                    <div
-                      className="checkbox"
-                    >
-                      <label
-                        title=""
-                      >
-                        <input
-                          disabled={false}
-                          onChange={[Function]}
-                          type="checkbox"
-                        />
-                        Subset by map boundary
-                      </label>
                     </div>
                   </div>
                   <div
