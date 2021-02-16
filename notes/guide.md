@@ -22,7 +22,9 @@ There is more work to give settings out of the box using "environmental variable
 
 To have an instance up and running:
 * Fork the repo
-* In the forked repo, set
+* In the forked repo, setup github pages as per GitHub instructions making sure branch is `gh-pages` and root folder is set as the publishing root as shown below (`layik` can be organisation name, `and forked repo will be the same` (check!)):
+<img src="https://user-images.githubusercontent.com/408568/105486297-2b8e3a80-5ca6-11eb-8f18-aaa68784b79e.png" alt="gh pages setup" width="90%">
+
 * Edit the `.github/workflows/gh-pages.yml` file with your URL of your data on line `26`
 * Currently the workflow publishes to the gh-pages branch only when a release is ceated, if you like to publish every time a commit is made to master (such as edit above), edit the `.github/workflows/gh-pages.yml` and replace the build condition (lines 4 & 5) with:
 ```
