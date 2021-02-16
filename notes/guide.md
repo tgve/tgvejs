@@ -33,6 +33,10 @@ on:
 ```
 You should now have your eAtlas running on your `<subdomain>.github.io/project`
 
+Examples of how this is done is the `eAtlas` repo itself and SaferActive web application section of the research carried out at ITS, University of Leeds.
+
+<img width="100%" alt="guide-shot" src="https://user-images.githubusercontent.com/408568/108049506-44d59d00-7040-11eb-9f4e-0a083829bfa5.png">
+
 ## Using docker
 
 ## Using R package
