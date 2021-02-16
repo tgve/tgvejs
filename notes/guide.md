@@ -13,9 +13,25 @@ Turing Geovisualization Engine (TGVe or eAtlas for short) is a decoupled JavaScr
 
 The TGVE  is a web based interactive visual analytics tool built on modern web stack of technology. The visual views and interaction mechanisms designed into the tool is underpinned by empirically-informed guidelines around visual perception from cognitive science and the information visualization domain. Additionally, techniques from geographic information science (GIScience) and related domains is used to implement techniques for automatic aggregation of temporal and spatial data. 
 
-For the technical overview of the project please refer to X.
+For the technical overview of the project please refer to X. This guide is meant to be the way the project is intentded to be used by the scientific and wider developer community. This is not a stable release just yet.
 
 ## Using GitHub pages
+The easiest way to host your own eAtlas (front-end) could be by forking the repo. In future, this needs to be separated as the current repo includes other work and obviously the backend R which is currently not used.
+
+There is more work to give settings out of the box using "environmental variables", that is by defining some settings in a file called ".env" you could change the user interface and more of the front-end, again more work to be done.
+
+To have an instance up and running:
+* Fork the repo
+* In the forked repo, set
+* Edit the `.github/workflows/gh-pages.yml` file with your URL of your data on line `26`
+* Currently the workflow publishes to the gh-pages branch only when a release is ceated, if you like to publish every time a commit is made to master (such as edit above), edit the `.github/workflows/gh-pages.yml` and replace the build condition (lines 4 & 5) with:
+```
+on:
+  push:
+    branches:
+      - master
+```
+You should now have your eAtlas running on your `<subdomain>.github.io/project`
 
 ## Using docker
 
