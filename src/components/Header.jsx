@@ -52,14 +52,6 @@ function Header(props) {
             })
           }
         </Nav>
-        {/* trick RB with navbar-nav > li a but do it like following*/}
-        {/* <div className="nav navbar-nav">
-            <li>
-              <a href="https://github.com/layik/eAtlas">
-                <i style={{ fontSize: '1.5em' }} className="fa fa-github"></i>
-              </a>
-            </li>
-          </div> */}
         <Nav pullRight>
           <NavItem href="https://github.com/layik/eAtlas">
             <i style={{ fontSize: '1.5em' }} className="fa fa-github"></i>

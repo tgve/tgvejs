@@ -17,9 +17,7 @@ import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
-import {
-  DEV_URL, PRD_URL, LAYERSTYLES,
-} from '../../Constants';
+import { LAYERSTYLES } from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Modal';
 import DataTable from '../Table';
@@ -35,8 +33,6 @@ import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
 import Boxplot from '../boxplot/Boxplot';
 import { Slider } from 'baseui/slider';
-
-const URL = (process.env.NODE_ENV === 'development' ? DEV_URL : PRD_URL);
 
 export default class DeckSidebar extends React.Component {
   constructor(props) {
@@ -84,13 +80,14 @@ export default class DeckSidebar extends React.Component {
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, column, dark, toggleOpen, toggleHexPlot } = this.props;
 
-    if (!data || !data.length > 1) return null;
+    const notEmpty = data && data.length > 1;
 
     const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
-    let columnData = xyObjectByProperty(data, column || barChartVariable) || [];
-    const geomType = data[0].geometry.type.toLowerCase();
-    if (column && (geomType === 'polygon' ||
+    let columnData = notEmpty ?
+      xyObjectByProperty(data, column || barChartVariable) : [];
+    const geomType = notEmpty && data[0].geometry.type.toLowerCase();
+    if (notEmpty && column && (geomType === 'polygon' ||
       geomType === 'multipolygon' || "linestring") &&
       isNumber(data[0].properties[column])) {
       // we dont need to use generateDomain(data, column)
@@ -144,9 +141,10 @@ export default class DeckSidebar extends React.Component {
               data.length + " row" + (data.length > 1 ? "s" : "") + "."
               : "Nothing to show"}
             </h2>
-            <h6 className="truncate">
-              dataset: {this.state.datasetName}
-            </h6>
+            {notEmpty &&
+              <h6 className="truncate">
+                dataset: {this.state.datasetName}
+              </h6>}
           </div>
           <div>
             <DataInput
@@ -158,9 +156,10 @@ export default class DeckSidebar extends React.Component {
                 typeof (toggleOpen) === 'function' && toggleOpen()
               }
               } />
-            <Modal
-              toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
-              component={<DataTable data={data} />} />
+            {notEmpty &&
+              <Modal
+                toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
+                component={<DataTable data={data} />} />}
             {
               this.state.reset &&
               <Button
@@ -214,7 +213,7 @@ export default class DeckSidebar extends React.Component {
                   {/* distribution example */}
                   {plotByProperty(data, "age_of_casualty", dark)}
                   {plotByPropertyByDate(data, "sex_of_casualty", dark)}
-                  {
+                  {notEmpty &&
                     Object.keys(data[0].properties)
                       .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
                     this.props.layerStyle !== "grid" &&
@@ -286,59 +285,61 @@ export default class DeckSidebar extends React.Component {
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-sliders" />
                 }>
-                  {<div>
-                    <ColorPicker colourCallback={(color) =>
-                      typeof colourCallback === 'function' &&
-                      colourCallback(color)} />
-                    <h5>Radius</h5>
-                    <Slider
-                      value={[radius]}
-                      min={50}
-                      max={1000}
-                      step={50}
-                      onChange={({ value }) => {
-                        this.setState({ radius: value[0] });
-                        typeof (onChangeRadius) === 'function' &&
-                          onChangeRadius(value[0])
-                      }}
-                    />
-                    <h5>Elevation</h5>
-                    <Slider
-                      value={[elevation]}
-                      min={2}
-                      max={8}
-                      step={2}
-                      onChange={({ value }) => {
-                        this.setState({ elevation: value[0] });
-                        typeof (onChangeElevation) === 'function' &&
-                          onChangeRadius(value[0])
-                      }}
-                    />
-                  </div>
+                  {notEmpty &&
+                    <div>
+                      <ColorPicker colourCallback={(color) =>
+                        typeof colourCallback === 'function' &&
+                        colourCallback(color)} />
+                      <h5>Radius</h5>
+                      <Slider
+                        value={[radius]}
+                        min={50}
+                        max={1000}
+                        step={50}
+                        onChange={({ value }) => {
+                          this.setState({ radius: value[0] });
+                          typeof (onChangeRadius) === 'function' &&
+                            onChangeRadius(value[0])
+                        }}
+                      />
+                      <h5>Elevation</h5>
+                      <Slider
+                        value={[elevation]}
+                        min={2}
+                        max={8}
+                        step={2}
+                        onChange={({ value }) => {
+                          this.setState({ elevation: value[0] });
+                          typeof (onChangeElevation) === 'function' &&
+                            onChangeRadius(value[0])
+                        }}
+                      />
+                    </div>
                   }
-                  {<>
-                    <h6>Deck Layer:</h6>
-                    <MultiSelect
-                      title="Choose Layer"
-                      single={true}
-                      values={
-                        LAYERSTYLES.map(e =>
-                          ({ id: humanize(e), value: e }))
-                      }
-                      onSelectCallback={(selected) => {
-                        // array of seingle {id: , value: } object
-                        const newBarChartVar = (selected && selected[0]) ?
-                          selected[0].value : barChartVariable;
-                        this.setState({
-                          barChartVariable: newBarChartVar
-                        });
-                        typeof onSelectCallback === 'function' &&
-                          onSelectCallback({
-                            what: 'layerStyle', selected: newBarChartVar
+                  {notEmpty &&
+                    <>
+                      <h6>Deck Layer:</h6>
+                      <MultiSelect
+                        title="Choose Layer"
+                        single={true}
+                        values={
+                          LAYERSTYLES.map(e =>
+                            ({ id: humanize(e), value: e }))
+                        }
+                        onSelectCallback={(selected) => {
+                          // array of seingle {id: , value: } object
+                          const newBarChartVar = (selected && selected[0]) ?
+                            selected[0].value : barChartVariable;
+                          this.setState({
+                            barChartVariable: newBarChartVar
                           });
-                      }}
-                    />
-                  </>
+                          typeof onSelectCallback === 'function' &&
+                            onSelectCallback({
+                              what: 'layerStyle', selected: newBarChartVar
+                            });
+                        }}
+                      />
+                    </>
                   }
                   Map Styles
                   <br />
@@ -351,17 +352,20 @@ export default class DeckSidebar extends React.Component {
                       })
                     }
                   />
-                  <Checkbox
-                    onChange={() => toggleHexPlot && toggleHexPlot()}
-                  >Hex Plot</Checkbox>
-                  <Checkbox
-                    onChange={() => {
-                      this.setState({ subsetBoundsChange: !subsetBoundsChange })
-                      if (toggleSubsetBoundsChange && typeof (toggleSubsetBoundsChange) === 'function') {
-                        toggleSubsetBoundsChange(!subsetBoundsChange) //starts with false
-                      }
-                    }}
-                  >Subset by map boundary</Checkbox>
+                  {notEmpty &&
+                    <>
+                      <Checkbox
+                        onChange={() => toggleHexPlot && toggleHexPlot()}
+                      >Hex Plot</Checkbox>
+                      <Checkbox
+                        onChange={() => {
+                          this.setState({ subsetBoundsChange: !subsetBoundsChange })
+                          if (toggleSubsetBoundsChange && typeof (toggleSubsetBoundsChange) === 'function') {
+                            toggleSubsetBoundsChange(!subsetBoundsChange) //starts with false
+                          }
+                        }}
+                      >Subset by map boundary</Checkbox>
+                    </>}
 
                 </Tab>
                 <Tab eventKey="3" title={
