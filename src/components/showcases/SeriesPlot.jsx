@@ -26,19 +26,21 @@ export default function SeriesPlot(options) {
   const limit = 10;
 
   const data = options.type !== MarkSeries && !options.noLimit &&
-    options.data.length > limit ? options.data.slice(0, limit)
+    options.data && options.data.length > limit ? options.data.slice(0, limit)
     : options.data;
+
+  const { plotStyle, title, noXAxis, noYAxis,
+    onValueClick, onDragSelected } = options;
+
+  if (!data || !data.length) return null
+
   const dataWithColor = data.map((d, i) => ({
     ...d,
     // if selected return 0 which is:
     // ['rgb(239, 93, 40)', 'rgb(18, 147, 154)']
     color: data.length === selected.length ? 0 : Number(!selected.includes(i))
   }));
-
-  const { plotStyle, title, noXAxis, noYAxis,
-    onValueClick, onDragSelected } = options;
-      
-  return data && data.length > 1 &&
+  return (
     // https://github.com/uber/react-vis/issues/584#issuecomment-401693372
     <div className="unselectable"
       style={{ position: 'relative' }}
@@ -64,15 +66,15 @@ export default function SeriesPlot(options) {
       onMouseUp={(e) => {
         setX(null); setY(null); setX1(null); setY1(null);
         setRect(null);
-        if(rect) {
-          typeof(onDragSelected) === 'function' && 
-          onDragSelected(selected.map(e => 
-            dataWithColor[e] && dataWithColor[e].x))
+        if (rect) {
+          typeof (onDragSelected) === 'function' &&
+            onDragSelected(selected.map(e =>
+              dataWithColor[e] && dataWithColor[e].x))
         }
         setSelected([])
       }}
       onMouseOut={() => {
-        if(!rect) {
+        if (!rect) {
           setSelected([])
         }
       }}
@@ -136,7 +138,7 @@ export default function SeriesPlot(options) {
               // TODO see how one can detect "leaving"
               // outside the box but rect is dragging              // setSelected(selected.filter(e => e !== index));
             } else {
-              if (!rect) {              
+              if (!rect) {
                 setSelected([index]); // single hover
               }
             }
@@ -148,7 +150,7 @@ export default function SeriesPlot(options) {
         {hint && <Hint value={hint} />}
       </FlexibleXYPlot>
       {x && x1 && rect}
-    </div>;
+    </div>);
 }
 
 function isWithinRect(options) {

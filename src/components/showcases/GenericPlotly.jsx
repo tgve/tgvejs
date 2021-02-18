@@ -1,7 +1,10 @@
 import React from 'react';
-import Plot from 'react-plotly.js';
-import { isArray } from '../../JSUtils';
 
+import { isArray } from '../../JSUtils';
+import Plotly from "plotly.js";
+import createPlotlyComponent from "./factory";
+
+const Plot = createPlotlyComponent(Plotly);
 /**
  * React Hook generic Plotly plot which takes data in the following format:
  * [
@@ -22,7 +25,7 @@ import { isArray } from '../../JSUtils';
   ]
  * @param {Object} props 
  */
-export default function Plotly(props) {
+export default function(props) {
   const { data, width = 250, height = 200, title = "Plot",
     dark, xaxis = {}, yaxis = {},
     displayModeBar } = props; // Object.assign errs on undefined

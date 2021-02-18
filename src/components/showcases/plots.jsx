@@ -51,6 +51,8 @@ const plotByProperty = (data, property, dark) => {
 
   const data_by_prop = data[0].properties.hasOwnProperty(property) &&
     xyObjectByProperty(data, property)
+  
+  if(!data_by_prop) return null;
 
   console.log(data_by_prop);
   return (
