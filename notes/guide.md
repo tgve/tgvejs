@@ -15,7 +15,7 @@ The TGVE  is a web based interactive visual analytics tool built on modern web s
 
 For the technical overview of the project please refer to X. This guide is meant to be the way the project is intentded to be used by the scientific and wider developer community. This is not a stable release just yet.
 
-## Using GitHub pages
+## Using GitHub pages (production)
 The easiest way to host your own eAtlas (front-end) could be by forking the repo. In future, this needs to be separated as the current repo includes other work and obviously the backend R which is currently not used.
 
 There is more work to give settings out of the box using "environmental variables", that is by defining some settings in a file called ".env" you could change the user interface and more of the front-end, again more work to be done.
@@ -39,8 +39,12 @@ Examples of how this is done is the `eAtlas` repo itself and SaferActive web app
 
 <img width="100%" alt="guide-shot" src="https://user-images.githubusercontent.com/408568/108049506-44d59d00-7040-11eb-9f4e-0a083829bfa5.png">
 
-## Using docker
+## Using docker (production)
+This is the method of using the full app. It means you can update the data served and also add your own backend connections, data workflows and more by leveraging the power of R langague.
 
+It also means you would need some knowledge of R to be able to write such data workflows. The `plumber` package (now owned by RStudio) is rather new and the stable release came out in 2020. The Dockerfile has gone through few versions and this should be expected as underlying libraries change and grow. 
+
+Currently the ready to use (with default dataset) images are hosted at.
 ## Using R package
 
 ## Using npm

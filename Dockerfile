@@ -51,7 +51,6 @@ ADD . /app
 # build
 WORKDIR /app
 RUN npm install
-RUN npm install create-react-app
 RUN npm run build
 RUN rm -rf node_modules
 
