@@ -28,7 +28,7 @@ export default class Tooltip extends React.Component {
     window.removeEventListener('resize', this._handleWindowSizeChange.bind(this));
   }
 
-  _handleWindowSizeChange = () => {
+  _handleWindowSizeChange () {
     this.forceUpdate()
   };
 
@@ -123,6 +123,8 @@ export default class Tooltip extends React.Component {
   }
 
   _listPropsAndValues(hoveredObject, all = false, n = 6) {
+    if(!hoveredObject.properties || 
+      !hoveredObject.points[0].properties) return null
     let DATA = []
     const props = hoveredObject.properties;
     if (props) {

@@ -196,6 +196,7 @@ const arrayOfYearAndProperty = (data, column) => {
           });
     }
   }
+  if(!plot_data_multi[0].length) return null
   return plot_data_multi;
 }
 
