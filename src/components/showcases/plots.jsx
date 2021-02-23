@@ -23,6 +23,8 @@ const plotByPropertyByDate = (data, property, dark) => {
 
   const plot_data_multi = arrayOfYearAndProperty(data, property);
 
+  if(!plot_data_multi) return null;
+
   return (
     <GenericPlotly dark={dark}
       yaxis={{ showgrid: false }}
