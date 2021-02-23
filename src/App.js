@@ -19,7 +19,7 @@ class App extends Component {
         <StyletronProvider value={engine}>
           <BaseProvider theme={DarkTheme}>
             <Welcome 
-            dark={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN || false}
+            dark={true}
             //TODO or get it from a settings-json file/objeect
             defaultURL={process.env.REACT_APP_DEFAULT_URL || this.props.defaultURL} 
             data={this.props.data}/>
