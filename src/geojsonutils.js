@@ -104,6 +104,7 @@ const getPropertyValues = (geojson, property) => {
   const all = {}
   let values = new Set();
   geojson.features.forEach(feature => {
+    feature.properties && Object.keys(feature.properties) &&
     Object.keys(feature.properties).forEach((each) => {
       if (property && property === each) {
         // if the right property, 
@@ -182,6 +183,7 @@ const propertyCountByProperty = (data, key, key2, year = true) => {
   if (!data || !key || !key2 || key === key2) return;
   let sub_data = {} // create object based on key2 values
   data.forEach(feature => {
+    if(!feature.properties || !Object.keys(feature.properties)) return
     /**
      * TODO: 
      */
