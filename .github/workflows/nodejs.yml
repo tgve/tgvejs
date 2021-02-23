@@ -20,6 +20,7 @@ jobs:
     - name: npm install, build, and test
       run: |
         npm i
+        npm i react react-dom
         npm test
       env:
         CI: true
