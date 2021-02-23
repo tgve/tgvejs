@@ -27,10 +27,11 @@ import _ from 'underscore';
 import {
   fetchData, generateDeckLayer,
   getParamsFromSearch, getBbx,
-  isMobile, colorScale,
-  colorRanges, OSMTILES,
-  convertRange, getMin, getMax, isURL
+  isMobile, colorScale, OSMTILES,
+  colorRanges, generateDomain,
+  convertRange, getMin, getMax, isURL, COLOR_RANGE
 } from './utils';
+import Constants, { LIGHT_SETTINGS } from './Constants';
 import DeckSidebarContainer from
   './components/decksidebar/DeckSidebarContainer';
 import history from './history';
@@ -50,25 +51,10 @@ const gradient = {
   backgroundImage: 'linear-gradient(to top, red , yellow)' /* Standard syntax (must be last) */
 }
 
-const LIGHT_SETTINGS = {
-  lightsPosition: [-0.144528, 49.739968, 8000, -3.807751, 54.104682, 8000],
-  ambientRatio: 0.4,
-  diffuseRatio: 0.6,
-  specularRatio: 0.2,
-  lightsStrength: [0.8, 0.0, 0.8, 0.0],
-  numberOfLights: 2
-};
-
 export default class Welcome extends React.Component {
   constructor(props) {
     super(props)
-    const init = {
-      longitude: -1.6362,
-      latitude: 53.8321,
-      zoom: 10,
-      pitch: 55,
-      bearing: 0,
-    }
+    const init = Constants.DECKGL_INIT
     const param = getParamsFromSearch(props.location ? props.location.search : window.location.search);
     if (param) {
       //lat=53.814&lng=-1.534&zoom=11.05&bea=0&pit=55&alt=1.5
@@ -87,19 +73,23 @@ export default class Welcome extends React.Component {
       backgroundImage: gradient.backgroundImage,
       radius: 100,
       elevation: 4,
-      mapStyle: MAPBOX_ACCESS_TOKEN ? "mapbox://styles/mapbox/dark-v9" : OSMTILES,
+      mapStyle: MAPBOX_ACCESS_TOKEN ? ("mapbox://styles/mapbox/" +
+        (props.dark ? "dark" : "streets") + "-v9") : OSMTILES,
       initialViewState: init,
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
       colourName: 'default',
       iconLimit: 500,
-      legend: false
+      legend: false,
+      width: window.innerWidth, height: window.innerHeight,
+      tooltipColumns: {column1: "accident_severity" , column2: "date"}
     }
     
     this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
     this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
     this._fitViewport = this._fitViewport.bind(this);
+    this._resize = this._resize.bind(this);
   }
 
   componentDidUpdate(nextProps) {
@@ -119,7 +109,11 @@ export default class Welcome extends React.Component {
       this._generateLayer();
       this.setState({loading: false}) 
     }
-    window.addEventListener('resize', () => this.forceUpdate())
+    window.addEventListener('resize', this._resize)
+  }
+  
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._resize);  
   }
 
   /**
@@ -147,8 +141,6 @@ export default class Welcome extends React.Component {
         this._fitViewport(data)
         this._generateLayer()
       } else {
-        console.log(error);
-
         this.setState({
           loading: false,
           alert: { content: 'Could not reach: ' + aURL }
@@ -207,6 +199,9 @@ export default class Welcome extends React.Component {
               const nextValue = isDate(d.properties[each]) ?
                (new Date(d.properties[each])).getFullYear : d.properties[each] + ""
               // each from selected must be in d.properties
+              // *****************************
+              // compare string to string
+              // *****************************
               if (!selected[each].has(nextValue)) {
                 return false
               }
@@ -223,12 +218,12 @@ export default class Welcome extends React.Component {
         }
       )
     }
-    // console.log(data.length);
     let layerStyle = (filter && filter.what ===
       'layerStyle' && filter.selected) || this.state.layerStyle || 'grid';
     if (geomType !== "point") layerStyle = "geojson"
-    if (data.length < iconLimit && !column &&
-      geomType === "point") layerStyle = 'icon';
+    const switchToIcon = data.length < iconLimit && !column && 
+    (!filter || filter.what !== 'layerStyle') && geomType === "point";
+    if (switchToIcon) layerStyle = 'icon';
     const options = {
       radius: radius ? radius : this.state.radius,
       cellSize: radius ? radius : this.state.radius,
@@ -236,10 +231,8 @@ export default class Welcome extends React.Component {
       lightSettings: LIGHT_SETTINGS,
       colorRange: colorRanges(cn || colourName)
     };
-    if (layerStyle === 'geojson') {
-      options.getFillColor = (d) => colorScale(d, data) //first prop
-    }
-    let columnNameOrIndex =
+    // generate a domain
+    const columnNameOrIndex =
       (filter && filter.what === 'column' && filter.selected) || column || 1;
     if (layerStyle === 'heatmap') {
       options.getPosition = d => d.geometry.coordinates
@@ -251,7 +244,6 @@ export default class Welcome extends React.Component {
       options.getColor = d => [235, 170, 20]
       options.getPath = d => d.geometry.coordinates
       options.onClick = (info) => {
-        // console.log(info);
         if (info && info.hasOwnProperty('coordinate')) {
           if (['path', 'arc', 'line'].includes(this.state.layerStyle) &&
             info.object.geometry.coordinates) {
@@ -288,27 +280,35 @@ export default class Welcome extends React.Component {
         }; // avoid id
       }
     }
-    if (geomType === "polygon" || geomType === "multipolygon") {
-      const cols = Object.keys(data[0] && data[0].properties && 
-        data[0].properties);
-      // TODO: remove SPENSER
-      const SPENSER = isArray(cols) && cols.length > 0 && 
-      cols[1] === 'GEOGRAPHY_CODE';
-      if (SPENSER) {
-        options.getElevation = d => (isNumber(d.properties[column]) &&
-          column !== 'YEAR' && d.properties[column]) || null
+    const domain = generateDomain(data, columnNameOrIndex);
+    if (geomType === "polygon" || geomType === "multipolygon" || layerStyle === 'geojson') {
+      if(domain && domain.length > 50) {
+        options.getFillColor = d => COLOR_RANGE(d.properties[
+          isNumber(columnNameOrIndex) ? 
+          Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex
+        ])
+      } else{
+        options.getFillColor = (d) => colorScale(d, columnNameOrIndex, domain)
       }
-      // TODO: allow user to specify column.
-      options.getFillColor = (d) =>
-        colorScale(d, data, column ? column : SPENSER ? 1 : 0)
+    }
+    if (layerStyle === 'barvis') {
+      options.getPosition = d => [d.geometry.coordinates[0],
+      d.geometry.coordinates[1], 0]
+      if (data[0].properties.result) options.getRotationAngle = d =>
+        d.properties.result.includes("gain from") ? 45 : 1
+      options.getScale = d => 200
     }
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options
     )
 
     this.setState({
+      alert: switchToIcon ? { content: 'Switched to icon mode. ' } : null,
       loading: false,
-      layerStyle, geomType,
+      // do not save if not given else leave it as it is
+      layerStyle: filter && filter.what ===
+        'layerStyle' ? filter.selected : this.state.layerStyle,  
+      geomType,
       tooltip: "",
       filtered: data,
       layers: [alayer],
@@ -344,8 +344,15 @@ export default class Welcome extends React.Component {
     this.setState({ viewport })
   }
 
-  _renderTooltip({ x, y, object }) {
+  /**
+   * Currently the tooltip focuses on aggregated layer (grid).
+   * 
+   * @param {Object} params passed from DeckGL layer. 
+   */
+  _renderTooltip(params) {
+    const { x, y, object } = params;
     const hoveredObject = object;
+    // return
     if (!hoveredObject) {
       this.setState({ tooltip: "" })
       return;
@@ -354,6 +361,7 @@ export default class Welcome extends React.Component {
       tooltip:
         // react did not like x and y props.
         <Tooltip
+          {...this.state.tooltipColumns}
           isMobile={isMobile()}
           topx={x} topy={y} hoveredObject={hoveredObject} />
     })
@@ -379,13 +387,11 @@ export default class Welcome extends React.Component {
     const bounds = this.map && this.map.getBounds()
     if (bounds && subsetBoundsChange) {
       const box = getBbx(bounds)
-      // console.log("bounds", box);
       const { xmin, ymin, xmax, ymax } = box;
       fetchData(this.props.defaultURL + xmin + "/" +
         ymin + "/" + xmax + "/" + ymax,
         (data, error) => {
           if (!error) {
-            // console.log(data.features);
             this.setState({
               data: data.features,
             })
@@ -400,9 +406,8 @@ export default class Welcome extends React.Component {
 
   render() {
     const { tooltip, viewport, initialViewState,
-      loading, mapStyle, alert, data,
+      loading, mapStyle, alert, data, filtered,
       layerStyle, geomType, legend, coords } = this.state;
-    // console.log(mapStyle);
 
     return (
       <div>
@@ -421,8 +426,8 @@ export default class Welcome extends React.Component {
             this._updateURL(viewport)
             this.setState({ viewport })
           }}
-          height={window.innerHeight + 'px'}
-          width={window.innerWidth + 'px'}
+          height={this.state.height + 'px'}
+          width={this.state.width + 'px'}
           //crucial bit below
           viewState={viewport ? viewport : initialViewState}
         // mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
@@ -454,12 +459,13 @@ export default class Welcome extends React.Component {
           </DeckGL>
         </MapGL>
         <DeckSidebarContainer
+          dark={this.props.dark}
           layerStyle={layerStyle}
           isMobile={isMobile()}
           key="decksidebar"
           alert={alert}
           unfilteredData={data && data.features}
-          data={this.state.filtered}
+          data={filtered}
           colourCallback={(colourName) =>
             this._generateLayer({ cn: colourName })
           }
@@ -515,8 +521,7 @@ export default class Welcome extends React.Component {
       </div>
     );
   }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', () => this.forceUpdate())
-  }
+  _resize() {
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
+  };
 }

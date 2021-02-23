@@ -8,6 +8,7 @@ import {
 import {
   interpolateOrRd, // schemeBlues
 } from 'd3-scale-chromatic';
+import {scaleThreshold} from 'd3-scale';
 
 import qs from 'qs'; // warning: importing it otherways would cause minificatino issue.
 
@@ -16,6 +17,11 @@ import Constants from './Constants';
 import { isString, isNumber } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
 import { ArcLayer, PathLayer } from '@deck.gl/layers';
+import BarLayer from './components/customlayers/BarLayer'
+import { isArray } from 'underscore';
+import csv2geojson from 'csv2geojson';
+import { ascending } from 'd3-array';
+import atlas from './img/location-icon-atlas.png';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -23,7 +29,6 @@ const getResultsFromGoogleMaps = (string, callback) => {
     let fullURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" +
       string
       + "&key=WRONG_KEY";
-    // console.log(fullURL);
     fetch(fullURL)
       .then((response) => {
         if (response.status !== 200) {
@@ -54,12 +59,21 @@ const fetchData = (url, callback) => {
   fetch(url) // [0] => "", [1] => roads and [2] => qfactor
     .then((response) => response.text())
     .then((response) => {
-      try {
-        const json = JSON.parse(response);
-        // console.log(json);
-        callback(json)
-      } catch (error) {
-        callback(undefined, error)
+      if(url.endsWith("csv")) {
+        csv2geojson.csv2geojson(response, (err, data) => {
+          if (!err) {
+            typeof (callback) === 'function'
+              && callback(data)
+          }
+        })
+      } else {
+        //assume json
+        try {
+          const json = JSON.parse(response);
+          callback(json)
+        } catch (error) {
+          callback(undefined, error)
+        }
       }
     })
     .catch((error) => {
@@ -67,6 +81,27 @@ const fetchData = (url, callback) => {
       callback(null, error)
     });
 
+}
+
+/**
+ * 
+ * Simple fetch check of URL
+ * 
+ * @param {*} URL 
+ * @param {*} callback 
+ */
+const checkURLReachable = (URL, callback) => {
+  fetch(URL)
+  .then((response) => {
+    if(response.ok) {
+      callback(true)
+    } else {
+      callback(false)
+    }
+  })
+  .catch((error) => {
+    console.log('There has been a problem with your fetch operation: ' + error.message);
+  });
 }
 
 /**
@@ -86,21 +121,22 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
   const map = new Map()
   data.forEach(feature => {
     let value = feature.properties[property];
-    if (typeof (value) === 'string' && value.split("/")[2]) {
-      value = value.split("/")[2]
-    }
-    if (noNulls && value !== null) { // remove nulls here
-      if (map.get(value)) {
-        map.set(value, map.get(value) + 1)
+    if (noNulls && value) { // remove nulls here
+      const isNumValue = +(value) ? +(value) : value
+      if (map.get(isNumValue)) {
+        map.set(isNumValue, map.get(isNumValue) + 1)
       } else {
-        map.set(typeof value === 'number' ? +(value) : value, 1)
+        map.set(isNumValue, 1)
       }
     }
   });
-  const sortedMap = typeof Array.from(map.keys())[0] === 'number' ?
-    Array.from(map.keys()).sort() : Array.from(map.keys())
 
-  return sortedMap.map(key => {
+  const sortedArray = Array.from(map.keys());
+
+  if(!sortedArray || !sortedArray.length) return;
+  sortedArray.sort(ascending)
+  
+  return sortedArray.map(key => {
     return (
       {
         x: key,
@@ -109,6 +145,25 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
     )
   })
 }
+
+const COLOR_RANGE = scaleThreshold()
+  .domain([-0.6, -0.45, -0.3, -0.15, 0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.05, 1.2])
+  .range([
+    [65, 182, 196],
+    [127, 205, 187],
+    [199, 233, 180],
+    [237, 248, 177],
+    // zero
+    [255, 255, 204],
+    [255, 237, 160],
+    [254, 217, 118],
+    [254, 178, 76],
+    [253, 141, 60],
+    [252, 78, 42],
+    [227, 26, 28],
+    [189, 0, 38],
+    [128, 0, 38]
+  ]);
 
 const generateDeckLayer = (name, data, renderTooltip, options) => {
   const addOptionsToObject = (opt, obj) => {
@@ -155,17 +210,19 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       extruded: true,
       lineWidthScale: 20,
       lineWidthMinPixels: 2,
-      getFillColor: [160, 160, 180, 200],
-      getLineColor: [255, 160, 180, 200],
+      // getFillColor: [160, 160, 180, 200],
+      // getLineColor: [255, 160, 180, 200],
       getRadius: 100,
       getLineWidth: 1,
       getElevation: 30,
-      onHover: renderTooltip
+      onHover: renderTooltip,
+      // for default repo only
+      getElevation: f => Math.sqrt(f.properties.valuePerSqm) * 10,
+      // getFillColor: f => COLOR_RANGE(f.properties.growth),
     }
     addOptionsToObject(options, geojsonObj)
     return (new GeoJsonLayer(geojsonObj))
   } else if (name === 'icon') {
-    // console.log(data);
     /**
      * There are three files the layer need to display the icons:
      * (1) location-icon-atlas.png which needs to be in src for npm package
@@ -178,7 +235,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       id: 'icon-layer',
       data,
       pickable: true,
-      iconAtlas: require('./location-icon-atlas.png'),
+      iconAtlas: atlas,
       iconMapping: mapping,
       sizeScale: 60,
       getPosition: d => d.geometry.coordinates,
@@ -272,6 +329,15 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, textObject);
     return (new TextLayer(textObject))
+  } else if (name === "barvis") {
+    const barvisObject = {
+      id: 'barvis-layer',
+      data,
+      pickable: true,
+      onHover: renderTooltip,
+    }
+    addOptionsToObject(options, barvisObject);
+    return (new BarLayer(barvisObject))
   }
 
   return (null)
@@ -374,7 +440,7 @@ const shortenName = (name, n = 26) => {
   return (shortened);
 }
 
-const percentDiv = (title, left, cb) => {
+const percentDiv = (title, left, cb, dark) => {
   return (
     <div
       key={title}
@@ -385,7 +451,7 @@ const percentDiv = (title, left, cb) => {
         position: 'relative',
         float: 'left',
         width: '30%',
-        color: 'white',
+        color: dark ? 'white' : 'black',
         margin: '10px 2px',
         border: '1px solid gray',
       }}>
@@ -431,43 +497,21 @@ function hexToRgb(hex) {
 
 /**
  * Generate colour scale for unique set of values
- * based on the index of the values in an array.
+ * based on the index of a value in an array domain of the set.
  * 
  * @param {object} d particular property to get color for from features
- * @param {*} features features in a geojson featureset
  * @param {*} p index/name of column to generate color scale with
+ * @param {Array} domain output from generateDomain
  * @param {Number} alpha value to add to colour pallete
  */
-const colorScale = (d, features, p = 0, alpha = 180) => {
-  if (!d || !features || features.length === 0) return null;
-  const x = isNumber(p) ? Object.keys(d.properties)[p] : p;
-  let domainIsNumeric = true;
-  let domain = features.map(feature => {
-    // uber move to show isochrones
-    const i = feature.properties[x];
-    if (isNumber(i) &&
-      p === 'Mean.Travel.Time..Seconds.') {
-      return (Math.floor(i / 300))
-    } else if (domainIsNumeric && !isNumber(i)) {
-      // stop getting here if already been
-      domainIsNumeric = false;
-    }
-    return isNumber(i) ? +(i) : i
-  })
-  domain = Array.from(new Set(domain))
-  // sort the domain if possible
-  if (domainIsNumeric) {
-    domain = domain.sort((a, b) => { return (a - b) })
-  }
-  const index = domain.indexOf(isNumber(d.properties[x]) &&
-    p === 'Mean.Travel.Time..Seconds.' ?
-    Math.floor(d.properties[x] / 300) : d.properties[x])
-  // console.log(domain, index)
-  let col = interpolateOrRd(index / domain.length);
-  col = col.substring(4, col.length - 1)
+const colorScale = (d, p = 0, domain, alpha = 180) => {
+  if (!d || !isArray(domain) || !domain.length) return null;
+  const index = domain.indexOf(d.properties[p])
+  let rgb = interpolateOrRd(index / domain.length);
+  rgb = rgb.substring(4, rgb.length - 1)
     .replace(/ /g, '')
     .split(',').map(x => +x); // deck.gl 8 int not strings
-  return [...col, alpha]
+  return [...rgb, alpha]
 }
 
 const colorRangeNames = ['inverseDefault', 'yellowblue', 'greens',
@@ -556,9 +600,9 @@ const searchNominatom = (location, callback) => {
   })
 }
 
-const ATILOGO = () => (
+const ATILOGO = (dark = true) => (
   <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-    <g id="ATI_logo_black_ATI_logo_black_W1024px" fill="#ffffff">
+    <g id="ATI_logo_black_ATI_logo_black_W1024px" fill={dark ? "#ffffff" : '#000000'}>
       <g id="logo-line-1" data-svg-origin="0.8190000057220459 0.7929999828338623" transform="matrix(1,0,0,1,0,0)" style={{ zIndex: 0, visibility: 'inherit', opacity: 1 }}>
         <path d="M273.346,71.521 L233.737,71.521 C235.771,58.945 242.738,52.485 253.966,52.485 C265.183,52.485 272.837,60.128 273.346,71.521 M299.694,83.932 C299.694,52.816 282.185,33.27 254.131,33.27 C226.425,33.27 207.72,52.816 207.72,81.718 C207.72,111.985 226.08,131.363 254.983,131.363 C277.938,131.363 293.744,120.479 299.529,100.424 L272.495,100.424 C269.775,107.735 263.987,111.475 255.493,111.475 C242.573,111.475 234.588,103.654 233.902,90.05 L299.529,90.05 C299.694,87.327 299.694,84.948 299.694,83.932" id="Fill-13"></path>
         <path d="M117.531,128.642 L143.027,128.642 L143.027,83.08 C143.027,63.192 148.647,53.667 160.371,53.667 C171.081,53.667 175.162,59.62 175.162,74.751 L175.162,128.642 L200.658,128.642 L200.658,72.031 C200.658,57.749 198.622,50.437 193.181,44.156 C187.738,37.861 178.392,33.78 169.209,33.78 C159.354,33.78 149.664,38.713 143.027,47.042 L143.027,0.793 L117.531,0.793 L117.531,128.642" id="Fill-12"></path>
@@ -628,18 +672,26 @@ const generateLegend = (options) => {
  * @param {*} column 
  */
 const generateDomain = (data, column) => {
-  if (!data || !Array.isArray(data) || !column ||
-    !isString(column) || data.length === 0) return;
-
+  if (!data || !Array.isArray(data) || !column || !data.length) return;
   let domainIsNumeric = true;
-  let domain = data.map(feature => {
+  let domain = [];
+  data.forEach(feature => {
     // uber move to show isochrones
-    const i = feature.properties[column];
+    const i = feature.properties[
+      isNumber(column) ? Object.keys(feature.properties)[column] : column
+    ]; // eliminate nulls
+    if(!i) return;
     if (isNumber(i) &&
       column === 'Mean.Travel.Time..Seconds.') {
-      return (Math.floor(i / 300));
+        domain.push(Math.floor(i / 300));
+    } else {
+      if(isNumber(i)) {
+        domain.push(+(i))
+      } else {
+        domainIsNumeric = false;
+        domain.push(i)
+      }
     }
-    return isNumber(i) ? +(i) : i;
   });
   domain = Array.from(new Set(domain));
   // sort the domain if possible
@@ -693,6 +745,7 @@ export {
   xyObjectByProperty,
   suggestUIforNumber,
   generateDeckLayer,
+  checkURLReachable,
   sortNumericArray,
   colorRangeNames,
   searchNominatom,
@@ -702,13 +755,14 @@ export {
   getCentroid,
   shortenName,
   colorRanges,
+  COLOR_RANGE,
   percentDiv,
   iconJSType,
   colorScale,
   fetchData,
+  OSMTILES,
   humanize,
   isMobile,
-  OSMTILES,
   ATILOGO,
   getBbx,
   getMin,

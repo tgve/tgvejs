@@ -1,6 +1,5 @@
 import {
-  isNumber, isBoolean, isObject,
-  isDate, isString
+  isNumber, isBoolean, isObject, isString
 } from './JSUtils';
 
 const { DateTime } = require("luxon");
@@ -10,9 +9,9 @@ const { DateTime } = require("luxon");
 const sfType = (geojson) => {
   if (geojson.type === "FeatureCollection") { return "FeatureCollection"; }
   if (geojson.type === "GeometryCollection") { return "GeometryCollection"; }
-  if (geojson.type === "Feature" && geojson.geometry !== null) { 
-    return geojson.geometry.type; 
-  }  
+  if (geojson.type === "Feature" && geojson.geometry !== null) {
+    return geojson.geometry.type;
+  }
   return geojson.type;
 }
 
@@ -23,7 +22,7 @@ const properties = (geojson) => {
 }
 
 /**
- * Find all columns which can be considered as key columns.
+ * Find all columns which can be considered as key/unique columns.
  * Using `getPropertyValues` we compare the length with
  * geojson objects and determin which olumn can be considered as key.
  * 
@@ -31,13 +30,13 @@ const properties = (geojson) => {
  * @returns array of keys or null if none.
  */
 const getKeyColumns = (geojson) => {
-  if (!geojson || !geojson.features) return null;  
+  if (!geojson || !geojson.features) return null;
   const keys = [];
   const all_property_counts = getPropertyValues(geojson);
   Object.keys(all_property_counts).forEach(column => {
-    if(Array.from(all_property_counts[column]).length === 
-    geojson.features.length) {
-      keys.push(column); 
+    if (Array.from(all_property_counts[column]).length ===
+      geojson.features.length) {
+      keys.push(column);
       // if property values of column === geojson.features
       // must be unique      
     }
@@ -54,10 +53,10 @@ const getKeyColumns = (geojson) => {
  * @param {*} array 
  */
 const isONSCode = (array) => {
-  if(!array || array.length === 0) return false;
+  if (!array || array.length === 0) return false;
   let result = true;
   array.forEach(e => {
-    if(!isString(e) || e.length !== 9 || !e.match(/^[EWS]\d{2}.{6}$/)) {
+    if (!isString(e) || e.length !== 9 || !e.match(/^[EWS]\d{2}.{6}$/)) {
       result = false;
     }
   })
@@ -76,15 +75,7 @@ const describeFeatureVariables = (feature) => {
     let v_type = String;
     const value = feature.properties[key];
 
-    if (isDate(value) ||
-      DateTime.fromFormat(value + '', 'MMMM dd yyyy').isValid ||
-      DateTime.fromFormat(value + '', 'MMMM d yyyy').isValid ||
-      DateTime.fromFormat(value + '', 'MMM d yyyy').isValid ||
-      DateTime.fromFormat(value + '', 'MMM dd yyyy').isValid ||
-      DateTime.fromFormat(value + '', 'dd/MM/yyyy').isValid ||
-      DateTime.fromISO(value).isValid || // "19-2-1999"
-      DateTime.fromHTTP(value).isValid ||
-      (typeof value === Number && DateTime.fromMillis(value).isValid)) {
+    if (isStringDate(value)) {
       v_type = Date
     } else if (isNumber(value)) {
       v_type = Number
@@ -146,11 +137,11 @@ const getPropertyValues = (geojson, property) => {
 const propertyCount = (data, key, list) => {
   if (!data || !key) return;
   let sub_data = []; // match it with list
-  let list_copy = list;  
-  if(!list || list.length === 0) {
-    list_copy = getPropertyValues ({
+  let list_copy = list;
+  if (!list || list.length === 0) {
+    list_copy = getPropertyValues({
       features: data
-    }, key)    
+    }, key)
   }
   data.forEach(feature => {
     Object.keys(feature.properties).forEach(each => {
@@ -182,17 +173,21 @@ const propertyCount = (data, key, list) => {
  * 
  * @param {Object} data features to loop through. 
  * @param {String} key a particular property as key
- * @param {Object} list of values to return their counts
  * @param {String} key2 a different property as key
+ * @param {Boolean} year extract year out of Date string?
+ * 
  * @returns {Object} 
  */
-const propertyCountByProperty = (data, key, list, key2) => {
-  if (!data || !key || !list || !key2 || key === key2) return;
+const propertyCountByProperty = (data, key, key2, year = true) => {
+  if (!data || !key || !key2 || key === key2) return;
   let sub_data = {} // create object based on key2 values
   data.forEach(feature => {
-    const k2 = key2 === 'date' &&  
-    DateTime.fromFormat(feature.properties[key2] + '', 'dd/MM/yyyy').isValid ? 
-    feature.properties[key2].split("/")[2] : feature.properties[key2];
+    /**
+     * TODO: 
+     */
+    const k2 = year && new Date(feature.properties[key2]) &&
+    new Date(feature.properties[key2]).getFullYear() ? 
+    new Date(feature.properties[key2]).getFullYear() : feature.properties[key2];
     Object.keys(feature.properties).forEach(each => {
       if (each === key) {
         // create object based on key2 values
@@ -201,7 +196,7 @@ const propertyCountByProperty = (data, key, list, key2) => {
         }
         else {
           sub_data[k2] = Object.assign(
-            sub_data[k2] || {}, { [feature.properties[each]]: 1}
+            sub_data[k2] || {}, { [feature.properties[each]]: 1 }
           );
         }
       }
@@ -233,8 +228,23 @@ export {
   getPropertyValues,
   getKeyColumns,
   propertyCount,
+  isStringDate,
   properties,
   coordsAsXY,
   isONSCode,
   sfType
+}
+
+function isStringDate(value) {
+  return DateTime.fromFormat(value + '', 'MMMM dd yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'MMMM d yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'MMM d yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'MMM dd yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'dd/MM/yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'dd-MM-yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'yyyy/mm/dd').isValid ||
+    DateTime.fromFormat(value + '', 'yyyy-mm-dd').isValid ||
+    DateTime.fromISO(value).isValid || // "19-2-1999"
+    DateTime.fromHTTP(value).isValid ||
+    (typeof value === Number && DateTime.fromMillis(value).isValid);
 }
