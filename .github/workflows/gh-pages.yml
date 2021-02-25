@@ -1,8 +1,9 @@
 name: Deploy to github pages
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - master
 
 jobs:
     gh-pages-deploy:
@@ -17,7 +18,7 @@ jobs:
           uses: actions/checkout@v2
 
         - name: Clean install dependencies
-          run: npm ci
+          run: npm ci && npm list prop-types
     
         - name: Clean build
           run: npm run build
