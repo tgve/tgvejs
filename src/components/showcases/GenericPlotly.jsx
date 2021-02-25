@@ -47,11 +47,6 @@ export default function(props) {
         font: sColor}
       }}
       config={{displayModeBar: !displayModeBar && false}}
-      onSelected={(eventData) => console.log(eventData)}
-      onSelecting={data => console.log(data)}
-      // onClick={e => console.log(e)}
-      // e.points[0].x
-      // e.data
     />
   );
 }
