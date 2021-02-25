@@ -10,17 +10,17 @@ jobs:
       name: Deploying to gh-pages
       runs-on: ubuntu-latest
       steps:
-        - name: Setup Node.js for use with actions
+        - name: Setup Node.js
           uses: actions/setup-node@v1
           with:
             version:  12.x
         - name: Checkout branch
           uses: actions/checkout@v2
 
-        - name: Clean install dependencies
-          run: npm ci && npm list prop-types
+        - name: Install dependencies (npm ci)
+          run: npm ci
     
-        - name: Clean build
+        - name: Build
           run: npm run build
           env:
             CI: false
