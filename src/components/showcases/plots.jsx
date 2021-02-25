@@ -56,7 +56,6 @@ const plotByProperty = (data, property, dark) => {
   
   if(!data_by_prop) return null;
 
-  console.log(data_by_prop);
   return (
     <GenericPlotly dark={dark}
       yaxis={{ showgrid: false }}

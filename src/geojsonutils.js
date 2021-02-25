@@ -183,22 +183,23 @@ const propertyCountByProperty = (data, key, key2, year = true) => {
   if (!data || !key || !key2 || key === key2) return;
   let sub_data = {} // create object based on key2 values
   data.forEach(feature => {
-    if(!feature.properties || !Object.keys(feature.properties)) return
+    const props = feature.properties;
+    if(!props || !Object.keys(props)) return
     /**
      * TODO: 
      */
-    const k2 = year && new Date(feature.properties[key2]) &&
-    new Date(feature.properties[key2]).getFullYear() ? 
-    new Date(feature.properties[key2]).getFullYear() : feature.properties[key2];
-    Object.keys(feature.properties).forEach(each => {
+    const k2 = year && new Date(props[key2]) &&
+    new Date(props[key2]).getFullYear() ? 
+    new Date(props[key2]).getFullYear() : props[key2];
+    Object.keys(props).forEach(each => {
       if (each === key) {
         // create object based on key2 values
-        if (sub_data[k2] && sub_data[k2][feature.properties[each]]) {
-          sub_data[k2][feature.properties[each]] += 1;
+        if (sub_data[k2] && sub_data[k2][props[each]]) {
+          sub_data[k2][props[each]] += 1;
         }
         else {
           sub_data[k2] = Object.assign(
-            sub_data[k2] || {}, { [feature.properties[each]]: 1 }
+            sub_data[k2] || {}, { [props[each]]: 1 }
           );
         }
       }
