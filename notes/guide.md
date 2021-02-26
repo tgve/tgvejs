@@ -32,7 +32,7 @@ details.
 
 ## Using GitHub pages
 
-1.  Create repo from this [template](https://layik.github.io/eatlas-template):
+1.  Create repo from this [template](https://github.com/layik/eatlas-template):
 
     <img width="100%" style="border:1px solid" alt="create repo from template" src="https://user-images.githubusercontent.com/408568/109291248-a8ba4b80-7820-11eb-9054-5b8fb6f38f82.png">
 
