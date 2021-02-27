@@ -6,8 +6,10 @@ Turing Geovisualization Engine
   - [Using docker](#using-docker)
   - [Using R package](#using-r-package)
   - [Using npm](#using-npm)
+  - [Outside the browser](#outside-the-browser)
   - [Showcases](#showcases)
   - [Roadmap](#roadmap)
+  - [References](#references)
 
 ## Introduction
 
@@ -141,6 +143,22 @@ function App() {
 }
 ```
 
+## Outside the browser
+
+Compiling JS applications to WebAssembly (Haas et al. 2017) is becoming
+main stream and there are application which not only facilitate this but
+also provide frameworks to run applications like the eAtlas on natively
+bypassing browsers. One of these solutions is called Tauri (“What Is
+Tauri? Tauri Studio” n.d.), the developers introduce it as “Tauri is a
+toolkit that helps developers make applications for the major desktop
+platforms - using virtually any frontend framework in existence.”
+
+In our experience, running the application in WebAssembly provided at
+least 3x performance boost over Firefox, Chrome and Safari. We were able
+to load 3.5m crash points in a Tauri run eAtlas `v.1.0.0-beta.1` `dmg`
+app on macOS Big Sur with 16GB RAM. `<TODO: add instructions to
+reproduce this somehwere>`
+
 ## Showcases
 
 As researchers at the University of Leeds, we have vast amount of data
@@ -190,4 +208,28 @@ the major functionality that the eAtlas is hoped to have:
     generate meaningful
     [isochrones](https://en.wikipedia.org/wiki/Isochrone_map).
 
-  - Reconsider `geojson` as the central data format of the application.
+  - Reconsider `geojson` as the central data format of the application
+    and how buffer (unit arrays) can boost performance of eAtlas.
+
+## References
+
+<div id="refs" class="references hanging-indent">
+
+<div id="ref-haas2017bringing">
+
+Haas, Andreas, Andreas Rossberg, Derek L Schuff, Ben L Titzer, Michael
+Holman, Dan Gohman, Luke Wagner, Alon Zakai, and JF Bastien. 2017.
+“Bringing the Web up to Speed with Webassembly.” In *Proceedings of
+the 38th Acm Sigplan Conference on Programming Language Design and
+Implementation*, 185–200.
+
+</div>
+
+<div id="ref-tauri">
+
+“What Is Tauri? Tauri Studio.” n.d. Accessed February 27, 2021.
+<https://tauri.studio/en/docs/about/intro>.
+
+</div>
+
+</div>

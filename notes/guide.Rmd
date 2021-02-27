@@ -4,6 +4,7 @@ output:
   github_document:
     toc: true
     toc_depth: 2
+bibliography: guide.bib
 ---
 
 ## Introduction
@@ -83,6 +84,11 @@ function App() {
 }
 ```
 
+## Outside the browser
+Compiling JS applications to WebAssembly [@haas2017bringing] is becoming main stream and there are application which not only facilitate this but also provide frameworks to run applications like the eAtlas on natively bypassing browsers. One of these solutions is called Tauri [@tauri], the developers introduce it as "Tauri is a toolkit that helps developers make applications for the major desktop platforms - using virtually any frontend framework in existence."
+
+In our experience, running the application in WebAssembly provided at least 3x performance boost over Firefox, Chrome and Safari. We were able to load 3.5m crash points in a Tauri run eAtlas `v.1.0.0-beta.1` `dmg` app on macOS Big Sur with 16GB RAM. `<TODO: add instructions to reproduce this somehwere>`
+
 ## Showcases 
 As researchers at the University of Leeds, we have vast amount of data which require scalable solutions such as the eAtlas. One of these is SPENSER `<NIK's help would be great here>`. To dive into the dataset read this short blogpost [here](https://layik.github.io/spenser). 
 
@@ -110,4 +116,7 @@ Current version of the app has limited functionality. However, these are the maj
 
 * Basic data wrangling: one of the showcases "hard-coded" in the application does a simple conversion of seconds to minutes column to generate meaningful [isochrones](https://en.wikipedia.org/wiki/Isochrone_map).
 
-* Reconsider `geojson` as the central data format of the application.
+* Reconsider `geojson` as the central data format of the application and how buffer (unit arrays) can boost performance of eAtlas.
+
+
+## References
