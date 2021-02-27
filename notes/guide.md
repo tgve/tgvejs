@@ -53,6 +53,13 @@ The following screenshot shows a repo with owner “layik” and repository
 name “eAtlas”. Your new instance will replace these two values with your
 repository obtained from GitHub APIs.
 
+<blockquote>
+
+Remember it takes time for the new github pages to load. This is
+entirely dependent on GitHub’s internal workflows.
+
+</blockquote>
+
 Examples of how this is done is the `eAtlas` repo itself, a project
 called SaferActive web app part of research carried out at ITS,
 University of Leeds and the template repo as well.
@@ -140,12 +147,10 @@ hosting company Hetzner’s datacenter. The deployment is all done in
 Docker and any chance in data can be fully automated.
 
 ``` r
-knitr::include_url("https://layik.github.com/eAtlas")
+# knitr::include_url("https://geospenser.com/index.html")
 ```
 
-[![](guide_files/figure-gfm/unnamed-chunk-3-1.png)](https://layik.github.com/eAtlas)<!-- -->
-
-To see SPENSER visit: www.geospenser.com
+To see SPENSER visit: [www.geospenser.com](https://geospenser.com)
 
 ### SaferActive
 

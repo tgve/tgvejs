@@ -1,7 +1,7 @@
 ---
 title: "Turing Geovisualization Engine"
 output:
-  html_document:
+  github_document:
     toc: true
     toc_depth: 2
 ---
@@ -24,6 +24,8 @@ Current version of the eAtlas does not provide much customisation out of the box
 
 What did we do?
 The repo you setup has a branch called `gh-pages` which github uses to serve. The "actions" in the template generates a production ready app which pulls data from the link added in step (2). The following screenshot shows a repo with owner "layik" and repository name "eAtlas". Your new instance will replace these two values with your repository obtained from GitHub APIs.
+
+<blockquote> Remember it takes time for the new github pages to load. This is entirely dependent on GitHub's internal workflows. </blockquote>
 
 Examples of how this is done is the `eAtlas` repo itself, a project called SaferActive web app part of research carried out at ITS, University of Leeds and the template repo as well.
 
