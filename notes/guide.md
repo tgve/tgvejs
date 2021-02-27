@@ -23,17 +23,19 @@ mechanisms designed into the tool is underpinned by empirically-informed
 guidelines around visual perception from cognitive science and the
 information visualization domain. Additionally, techniques from
 geographic information science (GIScience) and related domains is used
-to implement tech
+to implement techniques for automatic aggregation of temporal and
+spatial data.
 
 Current version of the eAtlas does not provide much customisation out of
 the box. However, it is in the planned work to provide configurations
 using easy to use techqniues. See [Roadmap](#Roadmap) section for
-details.
+details. `<For detailed documentation/paper about eAtlas please see
+xyz>`
 
 ## Using GitHub pages
 
-1.  Create repo from this [template](https://github.com/layik/eatlas-template):
-
+1.  Create repo from this
+    [template](https://github.com/layik/eatlas-template)
     <img width="100%" style="border:1px solid" alt="create repo from template" src="https://user-images.githubusercontent.com/408568/109291248-a8ba4b80-7820-11eb-9054-5b8fb6f38f82.png">
 
 2.  Edit the data URL in gh-pages.yml with
@@ -46,6 +48,9 @@ details.
     enable gh-pages by assigning branch `gh-pages` and `root` as the
     directorry as shown below:
     <img width="100%" style="border:1px solid" alt="setup github pages" src="https://user-images.githubusercontent.com/408568/109220743-39f1d980-77b1-11eb-9bd0-4b5e183854d5.png">
+
+Your new repository’s github pages URL would be:
+`https://OWNER.github.io/NEW_REPO`.
 
 What did we do? The repo you setup has a branch called `gh-pages` which
 github uses to serve. The “actions” in the template generates a
@@ -74,10 +79,12 @@ update the data served and also add your own backend connections, data
 workflows and more by leveraging the power of R langague.
 
 It also means you would need some knowledge of R to be able to write
-such data workflows. The `plumber` package (now owned by RStudio) is
-rather new and the stable release came out in 2020. The Dockerfile has
-gone through few versions and this should be expected as underlying
-libraries change and grow.
+such data workflows. The
+[`plumber`](https://github.com/rstudio/plumber/) package (now owned by
+RStudio) is rather new and the stable release came out in
+[Sep 2020](https://github.com/rstudio/plumber/releases/tag/v1.0.0). The
+Dockerfile has gone through few versions and this should be expected as
+underlying libraries change and grow.
 
 Currently the ready to use (with default dataset) images are hosted at.
 
@@ -160,19 +167,19 @@ To see SPENSER visit: [www.geospenser.com](https://geospenser.com)
 ## Roadmap
 
 Current version of the app has limited functionality. However, these are
-the major funcitonality that the eAtlas is hoped to have:
+the major functionality that the eAtlas is hoped to have:
 
   - Multiple layers: Currently adding data replaces what is already in
     the application.
 
   - Configuration settings: changes variety of settings in the app
     should be possible via `yml`, `env` or some other way. This can also
-    be sync’ed with browser cookies to make it easier for
-    users/analysts. Currently in version 0.21 of the npm package the
-    application supports limited settings, allows `defaultURL` to run
-    the application.
+    be synced with browser cookies to make it easier for users/analysts.
+    Currently in version 0.21 of the npm package the application
+    supports limited settings, allows `defaultURL` to run the
+    application.
 
-  - Smarter filting: currently the filtering relies on matching
+  - Smarter filtering: currently the filtering relies on matching
     key-value pairs, this can be extended to ranges and more. One other
     area of filtering is spatial filtering. The required
     packages/libraries are there and there is already a basic example of
@@ -180,6 +187,7 @@ the major funcitonality that the eAtlas is hoped to have:
 
   - Basic data wrangling: one of the showcases “hard-coded” in the
     application does a simple conversion of seconds to minutes column to
-    generate meaningful isochrones.
+    generate meaningful
+    [isochrones](https://en.wikipedia.org/wiki/Isochrone_map).
 
   - Reconsider `geojson` as the central data format of the application.
