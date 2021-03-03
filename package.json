@@ -1,6 +1,6 @@
 {
   "name": "eatlas",
-  "version": "0.0.211",
+  "version": "1.0.0-beta.2",
   "private": true,
   "dependencies": {
     "@turf/bbox": "^6.0.1",
@@ -18,7 +18,7 @@
     "luxon": "^1.22.0",
     "marked": "^0.7.0",
     "plotly.js": "^1.58.4",
-    "prop-types": "^15.6.2",
+    "prop-types": "^15.7.2",
     "react": "^16.13.0",
     "react-bootstrap": "^0.32.4",
     "react-dom": "^16.13.0",

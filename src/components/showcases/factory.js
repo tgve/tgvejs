@@ -274,7 +274,9 @@ export default function plotComponentFactory(Plotly) {
   };
 
   eventNames.forEach((eventName) => {
-    PlotlyComponent.propTypes['on' + eventName] = PropTypes.func;
+    if(PlotlyComponent.propTypes) {
+      PlotlyComponent.propTypes['on' + eventName] = PropTypes.func;
+    }
   });
 
   PlotlyComponent.defaultProps = {

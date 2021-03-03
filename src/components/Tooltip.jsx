@@ -18,7 +18,7 @@ export default class Tooltip extends React.Component {
     this._listPropsAndValues = this._listPropsAndValues.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     window.addEventListener('resize', this._handleWindowSizeChange.bind(this));
   }
 
@@ -28,7 +28,7 @@ export default class Tooltip extends React.Component {
     window.removeEventListener('resize', this._handleWindowSizeChange.bind(this));
   }
 
-  _handleWindowSizeChange = () => {
+  _handleWindowSizeChange () {
     this.forceUpdate()
   };
 
@@ -56,13 +56,17 @@ export default class Tooltip extends React.Component {
     if (!type_feature && !cluster) {
       // separate the severity into [[],[]] arrays
       const severity_keys = column1 && getPropertyValues(
-        { features: hoveredObject.points }, column1);
+        { features: hoveredObject.points.map(e => e.source) }, 
+        column1);
       const severity_by_year = column1 && column2 &&
-        propertyCountByProperty(hoveredObject.points, column1, column2);
+        propertyCountByProperty(
+          hoveredObject.points.map(e => e.source), 
+          column1, column2);
       //{2009: {Slight: 1}, 2010: {Slight: 3}, 2012: {Slight: 4}, 
       // 2013: {Slight: 3}, 2014: {Serious: 1}, 2015: {Slight: 6}, 
       // 2016: {Serious: 1, Slight: 2}, 2017: {Slight: 1}}
       // now turn it into [{},{}]
+
       severity_keys && severity_keys.forEach((name, i) => {
         Object.keys(severity_by_year).forEach(y => {
           if (y && severity_by_year[y][name]) {
@@ -84,7 +88,6 @@ export default class Tooltip extends React.Component {
         }
       })
     }
-    // console.log(crashes_data);
 
     const w = window.innerWidth;
     const y = window.innerHeight;
@@ -123,6 +126,8 @@ export default class Tooltip extends React.Component {
   }
 
   _listPropsAndValues(hoveredObject, all = false, n = 6) {
+    if(!hoveredObject.properties || 
+      !hoveredObject.points[0].properties) return null
     let DATA = []
     const props = hoveredObject.properties;
     if (props) {
