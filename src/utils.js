@@ -59,6 +59,7 @@ const fetchData = (url, callback) => {
   fetch(url) // [0] => "", [1] => roads and [2] => qfactor
     .then((response) => response.text())
     .then((response) => {
+      // TODO: better check?
       if(url.endsWith("csv")) {
         csv2geojson.csv2geojson(response, (err, data) => {
           if (!err) {
@@ -759,6 +760,39 @@ const OSMTILES = {
   }]
 };
 
+/**
+ * Takes a geojson and json object, compares each feature in the geojson
+ * with data rows to find matching geocolumn value, sets the geojson prop of
+ * given column with value from data[i][column].
+ * 
+ * Function modifies `geojson` in place.
+ * 
+ * @param {*} geojson a gejson with matching `geoColumn` to `data` param
+ * @param {*} data a json object with matchin `geoColumn` to `geojson` param
+ * @param {*} column column to add to the `geojson` param
+ * @param {*} geoColumn geocode which is shared between `geojson` and `data`
+ */
+const setGeojsonProps = (geojson, data, column, geoColumn) => {
+  if (!geojson || !data || !column || !geoColumn ||
+    !geojson.features[0][geoColumn] ||
+    !data[0][geoColumn]) return null
+  // for now modify the object itself
+  geojson.features.forEach(feature => {
+    feature.properties[column] = 0; // init missing ones 
+    for (let i = 0; i < data.length; i++) {
+      if (feature.properties[geoColumn] === data[i][geoColumn]) {
+        if (isNumber(data[i][column])) {
+          feature.properties[column] = Number.parseInt(data[i][column]);
+        } else {
+          feature.properties[column] = data[i][column];
+        }
+        break;
+      }
+    }
+  });
+  return geojson
+}
+
 export {
   getResultsFromGoogleMaps,
   getParamsFromSearch,
@@ -768,6 +802,7 @@ export {
   checkURLReachable,
   suggestDeckLayer,
   sortNumericArray,
+  setGeojsonProps,
   colorRangeNames,
   searchNominatom,
   generateLegend,

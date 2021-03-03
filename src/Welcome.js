@@ -28,7 +28,7 @@ import {
   fetchData, generateDeckLayer,
   getParamsFromSearch, getBbx,
   isMobile, colorScale, OSMTILES,
-  colorRanges, generateDomain,
+  colorRanges, generateDomain, setGeojsonProps,
   convertRange, getMin, getMax, isURL, COLOR_RANGE
 } from './utils';
 import Constants, { LIGHT_SETTINGS } from './Constants';
@@ -43,6 +43,9 @@ import { isNumber } from './JSUtils';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 const defualtURL = process.env.REACT_APP_DEFAULT_URL || (URL + "/api/stats19");
+const geojsonURL = process.env.REACT_APP_GEOJSON_URL || null;
+const geojsonColumn = process.env.REACT_APP_GEOJSON_COLUMN_NAME || null;
+const initialDataColumn = process.env.REACT_APP_INITIAL_DATA_COLUMN_NAME || null;
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -91,6 +94,7 @@ export default class Welcome extends React.Component {
     this._renderTooltip = this._renderTooltip.bind(this);
     this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
     this._fitViewport = this._fitViewport.bind(this);
+    this._initWithGeojson = this._initWithGeojson.bind(this);
   }
 
   componentDidMount() {
@@ -110,31 +114,67 @@ export default class Welcome extends React.Component {
   _fetchAndUpdateState(aURL, customError) {
     if (aURL && !isURL(aURL)) return;
     if (customError && typeof (customError) !== 'object') return;
-    // TODO: more sanity checks?
-    const fullURL = aURL ?
-      // TODO: decide which is better.
-      // URL + "/api/url?q=" + aURL : // get the server to parse it 
-      aURL : // do not get the server to parse it 
-      defualtURL;
+    const fullURL = aURL ? aURL : defualtURL;
 
+    // geojson URL must be consistent just like defaultURL
+    // geojsonURL
     fetchData(fullURL, (data, error) => {
-      if (!error) {
-        // this._updateURL(viewport)
-        this.setState({
-          loading: false,
-          data: data,
-          alert: customError || null
+      if(isURL(geojsonURL)) {
+        // it will always show geojson empty as column is not set
+        fetchData(geojsonURL, (geojson, geoErr) => {
+          if(!geoErr) {
+            const {column} = this.state || initialDataColumn;
+            // make sure both geojsonColumn and column value are there for
+            // setGeojsonProps to function
+            if(geojsonColumn && geojson.features && 
+              geojson.features[0].properties[geojsonColumn] &&
+              column) {
+                this._initWithGeojson(error,
+                  setGeojsonProps(geojson, data, column, geojsonColumn), 
+                  customError, fullURL
+                );
+              } else {
+                this._initWithGeojson(error, geojson, customError, fullURL);
+              }
+          } else {
+            this.setState({
+              loading: false,
+              alert: { content: 'Could not reach: ' + geojsonURL }
+            });
+          }
         })
-        this._fitViewport(data)
-        this._generateLayer()
       } else {
-        this.setState({
-          loading: false,
-          alert: { content: 'Could not reach: ' + fullURL }
-        })
-        //network error?
+        this._initWithGeojson(error, data, customError, fullURL);
       }
     })
+  }
+
+  /**
+   * Helper function to simply set state with geojson `data` and 
+   * name the source with `fullURL`. The other params are error management.
+   * 
+   * @param {*} error any error to avoid setting data param
+   * @param {*} data geojson valid object to use throughout eAtlas
+   * @param {*} customError any custom error similar to `error` used by `this.state.alert`
+   * @param {*} fullURL here used as naming source of data and shown on header
+   */
+  _initWithGeojson(error, data, customError, fullURL) {
+    if (!error) {
+      // this._updateURL(viewport)
+      this.setState({
+        loading: false,
+        data: data,
+        alert: customError || null
+      });
+      this._fitViewport(data);
+      this._generateLayer();
+    } else {
+      this.setState({
+        loading: false,
+        alert: { content: 'Could not reach: ' + fullURL }
+      });
+      //network error?
+    }
   }
 
   /**
