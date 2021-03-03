@@ -43,9 +43,6 @@ import { isNumber } from './JSUtils';
 
 const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
 const defualtURL = process.env.REACT_APP_DEFAULT_URL || (URL + "/api/stats19");
-const geojsonURL = process.env.REACT_APP_GEOJSON_URL || null;
-const geojsonColumn = process.env.REACT_APP_GEOJSON_COLUMN_NAME || null;
-const initialDataColumn = process.env.REACT_APP_INITIAL_DATA_COLUMN_NAME || null;
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -88,7 +85,9 @@ export default class Welcome extends React.Component {
       iconLimit: 500,
       legend: false,
       width: window.innerWidth, height: window.innerHeight,
-      tooltipColumns: {column1: "accident_severity" , column2: "date"}
+      tooltipColumns: {column1: "accident_severity" , column2: "date"},
+      geojsonURL: process.env.REACT_APP_GEOJSON_URL || null,
+      geographyColumn: process.env.REACT_APP_GEOJSON_COLUMN_NAME || null,
     }
     this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
@@ -119,23 +118,18 @@ export default class Welcome extends React.Component {
     // geojson URL must be consistent just like defaultURL
     // geojsonURL
     fetchData(fullURL, (data, error) => {
+      const { geojsonURL } = this.state;
       if(isURL(geojsonURL)) {
         // it will always show geojson empty as column is not set
         fetchData(geojsonURL, (geojson, geoErr) => {
           if(!geoErr) {
-            const {column} = this.state || initialDataColumn;
-            // make sure both geojsonColumn and column value are there for
-            // setGeojsonProps to function
-            if(geojsonColumn && geojson.features && 
-              geojson.features[0].properties[geojsonColumn] &&
-              column) {
-                this._initWithGeojson(error,
-                  setGeojsonProps(geojson, data, column, geojsonColumn), 
-                  customError, fullURL
-                );
-              } else {
-                this._initWithGeojson(error, geojson, customError, fullURL);
-              }
+            this.setState({geography: geojson})
+            // try setting data (json) as {properties:json}
+            // when layer is generated add geography
+            this._initWithGeojson(error,
+              // simulate geojson
+              {features: data.map(e => ({properties: e}))}, 
+              customError, fullURL);
           } else {
             this.setState({
               loading: false,
@@ -199,11 +193,13 @@ export default class Welcome extends React.Component {
       return;
     }
     let data = this.state.data && this.state.data.features
-    const { colourName, iconLimit } = this.state;
-    let column = (filter && filter.what === 'column' && filter.selected) ||
+    // data or geography and add column data
+    let column = (filter && filter.what === 'column' && filter.selected) || 
       this.state.column;
 
     if (!data) return;
+
+    const { colourName, iconLimit, geography, geographyColumn } = this.state;
     if (filter && filter.what === "%") {
       data = data.slice(0, filter.selected / 100 * data.length)
     }
@@ -211,7 +207,10 @@ export default class Welcome extends React.Component {
     if (this.state.coords) {
       data = this.state.filtered;
     }
-    const geomType = sfType(data[0]).toLowerCase();
+    const geomType = sfType(
+      geography ? geography.features[0] : data[0]
+    ).toLowerCase();
+
     //if resetting a value
     if (filter && filter.selected !== "") {
       data = data.filter(
@@ -322,6 +321,9 @@ export default class Welcome extends React.Component {
       if (data[0].properties.result) options.getRotationAngle = d =>
         d.properties.result.includes("gain from") ? 45 : 1
       options.getScale = d => 200
+    }
+    if(geography) {
+      data = setGeojsonProps(geography, data, geographyColumn)
     }
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options

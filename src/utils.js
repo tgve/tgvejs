@@ -14,7 +14,7 @@ import qs from 'qs'; // warning: importing it otherways would cause minificatino
 
 import mapping from './location-icon-mapping.json';
 import Constants from './Constants';
-import { isString, isNumber } from './JSUtils.js';
+import { isString, isNumber, isObject } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
 import { ArcLayer, PathLayer } from '@deck.gl/layers';
 import BarLayer from './components/customlayers/BarLayer'
@@ -761,31 +761,24 @@ const OSMTILES = {
 };
 
 /**
- * Takes a geojson and json object, compares each feature in the geojson
- * with data rows to find matching geocolumn value, sets the geojson prop of
- * given column with value from data[i][column].
  * 
  * Function modifies `geojson` in place.
  * 
  * @param {*} geojson a gejson with matching `geoColumn` to `data` param
- * @param {*} data a json object with matchin `geoColumn` to `geojson` param
- * @param {*} column column to add to the `geojson` param
+ * {features:[], type:}
+ * @param {*} data a json {properties:{}} object with matchin 
+ * `geoColumn` to `geojson` param
  * @param {*} geoColumn geocode which is shared between `geojson` and `data`
  */
-const setGeojsonProps = (geojson, data, column, geoColumn) => {
-  if (!geojson || !data || !column || !geoColumn ||
-    !geojson.features[0][geoColumn] ||
+const setGeojsonProps = (geojson, data, geoColumn) => {
+  if (!isObject(geojson) || !isObject(data) || !isString(geoColumn) ||
+    !geojson.features[0][geoColumn] || !data[0].properties ||
     !data[0][geoColumn]) return null
   // for now modify the object itself
   geojson.features.forEach(feature => {
-    feature.properties[column] = 0; // init missing ones 
     for (let i = 0; i < data.length; i++) {
-      if (feature.properties[geoColumn] === data[i][geoColumn]) {
-        if (isNumber(data[i][column])) {
-          feature.properties[column] = Number.parseInt(data[i][column]);
-        } else {
-          feature.properties[column] = data[i][column];
-        }
+      if (feature.properties[geoColumn] === data[i].properties[geoColumn]) {
+        feature.properties = data[i].properties;
         break;
       }
     }
