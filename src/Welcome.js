@@ -186,9 +186,11 @@ export default class Welcome extends React.Component {
     const { radius, elevation, filter, cn } = values;
 
     if (filter && filter.what === 'mapstyle') {
+      const newStyle = "mapbox://styles/mapbox/" + filter.selected + "-v9";
       this.setState({
         mapStyle: !MAPBOX_ACCESS_TOKEN ? OSMTILES :
-          filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
+          filter && filter.what === 'mapstyle' ? filter.selected === "No map" ?
+          Constants.BLANKSTYLE : newStyle : this.state.mapStyle,
       })
       return;
     }

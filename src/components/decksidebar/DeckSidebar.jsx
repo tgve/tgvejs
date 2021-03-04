@@ -344,6 +344,7 @@ export default class DeckSidebar extends React.Component {
                   Map Styles
                   <br />
                   <MapboxBaseLayers
+                    dark={dark}
                     onSelectCallback={(selected) =>
                       onSelectCallback &&
                       onSelectCallback({
