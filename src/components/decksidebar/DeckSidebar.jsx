@@ -40,7 +40,7 @@ export default class DeckSidebar extends React.Component {
     this.state = {
       radius: 100,
       elevation: 4,
-      year: "",
+      year: "", // required to reset state
       reset: false,
       multiVarSelect: {},
       barChartVariable: "road_type",
@@ -50,11 +50,12 @@ export default class DeckSidebar extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const { data, alert, loading } = this.props;
-    const { elevation, radius, reset,
+    const { elevation, radius, reset, year,
       barChartVariable } = this.state;
     // avoid rerender as directly operating on document.get* 
     // does not look neat. Keeping it React way.
     if (reset !== nextState.reset ||
+      year !== nextState.year ||
       elevation !== nextState.elevation ||
       radius !== nextState.radius ||
       alert !== nextProps.alert ||
@@ -81,6 +82,9 @@ export default class DeckSidebar extends React.Component {
       onlocationChange, column, dark, toggleOpen, toggleHexPlot } = this.props;
 
     const notEmpty = data && data.length > 1;
+
+    // TODO: more comprehensive method needed
+    const isPoints = new RegExp("grid|sgrid|hex").test(this.props.layerStyle);
 
     const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
@@ -286,10 +290,12 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-sliders" />
                 }>
                   {notEmpty &&
+                    <ColorPicker colourCallback={(color) =>
+                      typeof colourCallback === 'function' &&
+                      colourCallback(color)} />
+                  }
+                  {notEmpty && isPoints &&
                     <div>
-                      <ColorPicker colourCallback={(color) =>
-                        typeof colourCallback === 'function' &&
-                        colourCallback(color)} />
                       <h5>Radius</h5>
                       <Slider
                         value={[radius]}
@@ -323,6 +329,7 @@ export default class DeckSidebar extends React.Component {
                         title="Choose Layer"
                         single={true}
                         values={
+                          // TODO:filter based on data
                           LAYERSTYLES.map(e =>
                             ({ id: humanize(e), value: e }))
                         }
@@ -353,21 +360,21 @@ export default class DeckSidebar extends React.Component {
                       })
                     }
                   />
+                  {notEmpty && isPoints &&
+                    <Checkbox
+                      onChange={() => toggleHexPlot && toggleHexPlot()}
+                    >Hex Plot</Checkbox>
+                  }
                   {notEmpty &&
-                    <>
-                      <Checkbox
-                        onChange={() => toggleHexPlot && toggleHexPlot()}
-                      >Hex Plot</Checkbox>
-                      <Checkbox
-                        onChange={() => {
-                          this.setState({ subsetBoundsChange: !subsetBoundsChange })
-                          if (toggleSubsetBoundsChange && typeof (toggleSubsetBoundsChange) === 'function') {
-                            toggleSubsetBoundsChange(!subsetBoundsChange) //starts with false
-                          }
-                        }}
-                      >Subset by map boundary</Checkbox>
-                    </>}
-
+                    <Checkbox
+                      onChange={() => {
+                        this.setState({ subsetBoundsChange: !subsetBoundsChange })
+                        if (toggleSubsetBoundsChange && typeof (toggleSubsetBoundsChange) === 'function') {
+                          toggleSubsetBoundsChange(!subsetBoundsChange) //starts with false
+                        }
+                      }}
+                    >Subset by map boundary</Checkbox>
+                  }
                 </Tab>
                 <Tab eventKey="3" title={
                   <i style={{ fontSize: '2rem' }}

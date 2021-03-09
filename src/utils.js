@@ -7,6 +7,8 @@ import {
 } from 'deck.gl';
 import {
   interpolateOrRd, // schemeBlues
+  interpolateReds, interpolateYlGnBu, interpolateGreens,
+  interpolateOranges, interpolateSinebow
 } from 'd3-scale-chromatic';
 import {scaleThreshold} from 'd3-scale';
 
@@ -525,11 +527,15 @@ function hexToRgb(hex) {
  * @param {any} v particular value to use in interpolateOrRd
  * @param {Array} domain domain to use in interpolateOrRd
  * @param {Number} alpha value to add to colour pallete
+ * @param {String} colorName colorName found in `colorRangeNamesToInterpolate`
  */
-const colorScale = (v, domain, alpha = 180) => {
+const colorScale = (v, domain, alpha = 180, colorName) => {
   if (!v || !isArray(domain) || !domain.length) return null;
   const index = domain.indexOf(v)
-  let rgb = interpolateOrRd(index / domain.length);
+  const d3InterpolateFn = isString(colorName) && 
+  colorRangeNamesToInterpolate(colorName) ? 
+  colorRangeNamesToInterpolate(colorName) : interpolateOrRd;
+  let rgb = d3InterpolateFn(index / domain.length);
   rgb = rgb.substring(4, rgb.length - 1)
     .replace(/ /g, '')
     .split(',').map(x => +x); // deck.gl 8 int not strings
@@ -538,6 +544,23 @@ const colorScale = (v, domain, alpha = 180) => {
 
 const colorRangeNames = ['inverseDefault', 'yellowblue', 'greens',
   'oranges', 'diverge', 'default'];
+
+const colorRangeNamesToInterpolate = (name) => {
+  if(!name) return interpolateOrRd;
+  if(name === colorRangeNames[0]) {
+    return interpolateReds;
+  } else if(name === colorRangeNames[1]) {
+    return interpolateYlGnBu;
+  } else if(name === colorRangeNames[2]) {
+    return interpolateGreens;
+  } else if(name === colorRangeNames[3]) {
+    return interpolateOranges;
+  } else if(name === colorRangeNames[4]) {
+    return interpolateSinebow;
+  } else {
+    return interpolateOrRd
+  }
+}
 
 const colorRanges = (name) => {
   if (!name) return
@@ -803,6 +826,7 @@ const getFirstDateColumnName = (obj) => {
 }
 
 export {
+  colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
   getFirstDateColumnName,
   firstLastNCharacters,

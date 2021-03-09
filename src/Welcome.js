@@ -349,14 +349,15 @@ export default class Welcome extends React.Component {
       // initialazied with 1 so +columnNameOrIndex is safe
       d.properties[+columnNameOrIndex ?
         Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]
-      options.getFillColor = (d) => colorScale(
+      const fill =  (d) => colorScale(
         +getValue(d) ? +getValue(d) : getValue(d),
-        domain
-      );
+        domain, 180, cn || this.state.colourName
+      )
+      options.getFillColor = fill;
       // const triggerarray = data.map((d) => (d.properties[isNumber(columnNameOrIndex) ? 
       //     Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]))
       options.updateTriggers = {
-        getFillColor: domain
+        getFillColor: [data.map((d) => fill(d))]
       }
     }
     if (layerStyle === 'barvis') {
