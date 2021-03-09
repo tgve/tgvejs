@@ -29,7 +29,7 @@ import {
   getParamsFromSearch, getBbx,
   isMobile, colorScale, OSMTILES,
   colorRanges, generateDomain, setGeojsonProps,
-  convertRange, getMin, getMax, isURL, getFirstDateColumnName,
+  convertRange, getMin, getMax, isURL, getFirstDateColumnName, generateLegend, humanize, colorRangeNamesToInterpolate,
 } from './utils';
 import Constants, { LIGHT_SETTINGS } from './Constants';
 import DeckSidebarContainer from
@@ -221,9 +221,6 @@ export default class Welcome extends React.Component {
     if (this.state.coords) {
       data = this.state.filtered;
     }
-    const geomType = sfType(
-      geography ? geography.features[0] : data[0]
-    ).toLowerCase();
 
     //if resetting a value
     if (filter && filter.selected !== "") {
@@ -265,6 +262,9 @@ export default class Welcome extends React.Component {
         return
       };
     }
+    const geomType = sfType(
+      geography ? geography.features[0] : data[0]
+    ).toLowerCase();
     // needs to happen as soon as filtering is done
     // assemble geometry from this.state.geometry if so
     if (geomType === "polygon" || geomType === "multipolygon") {
@@ -343,6 +343,8 @@ export default class Welcome extends React.Component {
     }
     // generate a domain
     const domain = generateDomain(data, columnNameOrIndex);
+    let newLegend = this.state.legend;
+
     if (geomType === "polygon" || geomType === "multipolygon" ||
       layerStyle === 'geojson') {
       const getValue = (d) => 
@@ -358,6 +360,21 @@ export default class Welcome extends React.Component {
       //     Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]))
       options.updateTriggers = {
         getFillColor: [data.map((d) => fill(d))]
+      }
+      const isNumeric = +(data[0].properties[
+        +columnNameOrIndex ?
+        Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex
+      ])
+      if(isNumeric) {
+        newLegend = generateLegend(
+          {
+            domain,
+            title: humanize(column),
+            interpolate: colorRangeNamesToInterpolate(
+              cn || this.state.colourName
+            )
+          }
+        )
       }
     }
     if (layerStyle === 'barvis') {
@@ -388,7 +405,8 @@ export default class Welcome extends React.Component {
       colourName: cn || colourName,
       column, // all checked
       coords: filter && filter.what === 'coords' ? filter.selected :
-        this.state.coords
+        this.state.coords,
+      legend: newLegend
     })
   }
 
@@ -579,7 +597,6 @@ export default class Welcome extends React.Component {
           onlocationChange={(bboxLonLat) => {
             this._fitViewport(undefined, bboxLonLat)
           }}
-          showLegend={(legend) => this.setState({ legend })}
           datasetName={defualtURL}
         />
         {

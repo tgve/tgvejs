@@ -11,7 +11,7 @@ import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   xyObjectByProperty, percentDiv,
   searchNominatom, firstLastNCharacters,
-  humanize, generateLegend, sortNumericArray
+  humanize
 } from '../../utils';
 import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
@@ -28,7 +28,7 @@ import {
   plotByProperty
 } from '../showcases/plots';
 import SeriesPlot from '../showcases/SeriesPlot';
-import { isEmptyOrSpaces, isNumber } from '../../JSUtils';
+import { isEmptyOrSpaces } from '../../JSUtils';
 import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
 import Boxplot from '../boxplot/Boxplot';
@@ -76,7 +76,7 @@ export default class DeckSidebar extends React.Component {
   render() {
     const { elevation, radius, year, subsetBoundsChange,
       multiVarSelect, barChartVariable, datasetName } = this.state;
-    const { onChangeRadius, onChangeElevation,
+    const { onChangeRadius, onChangeElevation, showLegend,
       onSelectCallback, data, colourCallback, unfilteredData,
       toggleSubsetBoundsChange, urlCallback, alert,
       onlocationChange, column, dark, toggleOpen, toggleHexPlot } = this.props;
@@ -89,26 +89,7 @@ export default class DeckSidebar extends React.Component {
     const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
     let columnData = notEmpty ?
-      xyObjectByProperty(data, column || barChartVariable) : [];
-    const geomType = notEmpty && data[0].geometry.type.toLowerCase();
-    if (notEmpty && column && (geomType === 'polygon' ||
-      geomType === 'multipolygon' || "linestring") &&
-      isNumber(data[0].properties[column])) {
-      // we dont need to use generateDomain(data, column)
-      // columnData already has this in its x'es
-      columnDomain = columnData.map(e => e.x);
-      // we will just sort it        
-      columnDomain = sortNumericArray(columnDomain);
-
-      this.props.showLegend(
-        generateLegend(
-          {
-            domain: columnDomain,
-            title: humanize(column)
-          }
-        )
-      );
-    }
+      xyObjectByProperty(data, column || barChartVariable) : [];    
 
     const columnPlot = {
       data: columnData,
