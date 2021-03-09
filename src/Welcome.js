@@ -29,7 +29,7 @@ import {
   getParamsFromSearch, getBbx,
   isMobile, colorScale, OSMTILES,
   colorRanges, generateDomain, setGeojsonProps,
-  convertRange, getMin, getMax, isURL,
+  convertRange, getMin, getMax, isURL, getFirstDateColumnName,
 } from './utils';
 import Constants, { LIGHT_SETTINGS } from './Constants';
 import DeckSidebarContainer from
@@ -39,6 +39,7 @@ import history from './history';
 import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
+import { DateTime } from 'luxon';
 
 const URL = (process.env.NODE_ENV === 'development' ? 
   Constants.DEV_URL : Constants.PRD_URL);
@@ -206,10 +207,11 @@ export default class Welcome extends React.Component {
     }
     let data = this.state.data && this.state.data.features
     // data or geography and add column data
-    let column = (filter && filter.what === 'column' && filter.selected) || 
-      this.state.column;
-
     if (!data) return;
+
+    let column = (filter && filter.what === 'column' && filter.selected) ||
+      this.state.column;
+    const columnNameOrIndex = column || 1;
 
     const { colourName, iconLimit, geography, geographyColumn } = this.state;
     if (filter && filter.what === "%") {
@@ -225,6 +227,7 @@ export default class Welcome extends React.Component {
 
     //if resetting a value
     if (filter && filter.selected !== "") {
+      const yearColumn = getFirstDateColumnName(data[0].properties);
       data = data.filter(
         d => {
           if (filter.what === 'multi') {
@@ -232,8 +235,9 @@ export default class Welcome extends React.Component {
             const selected = filter.selected;
             // selected.var > Set()
             for (let each of Object.keys(selected)) {
-              const nextValue = each === "date" ?
-                d.properties[each].split("-")[0] : d.properties[each] + ""
+              const nextValue = each === yearColumn ?
+                DateTime.fromISO(d.properties[each]).year + "" : 
+                d.properties[each] + ""
               // each from selected must be in d.properties
               // *****************************
               // compare string to string
@@ -253,6 +257,13 @@ export default class Welcome extends React.Component {
           return (true)
         }
       )
+      // critical check
+      if (!data || !data.length) {
+        this.setState({
+          alert: { content: 'Filtering returns no results' }
+        })
+        return
+      };
     }
     // needs to happen as soon as filtering is done
     // assemble geometry from this.state.geometry if so
@@ -264,7 +275,6 @@ export default class Welcome extends React.Component {
           // for now just be aware
           //TODO: alert or just stop it?
         }
-        // console.log(geography, data, geographyColumn);
         data = setGeojsonProps(geography, data, geographyColumn)
         // it was data.features when this function started
         data = data.features || data;
@@ -283,9 +293,6 @@ export default class Welcome extends React.Component {
       lightSettings: LIGHT_SETTINGS,
       colorRange: colorRanges(cn || colourName)
     };
-    // generate a domain
-    const columnNameOrIndex =
-      (filter && filter.what === 'column' && filter.selected) || column || 1;
     if (layerStyle === 'heatmap') {
       options.getPosition = d => d.geometry.coordinates
       // options.getWeight = d => d.properties[columnNameOrIndex]
@@ -334,6 +341,7 @@ export default class Welcome extends React.Component {
         }; // avoid id
       }
     }
+    // generate a domain
     const domain = generateDomain(data, columnNameOrIndex);
     if (geomType === "polygon" || geomType === "multipolygon" ||
       layerStyle === 'geojson') {

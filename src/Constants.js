@@ -62,3 +62,5 @@ define("BLANKSTYLE", {
 define("ICONLIMIT", 500)
 define("ELEVATION", 4)
 define("RADIUS", 100)
+
+define("DATE_REGEX", "date|time|datetime|year")

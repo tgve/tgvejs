@@ -357,7 +357,7 @@ const convertRange = (oldValue = 2, values =
   { oldMax: 10, oldMin: 1, newMax: 1, newMin: 0 }) => {
   const value = (((oldValue - values.oldMin) * (values.newMax - values.newMin))
     / (values.oldMax - values.oldMin)) + values.newMin
-  console.log(oldValue, values);
+  // console.log(oldValue, values);
   return +(value.toFixed(2))
 }
 
@@ -773,8 +773,9 @@ const OSMTILES = {
  */
 const setGeojsonProps = (geojson, data, geoColumn) => {
   if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
-    !geojson.features[0].properties[geoColumn] || !data[0].properties ||
-    !data[0].properties[geoColumn]) return null
+    !geojson.features || !geojson.features[0] ||
+    !geojson.features[0].properties[geoColumn] || !data[0] || 
+    !data[0].properties || !data[0].properties[geoColumn]) return null
   // for now modify the object itself
   geojson.features.forEach(feature => {
     for (let i = 0; i < data.length; i++) {
@@ -787,10 +788,25 @@ const setGeojsonProps = (geojson, data, geoColumn) => {
   return geojson
 }
 
+/**
+ * 
+ * @param {Object} obj Object with keys to compare keys to
+ * regex
+ * 
+ * @returns first key in the objec that matches the regex
+ */
+const getFirstDateColumnName = (obj) => {
+  if(!isObject(obj) || !Object.keys(obj)) return null
+  // find the date/time column with year in
+  const r = new RegExp(Constants.DATE_REGEX);
+  return Object.keys(obj).filter(e => r.test(e))[0]
+}
+
 export {
   getResultsFromGoogleMaps,
-  getParamsFromSearch,
+  getFirstDateColumnName,
   firstLastNCharacters,
+  getParamsFromSearch,
   xyObjectByProperty,
   suggestUIforNumber,
   generateDeckLayer,
