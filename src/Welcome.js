@@ -4,7 +4,7 @@
  * The crucial bits are:
  * 
      this.state = {
-      data,            <= main data holding param   
+      data,            <= main data holding param
       layers: [],      <= mapgl layers object
       initialViewState:<= deckgl/mapgl initial state object
       legend: false    <= map legend to avoid rerender.
@@ -29,7 +29,7 @@ import {
   getParamsFromSearch, getBbx,
   isMobile, colorScale, OSMTILES,
   colorRanges, generateDomain, setGeojsonProps,
-  convertRange, getMin, getMax, isURL, COLOR_RANGE
+  convertRange, getMin, getMax, isURL,
 } from './utils';
 import Constants, { LIGHT_SETTINGS } from './Constants';
 import DeckSidebarContainer from
@@ -39,9 +39,9 @@ import history from './history';
 import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
-import { isNumber } from './JSUtils';
 
-const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
+const URL = (process.env.NODE_ENV === 'development' ? 
+  Constants.DEV_URL : Constants.PRD_URL);
 const defualtURL = process.env.REACT_APP_DEFAULT_URL || (URL + "/api/stats19");
 
 // Set your mapbox access token here
@@ -51,7 +51,8 @@ const gradient = {
   height: '200px',
   // TODO: which browsers?
   backgroundColor: 'red', /* For browsers that do not support gradients */
-  backgroundImage: 'linear-gradient(to top, red , yellow)' /* Standard syntax (must be last) */
+  /* Standard syntax (must be last) */
+  backgroundImage: 'linear-gradient(to top, red , yellow)' 
 }
 
 export default class Welcome extends React.Component {
@@ -74,20 +75,20 @@ export default class Welcome extends React.Component {
       loading: true,
       layers: [],
       backgroundImage: gradient.backgroundImage,
-      radius: 100,
-      elevation: 4,
+      radius: Constants.RADIUS,
+      elevation: Constants.ELEVATION,
       mapStyle: MAPBOX_ACCESS_TOKEN ? ("mapbox://styles/mapbox/" +
         (props.dark ? "dark" : "streets") + "-v9") : OSMTILES,
       initialViewState: init,
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
       colourName: 'default',
-      iconLimit: 500,
+      iconLimit: Constants.ICONLIMIT,
       legend: false,
       width: window.innerWidth, height: window.innerHeight,
       tooltipColumns: {column1: "accident_severity" , column2: "date"},
-      geojsonURL: process.env.REACT_APP_GEOJSON_URL || null,
-      geographyColumn: process.env.REACT_APP_GEOJSON_COLUMN_NAME || null,
+      geographyURL: process.env.REACT_APP_GEOGRAPHY_URL || null,
+      geographyColumn: process.env.REACT_APP_GEOGRAPHY_COLUMN_NAME || null,
     }
     this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
@@ -116,24 +117,32 @@ export default class Welcome extends React.Component {
     const fullURL = aURL ? aURL : defualtURL;
 
     // geojson URL must be consistent just like defaultURL
-    // geojsonURL
+    // geographyURL
     fetchData(fullURL, (data, error) => {
-      const { geojsonURL } = this.state;
-      if(isURL(geojsonURL)) {
+      const { geographyURL } = this.state;
+      if(isURL(geographyURL)) {
         // it will always show geojson empty as column is not set
-        fetchData(geojsonURL, (geojson, geoErr) => {
+        fetchData(geographyURL, (geojson, geoErr) => {
           if(!geoErr) {
-            this.setState({geography: geojson})
-            // try setting data (json) as {properties:json}
-            // when layer is generated add geography
-            this._initWithGeojson(error,
-              // simulate geojson
-              {features: data.map(e => ({properties: e}))}, 
-              customError, fullURL);
+            //TODO: dev code - remove
+            geojson.features.map(feature => {
+              const o = feature.properties;
+              Object.defineProperty(o, "LAD",
+                Object.getOwnPropertyDescriptor(o, "LAD13CD"));
+              delete o["LAD13CD"];
+            })
+            this.setState({
+              loading: false,
+              geography: geojson,
+              data: data,
+              alert: customError || null
+            });
+            this._fitViewport(geojson);
+            this._generateLayer();
           } else {
             this.setState({
               loading: false,
-              alert: { content: 'Could not reach: ' + geojsonURL }
+              alert: { content: 'Could not reach: ' + geographyURL }
             });
           }
         })
@@ -149,7 +158,8 @@ export default class Welcome extends React.Component {
    * 
    * @param {*} error any error to avoid setting data param
    * @param {*} data geojson valid object to use throughout eAtlas
-   * @param {*} customError any custom error similar to `error` used by `this.state.alert`
+   * @param {*} customError any custom error similar to `error` used by 
+   * `this.state.alert`
    * @param {*} fullURL here used as naming source of data and shown on header
    */
   _initWithGeojson(error, data, customError, fullURL) {
@@ -244,6 +254,22 @@ export default class Welcome extends React.Component {
         }
       )
     }
+    // needs to happen as soon as filtering is done
+    // assemble geometry from this.state.geometry if so
+    if (geomType === "polygon" || geomType === "multipolygon") {
+      // is there a geometry provided?
+      if (geography) {
+        // is geometry equal to or bigger than data provided?
+        if (data.length > geography.features.length) {
+          // for now just be aware
+          //TODO: alert or just stop it?
+        }
+        // console.log(geography, data, geographyColumn);
+        data = setGeojsonProps(geography, data, geographyColumn)
+        // it was data.features when this function started
+        data = data.features || data;
+      }
+    }
     let layerStyle = (filter && filter.what ===
       'layerStyle' && filter.selected) || this.state.layerStyle || 'grid';
     if (geomType !== "point") layerStyle = "geojson"
@@ -283,12 +309,14 @@ export default class Welcome extends React.Component {
         }
       }
       if (layerStyle === 'line') {
-        // options.getSourceColor = d => [Math.sqrt(+(d.properties.base)) * 1000, 140, 0]
-        // options.getTargetColor = d => [Math.sqrt(+(d.properties.hs2)) * 1e13, 140, 0]
+        // options.getSourceColor = d => 
+        // [Math.sqrt(+(d.properties.base)) * 1000, 140, 0]
+        // options.getTargetColor = d => 
+        // [Math.sqrt(+(d.properties.hs2)) * 1e13, 140, 0]
         options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
         options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
       }
-      if (isNumber(data[0] && data[0].properties &&
+      if (+(data[0] && data[0].properties &&
         data[0].properties[columnNameOrIndex])) {
         const colArray = data.map(f => f.properties[columnNameOrIndex])
         const max = getMax(colArray);
@@ -307,14 +335,20 @@ export default class Welcome extends React.Component {
       }
     }
     const domain = generateDomain(data, columnNameOrIndex);
-    if (geomType === "polygon" || geomType === "multipolygon" || layerStyle === 'geojson') {
-      if(domain && domain.length > 50) {
-        options.getFillColor = d => COLOR_RANGE(d.properties[
-          isNumber(columnNameOrIndex) ? 
-          Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex
-        ])
-      } else{
-        options.getFillColor = (d) => colorScale(d, columnNameOrIndex, domain)
+    if (geomType === "polygon" || geomType === "multipolygon" ||
+      layerStyle === 'geojson') {
+      const getValue = (d) => 
+      // initialazied with 1 so +columnNameOrIndex is safe
+      d.properties[+columnNameOrIndex ?
+        Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]
+      options.getFillColor = (d) => colorScale(
+        +getValue(d) ? +getValue(d) : getValue(d),
+        domain
+      );
+      // const triggerarray = data.map((d) => (d.properties[isNumber(columnNameOrIndex) ? 
+      //     Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]))
+      options.updateTriggers = {
+        getFillColor: domain
       }
     }
     if (layerStyle === 'barvis') {
@@ -322,10 +356,7 @@ export default class Welcome extends React.Component {
       d.geometry.coordinates[1], 0]
       if (data[0].properties.result) options.getRotationAngle = d =>
         d.properties.result.includes("gain from") ? 45 : 1
-      options.getScale = d => 200
-    }
-    if(geography) {
-      data = setGeojsonProps(geography, data, geographyColumn)
+      options.getScale = 200
     }
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options

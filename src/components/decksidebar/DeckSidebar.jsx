@@ -10,7 +10,7 @@ import DataInput from '../DataInput';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   xyObjectByProperty, percentDiv,
-  searchNominatom,
+  searchNominatom, firstLastNCharacters,
   humanize, generateLegend, sortNumericArray
 } from '../../utils';
 import { VerticalBarSeries } from 'react-vis';
@@ -74,7 +74,7 @@ export default class DeckSidebar extends React.Component {
    */
   render() {
     const { elevation, radius, year, subsetBoundsChange,
-      multiVarSelect, barChartVariable } = this.state;
+      multiVarSelect, barChartVariable, datasetName } = this.state;
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data, colourCallback, unfilteredData,
       toggleSubsetBoundsChange, urlCallback, alert,
@@ -119,7 +119,7 @@ export default class DeckSidebar extends React.Component {
         year: "",
         multiVarSelect: {},
         barChartVariable: "road_type",
-        datasetName: urlOrName || this.state.datasetName
+        datasetName: urlOrName || datasetName
       })
     }
 
@@ -143,7 +143,7 @@ export default class DeckSidebar extends React.Component {
             </h2>
             {notEmpty &&
               <h6 className="truncate">
-                dataset: {this.state.datasetName}
+                dataset: {firstLastNCharacters(datasetName, 15)}
               </h6>}
           </div>
           <div>

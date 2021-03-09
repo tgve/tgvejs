@@ -353,17 +353,12 @@ const getCentroid = (coords) => {
   return center;
 }
 
-const convertRange = (oldValue = 2, values = {
-  oldMax: 10, oldMin: 1,
-  newMax: 1, newMin: 0
-}) => {
-  // thanks to https://stackoverflow.com/a/929107/2332101
-  // OldRange = (OldMax - OldMin)  
-  // NewRange = (NewMax - NewMin)  
-  // NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
-  let value = (((oldValue - values.oldMin) * (values.newMax - values.newMin))
+const convertRange = (oldValue = 2, values = 
+  { oldMax: 10, oldMin: 1, newMax: 1, newMin: 0 }) => {
+  const value = (((oldValue - values.oldMin) * (values.newMax - values.newMin))
     / (values.oldMax - values.oldMin)) + values.newMin
-  return +value.toFixed(2)
+  console.log(oldValue, values);
+  return +(value.toFixed(2))
 }
 
 const getParamsFromSearch = (search) => {
@@ -461,6 +456,13 @@ const shortenName = (name, n = 26) => {
   return (shortened);
 }
 
+const firstLastNCharacters = (str, n = 5) => {
+  if (+str) return str;
+  return str.slice(0, n) + (str.length > n + n ?
+    "..." + str.slice(str.length - n, str.length) : 
+    str.length > n ? "..." : "")
+}
+
 const percentDiv = (title, left, cb, dark) => {
   return (
     <div
@@ -520,14 +522,13 @@ function hexToRgb(hex) {
  * Generate colour scale for unique set of values
  * based on the index of a value in an array domain of the set.
  * 
- * @param {object} d particular property to get color for from features
- * @param {*} p index/name of column to generate color scale with
- * @param {Array} domain output from generateDomain
+ * @param {any} v particular value to use in interpolateOrRd
+ * @param {Array} domain domain to use in interpolateOrRd
  * @param {Number} alpha value to add to colour pallete
  */
-const colorScale = (d, p = 0, domain, alpha = 180) => {
-  if (!d || !isArray(domain) || !domain.length) return null;
-  const index = domain.indexOf(d.properties[p])
+const colorScale = (v, domain, alpha = 180) => {
+  if (!v || !isArray(domain) || !domain.length) return null;
+  const index = domain.indexOf(v)
   let rgb = interpolateOrRd(index / domain.length);
   rgb = rgb.substring(4, rgb.length - 1)
     .replace(/ /g, '')
@@ -699,14 +700,14 @@ const generateDomain = (data, column) => {
   data.forEach(feature => {
     // uber move to show isochrones
     const i = feature.properties[
-      isNumber(column) ? Object.keys(feature.properties)[column] : column
+      +(column) ? Object.keys(feature.properties)[column] : column
     ]; // eliminate nulls
     if(!i) return;
-    if (isNumber(i) &&
+    if (+(i) &&
       column === 'Mean.Travel.Time..Seconds.') {
         domain.push(Math.floor(i / 300));
     } else {
-      if(isNumber(i)) {
+      if(+(i)) {
         domain.push(+(i))
       } else {
         domainIsNumeric = false;
@@ -767,13 +768,13 @@ const OSMTILES = {
  * @param {*} geojson a gejson with matching `geoColumn` to `data` param
  * {features:[], type:}
  * @param {*} data a json {properties:{}} object with matchin 
- * `geoColumn` to `geojson` param
+ * `geoColumn` to `geojson` param. Typically features of another geojons.
  * @param {*} geoColumn geocode which is shared between `geojson` and `data`
  */
 const setGeojsonProps = (geojson, data, geoColumn) => {
-  if (!isObject(geojson) || !isObject(data) || !isString(geoColumn) ||
-    !geojson.features[0][geoColumn] || !data[0].properties ||
-    !data[0][geoColumn]) return null
+  if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
+    !geojson.features[0].properties[geoColumn] || !data[0].properties ||
+    !data[0].properties[geoColumn]) return null
   // for now modify the object itself
   geojson.features.forEach(feature => {
     for (let i = 0; i < data.length; i++) {
@@ -789,6 +790,7 @@ const setGeojsonProps = (geojson, data, geoColumn) => {
 export {
   getResultsFromGoogleMaps,
   getParamsFromSearch,
+  firstLastNCharacters,
   xyObjectByProperty,
   suggestUIforNumber,
   generateDeckLayer,
