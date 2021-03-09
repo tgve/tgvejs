@@ -83,13 +83,14 @@ export default class Welcome extends React.Component {
       initialViewState: init,
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
-      colourName: 'default',
+      colorName: 'default',
       iconLimit: Constants.ICONLIMIT,
       legend: false,
       width: window.innerWidth, height: window.innerHeight,
       tooltipColumns: {column1: "accident_severity" , column2: "date"},
       geographyURL: process.env.REACT_APP_GEOGRAPHY_URL || null,
       geographyColumn: process.env.REACT_APP_GEOGRAPHY_COLUMN_NAME || null,
+      column: process.env.REACT_APP_COLUMN_NAME || null
     }
     this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
@@ -213,7 +214,7 @@ export default class Welcome extends React.Component {
       this.state.column;
     const columnNameOrIndex = column || 1;
 
-    const { colourName, iconLimit, geography, geographyColumn } = this.state;
+    const { colorName, iconLimit, geography, geographyColumn } = this.state;
     if (filter && filter.what === "%") {
       data = data.slice(0, filter.selected / 100 * data.length)
     }
@@ -291,7 +292,7 @@ export default class Welcome extends React.Component {
       cellSize: radius ? radius : this.state.radius,
       elevationScale: elevation ? elevation : this.state.elevation,
       lightSettings: LIGHT_SETTINGS,
-      colorRange: colorRanges(cn || colourName)
+      colorRange: colorRanges(cn || colorName)
     };
     if (layerStyle === 'heatmap') {
       options.getPosition = d => d.geometry.coordinates
@@ -353,7 +354,7 @@ export default class Welcome extends React.Component {
         Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]
       const fill =  (d) => colorScale(
         +getValue(d) ? +getValue(d) : getValue(d),
-        domain, 180, cn || this.state.colourName
+        domain, 180, cn || this.state.colorName
       )
       options.getFillColor = fill;
       // const triggerarray = data.map((d) => (d.properties[isNumber(columnNameOrIndex) ? 
@@ -371,7 +372,7 @@ export default class Welcome extends React.Component {
             domain,
             title: humanize(column),
             interpolate: colorRangeNamesToInterpolate(
-              cn || this.state.colourName
+              cn || this.state.colorName
             )
           }
         )
@@ -402,7 +403,7 @@ export default class Welcome extends React.Component {
       elevation: elevation ? elevation : this.state.elevation,
       road_type: filter && filter.what === 'road_type' ? filter.selected :
         this.state.road_type,
-      colourName: cn || colourName,
+      colorName: cn || colorName,
       column, // all checked
       coords: filter && filter.what === 'coords' ? filter.selected :
         this.state.coords,
@@ -555,8 +556,8 @@ export default class Welcome extends React.Component {
           alert={alert}
           unfilteredData={data && data.features}
           data={filtered}
-          colourCallback={(colourName) =>
-            this._generateLayer({ cn: colourName })
+          colourCallback={(colorName) =>
+            this._generateLayer({ cn: colorName })
           }
           urlCallback={(url_returned, geojson_returned) => {
             this.setState({

@@ -35,7 +35,7 @@
   },
   "scripts": {
     "start2": "REACT_APP_DEFAULT_URL=https://raw.githubusercontent.com/layik/eatlas-data/main/casualties_100.geojson npm run start",
-    "start3": "REACT_APP_DEFAULT_URL=https://raw.githubusercontent.com/niklomax/data/main/sample_pigsus_data.csv REACT_APP_GEOGRAPHY_URL=https://raw.githubusercontent.com/martinjc/UK-GeoJSON/master/json/administrative/eng/lad.json REACT_APP_GEOGRAPHY_COLUMN_NAME=LAD npm run start",
+    "start3": "REACT_APP_DEFAULT_URL=https://raw.githubusercontent.com/niklomax/data/main/sample_pigsus_data.csv REACT_APP_GEOGRAPHY_URL=https://raw.githubusercontent.com/martinjc/UK-GeoJSON/master/json/administrative/eng/lad.json REACT_APP_GEOGRAPHY_COLUMN_NAME=LAD REACT_APP_COLUMN_NAME=amount npm run start",
     "start": "react-scripts start",
     "build": "react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test --updateSnapshot",

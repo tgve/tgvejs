@@ -207,6 +207,7 @@ export default class DeckSidebar extends React.Component {
                       <MultiSelect
                         title="Choose Column"
                         single={true}
+                        value={column && {id:humanize(column), value:column}}
                         values={
                           Object.keys(data[0].properties).map(e =>
                             ({ id: humanize(e), value: e }))
