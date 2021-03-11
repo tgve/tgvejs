@@ -30,7 +30,7 @@ class ToastAlert extends Component {
       },
         () => {
           this.dismissTimeout = setTimeout(() => this.setState({ timeDuration: false }),
-            time || 3000)
+            time || 5000)
         });
     }
   }

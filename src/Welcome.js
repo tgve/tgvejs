@@ -126,13 +126,6 @@ export default class Welcome extends React.Component {
         // it will always show geojson empty as column is not set
         fetchData(geographyURL, (geojson, geoErr) => {
           if(!geoErr) {
-            //TODO: dev code - remove
-            geojson.features.map(feature => {
-              const o = feature.properties;
-              Object.defineProperty(o, "LAD",
-                Object.getOwnPropertyDescriptor(o, "LAD13CD"));
-              delete o["LAD13CD"];
-            })
             this.setState({
               loading: false,
               geography: geojson,
@@ -263,6 +256,7 @@ export default class Welcome extends React.Component {
         return
       };
     }
+    console.log(data);
     const geomType = sfType(
       geography ? geography.features[0] : data[0]
     ).toLowerCase();
@@ -277,6 +271,13 @@ export default class Welcome extends React.Component {
           //TODO: alert or just stop it?
         }
         data = setGeojsonProps(geography, data, geographyColumn)
+        // critical check
+        if (!data || !data.length) {
+          this.setState({
+            alert: { content: 'Is there a matching geography column?' }
+          })
+          return
+        };
         // it was data.features when this function started
         data = data.features || data;
       }
