@@ -16,7 +16,7 @@ import qs from 'qs'; // warning: importing it otherways would cause minificatino
 
 import mapping from './location-icon-mapping.json';
 import Constants from './Constants';
-import { isString, isNumber, isObject } from './JSUtils.js';
+import { isString, isNumber, isObject, randomToNumber } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
 import { ArcLayer, PathLayer } from '@deck.gl/layers';
 import BarLayer from './components/customlayers/BarLayer'
@@ -24,6 +24,7 @@ import { isArray } from 'underscore';
 import csv2geojson from 'csv2geojson';
 import { ascending } from 'd3-array';
 import atlas from './img/location-icon-atlas.png';
+import { sfType } from './geojsonutils';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -187,7 +188,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, hexObj)
     return (new HexagonLayer(hexObj))
-  } else if (name === 'hex') {
+  } else if (name === 'scatterplot') {
     const scatterObj = {
       id: 'scatterplot-layer',
       data,
@@ -401,11 +402,33 @@ const getBbx = (bounds) => {
   return ({ xmin, ymin, xmax, ymax })
 }
 
-const suggestDeckLayer = (geojson) => {
-  // basic version should suggest a layer
-  // based on the geojson data types
-  // go through each feature? in case of features.
-
+/**
+ * Current version simply picks up a feature out of
+ * array of features, compares it to the available 
+ * list of DeckGL layers supported by eAtlas
+ * and returns one of them.
+ * 
+ * @param {Array} features 
+ * @returns 
+ */
+const suggestDeckLayer = (features) => {
+  const r = randomToNumber(features && features.length)
+  if(!features || !features[r].geometry ||
+    !features[r].geometry.type) return null
+  // basic version should suggest a layer based
+  // on a simple check of a random geometry type from 
+  // array of features
+  // TODO: go through each feature? in case of features.
+  const type = sfType(features[r]);
+  // Constants.LAYERSTYLES
+  if(new RegExp("point", 'i').test(type)) {
+    return "grid"
+  } else if(new RegExp("line", 'i').test(type)) {
+    return "line"
+  } else {
+    return "geojson"
+  }
+  
 }
 const suggestUIforNumber = (number) => {
   // "checkbox",     
@@ -687,7 +710,8 @@ const ATILOGO = (dark = true) => (
 const generateLegend = (options) => {
   //quick check 
   const { domain, interpolate = interpolateOrRd, title } = options;
-  if (!domain || !Array.isArray(domain) || !isNumber(domain[0])) return
+  const r = randomToNumber(domain && domain.length)
+  if (!domain || !Array.isArray(domain) || !isNumber(domain[r])) return
   const jMax = domain[domain.length - 1], jMin = domain[0];
   const legend = [<p key='title'>{title}</p>]
 
@@ -795,10 +819,11 @@ const OSMTILES = {
  * @param {*} geoColumn geocode which is shared between `geojson` and `data`
  */
 const setGeojsonProps = (geojson, data, geoColumn) => {
+  const r = randomToNumber(data && data.length);
   if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
-    !geojson.features || !geojson.features[0] ||
-    !geojson.features[0].properties[geoColumn] || !data[0] || 
-    !data[0].properties || !data[0].properties[geoColumn]) return null
+    !geojson.features || !geojson.features[r] ||
+    !geojson.features[r].properties[geoColumn] || !data[r] || 
+    !data[r].properties || !data[r].properties[geoColumn]) return null
   // for now modify the object itself
   geojson.features.forEach(feature => {
     for (let i = 0; i < data.length; i++) {
@@ -825,6 +850,23 @@ const getFirstDateColumnName = (obj) => {
   return Object.keys(obj).filter(e => r.test(e))[0]
 }
 
+const getMessage = (array) => {
+  return array && array.length &&
+  array.length + " row" + (array.length > 1 ? "s" : "")
+}
+const getMainMessage = (filtered, unfiltered) => {
+  if(filtered && filtered.length && unfiltered && unfiltered) {
+    return getMessage(filtered) + " (total: " + unfiltered.length + ")"
+  } else if(filtered && filtered.length) {
+    return getMessage(filtered)
+    // TODO: check all rows before declaring
+  } else if(unfiltered && unfiltered.length && 
+    !unfiltered[randomToNumber(unfiltered.length)].geometry) {
+    return getMessage(unfiltered) + " - no geometry"
+  } else {
+    return "Nothing to show"
+  }
+}
 export {
   colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
@@ -842,6 +884,7 @@ export {
   searchNominatom,
   generateLegend,
   generateDomain,
+  getMainMessage,
   convertRange,
   getCentroid,
   shortenName,

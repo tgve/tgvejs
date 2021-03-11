@@ -1,7 +1,9 @@
 import { sample } from 'underscore';
 import {firstLastNCharacters, humanize,
-  colorScale, generateDomain, xyObjectByProperty
+  colorScale, generateDomain, xyObjectByProperty,
+  suggestDeckLayer
 } from '../utils';
+import { LAYERSTYLES } from '../Constants';
 
 const sampleGeojson = { "type": "FeatureCollection",
 "features": [
@@ -69,7 +71,11 @@ test("generateDomain", () => {
 })
 
 test("xyObjectByProperty", () => {
-  console.log(xyObjectByProperty(sampleGeojson.features, "prop0"))
   expect(xyObjectByProperty(sampleGeojson.features, "prop0"))
   .toHaveLength(2)
+})
+
+test("suggestDeckLayer", () => {
+  const s = suggestDeckLayer(sampleGeojson.features)
+  expect(LAYERSTYLES).toContain(s)
 })

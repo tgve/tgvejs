@@ -40,7 +40,6 @@ export default function Variables(props) {
   // describe first feature
   const description = describeFeatureVariables(unfilteredData[0]);
   const dataCols = Object.keys(unfilteredData[0].properties)
-    .filter(e => e !== "date") // hardcode
     .map(e => ({
       // Format: Column Name [String]
       id: humanize(e) + " [" + description[e].name + "]",
@@ -49,7 +48,7 @@ export default function Variables(props) {
 
   // unique set of keys
   let syncColumns = Array.from(new Set(columns.map(e => e.value).concat(
-    Object.keys(multiVarSelect).filter(e => e !== "date") // hardcode
+    Object.keys(multiVarSelect)
   )));
   // populate baseweb objects using description
   syncColumns = syncColumns.map(e => ({

@@ -25,12 +25,13 @@ import bbox from '@turf/bbox';
 import _ from 'underscore';
 
 import {
-  fetchData, generateDeckLayer,
-  getParamsFromSearch, getBbx,
-  isMobile, colorScale, OSMTILES,
+  fetchData, generateDeckLayer, suggestDeckLayer,
+  getParamsFromSearch, getBbx, isMobile, colorScale, OSMTILES,
   colorRanges, generateDomain, setGeojsonProps,
-  convertRange, getMin, getMax, isURL, getFirstDateColumnName, generateLegend, humanize, colorRangeNamesToInterpolate,
+  convertRange, getMin, getMax, isURL, getFirstDateColumnName, 
+  generateLegend, humanize, colorRangeNamesToInterpolate,
 } from './utils';
+import { randomToNumber } from './JSUtils';
 import Constants, { LIGHT_SETTINGS } from './Constants';
 import DeckSidebarContainer from
   './components/decksidebar/DeckSidebarContainer';
@@ -256,7 +257,6 @@ export default class Welcome extends React.Component {
         return
       };
     }
-    console.log(data);
     const geomType = sfType(
       geography ? geography.features[0] : data[0]
     ).toLowerCase();
@@ -283,8 +283,10 @@ export default class Welcome extends React.Component {
       }
     }
     let layerStyle = (filter && filter.what ===
-      'layerStyle' && filter.selected) || this.state.layerStyle || 'grid';
-    if (geomType !== "point") layerStyle = "geojson"
+      'layerStyle' && filter.selected) || this.state.layerStyle || 
+      suggestDeckLayer(geography ? geography.features : data);
+    // TODO: incorporate this into suggestDeckLayer
+    if (!new RegExp("point", "i").test(geomType)) layerStyle = "geojson"
     const switchToIcon = data.length < iconLimit && !column && 
     (!filter || filter.what !== 'layerStyle') && geomType === "point";
     if (switchToIcon) layerStyle = 'icon';
@@ -393,9 +395,7 @@ export default class Welcome extends React.Component {
     this.setState({
       alert: switchToIcon ? { content: 'Switched to icon mode. ' } : null,
       loading: false,
-      // do not save if not given else leave it as it is
-      layerStyle: filter && filter.what ===
-        'layerStyle' ? filter.selected : this.state.layerStyle,  
+      layerStyle,
       geomType,
       tooltip: "",
       filtered: data,
@@ -562,6 +562,9 @@ export default class Welcome extends React.Component {
           }
           urlCallback={(url_returned, geojson_returned) => {
             this.setState({
+              // TODO: full sync in future
+              geography: null,
+              column: null,
               tooltip: "",
               road_type: "",
               radius: 100,

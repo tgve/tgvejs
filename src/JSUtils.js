@@ -116,9 +116,14 @@ function isEmptyOrSpaces(str){
   return str === null || str.match(/^ *$/) !== null;
 }
 
+function randomToNumber (n = 0) {
+  return Math.floor(Math.random() * n)
+}
+
+exports.randomToNumber = randomToNumber;
+exports.isBoolean = isBoolean;
 exports.isString = isString;
 exports.isNumber = isNumber;
-exports.isBoolean = isBoolean;
 exports.isObject = isObject;
 exports.isArray = isArray;
 exports.isDate = isDate;
