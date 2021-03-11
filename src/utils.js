@@ -198,7 +198,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       radiusMinPixels: 1,
       radiusMaxPixels: 100,
       getPosition: d => d.geometry.coordinates,
-      getRadius: d => Math.sqrt(d.exits),
+      // getRadius: d => Math.sqrt(d.exits),
       getColor: d => [255, 140, 0],
       onHover: renderTooltip
     }
@@ -856,7 +856,8 @@ const getMessage = (array) => {
 }
 const getMainMessage = (filtered, unfiltered) => {
   if(filtered && filtered.length && unfiltered && unfiltered) {
-    return getMessage(filtered) + " (total: " + unfiltered.length + ")"
+    return getMessage(filtered) + (filtered.length < unfiltered.length ? 
+    " (" + ((filtered.length/unfiltered.length)*100).toFixed(2) + "%)" : "")
   } else if(filtered && filtered.length) {
     return getMessage(filtered)
     // TODO: check all rows before declaring

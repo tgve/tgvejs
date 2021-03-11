@@ -86,7 +86,8 @@ export default class DeckSidebar extends React.Component {
 
     // TODO: more comprehensive method needed
     // last reg is "" string which is undefined
-    const isPoints = !layerStyle || new RegExp("grid|sgrid|hex").test(layerStyle);
+    const withRadius = !layerStyle || 
+    new RegExp("grid|sgrid|hex|scatter", "i").test(layerStyle);
 
     const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
@@ -223,22 +224,6 @@ export default class DeckSidebar extends React.Component {
                       />
                     </>
                   }
-                  {/* TODO: example of generating vis based on column
-                  cloudl now be deleted. */}
-
-                  {/* { //wait until onDragSelected of Plotly is configured.
-                    columnData &&
-                    <GenericPlotly dark={dark}
-                      yaxis={{ showgrid: false }}
-                      xaxis={{ showgrid: false }}
-                      data={[{
-                        showlegend: false, type: 'bar',
-                        x: columnData.map(e => e.x),
-                        y: columnData.map(e => e.y),
-                        marker: { color: TURQUOISE_RANGE[0] }
-                      }]}
-                      title={humanize(column)} />
-                  } */}
                   {<SeriesPlot
                     dark={dark}
                     data={columnPlot.data}
@@ -272,7 +257,7 @@ export default class DeckSidebar extends React.Component {
                       typeof colourCallback === 'function' &&
                       colourCallback(color)} />
                   }
-                  {notEmpty && isPoints &&
+                  {notEmpty && withRadius &&
                     <div>
                       <h5>Radius</h5>
                       <Slider
@@ -338,7 +323,7 @@ export default class DeckSidebar extends React.Component {
                       })
                     }
                   />
-                  {notEmpty && isPoints &&
+                  {notEmpty && withRadius &&
                     <Checkbox
                       onChange={() => toggleHexPlot && toggleHexPlot()}
                     >Hex Plot</Checkbox>
