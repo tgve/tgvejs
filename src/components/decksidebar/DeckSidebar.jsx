@@ -11,7 +11,7 @@ import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   xyObjectByProperty, percentDiv,
   searchNominatom, firstLastNCharacters,
-  humanize
+  humanize, getMainMessage
 } from '../../utils';
 import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
@@ -49,7 +49,7 @@ export default class DeckSidebar extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { data, alert, loading } = this.props;
+    const { data, alert, loading, layerStyle } = this.props;
     const { elevation, radius, reset, year,
       barChartVariable } = this.state;
     // avoid rerender as directly operating on document.get* 
@@ -60,6 +60,7 @@ export default class DeckSidebar extends React.Component {
       radius !== nextState.radius ||
       alert !== nextProps.alert ||
       loading !== nextProps.loading ||
+      layerStyle !== nextProps.layerStyle ||
       barChartVariable !== nextState.barChartVariable) return true;
     //TODO:  a more functional way is needed        
     if (data && nextProps && nextProps.data &&
@@ -85,7 +86,8 @@ export default class DeckSidebar extends React.Component {
 
     // TODO: more comprehensive method needed
     // last reg is "" string which is undefined
-    const isPoints = !layerStyle || new RegExp("grid|sgrid|hex").test(layerStyle);
+    const withRadius = !layerStyle || 
+    new RegExp("grid|sgrid|hex|scatter", "i").test(layerStyle);
 
     const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
@@ -118,20 +120,14 @@ export default class DeckSidebar extends React.Component {
           }}
           className="side-panel">
           <RBAlert alert={alert} />
-          <div
-            style={{
-              background: dark ? '#29323C' : '#eee'
-            }}
-            className="side-pane-header">
-            <h2>{data && data.length ?
-              data.length + " row" + (data.length > 1 ? "s" : "") + "."
-              : "Nothing to show"}
-            </h2>
-            {notEmpty &&
-              <h6 className="truncate">
-                dataset: {firstLastNCharacters(datasetName, 15)}
-              </h6>}
-          </div>
+          {this._headerComponent(dark,
+            <><h2>{getMainMessage(data, unfilteredData)}</h2>
+              {notEmpty &&
+                <h6 className="truncate">
+                  dataset: {firstLastNCharacters(datasetName, 15)}
+                </h6>
+            }</>)
+          }
           <div>
             <DataInput
               toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
@@ -228,22 +224,6 @@ export default class DeckSidebar extends React.Component {
                       />
                     </>
                   }
-                  {/* TODO: example of generating vis based on column
-                  cloudl now be deleted. */}
-
-                  {/* { //wait until onDragSelected of Plotly is configured.
-                    columnData &&
-                    <GenericPlotly dark={dark}
-                      yaxis={{ showgrid: false }}
-                      xaxis={{ showgrid: false }}
-                      data={[{
-                        showlegend: false, type: 'bar',
-                        x: columnData.map(e => e.x),
-                        y: columnData.map(e => e.y),
-                        marker: { color: TURQUOISE_RANGE[0] }
-                      }]}
-                      title={humanize(column)} />
-                  } */}
                   {<SeriesPlot
                     dark={dark}
                     data={columnPlot.data}
@@ -277,7 +257,7 @@ export default class DeckSidebar extends React.Component {
                       typeof colourCallback === 'function' &&
                       colourCallback(color)} />
                   }
-                  {notEmpty && isPoints &&
+                  {notEmpty && withRadius &&
                     <div>
                       <h5>Radius</h5>
                       <Slider
@@ -343,7 +323,7 @@ export default class DeckSidebar extends React.Component {
                       })
                     }
                   />
-                  {notEmpty && isPoints &&
+                  {notEmpty && withRadius &&
                     <Checkbox
                       onChange={() => toggleHexPlot && toggleHexPlot()}
                     >Hex Plot</Checkbox>
@@ -384,6 +364,7 @@ export default class DeckSidebar extends React.Component {
               </Tabs>
             </div>
             <div className="space"></div>
+            {this._headerComponent(dark, "Vis: " + (layerStyle || "None"))}
             <form className="search-form" onSubmit={(e) => {
               e.preventDefault();
               searchNominatom(this.state.search, (json) => {
@@ -419,6 +400,17 @@ export default class DeckSidebar extends React.Component {
         </div>
       </>
     )
+  }
+
+  _headerComponent(dark, content) {
+    return(
+    <div
+      style={{
+        background: dark ? '#29323C' : '#eee'
+      }}
+      className="side-pane-header">
+        {content}
+    </div>)
   }
 }
 

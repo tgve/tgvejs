@@ -25,12 +25,13 @@ import bbox from '@turf/bbox';
 import _ from 'underscore';
 
 import {
-  fetchData, generateDeckLayer,
-  getParamsFromSearch, getBbx,
-  isMobile, colorScale, OSMTILES,
+  fetchData, generateDeckLayer, suggestDeckLayer,
+  getParamsFromSearch, getBbx, isMobile, colorScale, OSMTILES,
   colorRanges, generateDomain, setGeojsonProps,
-  convertRange, getMin, getMax, isURL, getFirstDateColumnName, generateLegend, humanize, colorRangeNamesToInterpolate,
+  convertRange, getMin, getMax, isURL, getFirstDateColumnName, 
+  generateLegend, humanize, colorRangeNamesToInterpolate,
 } from './utils';
+import { randomToNumber } from './JSUtils';
 import Constants, { LIGHT_SETTINGS } from './Constants';
 import DeckSidebarContainer from
   './components/decksidebar/DeckSidebarContainer';
@@ -256,7 +257,6 @@ export default class Welcome extends React.Component {
         return
       };
     }
-    console.log(data);
     const geomType = sfType(
       geography ? geography.features[0] : data[0]
     ).toLowerCase();
@@ -283,13 +283,16 @@ export default class Welcome extends React.Component {
       }
     }
     let layerStyle = (filter && filter.what ===
-      'layerStyle' && filter.selected) || this.state.layerStyle || 'grid';
-    if (geomType !== "point") layerStyle = "geojson"
+      'layerStyle' && filter.selected) || this.state.layerStyle || 
+      suggestDeckLayer(geography ? geography.features : data);
+    // TODO: incorporate this into suggestDeckLayer
+    if (!new RegExp("point", "i").test(geomType)) layerStyle = "geojson"
     const switchToIcon = data.length < iconLimit && !column && 
     (!filter || filter.what !== 'layerStyle') && geomType === "point";
     if (switchToIcon) layerStyle = 'icon';
     const options = {
       radius: radius ? radius : this.state.radius,
+      radiusScale: radius ? radius: this.state.radius,
       cellSize: radius ? radius : this.state.radius,
       elevationScale: elevation ? elevation : this.state.elevation,
       lightSettings: LIGHT_SETTINGS,
@@ -299,6 +302,8 @@ export default class Welcome extends React.Component {
       options.getPosition = d => d.geometry.coordinates
       // options.getWeight = d => d.properties[columnNameOrIndex]
     }
+    // generate a domain
+    const domain = generateDomain(data, columnNameOrIndex);
     if (geomType === 'linestring') {
       layerStyle = "line"
       // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
@@ -327,24 +332,22 @@ export default class Welcome extends React.Component {
       }
       if (+(data[0] && data[0].properties &&
         data[0].properties[columnNameOrIndex])) {
-        const colArray = data.map(f => f.properties[columnNameOrIndex])
-        const max = getMax(colArray);
-        const min = getMin(colArray)
         options.getWidth = d => {
-          let newMax = 10, newMin = 0.1;
-          if (data.length > 100000) {
-            newMax = 0.5; newMin = 0.005
-          }
-          const r = convertRange(
-            d.properties[columnNameOrIndex], {
-            oldMin: min, oldMax: max, newMax: newMax, newMin: newMin
-          })
-          return r
+          return this._newRange(data, d, columnNameOrIndex, 
+            getMin(domain), getMax(domain));
         }; // avoid id
       }
     }
-    // generate a domain
-    const domain = generateDomain(data, columnNameOrIndex);
+    // TODO 
+    if (layerStyle === 'scatter') {
+      if (+(data[0] && data[0].properties &&
+        data[0].properties[columnNameOrIndex])) {
+        options.getRadius = d => {
+          return this._newRange(data, d, columnNameOrIndex,
+            getMin(domain), getMax(domain));
+        }
+      }
+    }
     let newLegend = this.state.legend;
 
     if (geomType === "polygon" || geomType === "multipolygon" ||
@@ -393,9 +396,7 @@ export default class Welcome extends React.Component {
     this.setState({
       alert: switchToIcon ? { content: 'Switched to icon mode. ' } : null,
       loading: false,
-      // do not save if not given else leave it as it is
-      layerStyle: filter && filter.what ===
-        'layerStyle' ? filter.selected : this.state.layerStyle,  
+      layerStyle,
       geomType,
       tooltip: "",
       filtered: data,
@@ -562,6 +563,9 @@ export default class Welcome extends React.Component {
           }
           urlCallback={(url_returned, geojson_returned) => {
             this.setState({
+              // TODO: full sync in future
+              geography: null,
+              column: null,
               tooltip: "",
               road_type: "",
               radius: 100,
@@ -614,4 +618,16 @@ export default class Welcome extends React.Component {
   _resize = () => {
     this.setState({ width: window.innerWidth, height: window.innerHeight });
   };
+
+  _newRange (data, d, columnNameOrIndex, min, max) {
+    let newMax = 10, newMin = 0.1;
+    if (data.length > 100000) {
+      newMax = 0.5; newMin = 0.005;
+    }
+    const r = convertRange(
+      d.properties[columnNameOrIndex], {
+      oldMin: min, oldMax: max, newMax: newMax, newMin: newMin
+    });
+    return r;
+  }
 }
