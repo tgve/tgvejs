@@ -4,7 +4,7 @@
  * The crucial bits are:
  * 
      this.state = {
-      data,            <= main data holding param   
+      data,            <= main data holding param
       layers: [],      <= mapgl layers object
       initialViewState:<= deckgl/mapgl initial state object
       legend: false    <= map legend to avoid rerender.
@@ -28,8 +28,8 @@ import {
   fetchData, generateDeckLayer,
   getParamsFromSearch, getBbx,
   isMobile, colorScale, OSMTILES,
-  colorRanges, generateDomain,
-  convertRange, getMin, getMax, isURL, COLOR_RANGE
+  colorRanges, generateDomain, setGeojsonProps,
+  convertRange, getMin, getMax, isURL, getFirstDateColumnName, generateLegend, humanize, colorRangeNamesToInterpolate,
 } from './utils';
 import Constants, { LIGHT_SETTINGS } from './Constants';
 import DeckSidebarContainer from
@@ -39,9 +39,10 @@ import history from './history';
 import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
-import { isNumber } from './JSUtils';
+import { DateTime } from 'luxon';
 
-const URL = (process.env.NODE_ENV === 'development' ? Constants.DEV_URL : Constants.PRD_URL);
+const URL = (process.env.NODE_ENV === 'development' ? 
+  Constants.DEV_URL : Constants.PRD_URL);
 const defualtURL = process.env.REACT_APP_DEFAULT_URL || (URL + "/api/stats19");
 
 // Set your mapbox access token here
@@ -51,7 +52,8 @@ const gradient = {
   height: '200px',
   // TODO: which browsers?
   backgroundColor: 'red', /* For browsers that do not support gradients */
-  backgroundImage: 'linear-gradient(to top, red , yellow)' /* Standard syntax (must be last) */
+  /* Standard syntax (must be last) */
+  backgroundImage: 'linear-gradient(to top, red , yellow)' 
 }
 
 export default class Welcome extends React.Component {
@@ -74,23 +76,27 @@ export default class Welcome extends React.Component {
       loading: true,
       layers: [],
       backgroundImage: gradient.backgroundImage,
-      radius: 100,
-      elevation: 4,
+      radius: Constants.RADIUS,
+      elevation: Constants.ELEVATION,
       mapStyle: MAPBOX_ACCESS_TOKEN ? ("mapbox://styles/mapbox/" +
         (props.dark ? "dark" : "streets") + "-v9") : OSMTILES,
       initialViewState: init,
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
-      colourName: 'default',
-      iconLimit: 500,
+      colorName: 'default',
+      iconLimit: Constants.ICONLIMIT,
       legend: false,
       width: window.innerWidth, height: window.innerHeight,
-      tooltipColumns: {column1: "accident_severity" , column2: "date"}
+      tooltipColumns: {column1: "accident_severity" , column2: "date"},
+      geographyURL: process.env.REACT_APP_GEOGRAPHY_URL || null,
+      geographyColumn: process.env.REACT_APP_GEOGRAPHY_COLUMN_NAME || null,
+      column: process.env.REACT_APP_COLUMN_NAME || null
     }
     this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
     this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
     this._fitViewport = this._fitViewport.bind(this);
+    this._initWithGeojson = this._initWithGeojson.bind(this);
   }
 
   componentDidMount() {
@@ -110,31 +116,71 @@ export default class Welcome extends React.Component {
   _fetchAndUpdateState(aURL, customError) {
     if (aURL && !isURL(aURL)) return;
     if (customError && typeof (customError) !== 'object') return;
-    // TODO: more sanity checks?
-    const fullURL = aURL ?
-      // TODO: decide which is better.
-      // URL + "/api/url?q=" + aURL : // get the server to parse it 
-      aURL : // do not get the server to parse it 
-      defualtURL;
+    const fullURL = aURL ? aURL : defualtURL;
 
+    // geojson URL must be consistent just like defaultURL
+    // geographyURL
     fetchData(fullURL, (data, error) => {
-      if (!error) {
-        // this._updateURL(viewport)
-        this.setState({
-          loading: false,
-          data: data,
-          alert: customError || null
+      const { geographyURL } = this.state;
+      if(isURL(geographyURL)) {
+        // it will always show geojson empty as column is not set
+        fetchData(geographyURL, (geojson, geoErr) => {
+          if(!geoErr) {
+            //TODO: dev code - remove
+            geojson.features.map(feature => {
+              const o = feature.properties;
+              Object.defineProperty(o, "LAD",
+                Object.getOwnPropertyDescriptor(o, "LAD13CD"));
+              delete o["LAD13CD"];
+            })
+            this.setState({
+              loading: false,
+              geography: geojson,
+              data: data,
+              alert: customError || null
+            });
+            this._fitViewport(geojson);
+            this._generateLayer();
+          } else {
+            this.setState({
+              loading: false,
+              alert: { content: 'Could not reach: ' + geographyURL }
+            });
+          }
         })
-        this._fitViewport(data)
-        this._generateLayer()
       } else {
-        this.setState({
-          loading: false,
-          alert: { content: 'Could not reach: ' + fullURL }
-        })
-        //network error?
+        this._initWithGeojson(error, data, customError, fullURL);
       }
     })
+  }
+
+  /**
+   * Helper function to simply set state with geojson `data` and 
+   * name the source with `fullURL`. The other params are error management.
+   * 
+   * @param {*} error any error to avoid setting data param
+   * @param {*} data geojson valid object to use throughout eAtlas
+   * @param {*} customError any custom error similar to `error` used by 
+   * `this.state.alert`
+   * @param {*} fullURL here used as naming source of data and shown on header
+   */
+  _initWithGeojson(error, data, customError, fullURL) {
+    if (!error) {
+      // this._updateURL(viewport)
+      this.setState({
+        loading: false,
+        data: data,
+        alert: customError || null
+      });
+      this._fitViewport(data);
+      this._generateLayer();
+    } else {
+      this.setState({
+        loading: false,
+        alert: { content: 'Could not reach: ' + fullURL }
+      });
+      //network error?
+    }
   }
 
   /**
@@ -152,18 +198,23 @@ export default class Welcome extends React.Component {
     const { radius, elevation, filter, cn } = values;
 
     if (filter && filter.what === 'mapstyle') {
+      const newStyle = "mapbox://styles/mapbox/" + filter.selected + "-v9";
       this.setState({
         mapStyle: !MAPBOX_ACCESS_TOKEN ? OSMTILES :
-          filter && filter.what === 'mapstyle' ? "mapbox://styles/mapbox/" + filter.selected + "-v9" : this.state.mapStyle,
+          filter && filter.what === 'mapstyle' ? filter.selected === "No map" ?
+          Constants.BLANKSTYLE : newStyle : this.state.mapStyle,
       })
       return;
     }
     let data = this.state.data && this.state.data.features
-    const { colourName, iconLimit } = this.state;
+    // data or geography and add column data
+    if (!data) return;
+
     let column = (filter && filter.what === 'column' && filter.selected) ||
       this.state.column;
+    const columnNameOrIndex = column || 1;
 
-    if (!data) return;
+    const { colorName, iconLimit, geography, geographyColumn } = this.state;
     if (filter && filter.what === "%") {
       data = data.slice(0, filter.selected / 100 * data.length)
     }
@@ -171,9 +222,10 @@ export default class Welcome extends React.Component {
     if (this.state.coords) {
       data = this.state.filtered;
     }
-    const geomType = sfType(data[0]).toLowerCase();
+
     //if resetting a value
     if (filter && filter.selected !== "") {
+      const yearColumn = getFirstDateColumnName(data[0].properties);
       data = data.filter(
         d => {
           if (filter.what === 'multi') {
@@ -181,8 +233,9 @@ export default class Welcome extends React.Component {
             const selected = filter.selected;
             // selected.var > Set()
             for (let each of Object.keys(selected)) {
-              const nextValue = each === "date" ?
-                d.properties[each].split("-")[0] : d.properties[each] + ""
+              const nextValue = each === yearColumn ?
+                DateTime.fromISO(d.properties[each]).year + "" : 
+                d.properties[each] + ""
               // each from selected must be in d.properties
               // *****************************
               // compare string to string
@@ -202,6 +255,31 @@ export default class Welcome extends React.Component {
           return (true)
         }
       )
+      // critical check
+      if (!data || !data.length) {
+        this.setState({
+          alert: { content: 'Filtering returns no results' }
+        })
+        return
+      };
+    }
+    const geomType = sfType(
+      geography ? geography.features[0] : data[0]
+    ).toLowerCase();
+    // needs to happen as soon as filtering is done
+    // assemble geometry from this.state.geometry if so
+    if (geomType === "polygon" || geomType === "multipolygon") {
+      // is there a geometry provided?
+      if (geography) {
+        // is geometry equal to or bigger than data provided?
+        if (data.length > geography.features.length) {
+          // for now just be aware
+          //TODO: alert or just stop it?
+        }
+        data = setGeojsonProps(geography, data, geographyColumn)
+        // it was data.features when this function started
+        data = data.features || data;
+      }
     }
     let layerStyle = (filter && filter.what ===
       'layerStyle' && filter.selected) || this.state.layerStyle || 'grid';
@@ -214,11 +292,8 @@ export default class Welcome extends React.Component {
       cellSize: radius ? radius : this.state.radius,
       elevationScale: elevation ? elevation : this.state.elevation,
       lightSettings: LIGHT_SETTINGS,
-      colorRange: colorRanges(cn || colourName)
+      colorRange: colorRanges(cn || colorName)
     };
-    // generate a domain
-    const columnNameOrIndex =
-      (filter && filter.what === 'column' && filter.selected) || column || 1;
     if (layerStyle === 'heatmap') {
       options.getPosition = d => d.geometry.coordinates
       // options.getWeight = d => d.properties[columnNameOrIndex]
@@ -242,12 +317,14 @@ export default class Welcome extends React.Component {
         }
       }
       if (layerStyle === 'line') {
-        // options.getSourceColor = d => [Math.sqrt(+(d.properties.base)) * 1000, 140, 0]
-        // options.getTargetColor = d => [Math.sqrt(+(d.properties.hs2)) * 1e13, 140, 0]
+        // options.getSourceColor = d => 
+        // [Math.sqrt(+(d.properties.base)) * 1000, 140, 0]
+        // options.getTargetColor = d => 
+        // [Math.sqrt(+(d.properties.hs2)) * 1e13, 140, 0]
         options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
         options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
       }
-      if (isNumber(data[0] && data[0].properties &&
+      if (+(data[0] && data[0].properties &&
         data[0].properties[columnNameOrIndex])) {
         const colArray = data.map(f => f.properties[columnNameOrIndex])
         const max = getMax(colArray);
@@ -265,15 +342,40 @@ export default class Welcome extends React.Component {
         }; // avoid id
       }
     }
+    // generate a domain
     const domain = generateDomain(data, columnNameOrIndex);
-    if (geomType === "polygon" || geomType === "multipolygon" || layerStyle === 'geojson') {
-      if(domain && domain.length > 50) {
-        options.getFillColor = d => COLOR_RANGE(d.properties[
-          isNumber(columnNameOrIndex) ? 
-          Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex
-        ])
-      } else{
-        options.getFillColor = (d) => colorScale(d, columnNameOrIndex, domain)
+    let newLegend = this.state.legend;
+
+    if (geomType === "polygon" || geomType === "multipolygon" ||
+      layerStyle === 'geojson') {
+      const getValue = (d) => 
+      // initialazied with 1 so +columnNameOrIndex is safe
+      d.properties[+columnNameOrIndex ?
+        Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]
+      const fill =  (d) => colorScale(
+        +getValue(d) ? +getValue(d) : getValue(d),
+        domain, 180, cn || this.state.colorName
+      )
+      options.getFillColor = fill;
+      // const triggerarray = data.map((d) => (d.properties[isNumber(columnNameOrIndex) ? 
+      //     Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]))
+      options.updateTriggers = {
+        getFillColor: [data.map((d) => fill(d))]
+      }
+      const isNumeric = +(data[0].properties[
+        +columnNameOrIndex ?
+        Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex
+      ])
+      if(isNumeric) {
+        newLegend = generateLegend(
+          {
+            domain,
+            title: humanize(column),
+            interpolate: colorRangeNamesToInterpolate(
+              cn || this.state.colorName
+            )
+          }
+        )
       }
     }
     if (layerStyle === 'barvis') {
@@ -281,7 +383,7 @@ export default class Welcome extends React.Component {
       d.geometry.coordinates[1], 0]
       if (data[0].properties.result) options.getRotationAngle = d =>
         d.properties.result.includes("gain from") ? 45 : 1
-      options.getScale = d => 200
+      options.getScale = 200
     }
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options
@@ -301,10 +403,11 @@ export default class Welcome extends React.Component {
       elevation: elevation ? elevation : this.state.elevation,
       road_type: filter && filter.what === 'road_type' ? filter.selected :
         this.state.road_type,
-      colourName: cn || colourName,
+      colorName: cn || colorName,
       column, // all checked
       coords: filter && filter.what === 'coords' ? filter.selected :
-        this.state.coords
+        this.state.coords,
+      legend: newLegend
     })
   }
 
@@ -453,8 +556,8 @@ export default class Welcome extends React.Component {
           alert={alert}
           unfilteredData={data && data.features}
           data={filtered}
-          colourCallback={(colourName) =>
-            this._generateLayer({ cn: colourName })
+          colourCallback={(colorName) =>
+            this._generateLayer({ cn: colorName })
           }
           urlCallback={(url_returned, geojson_returned) => {
             this.setState({
@@ -495,7 +598,6 @@ export default class Welcome extends React.Component {
           onlocationChange={(bboxLonLat) => {
             this._fitViewport(undefined, bboxLonLat)
           }}
-          showLegend={(legend) => this.setState({ legend })}
           datasetName={defualtURL}
         />
         {

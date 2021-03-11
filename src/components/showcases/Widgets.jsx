@@ -4,6 +4,7 @@ import { Slider } from 'baseui/slider';
 import GenerateUI from '../UI';
 import { DateTime } from "luxon";
 import { getPropertyValues } from '../../geojsonutils';
+import { getFirstDateColumnName } from '../../utils';
 
 const DateSlider = (props) => {
   const {data, multiVarSelect, onSelectCallback,
@@ -54,27 +55,25 @@ const DateSlider = (props) => {
 }
 
 /**
- * Currently this function works with one/two format three-piece-date
- * like yyyy-mm-dd to generate a slider returing the year as the value.
+ * Function currently only accepts ISO standard date/datetime.
+ * This function generates a "Year" slider with option to set
+ * year value given int he `option` object.
  * 
- * TODO: needs better (can be strict) form of 
- * handling date. Explicitly state year/number (could be months)
- * 
- * @param {*} options 
+ * @param {*} options in the form of { data, year, multiVarSelect, onSelectCallback,
+    callback }
  */
 const yearSlider = (options) => {
   const { data, year, multiVarSelect, onSelectCallback,
     callback } = options;
 
-  if (!(data && data.length > 1 &&
-    (data[0].properties.date || data[0].properties['YEAR']) &&
-    (DateTime.fromFormat(data[0].properties.date + '', 'yyyy-mm-dd').isValid ||
-      DateTime.fromFormat(data[0].properties['YEAR'] + '', 'yyyy').isValid))) {
-    return null
-  }
-  const years = getPropertyValues({ features: data }, "date")
+  if (!data || !data.length || !Object.keys(data[0].properties)) return null
+  const yearColumn = getFirstDateColumnName(data[0].properties)
+  // TODO: check every value before proceeding
+  if(!DateTime.fromISO(data[0].properties[yearColumn]).isValid) return null
+
+  const years = getPropertyValues({ features: data }, yearColumn)
     // returned 2009-01-02, convert to 2009
-    .map(e => +(e.split("-")[0])).sort()
+    .map(e => DateTime.fromISO(e).year).sort()
   return <GenerateUI
     title={
       <h5>Year(s): {year ? year :
@@ -82,8 +81,7 @@ const yearSlider = (options) => {
         {year &&
           <i style={{ fontSize: '2rem' }} className="fa fa-trash"
             onClick={() => {
-              multiVarSelect.date ?
-                delete multiVarSelect.date : delete multiVarSelect.YEAR;
+              delete multiVarSelect[yearColumn];
               typeof (onSelectCallback) === 'function' &&
                 onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
                   { what: '' } : { what: 'multi', selected: multiVarSelect });
@@ -98,8 +96,7 @@ const yearSlider = (options) => {
     onChange={(value) => {
       // the kye is one of `date` or `YEAR`
       // keep it the same in delete
-      multiVarSelect[data[0].properties.date ?
-        'date' : 'YEAR'] = new Set([value + ""]);
+      multiVarSelect[yearColumn] = new Set([value + ""]);
       callback({
         year: value + "",
         multiVarSelect

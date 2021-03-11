@@ -47,6 +47,7 @@
   margin-bottom: 15px;
   height: 50px;
 }
+
 .color-box {
   width: 16px;
   height: 16px;
@@ -54,6 +55,14 @@
   margin: 5px;
   border: 1px solid white;
   cursor: pointer;
+  position: relative;
+}
+
+.color-box-active {
+  border-color: black;
+  bottom: 3px; 
+  transition: 1s;
+  transition-timing-function: ease;
 }
 
 .tagcloud > i {

@@ -7,6 +7,8 @@ import {
 } from 'deck.gl';
 import {
   interpolateOrRd, // schemeBlues
+  interpolateReds, interpolateYlGnBu, interpolateGreens,
+  interpolateOranges, interpolateSinebow
 } from 'd3-scale-chromatic';
 import {scaleThreshold} from 'd3-scale';
 
@@ -14,7 +16,7 @@ import qs from 'qs'; // warning: importing it otherways would cause minificatino
 
 import mapping from './location-icon-mapping.json';
 import Constants from './Constants';
-import { isString, isNumber } from './JSUtils.js';
+import { isString, isNumber, isObject } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
 import { ArcLayer, PathLayer } from '@deck.gl/layers';
 import BarLayer from './components/customlayers/BarLayer'
@@ -59,6 +61,7 @@ const fetchData = (url, callback) => {
   fetch(url) // [0] => "", [1] => roads and [2] => qfactor
     .then((response) => response.text())
     .then((response) => {
+      // TODO: better check?
       if(url.endsWith("csv")) {
         csv2geojson.csv2geojson(response, (err, data) => {
           if (!err) {
@@ -352,17 +355,12 @@ const getCentroid = (coords) => {
   return center;
 }
 
-const convertRange = (oldValue = 2, values = {
-  oldMax: 10, oldMin: 1,
-  newMax: 1, newMin: 0
-}) => {
-  // thanks to https://stackoverflow.com/a/929107/2332101
-  // OldRange = (OldMax - OldMin)  
-  // NewRange = (NewMax - NewMin)  
-  // NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
-  let value = (((oldValue - values.oldMin) * (values.newMax - values.newMin))
+const convertRange = (oldValue = 2, values = 
+  { oldMax: 10, oldMin: 1, newMax: 1, newMin: 0 }) => {
+  const value = (((oldValue - values.oldMin) * (values.newMax - values.newMin))
     / (values.oldMax - values.oldMin)) + values.newMin
-  return +value.toFixed(2)
+  // console.log(oldValue, values);
+  return +(value.toFixed(2))
 }
 
 const getParamsFromSearch = (search) => {
@@ -460,6 +458,13 @@ const shortenName = (name, n = 26) => {
   return (shortened);
 }
 
+const firstLastNCharacters = (str, n = 5) => {
+  if (+str) return str;
+  return str.slice(0, n) + (str.length > n + n ?
+    "..." + str.slice(str.length - n, str.length) : 
+    str.length > n ? "..." : "")
+}
+
 const percentDiv = (title, left, cb, dark) => {
   return (
     <div
@@ -519,15 +524,18 @@ function hexToRgb(hex) {
  * Generate colour scale for unique set of values
  * based on the index of a value in an array domain of the set.
  * 
- * @param {object} d particular property to get color for from features
- * @param {*} p index/name of column to generate color scale with
- * @param {Array} domain output from generateDomain
+ * @param {any} v particular value to use in interpolateOrRd
+ * @param {Array} domain domain to use in interpolateOrRd
  * @param {Number} alpha value to add to colour pallete
+ * @param {String} colorName colorName found in `colorRangeNamesToInterpolate`
  */
-const colorScale = (d, p = 0, domain, alpha = 180) => {
-  if (!d || !isArray(domain) || !domain.length) return null;
-  const index = domain.indexOf(d.properties[p])
-  let rgb = interpolateOrRd(index / domain.length);
+const colorScale = (v, domain, alpha = 180, colorName) => {
+  if (!v || !isArray(domain) || !domain.length) return null;
+  const index = domain.indexOf(v)
+  const d3InterpolateFn = isString(colorName) && 
+  colorRangeNamesToInterpolate(colorName) ? 
+  colorRangeNamesToInterpolate(colorName) : interpolateOrRd;
+  let rgb = d3InterpolateFn(index / domain.length);
   rgb = rgb.substring(4, rgb.length - 1)
     .replace(/ /g, '')
     .split(',').map(x => +x); // deck.gl 8 int not strings
@@ -536,6 +544,23 @@ const colorScale = (d, p = 0, domain, alpha = 180) => {
 
 const colorRangeNames = ['inverseDefault', 'yellowblue', 'greens',
   'oranges', 'diverge', 'default'];
+
+const colorRangeNamesToInterpolate = (name) => {
+  if(!name) return interpolateOrRd;
+  if(name === colorRangeNames[0]) {
+    return interpolateReds;
+  } else if(name === colorRangeNames[1]) {
+    return interpolateYlGnBu;
+  } else if(name === colorRangeNames[2]) {
+    return interpolateGreens;
+  } else if(name === colorRangeNames[3]) {
+    return interpolateOranges;
+  } else if(name === colorRangeNames[4]) {
+    return interpolateSinebow;
+  } else {
+    return interpolateOrRd
+  }
+}
 
 const colorRanges = (name) => {
   if (!name) return
@@ -698,14 +723,14 @@ const generateDomain = (data, column) => {
   data.forEach(feature => {
     // uber move to show isochrones
     const i = feature.properties[
-      isNumber(column) ? Object.keys(feature.properties)[column] : column
+      +(column) ? Object.keys(feature.properties)[column] : column
     ]; // eliminate nulls
     if(!i) return;
-    if (isNumber(i) &&
+    if (+(i) &&
       column === 'Mean.Travel.Time..Seconds.') {
         domain.push(Math.floor(i / 300));
     } else {
-      if(isNumber(i)) {
+      if(+(i)) {
         domain.push(+(i))
       } else {
         domainIsNumeric = false;
@@ -759,8 +784,52 @@ const OSMTILES = {
   }]
 };
 
+/**
+ * 
+ * Function modifies `geojson` in place.
+ * 
+ * @param {*} geojson a gejson with matching `geoColumn` to `data` param
+ * {features:[], type:}
+ * @param {*} data a json {properties:{}} object with matchin 
+ * `geoColumn` to `geojson` param. Typically features of another geojons.
+ * @param {*} geoColumn geocode which is shared between `geojson` and `data`
+ */
+const setGeojsonProps = (geojson, data, geoColumn) => {
+  if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
+    !geojson.features || !geojson.features[0] ||
+    !geojson.features[0].properties[geoColumn] || !data[0] || 
+    !data[0].properties || !data[0].properties[geoColumn]) return null
+  // for now modify the object itself
+  geojson.features.forEach(feature => {
+    for (let i = 0; i < data.length; i++) {
+      if (feature.properties[geoColumn] === data[i].properties[geoColumn]) {
+        feature.properties = data[i].properties;
+        break;
+      }
+    }
+  });
+  return geojson
+}
+
+/**
+ * 
+ * @param {Object} obj Object with keys to compare keys to
+ * regex
+ * 
+ * @returns first key in the objec that matches the regex
+ */
+const getFirstDateColumnName = (obj) => {
+  if(!isObject(obj) || !Object.keys(obj)) return null
+  // find the date/time column with year in
+  const r = new RegExp(Constants.DATE_REGEX);
+  return Object.keys(obj).filter(e => r.test(e))[0]
+}
+
 export {
+  colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
+  getFirstDateColumnName,
+  firstLastNCharacters,
   getParamsFromSearch,
   xyObjectByProperty,
   suggestUIforNumber,
@@ -768,6 +837,7 @@ export {
   checkURLReachable,
   suggestDeckLayer,
   sortNumericArray,
+  setGeojsonProps,
   colorRangeNames,
   searchNominatom,
   generateLegend,
