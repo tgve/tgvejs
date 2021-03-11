@@ -76,15 +76,16 @@ export default class DeckSidebar extends React.Component {
   render() {
     const { elevation, radius, year, subsetBoundsChange,
       multiVarSelect, barChartVariable, datasetName } = this.state;
-    const { onChangeRadius, onChangeElevation, showLegend,
+    const { onChangeRadius, onChangeElevation,
       onSelectCallback, data, colourCallback, unfilteredData,
-      toggleSubsetBoundsChange, urlCallback, alert,
+      toggleSubsetBoundsChange, urlCallback, alert, layerStyle,
       onlocationChange, column, dark, toggleOpen, toggleHexPlot } = this.props;
 
     const notEmpty = data && data.length > 1;
 
     // TODO: more comprehensive method needed
-    const isPoints = new RegExp("grid|sgrid|hex").test(this.props.layerStyle);
+    // last reg is "" string which is undefined
+    const isPoints = !layerStyle || new RegExp("grid|sgrid|hex").test(layerStyle);
 
     const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
@@ -201,7 +202,7 @@ export default class DeckSidebar extends React.Component {
                   {notEmpty &&
                     Object.keys(data[0].properties)
                       .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
-                    this.props.layerStyle !== "grid" &&
+                    layerStyle !== "grid" &&
                     <>
                       <h6>Column for layer:</h6>
                       <MultiSelect
