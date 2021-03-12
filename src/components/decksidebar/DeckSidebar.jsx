@@ -149,8 +149,9 @@ export default class DeckSidebar extends React.Component {
                 kind={KIND.secondary} size={SIZE.compact}
                 onClick={() => {
                   resetState(undefined, true);
+                  // datasetName === defaultURL
                   typeof (urlCallback) === 'function'
-                    && urlCallback();
+                    && urlCallback(this.props.datasetName);
                   typeof (this.props.showLegend) === 'function' &&
                     this.props.showLegend(false);
                 }}>Reset</Button>

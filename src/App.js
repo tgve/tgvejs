@@ -1,4 +1,5 @@
 /**
+ * Alan Turing Geovisualization Engine (eAtlas)
  * 
  */
 import React, { Component } from 'react';
@@ -23,7 +24,8 @@ class App extends Component {
           <BaseProvider theme={DarkTheme}>
             <Welcome 
             dark={true}
-            //TODO or get it from a settings-json file/objeect
+            // TODO get these from a settings-json file/objeect
+            // as well as envs
             defaultURL={process.env.REACT_APP_DEFAULT_URL || defaultURL}
             tooltipColumns= {process.env.REACT_APP_TOOLTIP_COLUMNS || 
               tooltipColumns || {column1: "accident_severity" , column2: "date"}}

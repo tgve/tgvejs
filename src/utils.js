@@ -820,8 +820,8 @@ const OSMTILES = {
  */
 const setGeojsonProps = (geojson, data, geoColumn) => {
   // random must be used on the geojson not data
-  // as data can be bigger!
-  const r = randomToNumber(geojson && geojson.length);
+  // as data can be bigger
+  const r = randomToNumber(geojson && geojson.features.length);
   if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
     !geojson.features || !geojson.features[r] ||
     !geojson.features[r].properties[geoColumn] || !data[r] || 

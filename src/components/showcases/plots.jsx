@@ -47,26 +47,34 @@ const plotByPropertyByDate = (data, property, dark) => {
  * @param {Object} data 
  * @param {String} property 
  * @param {Boolean} dark 
+ * @param {String} type Plotly accepted chart type, defaults to "lines"
  */
-const plotByProperty = (data, property, dark) => {
+const plotByProperty = (data, property, dark, type, noLimit) => {
   if (!data || !isArray(data) || !data.length) return null;
+  const limit = 10;
+  const isBarAndOverLimit = (!type || type !== "lines") && 
+  !noLimit && data.length > limit
 
   const data_by_prop = data[0].properties.hasOwnProperty(property) &&
-    xyObjectByProperty(data, property)
+    xyObjectByProperty(isBarAndOverLimit ? data.slice(0, limit) : data, property)
   
   if(!data_by_prop) return null;
 
   return (
-    <GenericPlotly dark={dark}
-      yaxis={{ showgrid: false }}
-      xaxis={{ showgrid: false }}
-      data={[{
-        // showlegend: false,
-        x: data_by_prop.map(e => +(e.x)),
-        y: data_by_prop.map(e => +(e.y)),
-        marker: { color: TURQUOISE_RANGE[0] }
-      }]}
-      title={humanize(property)} />
+    <>
+      {isBarAndOverLimit && <h4>Plotting first {limit} values:</h4>}
+      <GenericPlotly dark={dark}
+        yaxis={{ showgrid: false }}
+        xaxis={{ showgrid: false }}
+        data={[{
+          // showlegend: false,
+          x: data_by_prop.map(e => +(e.x) ? +(e.x) : e.x),
+          y: data_by_prop.map(e => +(e.y) ? +(e.y) : e.y),
+          marker: { color: TURQUOISE_RANGE[0] },
+          type: type || 'lines'
+        }]}
+        title={humanize(property)} />
+    </>
   )
 }
 
