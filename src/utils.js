@@ -7,6 +7,8 @@ import {
 } from 'deck.gl';
 import {
   interpolateOrRd, // schemeBlues
+  interpolateReds, interpolateYlGnBu, interpolateGreens,
+  interpolateOranges, interpolateSinebow
 } from 'd3-scale-chromatic';
 import {scaleThreshold} from 'd3-scale';
 
@@ -14,7 +16,7 @@ import qs from 'qs'; // warning: importing it otherways would cause minificatino
 
 import mapping from './location-icon-mapping.json';
 import Constants from './Constants';
-import { isString, isNumber } from './JSUtils.js';
+import { isString, isNumber, isObject, randomToNumber } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
 import { ArcLayer, PathLayer } from '@deck.gl/layers';
 import BarLayer from './components/customlayers/BarLayer'
@@ -22,6 +24,7 @@ import { isArray } from 'underscore';
 import csv2geojson from 'csv2geojson';
 import { ascending } from 'd3-array';
 import atlas from './img/location-icon-atlas.png';
+import { sfType } from './geojsonutils';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -59,6 +62,7 @@ const fetchData = (url, callback) => {
   fetch(url) // [0] => "", [1] => roads and [2] => qfactor
     .then((response) => response.text())
     .then((response) => {
+      // TODO: better check?
       if(url.endsWith("csv")) {
         csv2geojson.csv2geojson(response, (err, data) => {
           if (!err) {
@@ -194,7 +198,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       radiusMinPixels: 1,
       radiusMaxPixels: 100,
       getPosition: d => d.geometry.coordinates,
-      getRadius: d => Math.sqrt(d.exits),
+      // getRadius: d => Math.sqrt(d.exits),
       getColor: d => [255, 140, 0],
       onHover: renderTooltip
     }
@@ -225,7 +229,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
   } else if (name === 'icon') {
     /**
      * There are three files the layer need to display the icons:
-     * (1) location-icon-atlas.png which needs to be in src for npm package
+     * (1) location-icon-atlas.png which is in /public
      * (2) ./location-icon-mapping.json which deals with mapping the icon to pixels on (1)
      * (3) ./icon-cluster-layer.json which is a DeckGL CompositLayer component that
      * does the clustering.
@@ -242,6 +246,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       wrapLongitude: true,
       // getIcon: d => 'marker-1',
       // getSize: d => 5,
+      // getColor: d => [Math.sqrt(d.exits), 140, 0],
       onHover: renderTooltip
     }
     addOptionsToObject(options, iconObj)
@@ -261,7 +266,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     return (new ScreenGridLayer(sgridObject))
   } else if (name === 'grid') {
     const gridObject = {
-      id: 'screen_grid',
+      id: 'grid',
       data,
       pickable: true,
       extruded: true,
@@ -351,13 +356,12 @@ const getCentroid = (coords) => {
   return center;
 }
 
-const convertRange = (oldValue = 2, values = {
-  oldMax: 10, oldMin: 1,
-  newMax: 1, newMin: 0
-}) => {
-  let value = (((oldValue - values.oldMin) * (values.newMax - values.newMin))
+const convertRange = (oldValue = 2, values = 
+  { oldMax: 10, oldMin: 1, newMax: 1, newMin: 0 }) => {
+  const value = (((oldValue - values.oldMin) * (values.newMax - values.newMin))
     / (values.oldMax - values.oldMin)) + values.newMin
-  return +value.toFixed(2)
+  // console.log(oldValue, values);
+  return +(value.toFixed(2))
 }
 
 const getParamsFromSearch = (search) => {
@@ -379,6 +383,10 @@ const getParamsFromSearch = (search) => {
 
 const getBbx = (bounds) => {
   if (!bounds) return null;
+  // xmin = -1.6449
+  // ymin = 53.82925
+  // xmax = -1.6270
+  // ymax = 53.8389
   let xmin = bounds._sw.lng;
   let xmax = bounds._ne.lng;
   let ymin = bounds._sw.lat;
@@ -394,7 +402,40 @@ const getBbx = (bounds) => {
   return ({ xmin, ymin, xmax, ymax })
 }
 
-const suggestUIforNumber = (number) => {   
+/**
+ * Current version simply picks up a feature out of
+ * array of features, compares it to the available 
+ * list of DeckGL layers supported by eAtlas
+ * and returns one of them.
+ * 
+ * @param {Array} features 
+ * @returns 
+ */
+const suggestDeckLayer = (features) => {
+  const r = randomToNumber(features && features.length)
+  if(!features || !features[r].geometry ||
+    !features[r].geometry.type) return null
+  // basic version should suggest a layer based
+  // on a simple check of a random geometry type from 
+  // array of features
+  // TODO: go through each feature? in case of features.
+  const type = sfType(features[r]);
+  // Constants.LAYERSTYLES
+  if(new RegExp("point", 'i').test(type)) {
+    return "grid"
+  } else if(new RegExp("line", 'i').test(type)) {
+    return "line"
+  } else {
+    return "geojson"
+  }
+  
+}
+const suggestUIforNumber = (number) => {
+  // "checkbox",     
+  // "radio",        
+  // "buttongroups", 
+  // "dropdown",     
+  // "slider"])      
   const { UI_LIST } = Constants;
   if (!number) return UI_LIST[1];
   if (number === 1) {
@@ -438,6 +479,13 @@ const shortenName = (name, n = 26) => {
     shortened = shortened.substring(0, 10) + "..." + (extension || "")
   }
   return (shortened);
+}
+
+const firstLastNCharacters = (str, n = 5) => {
+  if (+str) return str;
+  return str.slice(0, n) + (str.length > n + n ?
+    "..." + str.slice(str.length - n, str.length) : 
+    str.length > n ? "..." : "")
 }
 
 const percentDiv = (title, left, cb, dark) => {
@@ -499,15 +547,18 @@ function hexToRgb(hex) {
  * Generate colour scale for unique set of values
  * based on the index of a value in an array domain of the set.
  * 
- * @param {object} d particular property to get color for from features
- * @param {*} p index/name of column to generate color scale with
- * @param {Array} domain output from generateDomain
+ * @param {any} v particular value to use in interpolateOrRd
+ * @param {Array} domain domain to use in interpolateOrRd
  * @param {Number} alpha value to add to colour pallete
+ * @param {String} colorName colorName found in `colorRangeNamesToInterpolate`
  */
-const colorScale = (d, p = 0, domain, alpha = 180) => {
-  if (!d || !isArray(domain) || !domain.length) return null;
-  const index = domain.indexOf(d.properties[p])
-  let rgb = interpolateOrRd(index / domain.length);
+const colorScale = (v, domain, alpha = 180, colorName) => {
+  if (!v || !isArray(domain) || !domain.length) return null;
+  const index = domain.indexOf(v)
+  const d3InterpolateFn = isString(colorName) && 
+  colorRangeNamesToInterpolate(colorName) ? 
+  colorRangeNamesToInterpolate(colorName) : interpolateOrRd;
+  let rgb = d3InterpolateFn(index / domain.length);
   rgb = rgb.substring(4, rgb.length - 1)
     .replace(/ /g, '')
     .split(',').map(x => +x); // deck.gl 8 int not strings
@@ -516,6 +567,23 @@ const colorScale = (d, p = 0, domain, alpha = 180) => {
 
 const colorRangeNames = ['inverseDefault', 'yellowblue', 'greens',
   'oranges', 'diverge', 'default'];
+
+const colorRangeNamesToInterpolate = (name) => {
+  if(!name) return interpolateOrRd;
+  if(name === colorRangeNames[0]) {
+    return interpolateReds;
+  } else if(name === colorRangeNames[1]) {
+    return interpolateYlGnBu;
+  } else if(name === colorRangeNames[2]) {
+    return interpolateGreens;
+  } else if(name === colorRangeNames[3]) {
+    return interpolateOranges;
+  } else if(name === colorRangeNames[4]) {
+    return interpolateSinebow;
+  } else {
+    return interpolateOrRd
+  }
+}
 
 const colorRanges = (name) => {
   if (!name) return
@@ -642,7 +710,8 @@ const ATILOGO = (dark = true) => (
 const generateLegend = (options) => {
   //quick check 
   const { domain, interpolate = interpolateOrRd, title } = options;
-  if (!domain || !Array.isArray(domain) || !isNumber(domain[0])) return
+  const r = randomToNumber(domain && domain.length)
+  if (!domain || !Array.isArray(domain) || !isNumber(domain[r])) return
   const jMax = domain[domain.length - 1], jMin = domain[0];
   const legend = [<p key='title'>{title}</p>]
 
@@ -678,14 +747,14 @@ const generateDomain = (data, column) => {
   data.forEach(feature => {
     // uber move to show isochrones
     const i = feature.properties[
-      isNumber(column) ? Object.keys(feature.properties)[column] : column
+      +(column) ? Object.keys(feature.properties)[column] : column
     ]; // eliminate nulls
     if(!i) return;
-    if (isNumber(i) &&
+    if (+(i) &&
       column === 'Mean.Travel.Time..Seconds.') {
         domain.push(Math.floor(i / 300));
     } else {
-      if(isNumber(i)) {
+      if(+(i)) {
         domain.push(+(i))
       } else {
         domainIsNumeric = false;
@@ -739,18 +808,86 @@ const OSMTILES = {
   }]
 };
 
+/**
+ * 
+ * Function modifies `geojson` in place.
+ * 
+ * @param {*} geojson a gejson with matching `geoColumn` to `data` param
+ * {features:[], type:}
+ * @param {*} data a json {properties:{}} object with matchin 
+ * `geoColumn` to `geojson` param. Typically features of another geojons.
+ * @param {*} geoColumn geocode which is shared between `geojson` and `data`
+ */
+const setGeojsonProps = (geojson, data, geoColumn) => {
+  // random must be used on the geojson not data
+  // as data can be bigger!
+  const r = randomToNumber(geojson && geojson.length);
+  if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
+    !geojson.features || !geojson.features[r] ||
+    !geojson.features[r].properties[geoColumn] || !data[r] || 
+    !data[r].properties || !data[r].properties[geoColumn]) return null
+  // for now modify the object itself
+  geojson.features.forEach(feature => {
+    for (let i = 0; i < data.length; i++) {
+      if (feature.properties[geoColumn] === data[i].properties[geoColumn]) {
+        feature.properties = data[i].properties;
+        break;
+      }
+    }
+  });
+  return geojson
+}
+
+/**
+ * 
+ * @param {Object} obj Object with keys to compare keys to
+ * regex
+ * 
+ * @returns first key in the objec that matches the regex
+ */
+const getFirstDateColumnName = (obj) => {
+  if(!isObject(obj) || !Object.keys(obj)) return null
+  // find the date/time column with year in
+  const r = new RegExp(Constants.DATE_REGEX);
+  return Object.keys(obj).filter(e => r.test(e))[0]
+}
+
+const getMessage = (array) => {
+  return array && array.length &&
+  array.length + " row" + (array.length > 1 ? "s" : "")
+}
+const getMainMessage = (filtered, unfiltered) => {
+  if(filtered && filtered.length && unfiltered && unfiltered) {
+    return getMessage(filtered) + (filtered.length < unfiltered.length ? 
+    " (" + ((filtered.length/unfiltered.length)*100).toFixed(2) + "%)" : "")
+  } else if(filtered && filtered.length) {
+    return getMessage(filtered)
+    // TODO: check all rows before declaring
+  } else if(unfiltered && unfiltered.length && 
+    !unfiltered[randomToNumber(unfiltered.length)].geometry) {
+    return getMessage(unfiltered) + " - no geometry"
+  } else {
+    return "Nothing to show"
+  }
+}
 export {
+  colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
+  getFirstDateColumnName,
+  firstLastNCharacters,
   getParamsFromSearch,
   xyObjectByProperty,
   suggestUIforNumber,
   generateDeckLayer,
   checkURLReachable,
+  suggestDeckLayer,
   sortNumericArray,
+  setGeojsonProps,
   colorRangeNames,
   searchNominatom,
   generateLegend,
   generateDomain,
+  getMainMessage,
   convertRange,
   getCentroid,
   shortenName,

@@ -127,7 +127,9 @@ export default class Tooltip extends React.Component {
 
   _listPropsAndValues(hoveredObject, all = false, n = 6) {
     if(!hoveredObject.properties || 
-      !hoveredObject.points[0].properties) return null
+      (hoveredObject.points && (!hoveredObject.points || 
+       !hoveredObject.points[0].properties))) return null
+
     let DATA = []
     const props = hoveredObject.properties;
     if (props) {

@@ -10,8 +10,8 @@ import DataInput from '../DataInput';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   xyObjectByProperty, percentDiv,
-  searchNominatom,
-  humanize, generateLegend, sortNumericArray
+  searchNominatom, firstLastNCharacters,
+  humanize, getMainMessage
 } from '../../utils';
 import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
@@ -28,7 +28,7 @@ import {
   plotByProperty
 } from '../showcases/plots';
 import SeriesPlot from '../showcases/SeriesPlot';
-import { isEmptyOrSpaces, isNumber } from '../../JSUtils';
+import { isEmptyOrSpaces } from '../../JSUtils';
 import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
 import Boxplot from '../boxplot/Boxplot';
@@ -40,7 +40,7 @@ export default class DeckSidebar extends React.Component {
     this.state = {
       radius: 100,
       elevation: 4,
-      year: "",
+      year: "", // required to reset state
       reset: false,
       multiVarSelect: {},
       barChartVariable: "road_type",
@@ -49,16 +49,19 @@ export default class DeckSidebar extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { data, alert, loading } = this.props;
-    const { elevation, radius, reset,
+    const { data, alert, loading, layerStyle, column } = this.props;
+    const { elevation, radius, reset, year,
       barChartVariable } = this.state;
     // avoid rerender as directly operating on document.get* 
     // does not look neat. Keeping it React way.
     if (reset !== nextState.reset ||
+      year !== nextState.year ||
       elevation !== nextState.elevation ||
       radius !== nextState.radius ||
+      column !== nextProps.column ||
       alert !== nextProps.alert ||
       loading !== nextProps.loading ||
+      layerStyle !== nextProps.layerStyle ||
       barChartVariable !== nextState.barChartVariable) return true;
     //TODO:  a more functional way is needed        
     if (data && nextProps && nextProps.data &&
@@ -74,37 +77,23 @@ export default class DeckSidebar extends React.Component {
    */
   render() {
     const { elevation, radius, year, subsetBoundsChange,
-      multiVarSelect, barChartVariable } = this.state;
+      multiVarSelect, barChartVariable, datasetName } = this.state;
     const { onChangeRadius, onChangeElevation,
       onSelectCallback, data, colourCallback, unfilteredData,
-      toggleSubsetBoundsChange, urlCallback, alert,
+      toggleSubsetBoundsChange, urlCallback, alert, layerStyle,
       onlocationChange, column, dark, toggleOpen, toggleHexPlot } = this.props;
 
     const notEmpty = data && data.length > 1;
 
+    // TODO: more comprehensive method needed
+    // last reg is "" string which is undefined
+    const withRadius = !layerStyle || 
+    new RegExp("grid|sgrid|hex|scatter", "i").test(layerStyle);
+
     const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
     let columnData = notEmpty ?
-      xyObjectByProperty(data, column || barChartVariable) : [];
-    const geomType = notEmpty && data[0].geometry.type.toLowerCase();
-    if (notEmpty && column && (geomType === 'polygon' ||
-      geomType === 'multipolygon' || "linestring") &&
-      isNumber(data[0].properties[column])) {
-      // we dont need to use generateDomain(data, column)
-      // columnData already has this in its x'es
-      columnDomain = columnData.map(e => e.x);
-      // we will just sort it        
-      columnDomain = sortNumericArray(columnDomain);
-
-      this.props.showLegend(
-        generateLegend(
-          {
-            domain: columnDomain,
-            title: humanize(column)
-          }
-        )
-      );
-    }
+      xyObjectByProperty(data, column || barChartVariable) : [];    
 
     const columnPlot = {
       data: columnData,
@@ -119,7 +108,7 @@ export default class DeckSidebar extends React.Component {
         year: "",
         multiVarSelect: {},
         barChartVariable: "road_type",
-        datasetName: urlOrName || this.state.datasetName
+        datasetName: urlOrName || datasetName
       })
     }
 
@@ -132,20 +121,14 @@ export default class DeckSidebar extends React.Component {
           }}
           className="side-panel">
           <RBAlert alert={alert} />
-          <div
-            style={{
-              background: dark ? '#29323C' : '#eee'
-            }}
-            className="side-pane-header">
-            <h2>{data && data.length ?
-              data.length + " row" + (data.length > 1 ? "s" : "") + "."
-              : "Nothing to show"}
-            </h2>
-            {notEmpty &&
-              <h6 className="truncate">
-                dataset: {this.state.datasetName}
-              </h6>}
-          </div>
+          {this._headerComponent(dark,
+            <><h2>{getMainMessage(data, unfilteredData)}</h2>
+              {notEmpty &&
+                <h6 className="truncate">
+                  dataset: {firstLastNCharacters(datasetName, 15)}
+                </h6>
+            }</>)
+          }
           <div>
             <DataInput
               toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
@@ -216,12 +199,13 @@ export default class DeckSidebar extends React.Component {
                   {notEmpty &&
                     Object.keys(data[0].properties)
                       .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
-                    this.props.layerStyle !== "grid" &&
+                    layerStyle !== "grid" &&
                     <>
                       <h6>Column for layer:</h6>
                       <MultiSelect
                         title="Choose Column"
                         single={true}
+                        value={column && {id:humanize(column), value:column}}
                         values={
                           Object.keys(data[0].properties).map(e =>
                             ({ id: humanize(e), value: e }))
@@ -241,22 +225,6 @@ export default class DeckSidebar extends React.Component {
                       />
                     </>
                   }
-                  {/* TODO: example of generating vis based on column
-                  cloudl now be deleted. */}
-
-                  {/* { //wait until onDragSelected of Plotly is configured.
-                    columnData &&
-                    <GenericPlotly dark={dark}
-                      yaxis={{ showgrid: false }}
-                      xaxis={{ showgrid: false }}
-                      data={[{
-                        showlegend: false, type: 'bar',
-                        x: columnData.map(e => e.x),
-                        y: columnData.map(e => e.y),
-                        marker: { color: TURQUOISE_RANGE[0] }
-                      }]}
-                      title={humanize(column)} />
-                  } */}
                   {<SeriesPlot
                     dark={dark}
                     data={columnPlot.data}
@@ -286,10 +254,12 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-sliders" />
                 }>
                   {notEmpty &&
+                    <ColorPicker colourCallback={(color) =>
+                      typeof colourCallback === 'function' &&
+                      colourCallback(color)} />
+                  }
+                  {notEmpty && withRadius &&
                     <div>
-                      <ColorPicker colourCallback={(color) =>
-                        typeof colourCallback === 'function' &&
-                        colourCallback(color)} />
                       <h5>Radius</h5>
                       <Slider
                         value={[radius]}
@@ -323,6 +293,7 @@ export default class DeckSidebar extends React.Component {
                         title="Choose Layer"
                         single={true}
                         values={
+                          // TODO:filter based on data
                           LAYERSTYLES.map(e =>
                             ({ id: humanize(e), value: e }))
                         }
@@ -344,6 +315,7 @@ export default class DeckSidebar extends React.Component {
                   Map Styles
                   <br />
                   <MapboxBaseLayers
+                    dark={dark}
                     onSelectCallback={(selected) =>
                       onSelectCallback &&
                       onSelectCallback({
@@ -352,21 +324,21 @@ export default class DeckSidebar extends React.Component {
                       })
                     }
                   />
+                  {notEmpty && withRadius &&
+                    <Checkbox
+                      onChange={() => toggleHexPlot && toggleHexPlot()}
+                    >Hex Plot</Checkbox>
+                  }
                   {notEmpty &&
-                    <>
-                      <Checkbox
-                        onChange={() => toggleHexPlot && toggleHexPlot()}
-                      >Hex Plot</Checkbox>
-                      <Checkbox
-                        onChange={() => {
-                          this.setState({ subsetBoundsChange: !subsetBoundsChange })
-                          if (toggleSubsetBoundsChange && typeof (toggleSubsetBoundsChange) === 'function') {
-                            toggleSubsetBoundsChange(!subsetBoundsChange) //starts with false
-                          }
-                        }}
-                      >Subset by map boundary</Checkbox>
-                    </>}
-
+                    <Checkbox
+                      onChange={() => {
+                        this.setState({ subsetBoundsChange: !subsetBoundsChange })
+                        if (toggleSubsetBoundsChange && typeof (toggleSubsetBoundsChange) === 'function') {
+                          toggleSubsetBoundsChange(!subsetBoundsChange) //starts with false
+                        }
+                      }}
+                    >Subset by map boundary</Checkbox>
+                  }
                 </Tab>
                 <Tab eventKey="3" title={
                   <i style={{ fontSize: '2rem' }}
@@ -393,6 +365,7 @@ export default class DeckSidebar extends React.Component {
               </Tabs>
             </div>
             <div className="space"></div>
+            {this._headerComponent(dark, "Vis: " + (layerStyle || "None"))}
             <form className="search-form" onSubmit={(e) => {
               e.preventDefault();
               searchNominatom(this.state.search, (json) => {
@@ -428,6 +401,17 @@ export default class DeckSidebar extends React.Component {
         </div>
       </>
     )
+  }
+
+  _headerComponent(dark, content) {
+    return(
+    <div
+      style={{
+        background: dark ? '#29323C' : '#eee'
+      }}
+      className="side-pane-header">
+        {content}
+    </div>)
   }
 }
 

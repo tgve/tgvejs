@@ -26,11 +26,7 @@ define("LAYERSTYLES", [
   "scatterplot",
   "sgrid",
   "barvis"
-])     
-
-// define("GHURL", "https://layik.github.io/eAtlas")
-// define("STATS19SAMPLEURL", 
-// "https://github.com/layik/eAtlas/releases/download/0.0.1/stats19.json")
+])
 
 define("DECKGL_INIT", {
   longitude: -1.6362,
@@ -52,3 +48,18 @@ define("LIGHT_SETTINGS", {
 define("PLOT_W", 250)
 
 define("TURQUOISE_RANGE", ['#12939A','#1293FF'])
+
+define("BLANKSTYLE", {
+  "version": 8, "name": "Blank", "center": [0, 0],
+  "zoom": 0, "sources": {},
+  "layers": [{
+    "id": "background", "type": "background", "paint":
+      { "background-color": "rgba(255,255,255,1)" }
+  }], "id": "blank"
+})
+
+define("ICONLIMIT", 500)
+define("ELEVATION", 4)
+define("RADIUS", 100)
+
+define("DATE_REGEX", "date|time|datetime|year")
