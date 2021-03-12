@@ -2,6 +2,7 @@ Turing Geovisualization Engine
 ================
 
   - [Introduction](#introduction)
+  - [npm package](#npm-package)
   - [Using GitHub pages](#using-github-pages)
   - [Using docker](#using-docker)
   - [Using R package](#using-r-package)
@@ -33,6 +34,33 @@ the box. However, it is in the planned work to provide configurations
 using easy to use techqniues. See [Roadmap](#Roadmap) section for
 details. `<For detailed documentation/paper about eAtlas please see
 xyz>`
+
+## npm package
+
+Currently these variables can be passed to the eAtlas app:
+
+  - `data` valid geojson object.
+
+  - `defaultURL` which returns a valid geojson object when `fetched`. It
+    can be used to fetch CSVs which is converted to `geojson` by eAtlas
+    after fetching.
+
+  - `geographyURL` which returns a valid `geojson` dataset. If this
+    variable is provided, data is fetched separately along with
+    `defaultURL`, eAtlas uses the `geographyColumn` to join them. eAtlas
+    does this oth on initialization and when `reset` button is pressed.
+
+  - `geographyColumn` a column name which is shared between data return
+    from `defaultURL` and `geographyURL`. This is the joining column
+    that will result in dynamically generating `geojson` data for eAtlas
+    to consume.
+
+  - `column` if provided, and if the geometry is of particular type
+    which would need a column, it would be used. Defaults on to the
+    second column as often first column is an ID of sort.
+
+None of the above is necessary and in the current release “Add data”
+button will allow loading data into eAtlas.
 
 ## Using GitHub pages
 
@@ -67,6 +95,11 @@ Remember it takes time for the new github pages to load. This is
 entirely dependent on GitHub’s internal workflows.
 
 </blockquote>
+
+From version `1.1.0-beta.0`, you can also separate your data from your
+geometry. Thus the `defaultURL` and `geographyURL` can be used to fetch
+a CSV and separate geography respectively. For more about these
+variables see above section.
 
 Examples of how this is done is the `eAtlas` repo itself, a project
 called SaferActive web app part of research carried out at ITS,
@@ -193,9 +226,8 @@ the major functionality that the eAtlas is hoped to have:
   - Configuration settings: changes variety of settings in the app
     should be possible via `yml`, `env` or some other way. This can also
     be synced with browser cookies to make it easier for users/analysts.
-    Currently in version 0.21 of the npm package the application
-    supports limited settings, allows `defaultURL` to run the
-    application.
+    Currently in version `1.1.0-beta.0` of the npm package the
+    application supports limited settings.
 
   - Smarter filtering: currently the filtering relies on matching
     key-value pairs, this can be extended to ranges and more. One other
