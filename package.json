@@ -52,7 +52,9 @@
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --env=jsdom --coverage",
     "dist": "rm -rf dist && NODE_ENV=production node_modules/.bin/babel src/ --out-dir dist --copy-files --no-copy-ignored",
-    "watch": "watch 'npm run dist' ./src"
+    "watch": "watch 'npm run dist' ./src",
+    "pub-dry": "npm run dist && npm --dry-run publish",
+    "pub": "npm run dist && npm publish"
   },
   "eslintConfig": {
     "extends": "react-app"
