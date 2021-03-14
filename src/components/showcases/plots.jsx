@@ -44,10 +44,11 @@ const plotByPropertyByDate = (data, property, dark) => {
 }
 /**
  * 
- * @param {Object} data 
- * @param {String} property 
- * @param {Boolean} dark 
+ * @param {Object} data json array of geojson data.features
+ * @param {String} property property of `data` to be passed to `xyObjectByProperty`
+ * @param {Boolean} dark eAtlas theme
  * @param {String} type Plotly accepted chart type, defaults to "lines"
+ * @param {Boolean} noLimit whether data is sliced to first 10 values for bar charts
  */
 const plotByProperty = (data, property, dark, type, noLimit) => {
   if (!data || !isArray(data) || !data.length) return null;

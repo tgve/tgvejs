@@ -195,7 +195,7 @@ export default class DeckSidebar extends React.Component {
                   {/* pick a column and vis type */}
                   <AddVIS data={data} dark={dark} plotStyle={{ width: 240, margin: 20 }} />
                   {/* distribution example */}
-                  {plotByProperty(data, "age_of_casualty", dark)}
+                  {plotByProperty(data, "age_of_casualty", dark, "lines")}
                   {plotByPropertyByDate(data, "sex_of_casualty", dark)}
                   {notEmpty &&
                     Object.keys(data[0].properties)
