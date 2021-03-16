@@ -819,9 +819,10 @@ const OSMTILES = {
  * @param {*} geoColumn geocode which is shared between `geojson` and `data`
  */
 const setGeojsonProps = (geojson, data, geoColumn) => {
-  // random must be used on the geojson not data
-  // as data can be bigger
-  const r = randomToNumber(geojson && geojson.features.length);
+  // TODO:randomToNumber should use the samller of the two in future
+  // as either could be bigger. For now just use 0
+  // const r = randomToNumber(geojson && geojson.features.length);
+  const r = 0;
   if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
     !geojson.features || !geojson.features[r] ||
     !geojson.features[r].properties[geoColumn] || !data[r] || 
