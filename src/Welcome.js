@@ -40,6 +40,7 @@ import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
 import { DateTime } from 'luxon';
+import { throttle } from 'lodash';
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -94,6 +95,9 @@ export default class Welcome extends React.Component {
     this._fitViewport = this._fitViewport.bind(this);
     this._initWithGeojson = this._initWithGeojson.bind(this);
     this._resize = this._resize.bind(this);
+    this._updateURL = this._updateURL.bind(this);
+    // TODO: can let user change the 300
+    this._throttleUR = throttle((v) => this._updateURL(v), 300)
   }
 
   componentDidUpdate(nextProps) {
@@ -527,7 +531,7 @@ export default class Welcome extends React.Component {
           }}
           mapStyle={mapStyle}
           onViewportChange={(viewport) => {
-            this._updateURL(viewport)
+            this._myThrottle(viewport)
             this.setState({ viewport })
           }}
           height={this.state.height + 'px'}
