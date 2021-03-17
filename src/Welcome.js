@@ -31,7 +31,6 @@ import {
   convertRange, getMin, getMax, isURL, getFirstDateColumnName, 
   generateLegend, humanize, colorRangeNamesToInterpolate,
 } from './utils';
-import { randomToNumber } from './JSUtils';
 import Constants, { LIGHT_SETTINGS } from './Constants';
 import DeckSidebarContainer from
   './components/decksidebar/DeckSidebarContainer';
@@ -41,6 +40,7 @@ import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
 import { DateTime } from 'luxon';
+import { throttle } from 'lodash';
 
 const URL = (process.env.NODE_ENV === 'development' ? 
   Constants.DEV_URL : Constants.PRD_URL);
@@ -98,6 +98,9 @@ export default class Welcome extends React.Component {
     this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
     this._fitViewport = this._fitViewport.bind(this);
     this._initWithGeojson = this._initWithGeojson.bind(this);
+    this._updateURL = this._updateURL.bind(this);
+    // TODO: can let user change the 300
+    this._throttleUR = throttle((v) => this._updateURL(v), 300)
   }
 
   componentDidMount() {
@@ -160,7 +163,6 @@ export default class Welcome extends React.Component {
    */
   _initWithGeojson(error, data, customError, fullURL) {
     if (!error) {
-      // this._updateURL(viewport)
       this.setState({
         loading: false,
         data: data,
@@ -515,7 +517,7 @@ export default class Welcome extends React.Component {
           }}
           mapStyle={mapStyle}
           onViewportChange={(viewport) => {
-            this._updateURL(viewport)
+            this._throttleUR(viewport)
             this.setState({ viewport })
           }}
           height={this.state.height - 54 + 'px'}

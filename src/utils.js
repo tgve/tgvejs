@@ -819,7 +819,8 @@ const OSMTILES = {
  * @param {*} geoColumn geocode which is shared between `geojson` and `data`
  */
 const setGeojsonProps = (geojson, data, geoColumn) => {
-  const r = randomToNumber(data && data.length);
+  // const r = randomToNumber(data && data.length);
+  const r = 0;
   if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
     !geojson.features || !geojson.features[r] ||
     !geojson.features[r].properties[geoColumn] || !data[r] || 
