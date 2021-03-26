@@ -531,7 +531,7 @@ export default class Welcome extends React.Component {
           }}
           mapStyle={mapStyle}
           onViewportChange={(viewport) => {
-            this._myThrottle(viewport)
+            this._throttleUR(viewport)
             this.setState({ viewport })
           }}
           height={this.state.height + 'px'}
