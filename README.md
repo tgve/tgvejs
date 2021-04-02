@@ -1,8 +1,7 @@
 
 # eAtlas · [![Node CI](https://github.com/layik/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/layik/eAtlas/actions?query=workflow%3A%22Node+CI%22) [![Publish Docker image](https://github.com/layik/eAtlas/actions/workflows/docker.yml/badge.svg)](https://github.com/layik/eAtlas/actions/workflows/docker.yml) [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
 
-Currently this is just a “WIP” as we explore and gather requirements of
-the project. The idea of an eAtlas is one by Sir Alan Wilson (Turing
+The idea of an eAtlas is one by Sir Alan Wilson (Turing
 Institute):
 
 > A key message from the Foresight Future of Cities Project is the
