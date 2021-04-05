@@ -1,8 +1,14 @@
 
 # eAtlas · [![Node CI](https://github.com/layik/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/layik/eAtlas/actions?query=workflow%3A%22Node+CI%22) [![Publish Docker image](https://github.com/layik/eAtlas/actions/workflows/docker.yml/badge.svg)](https://github.com/layik/eAtlas/actions/workflows/docker.yml) [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
 
-The idea of an eAtlas is one by Sir Alan Wilson (Turing
-Institute):
+The The Turing Geovisualisation Engine (TGVE or eAtlas) is a web-based,
+interactive visual analytics tool for geospatial data analysis, built
+using R & React. The visual views and interaction mechanisms designed
+into the tool is underpinned by empirically-informed guidelines around
+visualization design and techniques from Geographic Information Science
+(GIScience).
+
+The idea of an eAtlas is one by Sir Alan Wilson (Turing Institute):
 
 > A key message from the Foresight Future of Cities Project is the
 > importance of interdependence: between urban subsystems and between
@@ -14,10 +20,24 @@ to read. These are thoughts and background reading material as we take
 steps towards understanding what an “interdependent” eAtlas might be.
 Would it be “Turing Geovisualization Engine”?
 
+## Using eAtlas
+
+### npm package
+
+Current release is in beta for testing of the limited functionality and
+API offered by the codebase. Just like this source code, for now the
+package is released under `layik`’s account.
+
+### Github Template repo
+
+Please see the [guide
+document](https://github.com/layik/eAtlas/blob/master/notes/guide.md)
+for details of how to host your own eAtlas using Github Pages.
+
 ### Development
 
-The front end is an npm package, so if you do not need the backend,
-having cloned the repo:
+To run the front end only without needs for the backend, having cloned
+the repo:
 
 ``` js
 npm i # or yarn
@@ -82,6 +102,17 @@ docker run -d -p 8000:8001 --name eatlas eatlas
 Use your favourite document server (nginx for example) to proxy requets
 (more later hopefully).
 
+## Funding
+
+The project is led by Dr [Nik
+Lomax](https://environment.leeds.ac.uk/geography/staff/1064/dr-nik-lomax)
+and Dr [Roger
+Beecham](https://environment.leeds.ac.uk/geography/staff/1003/dr-roger-beecham)
+and funded by the EPSRC via the Alan Turing Institute AI for Science and
+Government Programme, Grant/Award Number: EP/T001569/1.
+
 ### Screenshots/gif’s
 
 <img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/76419738-c46edc80-6398-11ea-8bbe-496394f90adc.png">
+
+<!-- build this Rmd with: R -e "rmarkdown::render('README.Rmd')" -->
