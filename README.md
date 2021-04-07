@@ -3,12 +3,6 @@
 
 The The Turing Geovisualisation Engine (TGVE or eAtlas) is a web-based, interactive visual analytics tool for geospatial data analysis, built using R & React. The visual views and interaction mechanisms designed into the tool is underpinned by empirically-informed guidelines around visualization design and techniques from Geographic Information Science (GIScience).
 
-The idea of an eAtlas is one by Sir Alan Wilson (Turing Institute):
-
-> A key message from the Foresight Future of Cities Project is the importance of interdependence: between urban subsystems and between associated planning and policy challenges. 
-
-~ Sir Alan Wilson.
-
 There are some [notes](https://github.com/layik/eAtlas/blob/master/notes/project_planning.md) to read. These are thoughts and background reading material as we take steps towards understanding what an “interdependent eAtlas might be.
 
 ## Using eAtlas
