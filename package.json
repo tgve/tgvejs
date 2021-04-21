@@ -8,12 +8,12 @@
     "@turf/centroid": "^6.0.2",
     "baseui": "^7.8.0",
     "csv2geojson": "^5.1.1",
-    "d3-array": "^2.4.0",
+    "d3-array": "^2.12.1",
     "d3-format": "^1.4.3",
-    "d3-scale": "^3.2.1",
+    "d3-scale": "^3.3.0",
     "d3-scale-chromatic": "^1.5.0",
     "d3-shape": "^1.3.7",
-    "deck.gl": "^8.0.17",
+    "deck.gl": "^8.4.13",
     "leaflet": "^1.6.0",
     "luxon": "^1.22.0",
     "marked": "^0.7.0",
@@ -27,11 +27,11 @@
     "react-map-gl": "^4.1.16",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "3.4.0",
+    "react-scripts": "^4.0.3",
     "react-vis": "^1.11.7",
     "styletron-engine-atomic": "^1.4.6",
     "styletron-react": "^5.2.7",
-    "underscore": "^1.9.2"
+    "underscore": "^1.13.1"
   },
   "scripts": {
     "start2": "REACT_APP_DEFAULT_URL=https://raw.githubusercontent.com/layik/eatlas-data/main/casualties_100.geojson npm run start",
@@ -54,10 +54,10 @@
     "chromedriver": "^78.0.1",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
-    "geckodriver": "^1.19.1",
+    "geckodriver": "^1.22.3",
     "mocha": "^6.2.2",
     "react-test-renderer": "^16.13.0",
-    "selenium-webdriver": "^4.0.0-alpha.7",
+    "selenium-webdriver": "^4.0.0-beta.3",
     "sinon": "^7.5.0"
   },
   "homepage": "https://layik.github.io/eAtlas"
