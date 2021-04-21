@@ -589,6 +589,16 @@ exports[`App - should create snapshot 1`] = `
             <div
               className="space"
             />
+            <div
+              className="side-pane-header"
+              style={
+                Object {
+                  "background": "#29323C",
+                }
+              }
+            >
+              Vis: None
+            </div>
             <form
               className="search-form"
               onSubmit={[Function]}
