@@ -298,14 +298,12 @@ export default class DeckSidebar extends React.Component {
                         }
                         onSelectCallback={(selected) => {
                           // array of seingle {id: , value: } object
-                          const newBarChartVar = (selected && selected[0]) ?
-                            selected[0].value : barChartVariable;
-                          this.setState({
-                            barChartVariable: newBarChartVar
-                          });
+                          const ls = (selected && selected[0]) ?
+                            selected[0].value : ls;
+                          this.setState({ layerStyle: ls});
                           typeof onSelectCallback === 'function' &&
                             onSelectCallback({
-                              what: 'layerStyle', selected: newBarChartVar
+                              what: 'layerStyle', selected: ls
                             });
                         }}
                       />
