@@ -94,6 +94,9 @@ export default class DeckSidebar extends React.Component {
     let columnData = notEmpty ?
       xyObjectByProperty(data, column || barChartVariable) : [];    
 
+    const columnNames = notEmpty && Object.keys(data[0].properties)
+      .filter(p => !isEmptyOrSpaces(p));
+
     const columnPlot = {
       data: columnData,
       opacity: 1,
@@ -195,9 +198,7 @@ export default class DeckSidebar extends React.Component {
                   {/* distribution example */}
                   {plotByProperty(data, "age_of_casualty", dark)}
                   {plotByPropertyByDate(data, "sex_of_casualty", dark)}
-                  {notEmpty &&
-                    Object.keys(data[0].properties)
-                      .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
+                  {notEmpty && columnNames.length > 0 &&
                     layerStyle !== "grid" &&
                     <>
                       <h6>Column for layer:</h6>
@@ -206,7 +207,7 @@ export default class DeckSidebar extends React.Component {
                         single={true}
                         value={column && {id:humanize(column), value:column}}
                         values={
-                          Object.keys(data[0].properties).map(e =>
+                          columnNames.map(e =>
                             ({ id: humanize(e), value: e }))
                         }
                         onSelectCallback={(selected) => {
