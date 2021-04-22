@@ -32,9 +32,11 @@ export default class MapboxBaseLayers extends React.Component {
               bases.map(e => ({ id: e, value: e }))
             }
             onSelectCallback={(selected) => {
-              this.setState({ selected });
-              typeof (onSelectCallback) === 'function' &&
-                onSelectCallback(selected[0].value)
+              if(selected && selected.length) {
+                this.setState({ selected: selected[0].value });
+                typeof (onSelectCallback) === 'function' &&
+                  onSelectCallback(selected[0].value)
+              }
             }}
           />
         )
