@@ -68,7 +68,8 @@ export default function LayerSettings(props) {
         </>;
       case 'boolean':
         return <Checkbox
-          checked={values[key]}
+          checked={values.hasOwnProperty(key) ?
+            values[key] : options[key][1]}
           onChange={() => {
             const newValues = { ...values, [key]: !values[key] }
             setValues(newValues)

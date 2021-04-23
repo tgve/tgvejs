@@ -10,11 +10,11 @@ const getLayerProps = (name) => {
   if(!isString(name)) return null
 
   const options = {
-    pickable: 'boolean',
+    pickable: ['boolean', true],
   }
   if (name === 'hex') {
     const hexObject = {
-      extruded: 'boolean',
+      extruded: ['boolean', true],
       // key: [type, min, max, step, default]
       radius: ['number', 50, 1000, 50, 100],
       elevationScale: ['number', 2, 8, 2, 4],
@@ -32,8 +32,8 @@ const getLayerProps = (name) => {
     return addOptionsToObject(options, scatterObj)
   } else if (name === 'geojson') {
     const geojsonObject = {
-      stroked: 'boolean',
-      filled: 'boolean',
+      stroked: ['boolean', false],
+      filled: ['boolean', true],
       lineWidthScale: ['number', 20, 100, 20, 5],
       lineWidthMinPixels: ['number', 2, 20, 2, 2],
       // getFillColor: [160, 160, 180, 200],
@@ -51,7 +51,7 @@ const getLayerProps = (name) => {
       // iconMapping: mapping,
       // sizeScale: 'number',
       // getPosition: d => d.geometry.coordinates,
-      wrapLongitude: 'boolean',
+      wrapLongitude: ['boolean'],
       // getIcon: d => 'marker-1',
       // getSize: d => 5,
       // getColor: d => [Math.sqrt(d.exits), 140, 0],
