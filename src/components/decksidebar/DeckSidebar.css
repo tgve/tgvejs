@@ -41,7 +41,7 @@
 }
 
 .side-panel {
-  padding: 20px;
+  padding: 10px;
   width: 300px;
   /* background-color: #242730;
   color: #a3a5a8; */
@@ -55,6 +55,13 @@
   padding: 10px;
   margin-bottom: 20px;
   /* background-color: #29323C; */
+}
+
+.side-panel-group {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border: 2px solid;
+  padding: 2px;
 }
 
 .side-panel-body {

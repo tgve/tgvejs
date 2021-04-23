@@ -128,6 +128,9 @@ export default function AddVIS(props) {
       <div className="visArea">
         {!noAccordion ?
           <Accordion
+            overrides={{
+              Root: { style: { width: "270px" } }
+            }}
             expanded={true}
             onChange={({ expanded }) => console.log(expanded)}
           >

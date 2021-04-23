@@ -81,20 +81,20 @@ export default class DeckSidebar extends React.Component {
     const { onLayerOptionsCallback,
       onSelectCallback, data, colourCallback, unfilteredData,
       toggleSubsetBoundsChange, urlCallback, alert, layerStyle,
-      onlocationChange, column, dark, toggleOpen, toggleHexPlot 
+      onlocationChange, column, dark, toggleOpen, toggleHexPlot
     } = this.props;
 
     const notEmpty = data && data.length > 1;
 
     // TODO: more comprehensive method needed
     // last reg is "" string which is undefined
-    const withRadius = !layerStyle || 
-    new RegExp("grid|sgrid|hex|scatter", "i").test(layerStyle);
+    const withRadius = !layerStyle ||
+      new RegExp("grid|sgrid|hex|scatter", "i").test(layerStyle);
 
     const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
     let columnData = notEmpty ?
-      xyObjectByProperty(data, column || barChartVariable) : [];    
+      xyObjectByProperty(data, column || barChartVariable) : [];
 
     const columnNames = notEmpty && Object.keys(data[0].properties)
       .filter(p => !isEmptyOrSpaces(p));
@@ -131,7 +131,7 @@ export default class DeckSidebar extends React.Component {
                 <h6 className="truncate">
                   dataset: {firstLastNCharacters(datasetName, 15)}
                 </h6>
-            }</>)
+              }</>)
           }
           <div>
             <DataInput
@@ -196,7 +196,9 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-info" />
                 }>
                   {/* pick a column and vis type */}
-                  <AddVIS data={data} dark={dark} plotStyle={{ width: 240, margin: 20 }} />
+                  {this._panel(dark,
+                    <AddVIS data={data} dark={dark} plotStyle={{ width: 270, margin: 10 }} />
+                  )}
                   {/* distribution example */}
                   {plotByProperty(data, "age_of_casualty", dark)}
                   {plotByPropertyByDate(data, "sex_of_casualty", dark)}
@@ -207,7 +209,7 @@ export default class DeckSidebar extends React.Component {
                       <MultiSelect
                         title="Choose Column"
                         single={true}
-                        value={column && {id:humanize(column), value:column}}
+                        value={column && { id: humanize(column), value: column }}
                         values={
                           columnNames.map(e =>
                             ({ id: humanize(e), value: e }))
@@ -256,53 +258,62 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-sliders" />
                 }>
                   {notEmpty &&
-                    <ColorPicker colourCallback={(color) =>
-                      typeof colourCallback === 'function' &&
-                      colourCallback(color)} />
+                    this._headerComponent(dark,
+                      <ColorPicker colourCallback={(color) =>
+                        typeof colourCallback === 'function' &&
+                        colourCallback(color)} />
+                    )
                   }
                   {notEmpty &&
-                    <>
-                      <h6>Deck Layer:</h6>
-                      <MultiSelect
-                        title="Choose Layer"
-                        single={true}
-                        values={
-                          // TODO:filter based on data
-                          LAYERSTYLES.map(e =>
-                            ({ id: humanize(e), value: e }))
-                        }
-                        onSelectCallback={(selected) => {
-                          // array of seingle {id: , value: } object
-                          const ls = (selected && selected[0]) ?
-                            selected[0].value : ls;
-                          this.setState({ layerStyle: ls});
-                          typeof onSelectCallback === 'function' &&
-                            onSelectCallback({
-                              what: 'layerStyle', selected: ls
-                            });
-                        }}
-                      />
-                      <LayerSettings 
-                        layerName={layerStyle} 
-                        columnNames={columnNames} 
-                        onLayerOptionsCallback={(layerOptions) => {
-                          typeof (onLayerOptionsCallback) === 'function' &&
-                          onLayerOptionsCallback({...layerOptions})
-                        }}/>
-                    </>
+                    this._panel(dark,
+                      <>
+                        <h6>Deck Layer:</h6>
+                        <MultiSelect
+                          title="Choose Layer"
+                          single={true}
+                          values={
+                            // TODO:filter based on data
+                            LAYERSTYLES.map(e =>
+                              ({ id: humanize(e), value: e }))
+                          }
+                          onSelectCallback={(selected) => {
+                            // array of seingle {id: , value: } object
+                            const ls = (selected && selected[0]) ?
+                              selected[0].value : ls;
+                            this.setState({ layerStyle: ls });
+                            typeof onSelectCallback === 'function' &&
+                              onSelectCallback({
+                                what: 'layerStyle', selected: ls
+                              });
+                          }}
+                        />
+                        <LayerSettings
+                          dark={dark}
+                          layerName={layerStyle}
+                          columnNames={columnNames}
+                          onLayerOptionsCallback={(layerOptions) => {
+                            typeof (onLayerOptionsCallback) === 'function' &&
+                              onLayerOptionsCallback({ ...layerOptions })
+                          }} />
+                      </>)
                   }
-                  Map Styles
-                  <br />
-                  <MapboxBaseLayers
-                    dark={dark}
-                    onSelectCallback={(selected) =>
-                      onSelectCallback &&
-                      onSelectCallback({
-                        selected: selected,
-                        what: 'mapstyle'
-                      })
-                    }
-                  />
+                  {
+                    this._headerComponent(dark,
+                      <>
+                        Map Styles
+                        <br />
+                        <MapboxBaseLayers
+                          dark={dark}
+                          onSelectCallback={(selected) =>
+                            onSelectCallback &&
+                            onSelectCallback({
+                              selected: selected,
+                              what: 'mapstyle'
+                            })
+                          }
+                        />
+                      </>)
+                  }
                   {notEmpty && withRadius &&
                     <Checkbox
                       onChange={() => toggleHexPlot && toggleHexPlot()}
@@ -328,7 +339,7 @@ export default class DeckSidebar extends React.Component {
                 }>
                   {
                     unfilteredData && unfilteredData.length > 0 &&
-                    <Variables
+                    this._headerComponent(dark, <Variables
                       dark={dark}
                       multiVarSelect={multiVarSelect}
                       onSelectCallback={(mvs) => {
@@ -339,6 +350,7 @@ export default class DeckSidebar extends React.Component {
                         this.setState({ multiVarSelect: mvs })
                       }}
                       unfilteredData={unfilteredData} />
+                    )
                   }
                 </Tab>
               </Tabs>
@@ -383,14 +395,26 @@ export default class DeckSidebar extends React.Component {
   }
 
   _headerComponent(dark, content) {
-    return(
-    <div
-      style={{
-        background: dark ? '#29323C' : '#eee'
-      }}
-      className="side-pane-header">
+    return (
+      <div
+        style={{
+          marginTop: 2,
+          background: dark ? '#29323C' : '#eee'
+        }}
+        className="side-pane-header">
         {content}
-    </div>)
+      </div>)
+  }
+
+  _panel(dark, content) {
+    return (
+      <div
+        style={{
+          borderColor: dark ? '#29323C' : '#eee'
+        }}
+        className="side-panel-group">
+        {content}
+      </div>)
   }
 }
 

@@ -7,6 +7,8 @@ import {
 import { Slider } from 'baseui/slider';
 import { Checkbox } from "baseui/checkbox";
 import { isArray } from '../../JSUtils';
+import {Accordion, Panel} from 'baseui/accordion';
+
 
 /**
  * One idea is to do the same done in Variables. When a set of 
@@ -26,22 +28,24 @@ export default function LayerSettings(props) {
   const [values, setValues] = React.useState({});
 
   React.useEffect(() => {
-    if(!props.layerName) return
+    if (!props.layerName) return
     const lp = getLayerProps(props.layerName);
-    if(!lp) return
+    if (!lp) return
     setOptions(lp)
   }, [props.layerName])
 
   return (
-    <div>
-      LayerSettings: {layerName}
-      {
-        Object.keys(options).map(key => {
-          const v = isArray(options[key]) ? options[key][0] : options[key];
-          return getUIForKey(v, key);
-        })
-      }
-    </div>
+    <Accordion>
+      <Panel 
+        title={"Settings: " + layerName}>
+        {
+          Object.keys(options).map(key => {
+            const v = isArray(options[key]) ? options[key][0] : options[key];
+            return getUIForKey(v, key);
+          })
+        }
+      </Panel>
+    </Accordion>
   )
 
   function getUIForKey(v, key) {
@@ -56,7 +60,7 @@ export default function LayerSettings(props) {
             max={options[key][2]}
             step={options[key][4]}
             onChange={({ value }) => {
-              const newValues = {...values, [key]: value[0]};
+              const newValues = { ...values, [key]: value[0] };
               setValues(newValues)
               typeof onLayerOptionsCallback === 'function' &&
                 onLayerOptionsCallback(newValues)
@@ -79,7 +83,7 @@ export default function LayerSettings(props) {
           values={columnNames.map(e => ({ id: humanize(e), value: e }))}
           onLayerOptionsCallback={(selected) => {
             //TODO
-          } } />;
+          }} />;
     }
   }
 }
