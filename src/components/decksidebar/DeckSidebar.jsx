@@ -190,7 +190,7 @@ export default class DeckSidebar extends React.Component {
               {columnDomain.length > 1 &&
                 <Boxplot data={columnDomain} />}
 
-              <Tabs defaultActiveKey={"2"} id="main-tabs">
+              <Tabs defaultActiveKey={"1"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
