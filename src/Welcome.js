@@ -77,8 +77,11 @@ export default class Welcome extends React.Component {
       loading: true,
       layers: [],
       backgroundImage: gradient.backgroundImage,
-      radius: Constants.RADIUS,
-      elevation: Constants.ELEVATION,
+      layerOptions: { 
+        radius: Constants.RADIUS,
+        elevation: Constants.ELEVATION,
+        cellSize: Constants.RADIUS,
+      },
       mapStyle: MAPBOX_ACCESS_TOKEN ? ("mapbox://styles/mapbox/" +
         (props.dark ? "dark" : "streets") + "-v9") : OSMTILES,
       initialViewState: init,
@@ -184,15 +187,13 @@ export default class Welcome extends React.Component {
    * {property: Set(val1, val2), ...}.
    * 
    * @param {*} values includes
-   * radius: specific to changing geoms
-   * elevation: specific to changing geoms
-   * filter: multivariate filter of properties
-   * cn: short for colorName passed from callback
-   * TODO: other
+   * @param {Object} filter multivariate filter of properties
+   * @param {String} cn short for colorName passed from callback
+   * @param {Object} layerOptions
    */
   _generateLayer(values = {}) {
-    const { radius, elevation, filter, cn } = values;
-
+    const { layerOptions = {}, filter, cn } = values;
+    
     if (filter && filter.what === 'mapstyle') {
       const newStyle = "mapbox://styles/mapbox/" + filter.selected + "-v9";
       this.setState({
@@ -289,17 +290,16 @@ export default class Welcome extends React.Component {
       suggestDeckLayer(geography ? geography.features : data);
     // TODO: incorporate this into suggestDeckLayer
     if (!new RegExp("point", "i").test(geomType)) layerStyle = "geojson"
-    const switchToIcon = data.length < iconLimit && !column && 
+    const switchToIcon = data.length < iconLimit && !layerStyle && 
     (!filter || filter.what !== 'layerStyle') && geomType === "point";
     if (switchToIcon) layerStyle = 'icon';
-    const options = {
-      radius: radius ? radius : this.state.radius,
-      radiusScale: radius ? radius: this.state.radius,
-      cellSize: radius ? radius : this.state.radius,
-      elevationScale: elevation ? elevation : this.state.elevation,
+
+    const options = Object.assign({
+      ...this.state.layerOptions,      
       lightSettings: LIGHT_SETTINGS,
       colorRange: colorRanges(cn || colorName)
-    };
+    }, layerOptions);
+    
     if (layerStyle === 'heatmap') {
       options.getPosition = d => d.geometry.coordinates
       // options.getWeight = d => d.properties[columnNameOrIndex]
@@ -403,8 +403,7 @@ export default class Welcome extends React.Component {
       tooltip: "",
       filtered: data,
       layers: [alayer],
-      radius: radius ? radius : this.state.radius,
-      elevation: elevation ? elevation : this.state.elevation,
+      layerOptions: options,
       road_type: filter && filter.what === 'road_type' ? filter.selected :
         this.state.road_type,
       colorName: cn || colorName,
@@ -570,8 +569,10 @@ export default class Welcome extends React.Component {
               column: null,
               tooltip: "",
               road_type: "",
-              radius: 100,
-              elevation: 4,
+              layerOptions: { 
+                radius: Constants.RADIUS,
+                elevation: Constants.ELEVATION,
+              },
               loading: true,
               coords: null
             })
@@ -592,9 +593,10 @@ export default class Welcome extends React.Component {
             }
           }}
           column={this.state.column}
-          onSelectCallback={(selected) => this._generateLayer({ filter: selected })}
-          onChangeRadius={(value) => this._generateLayer({ radius: value })}
-          onChangeElevation={(value) => this._generateLayer({ elevation: value })}
+          onSelectCallback={(selected) => 
+            this._generateLayer({ filter: selected })}
+          onLayerOptionsCallback={(layerOptions) => 
+            this._generateLayer({ layerOptions })}
           toggleSubsetBoundsChange={(value) => {
             this.setState({
               loading: true,

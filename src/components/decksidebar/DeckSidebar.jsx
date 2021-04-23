@@ -33,6 +33,7 @@ import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
 import Boxplot from '../boxplot/Boxplot';
 import { Slider } from 'baseui/slider';
+import LayerSettings from '../settings/LayerSettings';
 
 export default class DeckSidebar extends React.Component {
   constructor(props) {
@@ -77,10 +78,11 @@ export default class DeckSidebar extends React.Component {
   render() {
     const { elevation, radius, year, subsetBoundsChange,
       multiVarSelect, barChartVariable, datasetName } = this.state;
-    const { onChangeRadius, onChangeElevation,
+    const { onLayerOptionsCallback,
       onSelectCallback, data, colourCallback, unfilteredData,
       toggleSubsetBoundsChange, urlCallback, alert, layerStyle,
-      onlocationChange, column, dark, toggleOpen, toggleHexPlot } = this.props;
+      onlocationChange, column, dark, toggleOpen, toggleHexPlot 
+    } = this.props;
 
     const notEmpty = data && data.length > 1;
 
@@ -188,7 +190,7 @@ export default class DeckSidebar extends React.Component {
               {columnDomain.length > 1 &&
                 <Boxplot data={columnDomain} />}
 
-              <Tabs defaultActiveKey={"1"} id="main-tabs">
+              <Tabs defaultActiveKey={"2"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
@@ -258,34 +260,6 @@ export default class DeckSidebar extends React.Component {
                       typeof colourCallback === 'function' &&
                       colourCallback(color)} />
                   }
-                  {notEmpty && withRadius &&
-                    <div>
-                      <h5>Radius</h5>
-                      <Slider
-                        value={[radius]}
-                        min={50}
-                        max={1000}
-                        step={50}
-                        onChange={({ value }) => {
-                          this.setState({ radius: value[0] });
-                          typeof (onChangeRadius) === 'function' &&
-                            onChangeRadius(value[0])
-                        }}
-                      />
-                      <h5>Elevation</h5>
-                      <Slider
-                        value={[elevation]}
-                        min={2}
-                        max={8}
-                        step={2}
-                        onChange={({ value }) => {
-                          this.setState({ elevation: value[0] });
-                          typeof (onChangeElevation) === 'function' &&
-                            onChangeRadius(value[0])
-                        }}
-                      />
-                    </div>
-                  }
                   {notEmpty &&
                     <>
                       <h6>Deck Layer:</h6>
@@ -308,6 +282,13 @@ export default class DeckSidebar extends React.Component {
                             });
                         }}
                       />
+                      <LayerSettings 
+                        layerName={layerStyle} 
+                        columnNames={columnNames} 
+                        onLayerOptionsCallback={(layerOptions) => {
+                          typeof (onLayerOptionsCallback) === 'function' &&
+                          onLayerOptionsCallback({...layerOptions})
+                        }}/>
                     </>
                   }
                   Map Styles
