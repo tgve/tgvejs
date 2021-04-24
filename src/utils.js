@@ -640,6 +640,14 @@ const colorRanges = (name) => {
   return (colors[name])
 }
 
+/**
+ * TODO: much better colour array needed.
+ * The purpose here was to use the same
+ * colour palette used for the ranges.
+ * 
+ * @param {String} name 
+ * @returns 
+ */
 const getColorArray = (name) => {
   if(!isString(name)) return null;
   const colors = {
