@@ -301,12 +301,22 @@ export default class Welcome extends React.Component {
       getColor: getColorArray(cn || colorName)
     }, layerOptions);
     
+    // generate a domain
+    const domain = generateDomain(data, columnNameOrIndex);
+    const getValue = (d) => 
+    // initialazied with 1 so +columnNameOrIndex is safe
+    d.properties[+columnNameOrIndex ?
+      Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]
+
     if (layerStyle === 'heatmap') {
       options.getPosition = d => d.geometry.coordinates
       // options.getWeight = d => d.properties[columnNameOrIndex]
+      options.updateTriggers = {
+        // even if nulls
+        getWeight: [typeof(options.getWeight) === 'function' &&
+        data.map(d => options.getWeight(d))]
+      }
     }
-    // generate a domain
-    const domain = generateDomain(data, columnNameOrIndex);
     if (geomType === 'linestring') {
       layerStyle = "line"
       // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
@@ -355,10 +365,6 @@ export default class Welcome extends React.Component {
 
     if (geomType === "polygon" || geomType === "multipolygon" ||
       layerStyle === 'geojson') {
-      const getValue = (d) => 
-      // initialazied with 1 so +columnNameOrIndex is safe
-      d.properties[+columnNameOrIndex ?
-        Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]
       const fill =  (d) => colorScale(
         +getValue(d) ? +getValue(d) : getValue(d),
         domain, 180, cn || this.state.colorName
@@ -392,8 +398,11 @@ export default class Welcome extends React.Component {
       //   d.properties.result.includes("gain from") ? 45 : 1
       options.getScale = 20
       options.updateTriggers = {
-        getRotationAngle: [data.map(d => d.properties[columnNameOrIndex])]
-        // TODOT: getWidth: 
+        // TODO: get the functions & spread them
+        getRotationAngle: [typeof(options.getRotationAngle) === 'function' &&
+          data.map(d => options.getRotationAngle(d))],
+        getWidth: [typeof(options.getWidth) === 'function' &&
+          data.map(d => options.getWidth(d))]
       }
     }
     const alayer = generateDeckLayer(

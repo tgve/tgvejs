@@ -7,18 +7,18 @@ const addOptionsToObject = (opt, obj) => {
 }
 
 const makeObject = (type, min, max, def, step) => {
-  return({type, min, max, default: def, step})
+  return ({ type, min, max, default: def, step })
 }
 
 const getLayerProps = (name) => {
-  if(!isString(name)) return null
+  if (!isString(name)) return null
 
   const options = {
-    pickable: {type: 'boolean', value: true},
+    pickable: { type: 'boolean', value: true },
   }
   if (name === 'hex') {
     const hexObject = {
-      extruded: {type: 'boolean', value: true},
+      extruded: { type: 'boolean', value: true },
       // key: [type, min, max, step, default]
       radius: makeObject('number', 50, 1000, 100, 50),
       elevationScale: makeObject('number', 2, 8, 4, 2),
@@ -36,9 +36,9 @@ const getLayerProps = (name) => {
     return addOptionsToObject(options, scatterObj)
   } else if (name === 'geojson') {
     const geojsonObject = {
-      stroked: {type: 'boolean', value: false},
-      filled: {type: 'boolean', value: true},
-      lineWidthScale: makeObject('number', 20, 100, 20,5),
+      stroked: { type: 'boolean', value: false },
+      filled: { type: 'boolean', value: true },
+      lineWidthScale: makeObject('number', 20, 100, 20, 5),
       lineWidthMinPixels: makeObject('number', 2, 20, 2, 2),
       // getFillColor: [160, 160, 180, 200],
       // getLineColor: [255, 160, 180, 200],
@@ -55,12 +55,12 @@ const getLayerProps = (name) => {
       // iconMapping: mapping,
       // sizeScale: 'number',
       // getPosition: d => d.geometry.coordinates,
-      wrapLongitude: {type: 'boolean', value: false},
+      wrapLongitude: { type: 'boolean', value: false },
       // getIcon: d => 'marker-1',
       // getSize: d => 5,
       // getColor: d => [Math.sqrt(d.exits), 140, 0],
     }
-   return iconObject
+    return iconObject
   } else if (name === 'sgrid') {
     const sgridObject = {
       // getPosition: d => d.geometry.coordinates,
@@ -76,7 +76,7 @@ const getLayerProps = (name) => {
       elevationScale: makeObject('number', 4, 10, 4, 2),
     }
     return addOptionsToObject(options, gridObject)
-   } // else if (name === 'line') {
+  } // else if (name === 'line') {
   //   const lineObject = {
 
   //   }
@@ -95,11 +95,13 @@ const getLayerProps = (name) => {
   //   const pathObject = {
   //   }
   //   return addOptionsToObject(options, pathObject)
-  // } else if (name === 'heatmap') {
-  //   const heatObject = {
-
-  //   }
-  //   return addOptionsToObject(options, heatObject);
+  // } 
+  else if (name === 'heatmap') {
+    const heatObject = {
+      getWeight: { type: 'column', value: 'number', default: 1}
+    }
+    return addOptionsToObject(options, heatObject);
+  }
   // } else if (name === "scatterplot") {
   //   const scatterObject = {
   //   }
@@ -110,8 +112,8 @@ const getLayerProps = (name) => {
   //   return addOptionsToObject(options, textObject);
   else if (name === "barvis") {
     const barvisObject = {
-      getRotationAngle: {type: 'column', value: 'number'},
-      getWidth: {type: 'column', value: 'number'}
+      getRotationAngle: { type: 'column', value: 'number', default: 1},
+      getWidth: { type: 'column', value: 'number', default: 1}
     }
     return addOptionsToObject(options, barvisObject);
   }
