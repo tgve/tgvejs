@@ -1,13 +1,12 @@
 
 # eAtlas · [![Node CI](https://github.com/layik/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/layik/eAtlas/actions?query=workflow%3A%22Node+CI%22) [![Publish Docker image](https://github.com/layik/eAtlas/actions/workflows/docker.yml/badge.svg)](https://github.com/layik/eAtlas/actions/workflows/docker.yml) [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
 
-Currently this is just a “WIP” as we explore and gather requirements of
-the project. The idea of an eAtlas is one by Sir Alan Wilson (Turing
-Institute):
-
-> A key message from the Foresight Future of Cities Project is the
-> importance of interdependence: between urban subsystems and between
-> associated planning and policy challenges. \~ Sir Alan Wilson.
+The The Turing Geovisualisation Engine (TGVE or eAtlas) is a web-based,
+interactive visual analytics tool for geospatial data analysis, built
+using R & React. The visual views and interaction mechanisms designed
+into the tool is underpinned by empirically-informed guidelines around
+visualization design and techniques from Geographic Information Science
+(GIScience).
 
 There are some
 [notes](https://github.com/layik/eAtlas/blob/master/notes/project_planning.md)
@@ -15,16 +14,36 @@ to read. These are thoughts and background reading material as we take
 steps towards understanding what an “interdependent” eAtlas might be.
 Would it be “Turing Geovisualization Engine”?
 
+## Using eAtlas
+
+### npm package
+
+Current release is in beta for testing of the limited functionality and
+API offered by the codebase. Just like this source code, for now the
+package is released under `layik`’s account.
+
+### Github Template repo
+
+Please see the [guide
+document](https://github.com/layik/eAtlas/blob/master/notes/guide.md)
+for details of how to host your own eAtlas using Github Pages.
+
 ### Development
 
-The front end is an npm package, so if you do not need the backend,
-having cloned the repo:
+To run the front end only without needs for the backend, having cloned
+the repo:
 
 ``` js
 npm i # or yarn
 # and run
 npm start
 ```
+
+<script type="text/javascript">
+npm i # or yarn
+# and run
+npm start
+</script>
 
 The frontend is a
 [`create-react-app`](https://create-react-app.dev/docs/getting-started/)
@@ -44,17 +63,16 @@ library(geoplumber)
 gp_build()
 ```
 
-Before you run the app:
+To run the app using `geoplumber`, tha front-end is built using
+`geoplumber` and therefore:
 
-  - you will need some preprocessed data, an RDS called
-    “ac\_joined\_wy\_2009-2017.Rds”.
-
-  - you will need a Mapbox API key (will see if we can remove this) in
-    `.env.local` file using variable name:
+  - (optional) will be looking for a Mapbox API key, having obtained a
+    Mapbox API key in `.env.local` file using variable name:
     `REACT_APP_MAPBOX_ACCESS_TOKEN = 'API_KEY'`
 
-  - in production its better to change the `PRD_URL` in the
-    `Constants.js` file.
+  - change the `PRD_URL` in the `Constants.js` file to `localhost:8000`.
+    Default value is `https://layik.github.io/eAtlas` for this repo to
+    publish on GitHub pages.
 
 Then you can run
 
@@ -65,12 +83,10 @@ gp_plumb()
 
 visit `localhost:8000`
 
-or just run the front using (without any data loaded from local server):
-`npm i & npm start`
-
 ### Docker for production
 
-Repo contains Dockerfile for production. This is again WIP.
+Repo contains Dockerfile for production. Again remember to change the
+production URL.
 
 ``` sh
 # Dockerfile manages your npm/React build steps
@@ -83,6 +99,22 @@ docker run -d -p 8000:8001 --name eatlas eatlas
 Use your favourite document server (nginx for example) to proxy requets
 (more later hopefully).
 
+## Notes
+
+This README is valid for beta (`1.0.x-beta.x`) releases and updated with
+changes.
+
+## Funding
+
+The project is led by Dr [Nik
+Lomax](https://environment.leeds.ac.uk/geography/staff/1064/dr-nik-lomax)
+and Dr [Roger
+Beecham](https://environment.leeds.ac.uk/geography/staff/1003/dr-roger-beecham)
+and funded by the EPSRC via the Alan Turing Institute AI for Science and
+Government Programme, Grant/Award Number: EP/T001569/1.
+
 ### Screenshots/gif’s
 
 <img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/76419738-c46edc80-6398-11ea-8bbe-496394f90adc.png">
+
+<!-- build this Rmd with: R -e "rmarkdown::render('README.Rmd')" -->
