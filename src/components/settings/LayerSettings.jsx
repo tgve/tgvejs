@@ -6,7 +6,7 @@ import {
 } from '../../utils';
 import { Slider } from 'baseui/slider';
 import { Checkbox } from "baseui/checkbox";
-import { isArray } from '../../JSUtils';
+import { isObject } from '../../JSUtils';
 import {Accordion, Panel} from 'baseui/accordion';
 
 
@@ -40,7 +40,7 @@ export default function LayerSettings(props) {
         title={"Settings: " + layerName}>
         {
           Object.keys(options).map(key => {
-            const v = isArray(options[key]) ? options[key][0] : options[key];
+            const v = isObject(options[key]) ? options[key].type : options[key];
             return getUIForKey(v, key);
           })
         }
@@ -55,10 +55,10 @@ export default function LayerSettings(props) {
           {key}
           <Slider
             // raw number is kept in values 
-            value={(values[key] && [values[key]]) || [options[key][3]]}
-            min={options[key][1]}
-            max={options[key][2]}
-            step={options[key][4]}
+            value={(values[key] && [values[key]]) || [options[key].default]}
+            min={options[key].min}
+            max={options[key].max}
+            step={options[key].step}
             onChange={({ value }) => {
               const newValues = { ...values, [key]: value[0] };
               setValues(newValues)
@@ -69,7 +69,7 @@ export default function LayerSettings(props) {
       case 'boolean':
         return <Checkbox
           checked={values.hasOwnProperty(key) ?
-            values[key] : options[key][1]}
+            values[key] : options[key].value}
           onChange={() => {
             const newValues = { ...values, [key]: !values[key] }
             setValues(newValues)
@@ -78,13 +78,21 @@ export default function LayerSettings(props) {
           }}
         >{humanize(key)}</Checkbox>;
       default:
-        return <MultiSelect
+        return <>
+          {key}
+          <MultiSelect
           title={humanize(key)}
           single={true}
           values={columnNames.map(e => ({ id: humanize(e), value: e }))}
-          onLayerOptionsCallback={(selected) => {
-            //TODO
-          }} />;
+          onSelectCallback={(selected) => {
+            const newValues = {...values, 
+            [key]: (d) => d.properties[selected[0].value]}
+            setValues(newValues)
+            typeof onLayerOptionsCallback === 'function' &&
+              onLayerOptionsCallback(newValues)
+
+          }} />
+          </>;
     }
   }
 }

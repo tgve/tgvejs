@@ -29,7 +29,7 @@ import {
   getParamsFromSearch, getBbx, isMobile, colorScale, OSMTILES,
   colorRanges, generateDomain, setGeojsonProps,
   convertRange, getMin, getMax, isURL, getFirstDateColumnName, 
-  generateLegend, humanize, colorRangeNamesToInterpolate,
+  generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
 } from './utils';
 import Constants, { LIGHT_SETTINGS } from './Constants';
 import DeckSidebarContainer from
@@ -297,7 +297,8 @@ export default class Welcome extends React.Component {
     const options = Object.assign({
       ...this.state.layerOptions,      
       lightSettings: LIGHT_SETTINGS,
-      colorRange: colorRanges(cn || colorName)
+      colorRange: colorRanges(cn || colorName),
+      getColor: getColorArray(cn || colorName)
     }, layerOptions);
     
     if (layerStyle === 'heatmap') {
@@ -387,9 +388,13 @@ export default class Welcome extends React.Component {
     if (layerStyle === 'barvis') {
       options.getPosition = d => [d.geometry.coordinates[0],
       d.geometry.coordinates[1], 0]
-      if (data[0].properties.result) options.getRotationAngle = d =>
-        d.properties.result.includes("gain from") ? 45 : 1
-      options.getScale = 200
+      // if (data[0].properties.result) options.getRotationAngle = d =>
+      //   d.properties.result.includes("gain from") ? 45 : 1
+      options.getScale = 20
+      options.updateTriggers = {
+        getRotationAngle: [data.map(d => d.properties[columnNameOrIndex])]
+        // TODOT: getWidth: 
+      }
     }
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options

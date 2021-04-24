@@ -640,6 +640,19 @@ const colorRanges = (name) => {
   return (colors[name])
 }
 
+const getColorArray = (name) => {
+  if(!isString(name)) return null;
+  const colors = {
+    yellowblue: [0, 52, 148],
+    greens: [0, 255, 0],
+    oranges: [166, 166, 0],
+    diverge: [255, 102, 94],
+    inverseDefault: [255, 255, 178],
+    default: [189, 0, 38],
+  }
+  return (colors[name])
+}
+
 const iconJSType = (dataType) => {
   // describeFeatureVariables in geojsonutils
   // String, Number, Boolean and Object
@@ -887,6 +900,7 @@ export {
   generateLegend,
   generateDomain,
   getMainMessage,
+  getColorArray,
   convertRange,
   getCentroid,
   shortenName,

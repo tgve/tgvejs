@@ -6,18 +6,22 @@ const addOptionsToObject = (opt, obj) => {
   return obj
 }
 
+const makeObject = (type, min, max, def, step) => {
+  return({type, min, max, default: def, step})
+}
+
 const getLayerProps = (name) => {
   if(!isString(name)) return null
 
   const options = {
-    pickable: ['boolean', true],
+    pickable: {type: 'boolean', value: true},
   }
   if (name === 'hex') {
     const hexObject = {
-      extruded: ['boolean', true],
+      extruded: {type: 'boolean', value: true},
       // key: [type, min, max, step, default]
-      radius: ['number', 50, 1000, 50, 100],
-      elevationScale: ['number', 2, 8, 2, 4],
+      radius: makeObject('number', 50, 1000, 100, 50),
+      elevationScale: makeObject('number', 2, 8, 4, 2),
       // opacity: ['number', 0, 1, 0.1, 0.3]
     }
     return addOptionsToObject(options, hexObject)
@@ -32,15 +36,15 @@ const getLayerProps = (name) => {
     return addOptionsToObject(options, scatterObj)
   } else if (name === 'geojson') {
     const geojsonObject = {
-      stroked: ['boolean', false],
-      filled: ['boolean', true],
-      lineWidthScale: ['number', 20, 100, 20, 5],
-      lineWidthMinPixels: ['number', 2, 20, 2, 2],
+      stroked: {type: 'boolean', value: false},
+      filled: {type: 'boolean', value: true},
+      lineWidthScale: makeObject('number', 20, 100, 20,5),
+      lineWidthMinPixels: makeObject('number', 2, 20, 2, 2),
       // getFillColor: [160, 160, 180, 200],
       // getLineColor: [255, 160, 180, 200],
-      getRadius: ['number', 10, 100, 10, 10],
-      getLineWidth: ['number', 1, 10, 1, 1],
-      getElevation: ['number', 30, 100, 30, 30],
+      getRadius: makeObject('number', 10, 1000, 30, 10),
+      getLineWidth: makeObject('number', 1, 10, 1, 1),
+      getElevation: makeObject('number', 30, 100, 30, 10),
       // getElevation: f => Math.sqrt(f.properties.valuePerSqm) * 10,
       // getFillColor: f => COLOR_RANGE(f.properties.growth),
     }
@@ -51,7 +55,7 @@ const getLayerProps = (name) => {
       // iconMapping: mapping,
       // sizeScale: 'number',
       // getPosition: d => d.geometry.coordinates,
-      wrapLongitude: ['boolean'],
+      wrapLongitude: {type: 'boolean', value: false},
       // getIcon: d => 'marker-1',
       // getSize: d => 5,
       // getColor: d => [Math.sqrt(d.exits), 140, 0],
@@ -61,15 +65,15 @@ const getLayerProps = (name) => {
     const sgridObject = {
       // getPosition: d => d.geometry.coordinates,
       // getWeight: d => d.properties.weight,
-      cellSizePixels: ['number', 4, 10, 4, 4],
+      cellSizePixels: makeObject('number', 50, 100, 50, 5),
       // colorRange,
       // gpuAggregation,
     }
     return addOptionsToObject(options, sgridObject)
   } else if (name === 'grid') {
     const gridObject = {
-      cellSize: ['number', 100, 1000, 100, 100],
-      elevationScale: ['number', 4, 10, 4, 2],
+      cellSize: makeObject('number', 100, 5000, 100, 50),
+      elevationScale: makeObject('number', 4, 10, 4, 2),
     }
     return addOptionsToObject(options, gridObject)
    } // else if (name === 'line') {
@@ -104,11 +108,13 @@ const getLayerProps = (name) => {
   //   const textObject = {
   //   }
   //   return addOptionsToObject(options, textObject);
-  // } else if (name === "barvis") {
-  //   const barvisObject = {
-  //   }
-  //   return addOptionsToObject(options, barvisObject);
-  // }
+  else if (name === "barvis") {
+    const barvisObject = {
+      getRotationAngle: {type: 'column', value: 'number'},
+      getWidth: {type: 'column', value: 'number'}
+    }
+    return addOptionsToObject(options, barvisObject);
+  }
 }
 export {
   getLayerProps
