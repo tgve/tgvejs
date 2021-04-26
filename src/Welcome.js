@@ -29,9 +29,8 @@ import {
   getParamsFromSearch, getBbx, isMobile, colorScale, OSMTILES,
   colorRanges, generateDomain, setGeojsonProps,
   convertRange, getMin, getMax, isURL, getFirstDateColumnName, 
-  generateLegend, humanize, colorRangeNamesToInterpolate,
+  generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
 } from './utils';
-import { randomToNumber } from './JSUtils';
 import Constants, { LIGHT_SETTINGS } from './Constants';
 import DeckSidebarContainer from
   './components/decksidebar/DeckSidebarContainer';
@@ -41,6 +40,7 @@ import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
 import { DateTime } from 'luxon';
+import { throttle } from 'lodash';
 
 const URL = (process.env.NODE_ENV === 'development' ? 
   Constants.DEV_URL : Constants.PRD_URL);
@@ -77,8 +77,11 @@ export default class Welcome extends React.Component {
       loading: true,
       layers: [],
       backgroundImage: gradient.backgroundImage,
-      radius: Constants.RADIUS,
-      elevation: Constants.ELEVATION,
+      layerOptions: { 
+        radius: Constants.RADIUS,
+        elevation: Constants.ELEVATION,
+        cellSize: Constants.RADIUS,
+      },
       mapStyle: MAPBOX_ACCESS_TOKEN ? ("mapbox://styles/mapbox/" +
         (props.dark ? "dark" : "streets") + "-v9") : OSMTILES,
       initialViewState: init,
@@ -98,6 +101,9 @@ export default class Welcome extends React.Component {
     this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
     this._fitViewport = this._fitViewport.bind(this);
     this._initWithGeojson = this._initWithGeojson.bind(this);
+    this._updateURL = this._updateURL.bind(this);
+    // TODO: can let user change the 300
+    this._throttleUR = throttle((v) => this._updateURL(v), 300)
   }
 
   componentDidMount() {
@@ -160,7 +166,6 @@ export default class Welcome extends React.Component {
    */
   _initWithGeojson(error, data, customError, fullURL) {
     if (!error) {
-      // this._updateURL(viewport)
       this.setState({
         loading: false,
         data: data,
@@ -182,15 +187,13 @@ export default class Welcome extends React.Component {
    * {property: Set(val1, val2), ...}.
    * 
    * @param {*} values includes
-   * radius: specific to changing geoms
-   * elevation: specific to changing geoms
-   * filter: multivariate filter of properties
-   * cn: short for colorName passed from callback
-   * TODO: other
+   * @param {Object} filter multivariate filter of properties
+   * @param {String} cn short for colorName passed from callback
+   * @param {Object} layerOptions
    */
   _generateLayer(values = {}) {
-    const { radius, elevation, filter, cn } = values;
-
+    const { layerOptions = {}, filter, cn } = values;
+    
     if (filter && filter.what === 'mapstyle') {
       const newStyle = "mapbox://styles/mapbox/" + filter.selected + "-v9";
       this.setState({
@@ -287,23 +290,33 @@ export default class Welcome extends React.Component {
       suggestDeckLayer(geography ? geography.features : data);
     // TODO: incorporate this into suggestDeckLayer
     if (!new RegExp("point", "i").test(geomType)) layerStyle = "geojson"
-    const switchToIcon = data.length < iconLimit && !column && 
+    const switchToIcon = data.length < iconLimit && !layerStyle && 
     (!filter || filter.what !== 'layerStyle') && geomType === "point";
     if (switchToIcon) layerStyle = 'icon';
-    const options = {
-      radius: radius ? radius : this.state.radius,
-      radiusScale: radius ? radius: this.state.radius,
-      cellSize: radius ? radius : this.state.radius,
-      elevationScale: elevation ? elevation : this.state.elevation,
+
+    const options = Object.assign({
+      ...this.state.layerOptions,      
       lightSettings: LIGHT_SETTINGS,
-      colorRange: colorRanges(cn || colorName)
-    };
+      colorRange: colorRanges(cn || colorName),
+      getColor: getColorArray(cn || colorName)
+    }, layerOptions);
+    
+    // generate a domain
+    const domain = generateDomain(data, columnNameOrIndex);
+    const getValue = (d) => 
+    // initialazied with 1 so +columnNameOrIndex is safe
+    d.properties[+columnNameOrIndex ?
+      Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]
+
     if (layerStyle === 'heatmap') {
       options.getPosition = d => d.geometry.coordinates
       // options.getWeight = d => d.properties[columnNameOrIndex]
+      options.updateTriggers = {
+        // even if nulls
+        getWeight: [typeof(options.getWeight) === 'function' &&
+        data.map(d => options.getWeight(d))]
+      }
     }
-    // generate a domain
-    const domain = generateDomain(data, columnNameOrIndex);
     if (geomType === 'linestring') {
       layerStyle = "line"
       // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
@@ -352,10 +365,6 @@ export default class Welcome extends React.Component {
 
     if (geomType === "polygon" || geomType === "multipolygon" ||
       layerStyle === 'geojson') {
-      const getValue = (d) => 
-      // initialazied with 1 so +columnNameOrIndex is safe
-      d.properties[+columnNameOrIndex ?
-        Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]
       const fill =  (d) => colorScale(
         +getValue(d) ? +getValue(d) : getValue(d),
         domain, 180, cn || this.state.colorName
@@ -385,9 +394,16 @@ export default class Welcome extends React.Component {
     if (layerStyle === 'barvis') {
       options.getPosition = d => [d.geometry.coordinates[0],
       d.geometry.coordinates[1], 0]
-      if (data[0].properties.result) options.getRotationAngle = d =>
-        d.properties.result.includes("gain from") ? 45 : 1
-      options.getScale = 200
+      // if (data[0].properties.result) options.getRotationAngle = d =>
+      //   d.properties.result.includes("gain from") ? 45 : 1
+      options.getScale = 20
+      options.updateTriggers = {
+        // TODO: get the functions & spread them
+        getRotationAngle: [typeof(options.getRotationAngle) === 'function' &&
+          data.map(d => options.getRotationAngle(d))],
+        getWidth: [typeof(options.getWidth) === 'function' &&
+          data.map(d => options.getWidth(d))]
+      }
     }
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options
@@ -401,8 +417,7 @@ export default class Welcome extends React.Component {
       tooltip: "",
       filtered: data,
       layers: [alayer],
-      radius: radius ? radius : this.state.radius,
-      elevation: elevation ? elevation : this.state.elevation,
+      layerOptions: options,
       road_type: filter && filter.what === 'road_type' ? filter.selected :
         this.state.road_type,
       colorName: cn || colorName,
@@ -515,7 +530,7 @@ export default class Welcome extends React.Component {
           }}
           mapStyle={mapStyle}
           onViewportChange={(viewport) => {
-            this._updateURL(viewport)
+            this._throttleUR(viewport)
             this.setState({ viewport })
           }}
           height={this.state.height - 54 + 'px'}
@@ -568,8 +583,10 @@ export default class Welcome extends React.Component {
               column: null,
               tooltip: "",
               road_type: "",
-              radius: 100,
-              elevation: 4,
+              layerOptions: { 
+                radius: Constants.RADIUS,
+                elevation: Constants.ELEVATION,
+              },
               loading: true,
               coords: null
             })
@@ -590,9 +607,10 @@ export default class Welcome extends React.Component {
             }
           }}
           column={this.state.column}
-          onSelectCallback={(selected) => this._generateLayer({ filter: selected })}
-          onChangeRadius={(value) => this._generateLayer({ radius: value })}
-          onChangeElevation={(value) => this._generateLayer({ elevation: value })}
+          onSelectCallback={(selected) => 
+            this._generateLayer({ filter: selected })}
+          onLayerOptionsCallback={(layerOptions) => 
+            this._generateLayer({ layerOptions })}
           toggleSubsetBoundsChange={(value) => {
             this.setState({
               loading: true,

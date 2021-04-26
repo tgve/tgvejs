@@ -640,6 +640,27 @@ const colorRanges = (name) => {
   return (colors[name])
 }
 
+/**
+ * TODO: much better colour array needed.
+ * The purpose here was to use the same
+ * colour palette used for the ranges.
+ * 
+ * @param {String} name 
+ * @returns 
+ */
+const getColorArray = (name) => {
+  if(!isString(name)) return null;
+  const colors = {
+    yellowblue: [0, 52, 148],
+    greens: [0, 255, 0],
+    oranges: [166, 166, 0],
+    diverge: [255, 102, 94],
+    inverseDefault: [255, 255, 178],
+    default: [189, 0, 38],
+  }
+  return (colors[name])
+}
+
 const iconJSType = (dataType) => {
   // describeFeatureVariables in geojsonutils
   // String, Number, Boolean and Object
@@ -819,7 +840,8 @@ const OSMTILES = {
  * @param {*} geoColumn geocode which is shared between `geojson` and `data`
  */
 const setGeojsonProps = (geojson, data, geoColumn) => {
-  const r = randomToNumber(data && data.length);
+  // const r = randomToNumber(data && data.length);
+  const r = 0;
   if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
     !geojson.features || !geojson.features[r] ||
     !geojson.features[r].properties[geoColumn] || !data[r] || 
@@ -886,6 +908,7 @@ export {
   generateLegend,
   generateDomain,
   getMainMessage,
+  getColorArray,
   convertRange,
   getCentroid,
   shortenName,

@@ -33,6 +33,7 @@ import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
 import Boxplot from '../boxplot/Boxplot';
 import { Slider } from 'baseui/slider';
+import LayerSettings from '../settings/LayerSettings';
 
 export default class DeckSidebar extends React.Component {
   constructor(props) {
@@ -77,22 +78,26 @@ export default class DeckSidebar extends React.Component {
   render() {
     const { elevation, radius, year, subsetBoundsChange,
       multiVarSelect, barChartVariable, datasetName } = this.state;
-    const { onChangeRadius, onChangeElevation,
+    const { onLayerOptionsCallback,
       onSelectCallback, data, colourCallback, unfilteredData,
       toggleSubsetBoundsChange, urlCallback, alert, layerStyle,
-      onlocationChange, column, dark, toggleOpen, toggleHexPlot } = this.props;
+      onlocationChange, column, dark, toggleOpen, toggleHexPlot
+    } = this.props;
 
     const notEmpty = data && data.length > 1;
 
     // TODO: more comprehensive method needed
     // last reg is "" string which is undefined
-    const withRadius = !layerStyle || 
-    new RegExp("grid|sgrid|hex|scatter", "i").test(layerStyle);
+    const withRadius = !layerStyle ||
+      new RegExp("grid|sgrid|hex|scatter", "i").test(layerStyle);
 
     const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
     let columnData = notEmpty ?
-      xyObjectByProperty(data, column || barChartVariable) : [];    
+      xyObjectByProperty(data, column || barChartVariable) : [];
+
+    const columnNames = notEmpty && Object.keys(data[0].properties)
+      .filter(p => !isEmptyOrSpaces(p));
 
     const columnPlot = {
       data: columnData,
@@ -126,7 +131,7 @@ export default class DeckSidebar extends React.Component {
                 <h6 className="truncate">
                   dataset: {firstLastNCharacters(datasetName, 15)}
                 </h6>
-            }</>)
+              }</>)
           }
           <div>
             <DataInput
@@ -191,22 +196,22 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-info" />
                 }>
                   {/* pick a column and vis type */}
-                  <AddVIS data={data} dark={dark} plotStyle={{ width: 240, margin: 20 }} />
+                  {this._panel(dark,
+                    <AddVIS data={data} dark={dark} plotStyle={{ width: 270, margin: 10 }} />
+                  )}
                   {/* distribution example */}
                   {plotByProperty(data, "age_of_casualty", dark)}
                   {plotByPropertyByDate(data, "sex_of_casualty", dark)}
-                  {notEmpty &&
-                    Object.keys(data[0].properties)
-                      .filter(p => !isEmptyOrSpaces(p)).length > 0 &&
+                  {notEmpty && columnNames.length > 0 &&
                     layerStyle !== "grid" &&
                     <>
                       <h6>Column for layer:</h6>
                       <MultiSelect
                         title="Choose Column"
                         single={true}
-                        value={column && {id:humanize(column), value:column}}
+                        value={column && { id: humanize(column), value: column }}
                         values={
-                          Object.keys(data[0].properties).map(e =>
+                          columnNames.map(e =>
                             ({ id: humanize(e), value: e }))
                         }
                         onSelectCallback={(selected) => {
@@ -253,76 +258,62 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-sliders" />
                 }>
                   {notEmpty &&
-                    <ColorPicker colourCallback={(color) =>
-                      typeof colourCallback === 'function' &&
-                      colourCallback(color)} />
-                  }
-                  {notEmpty && withRadius &&
-                    <div>
-                      <h5>Radius</h5>
-                      <Slider
-                        value={[radius]}
-                        min={50}
-                        max={1000}
-                        step={50}
-                        onChange={({ value }) => {
-                          this.setState({ radius: value[0] });
-                          typeof (onChangeRadius) === 'function' &&
-                            onChangeRadius(value[0])
-                        }}
-                      />
-                      <h5>Elevation</h5>
-                      <Slider
-                        value={[elevation]}
-                        min={2}
-                        max={8}
-                        step={2}
-                        onChange={({ value }) => {
-                          this.setState({ elevation: value[0] });
-                          typeof (onChangeElevation) === 'function' &&
-                            onChangeRadius(value[0])
-                        }}
-                      />
-                    </div>
+                    this._headerComponent(dark,
+                      <ColorPicker colourCallback={(color) =>
+                        typeof colourCallback === 'function' &&
+                        colourCallback(color)} />
+                    )
                   }
                   {notEmpty &&
-                    <>
-                      <h6>Deck Layer:</h6>
-                      <MultiSelect
-                        title="Choose Layer"
-                        single={true}
-                        values={
-                          // TODO:filter based on data
-                          LAYERSTYLES.map(e =>
-                            ({ id: humanize(e), value: e }))
-                        }
-                        onSelectCallback={(selected) => {
-                          // array of seingle {id: , value: } object
-                          const newBarChartVar = (selected && selected[0]) ?
-                            selected[0].value : barChartVariable;
-                          this.setState({
-                            barChartVariable: newBarChartVar
-                          });
-                          typeof onSelectCallback === 'function' &&
-                            onSelectCallback({
-                              what: 'layerStyle', selected: newBarChartVar
-                            });
-                        }}
-                      />
-                    </>
+                    this._panel(dark,
+                      <>
+                        <h6>Deck Layer:</h6>
+                        <MultiSelect
+                          title="Choose Layer"
+                          single={true}
+                          values={
+                            // TODO:filter based on data
+                            LAYERSTYLES.map(e =>
+                              ({ id: humanize(e), value: e }))
+                          }
+                          onSelectCallback={(selected) => {
+                            // array of seingle {id: , value: } object
+                            const ls = (selected && selected[0]) ?
+                              selected[0].value : ls;
+                            this.setState({ layerStyle: ls });
+                            typeof onSelectCallback === 'function' &&
+                              onSelectCallback({
+                                what: 'layerStyle', selected: ls
+                              });
+                          }}
+                        />
+                        <LayerSettings
+                          dark={dark}
+                          layerName={layerStyle}
+                          columnNames={columnNames}
+                          onLayerOptionsCallback={(layerOptions) => {
+                            typeof (onLayerOptionsCallback) === 'function' &&
+                              onLayerOptionsCallback({ ...layerOptions })
+                          }} />
+                      </>)
                   }
-                  Map Styles
-                  <br />
-                  <MapboxBaseLayers
-                    dark={dark}
-                    onSelectCallback={(selected) =>
-                      onSelectCallback &&
-                      onSelectCallback({
-                        selected: selected,
-                        what: 'mapstyle'
-                      })
-                    }
-                  />
+                  {
+                    this._headerComponent(dark,
+                      <>
+                        Map Styles
+                        <br />
+                        <MapboxBaseLayers
+                          dark={dark}
+                          onSelectCallback={(selected) =>
+                            onSelectCallback &&
+                            onSelectCallback({
+                              selected: selected,
+                              what: 'mapstyle'
+                            })
+                          }
+                        />
+                      </>)
+                  }
                   {notEmpty && withRadius &&
                     <Checkbox
                       onChange={() => toggleHexPlot && toggleHexPlot()}
@@ -348,7 +339,7 @@ export default class DeckSidebar extends React.Component {
                 }>
                   {
                     unfilteredData && unfilteredData.length > 0 &&
-                    <Variables
+                    this._headerComponent(dark, <Variables
                       dark={dark}
                       multiVarSelect={multiVarSelect}
                       onSelectCallback={(mvs) => {
@@ -359,6 +350,7 @@ export default class DeckSidebar extends React.Component {
                         this.setState({ multiVarSelect: mvs })
                       }}
                       unfilteredData={unfilteredData} />
+                    )
                   }
                 </Tab>
               </Tabs>
@@ -403,14 +395,26 @@ export default class DeckSidebar extends React.Component {
   }
 
   _headerComponent(dark, content) {
-    return(
-    <div
-      style={{
-        background: dark ? '#29323C' : '#eee'
-      }}
-      className="side-pane-header">
+    return (
+      <div
+        style={{
+          marginTop: 2,
+          background: dark ? '#29323C' : '#eee'
+        }}
+        className="side-pane-header">
         {content}
-    </div>)
+      </div>)
+  }
+
+  _panel(dark, content) {
+    return (
+      <div
+        style={{
+          borderColor: dark ? '#29323C' : '#eee'
+        }}
+        className="side-panel-group">
+        {content}
+      </div>)
   }
 }
 
