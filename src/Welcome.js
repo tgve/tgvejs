@@ -90,6 +90,7 @@ export default class Welcome extends React.Component {
       colorName: 'default',
       iconLimit: Constants.ICONLIMIT,
       legend: false,
+      multiVarSelect: {},
       width: window.innerWidth, height: window.innerHeight,
       tooltipColumns: {column1: "accident_severity" , column2: "date"},
       geographyURL: process.env.REACT_APP_GEOGRAPHY_URL || null,
@@ -183,8 +184,9 @@ export default class Welcome extends React.Component {
   }
 
   /**
-   * Welcome should hold own state in selected as:
-   * {property: Set(val1, val2), ...}.
+   * The main function generating DeckGL layer and customizing mapbox styles.
+   * The reason why state is not updated down in <DeckSidebarContainer />
+   * is to optimise the number of setState or equivalent React hooks.
    * 
    * @param {*} values includes
    * @param {Object} filter multivariate filter of properties
@@ -193,7 +195,7 @@ export default class Welcome extends React.Component {
    */
   _generateLayer(values = {}) {
     const { layerOptions = {}, filter, cn } = values;
-    
+
     if (filter && filter.what === 'mapstyle') {
       const newStyle = "mapbox://styles/mapbox/" + filter.selected + "-v9";
       this.setState({
@@ -211,7 +213,8 @@ export default class Welcome extends React.Component {
       this.state.column;
     const columnNameOrIndex = column || 1;
 
-    const { colorName, iconLimit, geography, geographyColumn } = this.state;
+    const { colorName, iconLimit, geography, geographyColumn,
+      multiVarSelect } = this.state;
     if (filter && filter.what === "%") {
       data = data.slice(0, filter.selected / 100 * data.length)
     }
@@ -221,13 +224,16 @@ export default class Welcome extends React.Component {
     }
 
     //if resetting a value
-    if (filter && filter.selected !== "") {
+    const filterValues = filter && filter.what === 'multi' ||
+      Object.keys(multiVarSelect).length;
+    const filterCoords = filter && filter.what === 'coords';
+    const selected = filter && filter.selected || multiVarSelect;
+    if (filterValues || filterCoords) {
       const yearColumn = getFirstDateColumnName(data[0].properties);
       data = data.filter(
         d => {
-          if (filter.what === 'multi') {
+          if (filterValues) {
             // go through each selection
-            const selected = filter.selected;
             // selected.var > Set()
             for (let each of Object.keys(selected)) {
               const nextValue = each === yearColumn ?
@@ -242,7 +248,7 @@ export default class Welcome extends React.Component {
               }
             }
           }
-          if (filter.what === 'coords') {
+          if (filterCoords) {
             // coords in 
             if (_.difference(filter.selected || this.state.coords,
               d.geometry.coordinates.flat()).length !== 0) {
@@ -418,6 +424,9 @@ export default class Welcome extends React.Component {
       filtered: data,
       layers: [alayer],
       layerOptions: options,
+      // do not save if not given etc
+      multiVarSelect: filter && filter.what === "multi" ?
+        filter.selected : multiVarSelect,
       road_type: filter && filter.what === 'road_type' ? filter.selected :
         this.state.road_type,
       colorName: cn || colorName,

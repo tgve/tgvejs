@@ -32,7 +32,6 @@ import { isEmptyOrSpaces } from '../../JSUtils';
 import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
 import Boxplot from '../boxplot/Boxplot';
-import { Slider } from 'baseui/slider';
 import LayerSettings from '../settings/LayerSettings';
 
 export default class DeckSidebar extends React.Component {
@@ -76,8 +75,8 @@ export default class DeckSidebar extends React.Component {
    * Partly because we like to load from a URL.
    */
   render() {
-    const { elevation, radius, year, subsetBoundsChange,
-      multiVarSelect, barChartVariable, datasetName } = this.state;
+    const { year, subsetBoundsChange, multiVarSelect, 
+      barChartVariable, datasetName } = this.state;
     const { onLayerOptionsCallback,
       onSelectCallback, data, colourCallback, unfilteredData,
       toggleSubsetBoundsChange, urlCallback, alert, layerStyle,
