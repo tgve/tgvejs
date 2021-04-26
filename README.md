@@ -39,12 +39,6 @@ npm i # or yarn
 npm start
 ```
 
-<script type="text/javascript">
-npm i # or yarn
-# and run
-npm start
-</script>
-
 The frontend is a
 [`create-react-app`](https://create-react-app.dev/docs/getting-started/)
 (CRA) so all the standard commands of CRA appliees.
