@@ -1,9 +1,6 @@
 import React from 'react';
 import {
-  ScatterplotLayer, HexagonLayer, GeoJsonLayer,
-  ScreenGridLayer, GridLayer, LineLayer,
-  HeatmapLayer,
-  TextLayer
+  GeoJsonLayer,
 } from 'deck.gl';
 import {
   interpolateOrRd, // schemeBlues
@@ -185,6 +182,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
  */
   function generateOptions(name, data, renderTooltip) {
     const layerProps = getLayerProps(name);
+    if(!layerProps.class || !layerProps.class["value"]) return null
     const layerOptions = {};
     Object.keys(layerProps).forEach(key => {
       const type = layerProps[key] && layerProps[key].type;
@@ -201,18 +199,12 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     layerOptions.id = name + "-layer";
     layerOptions.onHover = renderTooltip;
     layerOptions.getPosition = d => d.geometry.coordinates;
-    return layerOptions;
+    addOptionsToObject(options, layerOptions)
+
+    return new layerProps.class["value"](layerOptions);
   }
 
-  if (name === 'hex') {
-    const hexObj = generateOptions(name, data, renderTooltip);
-    addOptionsToObject(options, hexObj)
-    return (new HexagonLayer(options))
-  } else if (name === 'scatterplot') {
-    const scatterObj = generateOptions(name, data, renderTooltip);
-    addOptionsToObject(options, scatterObj)
-    return (new ScatterplotLayer(scatterObj))
-  } else if (name === 'geojson') {
+  if (name === 'geojson') {
     const geojsonObj = {
       id: 'geojson-layer',
       data,
@@ -259,83 +251,9 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, iconObj)
     return (new IconClusterLayer(iconObj))
-  } else if (name === 'sgrid') {
-    const sgridObject = generateOptions(name, data, renderTooltip);
-    addOptionsToObject(options, sgridObject)
-    return (new ScreenGridLayer(sgridObject))
-  } else if (name === 'grid') {
-    const gridObj = generateOptions(name, data, renderTooltip)
-    addOptionsToObject(options, gridObj)
-    return (new GridLayer(gridObj))
-  } else if (name === 'line') {
-    const lineObject = {
-      id: 'line-layer',
-      data,
-      pickable: true,
-      onHover: renderTooltip
-    }
-    addOptionsToObject(options, lineObject)
-    return (new LineLayer(lineObject))
-  } else if (name === 'arc') {
-    const arcObject = {
-      id: 'arc-layer',
-      data,
-      pickable: true,
-      onHover: renderTooltip
-      // getSourcePosition: d => d.geometry.coordinates[0],
-      // getTargetPosition: d => d.geometry.coordinates[1],
-    }
-    addOptionsToObject(options, arcObject)
-    return (new ArcLayer(arcObject))
-  } else if (name === 'path') {
-    const pathObject = {
-      id: 'path-layer',
-      data,
-      pickable: true,
-      onHover: renderTooltip
-    }
-    addOptionsToObject(options, pathObject)
-    return (new PathLayer(pathObject))
-  } else if (name === 'heatmap') {
-    const heatObject = {
-      id: 'heatmap-layer',
-      data,
-      pickable: true,
-      onHover: renderTooltip,
-    }
-    addOptionsToObject(options, heatObject);
-    return (new HeatmapLayer(heatObject))
-  } else if (name === "scatterplot") {
-    const scatterObject = {
-      id: 'scatterplot',
-      data,
-      pickable: true,
-      onHover: renderTooltip,
-      opacity: 0.3
-    }
-    addOptionsToObject(options, scatterObject);
-    return (new ScatterplotLayer(scatterObject))
-  } else if (name === "text") {
-    const textObject = {
-      id: 'text-layer',
-      data,
-      pickable: true,
-      onHover: renderTooltip,
-    }
-    addOptionsToObject(options, textObject);
-    return (new TextLayer(textObject))
-  } else if (name === "barvis") {
-    const barvisObject = {
-      id: 'barvis-layer',
-      data,
-      pickable: true,
-      onHover: renderTooltip,
-    }
-    addOptionsToObject(options, barvisObject);
-    return (new BarLayer(barvisObject))
   }
 
-  return (null)
+  return generateOptions(name, data, renderTooltip)
 }
 
 const getCentroid = (coords) => {

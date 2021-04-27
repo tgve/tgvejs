@@ -91,11 +91,12 @@ const lineObject = {
   /**
    * TODO
    */
+  // getSourcePosition: d => d.geometry.coordinates[0],
+  // getTargetPosition: d => d.geometry.coordinates[1],
 }
 layers['line'] =  addOptionsToObject(options, lineObject)
 const arcObject = {
   class: { value: ArcLayer, type: 'class' },
-  // onHover: renderTooltip
   // getSourcePosition: d => d.geometry.coordinates[0],
   // getTargetPosition: d => d.geometry.coordinates[1],
 }
