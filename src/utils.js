@@ -1,8 +1,5 @@
 import React from 'react';
 import {
-  GeoJsonLayer,
-} from 'deck.gl';
-import {
   interpolateOrRd, // schemeBlues
   interpolateReds, interpolateYlGnBu, interpolateGreens,
   interpolateOranges, interpolateSinebow
@@ -15,8 +12,6 @@ import mapping from './location-icon-mapping.json';
 import Constants from './Constants';
 import { isString, isNumber, isObject, randomToNumber } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
-import { ArcLayer, PathLayer } from '@deck.gl/layers';
-import BarLayer from './components/customlayers/BarLayer'
 import { isArray } from 'underscore';
 import csv2geojson from 'csv2geojson';
 import { ascending } from 'd3-array';
@@ -204,29 +199,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     return new layerProps.class["value"](layerOptions);
   }
 
-  if (name === 'geojson') {
-    const geojsonObj = {
-      id: 'geojson-layer',
-      data,
-      pickable: true,
-      stroked: false,
-      filled: true,
-      extruded: true,
-      lineWidthScale: 20,
-      lineWidthMinPixels: 2,
-      // getFillColor: [160, 160, 180, 200],
-      // getLineColor: [255, 160, 180, 200],
-      getRadius: 100,
-      getLineWidth: 1,
-      getElevation: 30,
-      onHover: renderTooltip,
-      // for default repo only
-      getElevation: f => Math.sqrt(f.properties.valuePerSqm) * 10,
-      // getFillColor: f => COLOR_RANGE(f.properties.growth),
-    }
-    addOptionsToObject(options, geojsonObj)
-    return (new GeoJsonLayer(geojsonObj))
-  } else if (name === 'icon') {
+  if (name === 'icon') {
     /**
      * There are three files the layer need to display the icons:
      * (1) location-icon-atlas.png which is in /public
