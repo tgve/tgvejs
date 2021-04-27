@@ -6,8 +6,8 @@ import {
 } from '../../utils';
 import { Slider } from 'baseui/slider';
 import { Checkbox } from "baseui/checkbox";
-import { isObject } from '../../JSUtils';
-import {Accordion, Panel} from 'baseui/accordion';
+import { isString } from '../../JSUtils';
+import { Accordion, Panel } from 'baseui/accordion';
 
 
 /**
@@ -36,12 +36,12 @@ export default function LayerSettings(props) {
 
   return (
     <Accordion>
-      <Panel 
+      <Panel
         title={"Settings: " + layerName}>
         {
           Object.keys(options).map(key => {
-            const v = isObject(options[key]) ? options[key].type : options[key];
-            return getUIForKey(v, key);
+            const v = options[key].type;
+            return isString(v) && getUIForKey(v, key);
           })
         }
       </Panel>
@@ -49,6 +49,7 @@ export default function LayerSettings(props) {
   )
 
   function getUIForKey(v, key) {
+    if (key === 'class') return null
     switch (v) {
       case 'number':
         return <>
@@ -81,21 +82,22 @@ export default function LayerSettings(props) {
         return <>
           {key}
           <MultiSelect
-          title={humanize(key)}
-          single={true}
-          values={columnNames.map(e => ({ id: humanize(e), value: e }))}
-          onSelectCallback={(selected) => {
-            console.log(key);
-            const newValues = {...values, 
-              //is it resetting a key?
-            [key]: (d) => selected.length ? 
-            d.properties[selected[0].value] : options[key].default}
-            setValues(newValues)
-            typeof onLayerOptionsCallback === 'function' &&
-              onLayerOptionsCallback(newValues)
+            title={humanize(key)}
+            single={true}
+            values={columnNames.map(e => ({ id: humanize(e), value: e }))}
+            onSelectCallback={(selected) => {
+              const newValues = {
+                ...values,
+                //is it resetting a key?
+                [key]: (d) => selected.length ?
+                  d.properties[selected[0].value] : options[key].default
+              }
+              setValues(newValues)
+              typeof onLayerOptionsCallback === 'function' &&
+                onLayerOptionsCallback(newValues)
 
-          }} />
-          </>;
+            }} />
+        </>;
     }
   }
 }

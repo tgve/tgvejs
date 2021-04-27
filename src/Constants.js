@@ -14,21 +14,8 @@ define("UI_LIST", [
   "radio",
   "buttongroups",
   "dropdown",
-  "slider"]) 
-define("LAYERSTYLES", [
-  "arc",
-  "geojson",
-  "grid",
-  "heatmap",
-  "hex",
-  "icon",
-  "line",
-  "path",
-  "scatterplot",
-  "sgrid",
-  "barvis"
-])
-
+  "slider"])
+  
 define("DECKGL_INIT", {
   longitude: -1.6362,
   latitude: 53.8321,

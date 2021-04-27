@@ -25,6 +25,7 @@ import csv2geojson from 'csv2geojson';
 import { ascending } from 'd3-array';
 import atlas from './img/location-icon-atlas.png';
 import { sfType } from './geojsonutils';
+import { getLayerProps } from './components/settings/settingsUtils';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -175,33 +176,40 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       obj[key] = opt[key]
     )
   }
+  
+ /** 
+ * @param {String} name passed down from generateDeckLayer
+ * @param {Object} data passed down from generateDeckLayer
+ * @param {Object} renderTooltip passed down from generateDeckLayer
+ * @returns 
+ */
+  function generateOptions(name, data, renderTooltip) {
+    const layerProps = getLayerProps(name);
+    const layerOptions = {};
+    Object.keys(layerProps).forEach(key => {
+      const type = layerProps[key] && layerProps[key].type;
+      if (type === 'number' || type === 'column') {
+        layerOptions[key] = layerProps[key].default;
+      } else if (type === 'boolean' || type === 'class') {
+        layerOptions[key] = layerProps[key].value;
+      } else {
+        layerOptions[key] = layerProps[key]
+      }
+    });
+    // common properties
+    layerOptions.data = data;
+    layerOptions.id = name + "-layer";
+    layerOptions.onHover = renderTooltip;
+    layerOptions.getPosition = d => d.geometry.coordinates;
+    return layerOptions;
+  }
+
   if (name === 'hex') {
-    const hexObj = {
-      id: 'hexagon-layer',
-      data: data,
-      pickable: true,
-      extruded: true,
-      radius: 100,
-      elevationScale: 1,
-      getPosition: d => d.geometry.coordinates,
-      onHover: renderTooltip
-    }
+    const hexObj = generateOptions(name, data, renderTooltip);
     addOptionsToObject(options, hexObj)
-    return (new HexagonLayer(hexObj))
+    return (new HexagonLayer(options))
   } else if (name === 'scatterplot') {
-    const scatterObj = {
-      id: 'scatterplot-layer',
-      data,
-      pickable: true,
-      opacity: 0.8,
-      radiusScale: 6,
-      radiusMinPixels: 1,
-      radiusMaxPixels: 100,
-      getPosition: d => d.geometry.coordinates,
-      // getRadius: d => Math.sqrt(d.exits),
-      getColor: d => [255, 140, 0],
-      onHover: renderTooltip
-    }
+    const scatterObj = generateOptions(name, data, renderTooltip);
     addOptionsToObject(options, scatterObj)
     return (new ScatterplotLayer(scatterObj))
   } else if (name === 'geojson') {
@@ -252,31 +260,13 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     addOptionsToObject(options, iconObj)
     return (new IconClusterLayer(iconObj))
   } else if (name === 'sgrid') {
-    const sgridObject = {
-      id: 'screen_grid',
-      data,
-      getPosition: d => d.geometry.coordinates,
-      // getWeight: d => d.properties.weight,
-      cellSizePixels: 4,
-      // colorRange,
-      // gpuAggregation,
-      onHover: renderTooltip
-    }
+    const sgridObject = generateOptions(name, data, renderTooltip);
     addOptionsToObject(options, sgridObject)
     return (new ScreenGridLayer(sgridObject))
   } else if (name === 'grid') {
-    const gridObject = {
-      id: 'screen_grid',
-      data,
-      pickable: true,
-      extruded: true,
-      cellSize: 100,
-      elevationScale: 4,
-      getPosition: d => d.geometry.coordinates,
-      onHover: renderTooltip
-    }
-    addOptionsToObject(options, gridObject)
-    return (new GridLayer(gridObject))
+    const gridObj = generateOptions(name, data, renderTooltip)
+    addOptionsToObject(options, gridObj)
+    return (new GridLayer(gridObj))
   } else if (name === 'line') {
     const lineObject = {
       id: 'line-layer',
