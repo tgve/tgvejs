@@ -3,7 +3,7 @@ import {firstLastNCharacters, humanize,
   colorScale, generateDomain, xyObjectByProperty,
   suggestDeckLayer
 } from '../utils';
-import { LAYERSTYLES } from '../Constants';
+import { LAYERS } from '../components/settings/settingsUtils';
 
 const sampleGeojson = { "type": "FeatureCollection",
 "features": [
@@ -77,5 +77,5 @@ test("xyObjectByProperty", () => {
 
 test("suggestDeckLayer", () => {
   const s = suggestDeckLayer(sampleGeojson.features)
-  expect(LAYERSTYLES).toContain(s)
+  expect(LAYERS).toContain(s)
 })

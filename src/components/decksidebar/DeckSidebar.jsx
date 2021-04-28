@@ -17,7 +17,6 @@ import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
 import { propertyCount } from '../../geojsonutils';
-import { LAYERSTYLES } from '../../Constants';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Modal';
 import DataTable from '../Table';
@@ -33,6 +32,7 @@ import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
 import Boxplot from '../boxplot/Boxplot';
 import LayerSettings from '../settings/LayerSettings';
+import { LAYERS } from '../settings/settingsUtils'
 
 export default class DeckSidebar extends React.Component {
   constructor(props) {
@@ -189,7 +189,7 @@ export default class DeckSidebar extends React.Component {
               {columnDomain.length > 1 &&
                 <Boxplot data={columnDomain} />}
 
-              <Tabs defaultActiveKey={"1"} id="main-tabs">
+              <Tabs defaultActiveKey={"2"} id="main-tabs">
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
@@ -272,7 +272,7 @@ export default class DeckSidebar extends React.Component {
                           single={true}
                           values={
                             // TODO:filter based on data
-                            LAYERSTYLES.map(e =>
+                            LAYERS.map(e =>
                               ({ id: humanize(e), value: e }))
                           }
                           onSelectCallback={(selected) => {
