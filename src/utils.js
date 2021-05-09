@@ -12,7 +12,7 @@ import {
 } from 'd3-scale-chromatic';
 import {scaleThreshold} from 'd3-scale';
 
-import qs from 'qs'; // warning: importing it otherways would cause minificatino issue.
+import qs from 'qs'; // importing it other ways would cause minification issue.
 
 import mapping from './location-icon-mapping.json';
 import Constants from './Constants';

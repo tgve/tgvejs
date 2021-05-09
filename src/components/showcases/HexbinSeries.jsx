@@ -10,7 +10,7 @@ export default class HexHeatmap extends Component {
   };
   render() {
     const { data, options } = this.props;
-    const { radius, hoveredNode } = this.state;
+    const { radius } = this.state;
     if(!data || !data.length) return null
     return (
       <div className="centered-and-flexed" style={{color:'#fff'}}>
