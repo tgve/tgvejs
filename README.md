@@ -79,8 +79,7 @@ visit `localhost:8000`
 
 ### Docker for production
 
-Repo contains Dockerfile for production. Again remember to change the
-production URL.
+Repo contains Dockerfile for production. If you just want to pull the image, it is built on hub.docker.com so pull it from here if you just want to play with the image. If you like to build it yourself, see below. Again remember to change the production URL.
 
 ``` sh
 # Dockerfile manages your npm/React build steps
