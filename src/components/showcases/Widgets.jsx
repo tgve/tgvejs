@@ -71,9 +71,12 @@ const yearSlider = (options) => {
   // TODO: check every value before proceeding
   if(!DateTime.fromISO(data[0].properties[yearColumn]).isValid) return null
 
-  const years = getPropertyValues({ features: data }, yearColumn)
+  const years = [... new Set(getPropertyValues({ features: data }, yearColumn)
     // returned 2009-01-02, convert to 2009
-    .map(e => DateTime.fromISO(e).year).sort()
+    .map(e => DateTime.fromISO(e).year).sort())];
+
+  if(years.length < 2) return null
+
   return <GenerateUI
     title={
       <h5>Year(s): {year ? year :
@@ -91,7 +94,7 @@ const yearSlider = (options) => {
               });
             }} />}
       </h5>}
-    sublist={[...new Set(years)]}
+    sublist={years}
     suggested="slider"
     onChange={(value) => {
       // the kye is one of `date` or `YEAR`

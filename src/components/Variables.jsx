@@ -77,11 +77,18 @@ export default function Variables(props) {
           Object.keys(multiVarSelect).map(key => {
             //delete any that is not in value
             if (!columnsArray.includes(key)) {
-              delete multiVarSelect[key]
+              if (multiVarSelect[key].size) {
+                // first delete the item
+                delete multiVarSelect[key]
+                // then only if there is a value assigned
+                typeof (onSelectCallback) === 'function' &&
+                  onSelectCallback(multiVarSelect)
+              } else {
+                // just remove the column from state
+                delete multiVarSelect[key]
+              }
             }
           })
-          typeof (onSelectCallback) === 'function' &&
-            onSelectCallback(multiVarSelect)
           setColumns(value)
         }}
         value={syncColumns}
