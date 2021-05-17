@@ -24,9 +24,10 @@ package is released under `layik`’s account.
 
 ### Github Template repo
 
-Please see the [guide
-document](https://github.com/layik/eAtlas/blob/master/notes/guide.md)
-for details of how to host your own eAtlas using Github Pages.
+Please see the repository’s
+[wiki](https://github.com/layik/eAtlas/wiki/Using-TGVE) for details of
+how to host your own eAtlas using Github Pages, or other ways of using
+TGVE.
 
 ### Development
 
@@ -41,7 +42,7 @@ npm start
 
 The frontend is a
 [`create-react-app`](https://create-react-app.dev/docs/getting-started/)
-(CRA) so all the standard commands of CRA appliees.
+(CRA) so all the standard commands of CRA applies.
 
 ### R
 
@@ -79,7 +80,12 @@ visit `localhost:8000`
 
 ### Docker for production
 
-Repo contains Dockerfile for production. If you just want to pull the image, it is built on hub.docker.com so pull it from here if you just want to play with the image. If you like to build it yourself, see below. Again remember to change the production URL.
+This repository contains a Dockerfile for production. If you just want
+to pull the image, it is built on
+[hub.docker.com](https://hub.docker.com/r/layik/eatlas), if you just
+want to run the image. If you like to build it yourself, see below.
+Again remember to change the production URL and hopefully better
+documentations in future.
 
 ``` sh
 # Dockerfile manages your npm/React build steps
