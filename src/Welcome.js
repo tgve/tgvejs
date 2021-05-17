@@ -281,7 +281,7 @@ export default class Welcome extends React.Component {
         }
         data = setGeojsonProps(geography, data, geographyColumn)
         // critical check
-        if (!data || !data.length) {
+        if (!data || !data.features) {
           this.setState({
             alert: { content: 'Is there a matching geography column?' }
           })

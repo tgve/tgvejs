@@ -142,9 +142,12 @@ subs_geojson <- function(res, xmin, ymin, xmax, ymax){
 #' Get geojson from URL and pass it to client
 #' @get /api/url
 parse_url <- function(res, q = "") {
+  if(q == '' || is.na(q) || is.null('') || nchar(q) < 5) {
+    return(list(error=jsonlite::unbox("URL to parse is missing.")))
+  }
   res$headers$`Content-type` <- "application/json"
-  er <- try(res$body <- readLines(q), silent = TRUE)
-  if(class(res) == "try-error") {
+  er <- try(res$body <- paste(readLines(q), collapse = '\n'), silent = TRUE)
+  if(inherits(er, "try-error")) {
     msg <- paste0("Failed to read the URL: ", q)
     res$status <- 400 # Bad request
     list(error=jsonlite::unbox(msg))

@@ -1,7 +1,7 @@
 
 # eAtlas · [![Node CI](https://github.com/layik/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/layik/eAtlas/actions?query=workflow%3A%22Node+CI%22) [![Publish Docker image](https://github.com/layik/eAtlas/actions/workflows/docker.yml/badge.svg)](https://github.com/layik/eAtlas/actions/workflows/docker.yml) [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
 
-The The Turing Geovisualisation Engine (TGVE or eAtlas) is a web-based,
+The Turing Geovisualisation Engine (TGVE or eAtlas) is a web-based,
 interactive visual analytics tool for geospatial data analysis, built
 using R & React. The visual views and interaction mechanisms designed
 into the tool is underpinned by empirically-informed guidelines around
@@ -24,9 +24,10 @@ package is released under `layik`’s account.
 
 ### Github Template repo
 
-Please see the [guide
-document](https://github.com/layik/eAtlas/blob/master/notes/guide.md)
-for details of how to host your own eAtlas using Github Pages.
+Please see the repository’s
+[wiki](https://github.com/layik/eAtlas/wiki/Using-TGVE) for details of
+how to host your own eAtlas using Github Pages, or other ways of using
+TGVE.
 
 ### Development
 
@@ -39,15 +40,9 @@ npm i # or yarn
 npm start
 ```
 
-<script type="text/javascript">
-npm i # or yarn
-# and run
-npm start
-</script>
-
 The frontend is a
 [`create-react-app`](https://create-react-app.dev/docs/getting-started/)
-(CRA) so all the standard commands of CRA appliees.
+(CRA) so all the standard commands of CRA applies.
 
 ### R
 
@@ -85,8 +80,12 @@ visit `localhost:8000`
 
 ### Docker for production
 
-Repo contains Dockerfile for production. Again remember to change the
-production URL.
+This repository contains a Dockerfile for production. If you just want
+to pull the image, it is built on
+[hub.docker.com](https://hub.docker.com/r/layik/eatlas), if you just
+want to run the image. If you like to build it yourself, see below.
+Again remember to change the production URL and hopefully better
+documentations in future.
 
 ``` sh
 # Dockerfile manages your npm/React build steps
