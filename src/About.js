@@ -11,7 +11,7 @@ import marked from "marked";
 class About extends Component {
   state = { markdown: null }
   componentDidMount() {
-    const readmePath = require("./notes.md");
+    const readmePath = "https://raw.githubusercontent.com/layik/eAtlas/master/README.md";
 
     fetch(readmePath)
       .then(response => {
