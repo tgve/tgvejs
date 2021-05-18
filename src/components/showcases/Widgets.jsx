@@ -4,54 +4,32 @@ import { Slider } from 'baseui/slider';
 import GenerateUI from '../UI';
 import { DateTime } from "luxon";
 import { getPropertyValues } from '../../geojsonutils';
-import { getFirstDateColumnName } from '../../utils';
+import { getFirstDateColumnName, xyObjectByProperty } from '../../utils';
+import { isString } from '../../JSUtils';
+import GenericPlotly from './GenericPlotly';
 
-const DateSlider = (props) => {
-  const {data, multiVarSelect, onSelectCallback,
-    callback} = props;
-  const [value, setValue] = useState()
 
-  if(!data || data.length === 0) return null;
-  const s = Array.from(Array(data.length).keys()).slice(1,data.length-1)
+const timeSlider = (props = {}) => {
+  const { data, property, dark, title  } = props;
+  // feature array
+  if (!isString(property) || !data || !data.length) return null;
+  const dateColumn = getFirstDateColumnName(data[0].properties);
+  if(!dateColumn) return null;
+  const x = getPropertyValues({features: data}, dateColumn).map(e => new Date(e));
+  const y = getPropertyValues({features: data}, property);
 
   return (
-    <>
-    <Slider
-      value={value || [s[0]]}
-      min={parseInt(s[0])}
-      max={parseInt(s[s.length - 1])}
-      step={1}
-      onChange={({ value }) => {
-        setValue(value);
-        // keep it the same in delete
-        multiVarSelect['date'] = new Set([data[value-1] + ""]);
-        typeof (callback) === 'function' &&
-        callback({
-          date: data[value-1] + "",
-          multiVarSelect
-        });
-        typeof (onSelectCallback) === 'function' &&
-          onSelectCallback({ selected: multiVarSelect, what: 'multi' });
-      }}
-    />
-    {<h5>Dates(s): {value ? data[value-1] : data[0] + "-" + data[data.length - 1]}.
-        {value &&
-            <i style={{ fontSize: '2rem' }} className="fa fa-trash"
-              onClick={() => {
-                // remove
-                setValue(null);
-                delete multiVarSelect.date
-                typeof (onSelectCallback) === 'function' &&
-                  onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
-                    { what: '' } : { what: 'multi', selected: multiVarSelect });
-                typeof (callback) === 'function' &&
-                  callback({
-                  date: "",
-                  multiVarSelect
-                });
-              }} />}
-        </h5>}
-  </>)
+    <GenericPlotly dark={dark}
+      title={title || "Time v " + property}
+      yaxis={{ showgrid: false }}
+      xaxis={{ showgrid: false }}
+      data={[{
+        // showlegend: false,
+        x, y,
+        mode: 'graph',
+        // marker: { color: TURQUOISE_RANGE[0] }
+      }]} />
+  )
 }
 
 /**
@@ -69,13 +47,13 @@ const yearSlider = (options) => {
   if (!data || !data.length || !Object.keys(data[0].properties)) return null
   const yearColumn = getFirstDateColumnName(data[0].properties)
   // TODO: check every value before proceeding
-  if(!DateTime.fromISO(data[0].properties[yearColumn]).isValid) return null
+  if (!DateTime.fromISO(data[0].properties[yearColumn]).isValid) return null
 
   const years = [... new Set(getPropertyValues({ features: data }, yearColumn)
     // returned 2009-01-02, convert to 2009
     .map(e => DateTime.fromISO(e).year).sort())];
 
-  if(years.length < 2) return null
+  if (years.length < 2) return null
 
   return <GenerateUI
     title={
@@ -110,6 +88,6 @@ const yearSlider = (options) => {
 }
 
 export {
+  timeSlider,
   yearSlider,
-  DateSlider,
 }
