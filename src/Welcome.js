@@ -319,8 +319,8 @@ export default class Welcome extends React.Component {
       // options.getWeight = d => d.properties[columnNameOrIndex]
       options.updateTriggers = {
         // even if nulls
-        getWeight: [typeof(options.getWeight) === 'function' &&
-        data.map(d => options.getWeight(d))]
+        getWeight: typeof(options.getWeight) === 'function' &&
+        data.map(d => options.getWeight(d))
       }
     }
     if (geomType === 'linestring') {
@@ -376,10 +376,9 @@ export default class Welcome extends React.Component {
         domain, 180, cn || this.state.colorName
       )
       options.getFillColor = fill;
-      // const triggerarray = data.map((d) => (d.properties[isNumber(columnNameOrIndex) ? 
-      //     Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]))
+
       options.updateTriggers = {
-        getFillColor: [data.map((d) => fill(d))]
+        getFillColor: data.map((d) => fill(d))
       }
       const isNumeric = +(data[0].properties[
         +columnNameOrIndex ?
@@ -405,10 +404,10 @@ export default class Welcome extends React.Component {
       options.getScale = 20
       options.updateTriggers = {
         // TODO: get the functions & spread them
-        getRotationAngle: [typeof(options.getRotationAngle) === 'function' &&
-          data.map(d => options.getRotationAngle(d))],
-        getWidth: [typeof(options.getWidth) === 'function' &&
-          data.map(d => options.getWidth(d))]
+        getRotationAngle: typeof(options.getRotationAngle) === 'function' &&
+          data.map(d => options.getRotationAngle(d)),
+        getWidth: typeof(options.getWidth) === 'function' &&
+          data.map(d => options.getWidth(d))
       }
     }
     const alayer = generateDeckLayer(

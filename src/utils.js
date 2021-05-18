@@ -723,6 +723,8 @@ const OSMTILES = {
 const setGeojsonProps = (geojson, data, geoColumn) => {
   // const r = randomToNumber(data && data.length);
   const r = 0;
+  const result = Object.assign({}, geojson)
+  result.features = []
   if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
     !geojson.features || !geojson.features[r] ||
     !geojson.features[r].properties[geoColumn] || !data[r] || 
@@ -731,12 +733,18 @@ const setGeojsonProps = (geojson, data, geoColumn) => {
   geojson.features.forEach(feature => {
     for (let i = 0; i < data.length; i++) {
       if (feature.properties[geoColumn] === data[i].properties[geoColumn]) {
-        feature.properties = data[i].properties;
+        // feature.properties = data[i].properties;
+        const obj = {
+          type: feature.type,
+          properties: data[i].properties,
+          geometry: feature.geometry
+        }
+        result.features.push(obj)
         break;
       }
     }
   });
-  return geojson
+  return result
 }
 
 /**
@@ -758,9 +766,9 @@ const getMessage = (array) => {
   array.length + " row" + (array.length > 1 ? "s" : "")
 }
 const getMainMessage = (filtered, unfiltered) => {
-  if(filtered && filtered.length && unfiltered && unfiltered) {
+  if(filtered && filtered.length && unfiltered && unfiltered.length) {
     return getMessage(filtered) + (filtered.length < unfiltered.length ? 
-    " (" + ((filtered.length/unfiltered.length)*100).toFixed(2) + "%)" : "")
+    " of " + unfiltered.length : "")
   } else if(filtered && filtered.length) {
     return getMessage(filtered)
     // TODO: check all rows before declaring
