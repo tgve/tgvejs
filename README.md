@@ -1,7 +1,7 @@
 
 # eAtlas · [![Node CI](https://github.com/layik/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/layik/eAtlas/actions?query=workflow%3A%22Node+CI%22) [![Publish Docker image](https://github.com/layik/eAtlas/actions/workflows/docker.yml/badge.svg)](https://github.com/layik/eAtlas/actions/workflows/docker.yml) [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
 
-The Turing Geovisualisation Engine (TGVE or eAtlas) is a web-based,
+The The Turing Geovisualisation Engine (TGVE or eAtlas) is a web-based,
 interactive visual analytics tool for geospatial data analysis, built
 using R & React. The visual views and interaction mechanisms designed
 into the tool is underpinned by empirically-informed guidelines around
@@ -19,15 +19,14 @@ Would it be “Turing Geovisualization Engine”?
 ### npm package
 
 Current release is in beta for testing of the limited functionality and
-API offered by the codebase. Just like this source code, for now the
-package is released under `layik`’s account.
+API offered by the codebase. The package is released under the same name
+“eatlas”: <https://www.npmjs.com/package/eatlas>
 
 ### Github Template repo
 
-Please see the repository’s
-[wiki](https://github.com/layik/eAtlas/wiki/Using-TGVE) for details of
-how to host your own eAtlas using Github Pages, or other ways of using
-TGVE.
+Please see the [guide
+document](https://github.com/layik/eAtlas/blob/master/notes/guide.md)
+for details of how to host your own eAtlas using Github Pages.
 
 ### Development
 
@@ -40,9 +39,15 @@ npm i # or yarn
 npm start
 ```
 
+<script type="text/javascript">
+npm i # or yarn
+# and run
+npm start
+</script>
+
 The frontend is a
 [`create-react-app`](https://create-react-app.dev/docs/getting-started/)
-(CRA) so all the standard commands of CRA applies.
+(CRA) so all the standard commands of CRA appliees.
 
 ### R
 
@@ -80,12 +85,8 @@ visit `localhost:8000`
 
 ### Docker for production
 
-This repository contains a Dockerfile for production. If you just want
-to pull the image, it is built on
-[hub.docker.com](https://hub.docker.com/r/layik/eatlas), if you just
-want to run the image. If you like to build it yourself, see below.
-Again remember to change the production URL and hopefully better
-documentations in future.
+Repo contains Dockerfile for production. Again remember to change the
+production URL.
 
 ``` sh
 # Dockerfile manages your npm/React build steps
@@ -96,7 +97,7 @@ docker run -d -p 8000:8001 --name eatlas eatlas
 ```
 
 Use your favourite document server (nginx for example) to proxy requets
-(more later hopefully).
+(watch out for a Wiki entry on this).
 
 ## Notes
 
@@ -112,8 +113,8 @@ Beecham](https://environment.leeds.ac.uk/geography/staff/1003/dr-roger-beecham)
 and funded by the EPSRC via the Alan Turing Institute AI for Science and
 Government Programme, Grant/Award Number: EP/T001569/1.
 
-### Screenshots/gif’s
+### Screenshots
 
-<img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/76419738-c46edc80-6398-11ea-8bbe-496394f90adc.png">
+<img width="100%" alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/118050552-63b1aa00-b377-11eb-9aa6-8b9f5bef9e13.png">
 
 <!-- build this Rmd with: R -e "rmarkdown::render('README.Rmd')" -->
