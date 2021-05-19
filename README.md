@@ -24,9 +24,9 @@ API offered by the codebase. The package is released under the same name
 
 ### Github Template repo
 
-Please see the [guide
-document](https://github.com/layik/eAtlas/blob/master/notes/guide.md)
-for details of how to host your own eAtlas using Github Pages.
+Please see the [Wiki
+entry](https://github.com/layik/eAtlas/wiki/Using-TGVE) for details of
+how to host your own eAtlas using Github Pages.
 
 ### Development
 
@@ -38,12 +38,6 @@ npm i # or yarn
 # and run
 npm start
 ```
-
-<script type="text/javascript">
-npm i # or yarn
-# and run
-npm start
-</script>
 
 The frontend is a
 [`create-react-app`](https://create-react-app.dev/docs/getting-started/)

@@ -14,7 +14,7 @@ There are some [notes](https://github.com/layik/eAtlas/blob/master/notes/project
 Current release is in beta for testing of the limited functionality and API offered by the codebase. The package is released under the same name "eatlas": https://www.npmjs.com/package/eatlas 
 
 ### Github Template repo
-Please see the [guide document](https://github.com/layik/eAtlas/blob/master/notes/guide.md) for details of how to host your own eAtlas using Github Pages.
+Please see the [Wiki entry](https://github.com/layik/eAtlas/wiki/Using-TGVE) for details of how to host your own eAtlas using Github Pages.
 
 ### Development
 To run the front end only without needs for the backend, having cloned the repo:
