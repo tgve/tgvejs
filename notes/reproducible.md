@@ -24,12 +24,12 @@ d <- file.path(tempdir(), "gp")
 gp_create(d)
 ```
 
-    ## Creating directory: /var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T//RtmpGVlWR8/gp
+    ## Creating directory: /var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T//Rtmp5iVjyL/gp
 
-    ## To build/run app, set working directory to: /var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T//RtmpGVlWR8/gp
+    ## To build/run app, set working directory to: /var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T//Rtmp5iVjyL/gp
 
     ## Standard output from create-react-app works.
-    ## You can run gp_ functions from directory: /var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T//RtmpGVlWR8/gp
+    ## You can run gp_ functions from directory: /var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T//Rtmp5iVjyL/gp
     ## To build the front end run: gp_build()
     ## To run the geoplumber app: gp_plumb()
     ## Happy coding.
@@ -49,7 +49,7 @@ ps <- gp_explore(sf = sf::st_read("london.geojson"), build = F)
     ## Looks like geoplumber was not built, serveing API only.
     ## To serve the front end run gp_build() first.
 
-    ## Reading layer `london_junction_point_cas' from data source `/private/var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T/RtmpGVlWR8/gp/london.geojson' using driver `GeoJSON'
+    ## Reading layer `london_junction_point_cas' from data source `/private/var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T/Rtmp5iVjyL/gp/london.geojson' using driver `GeoJSON'
     ## Simple feature collection with 34071 features and 2 fields
     ## geometry type:  POINT
     ## dimension:      XY
@@ -64,7 +64,7 @@ Sys.sleep(2)
 ps
 ```
 
-    ## PROCESS 'R', finished.
+    ## PROCESS 'R', running, pid 6584.
 
 ``` r
 # is the API endpoint serving?
@@ -75,7 +75,7 @@ webpage <- readLines(tc <- textConnection(webpage)); close(tc)
 substr(tail(webpage)[1],start = 1, stop=50)
 ```
 
-    ## [1] "{\"error\":[\"404 - Resource Not Found\"]}"
+    ## [1] "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"F"
 
 ``` r
 # navigate to the build (not built)
@@ -85,14 +85,16 @@ webpage <- readLines(tc <- textConnection(webpage)); close(tc)
 tail(webpage)
 ```
 
-    ## [1] "{\"error\":[\"404 - Resource Not Found\"]}"
+    ## [1] "    <p>build missing</p>" "  </div>"                
+    ## [3] "</div>"                   ""                        
+    ## [5] "</body>"                  "</html>"
 
 ``` r
 # we know first line of the tail is the warning message from geoplumber
 all(grepl("build missing", tail(webpage)[1]), ignore.case = TRUE)
 ```
 
-    ## [1] FALSE
+    ## [1] TRUE
 
 ``` r
 # cleanup
@@ -100,7 +102,7 @@ setwd(od)
 ps$kill()
 ```
 
-    ## [1] FALSE
+    ## [1] TRUE
 
 As we can see from the output of the R chunk, we do the following:
 
