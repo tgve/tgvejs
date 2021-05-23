@@ -32,7 +32,7 @@ git clone https://github.com/layik/eatlas-template
 cd eatlas-template
 yarn install
 ```
-Before Tauri can bundle the application, we must build it and that is easy in a CRA app:
+Before Tauri can bundle the application, we must build it and that is easy in a CRA app. Please note that in the chunk below the cloned template repo has a slight config over a standard CRA app with `--max_old_space_size` value specified due to Plotly bundle size:
 
 ```{sh, out.lines=4}
 yarn run build
