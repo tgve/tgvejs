@@ -1,0 +1,64 @@
+---
+title: TGVE as Native Desktop App
+output:
+  github_document
+---
+
+```{r setup, echo=FALSE}
+# save the built-in output hook
+hook_output <- knitr::knit_hooks$get("output")
+
+# set a new output hook to truncate text output
+knitr::knit_hooks$set(output = function(x, options) {
+  if (!is.null(n <- options$out.lines)) {
+    x <- xfun::split_lines(x)
+    if (length(x) > n) {
+      # truncate the output
+      x <- c(head(x, n/2), '....', tail(x, n/2 + 1))
+    }
+    x <- paste(x, collapse = "\n")
+  }
+  hook_output(x, options)
+})
+```
+
+This document shows how TGVE can be built and run using [Tauri](https://tauri.studio/en/docs/getting-started/intro) (using Rust and WebViews) to turbo charge its performance outside browsers. In our tests, on a browser on the same machine we could load around 1m points. Using a Tauri built app, we were able to load 3.5 crash data (long/lat pairs) on the Tauri build OSX app on a MBP 16GB i7 machine. An advantage of TGVE being a [CRA](https://create-react-app.dev) app is that tools like Tauri can build it.
+
+Let us clone the template [repository](https://github.com/layik/eatlas-template) which runs the latest `eAtlas` package in [CRA](https://create-react-app.dev) app, then install dependenices and build it like this:
+
+```{sh, out.lines=4}
+# clone the template repository app
+git clone https://github.com/layik/eatlas-template
+cd eatlas-template
+yarn install
+```
+Before Tauri can bundle the application, we must build it and that is easy in a CRA app:
+
+```{sh, out.lines=4}
+yarn run build
+```
+
+We now assume that you have followed the Tauri [documentations]() to set up the requirements, including any platform specific (such as OSX) requirements and you are ready to add Tauri npm package:
+
+```{sh, out.lines=4}
+yarn add tauri
+```
+If we have all the requirements for Tauri, we can now run the interactive commands below to setup the build. The only thing to notice is that by default Tauri expects the build directory to be `../dist` of the application. CRA though builds to `../build`. Tauri does [not allow](https://tauri.studio/en/docs/api/cli) `--yes` to all the questions, otherwise we could go full reproducible:
+
+```{sh, eval=FALSE}
+./node_modules/tauri/tauri.js init
+# check build folder in 
+./node_modules/tauri/tauri.js build
+```
+
+We should then be instructed, in our case on an OSX machine, to look for the `dmg` in a path like `src-tauri/target/release/bundle/dmg/tgve*.dmg`. This is an executable and we should be able to see something like following image. The screenshot shows the default `eatlas-tempate` UK (London area) casualtites.csv dataset.
+
+<img width="100%" alt="TGVE Native App Grid" src="https://user-images.githubusercontent.com/408568/119277580-71d5b500-bc18-11eb-8926-40114f899b97.png">
+
+<img width="100%" alt="TGVE Native App heatmap" src="https://user-images.githubusercontent.com/408568/119277557-55d21380-bc18-11eb-93c1-11c2d5518cf0.png">
+
+Note: this document is generated with [Rmarkdown](https://bookdown.org/yihui/rmarkdown-cookbook/) which means all results from code chunks are generated using real command runs on:
+```{r, out.lines=12}
+.Platform
+```
+
