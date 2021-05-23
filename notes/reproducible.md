@@ -24,12 +24,12 @@ d <- file.path(tempdir(), "gp")
 gp_create(d)
 ```
 
-    ## Creating directory: /var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T//Rtmp5iVjyL/gp
+    ## Creating directory: /var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T//Rtmp6PNiBf/gp
 
-    ## To build/run app, set working directory to: /var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T//Rtmp5iVjyL/gp
+    ## To build/run app, set working directory to: /var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T//Rtmp6PNiBf/gp
 
     ## Standard output from create-react-app works.
-    ## You can run gp_ functions from directory: /var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T//Rtmp5iVjyL/gp
+    ## You can run gp_ functions from directory: /var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T//Rtmp6PNiBf/gp
     ## To build the front end run: gp_build()
     ## To run the geoplumber app: gp_plumb()
     ## Happy coding.
@@ -49,7 +49,7 @@ ps <- gp_explore(sf = sf::st_read("london.geojson"), build = F)
     ## Looks like geoplumber was not built, serveing API only.
     ## To serve the front end run gp_build() first.
 
-    ## Reading layer `london_junction_point_cas' from data source `/private/var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T/Rtmp5iVjyL/gp/london.geojson' using driver `GeoJSON'
+    ## Reading layer `london_junction_point_cas' from data source `/private/var/folders/z7/l4z5fwqs2ksfv22ghh2n9smh0000gp/T/Rtmp6PNiBf/gp/london.geojson' using driver `GeoJSON'
     ## Simple feature collection with 34071 features and 2 fields
     ## geometry type:  POINT
     ## dimension:      XY
@@ -64,7 +64,7 @@ Sys.sleep(2)
 ps
 ```
 
-    ## PROCESS 'R', running, pid 6584.
+    ## PROCESS 'R', running, pid 31012.
 
 ``` r
 # is the API endpoint serving?
@@ -113,4 +113,22 @@ As we can see from the output of the R chunk, we do the following:
 
 ## Front-end
 
-coming …
+We can follow standard CRA app commands, though eAtlas repository may
+have slightly different `scripts` defined. The `geoplumber` commands
+(functions) related to the front-end also should work as shown below:
+
+``` r
+od <- setwd(d)
+stopifnot(gp_is_wd_geoplumber())
+# npm run build
+# or
+gp_build()
+```
+
+    ## Running: npm run build
+
+    ## Looks like first run, installing npm packages...
+
+    ## Running: gp_npm_install()
+
+    ## Now trying to build: npm run build
