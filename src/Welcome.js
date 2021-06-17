@@ -41,6 +41,7 @@ import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
 import { DateTime } from 'luxon';
 import { throttle } from 'lodash';
+import { isObject } from './JSUtils';
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -113,12 +114,24 @@ export default class Welcome extends React.Component {
   }
 
   componentDidMount() {
-    const {defaultURL} = this.props 
-    if (defaultURL)  {
-      this._fetchAndUpdateState(defaultURL);
+    const {data, defaultURL} = this.props;
+    if(isObject(data) && data.features && data.features.length) {
+      // load the data given
+      this.setState({
+        loading: false,
+        data: data,
+      }, () => {
+        this._fitViewport();
+        this._generateLayer();
+      });
+      
     } else {
-      // this._generateLayer();
-      this.setState({loading: false}) 
+      if (defaultURL)  {
+        this._fetchAndUpdateState(defaultURL);
+      } else {
+        // this._generateLayer();
+        this.setState({loading: false}) 
+      }
     }
     window.addEventListener('resize', this._resize)
   }
@@ -152,9 +165,10 @@ export default class Welcome extends React.Component {
               geography: geojson,
               data: data,
               alert: customError || null
+            }, () => {
+              this._fitViewport(geojson);
+              this._generateLayer();
             });
-            this._fitViewport(geojson);
-            this._generateLayer();
           } else {
             this.setState({
               loading: false,

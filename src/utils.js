@@ -482,7 +482,7 @@ const shortenName = (name, n = 26) => {
 }
 
 const firstLastNCharacters = (str, n = 5) => {
-  if (+str) return str;
+  if (+str || !str) return str;
   return str.slice(0, n) + (str.length > n + n ?
     "..." + str.slice(str.length - n, str.length) : 
     str.length > n ? "..." : "")
