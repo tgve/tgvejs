@@ -139,7 +139,7 @@ subs_geojson <- function(res, xmin, ymin, xmax, ymax){
   res
 }
 
-#' Get geojson from URL and pass it to client
+#' Get remote or local file and return it as json
 #' @get /api/url
 parse_url <- function(res, q = "") {
   if(q == '' || is.na(q) || is.null('') || nchar(q) < 5) {
