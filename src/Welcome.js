@@ -29,7 +29,7 @@ import {
   getParamsFromSearch, getBbx, isMobile, colorScale, OSMTILES,
   colorRanges, generateDomain, setGeojsonProps,
   convertRange, getMin, getMax, isURL, getFirstDateColumnName, 
-  generateLegend, humanize, colorRangeNamesToInterpolate,
+  generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
 } from './utils';
 import Constants, { LIGHT_SETTINGS } from './Constants';
 import DeckSidebarContainer from
@@ -58,7 +58,8 @@ export default class Welcome extends React.Component {
   constructor(props) {
     super(props)
     const init = Constants.DECKGL_INIT
-    const param = getParamsFromSearch(props.location ? props.location.search : window.location.search);
+    const param = getParamsFromSearch(props.location ? 
+      props.location.search : window.location.search);
     if (param) {
       //lat=53.814&lng=-1.534&zoom=11.05&bea=0&pit=55&alt=1.5
       Object.keys(param).forEach(key => {
@@ -74,8 +75,6 @@ export default class Welcome extends React.Component {
       loading: true,
       layers: [],
       backgroundImage: gradient.backgroundImage,
-      radius: Constants.RADIUS,
-      elevation: Constants.ELEVATION,
       mapStyle: MAPBOX_ACCESS_TOKEN ? ("mapbox://styles/mapbox/" +
         (props.dark ? "dark" : "streets") + "-v9") : OSMTILES,
       initialViewState: init,
@@ -84,10 +83,12 @@ export default class Welcome extends React.Component {
       colorName: 'default',
       iconLimit: Constants.ICONLIMIT,
       legend: false,
+      multiVarSelect: {},
       width: window.innerWidth, height: window.innerHeight,
-      tooltipColumns: props.tooltipColumns,
-      geographyColumn: props.geographyColumn,
-      column: props.column
+      tooltipColumns: {column1: "accident_severity" , column2: "date"},
+      geographyURL: process.env.REACT_APP_GEOGRAPHY_URL || null,
+      geographyColumn: process.env.REACT_APP_GEOGRAPHY_COLUMN_NAME || null,
+      column: process.env.REACT_APP_COLUMN_NAME || null
     }
     
     this._generateLayer = this._generateLayer.bind(this)
@@ -212,25 +213,25 @@ export default class Welcome extends React.Component {
   }
 
   /**
-   * Welcome should hold own state in selected as:
-   * {property: Set(val1, val2), ...}.
+   * The main function generating DeckGL layer and customizing mapbox styles.
+   * The reason why state is not updated down in <DeckSidebarContainer />
+   * is to optimise the number of setState or equivalent React hooks.
    * 
    * @param {*} values includes
-   * radius: specific to changing geoms
-   * elevation: specific to changing geoms
-   * filter: multivariate filter of properties
-   * cn: short for colorName passed from callback
-   * TODO: other
+   * @param {Object} filter multivariate filter of properties
+   * @param {String} cn short for colorName passed from callback
+   * @param {Object} layerOptions
    */
   _generateLayer(values = {}) {
-    const { radius, elevation, filter, cn } = values;
+    const { layerOptions = {}, filter, cn } = values;
 
     if (filter && filter.what === 'mapstyle') {
+      console.log("fiq")
       const newStyle = "mapbox://styles/mapbox/" + filter.selected + "-v9";
       this.setState({
-        mapStyle: !MAPBOX_ACCESS_TOKEN ? OSMTILES :
-          filter && filter.what === 'mapstyle' ? filter.selected === "No map" ?
-          Constants.BLANKSTYLE : newStyle : this.state.mapStyle,
+        mapStyle: filter.what === 'mapstyle' ? filter.selected === "No map" ?
+          Constants.BLANKSTYLE : !MAPBOX_ACCESS_TOKEN ? OSMTILES :
+          newStyle : this.state.mapStyle,
       })
       return;
     }
@@ -242,7 +243,8 @@ export default class Welcome extends React.Component {
       this.state.column;
     const columnNameOrIndex = column || 1;
 
-    const { colorName, iconLimit, geography, geographyColumn } = this.state;
+    const { colorName, iconLimit, geography, geographyColumn,
+      multiVarSelect } = this.state;
     if (filter && filter.what === "%") {
       data = data.slice(0, filter.selected / 100 * data.length)
     }
@@ -252,13 +254,16 @@ export default class Welcome extends React.Component {
     }
 
     //if resetting a value
-    if (filter && filter.selected !== "") {
+    const filterValues = filter && filter.what === 'multi' ||
+      Object.keys(multiVarSelect).length;
+    const filterCoords = filter && filter.what === 'coords';
+    const selected = filter && filter.selected || multiVarSelect;
+    if (filterValues || filterCoords) {
       const yearColumn = getFirstDateColumnName(data[0].properties);
       data = data.filter(
         d => {
-          if (filter.what === 'multi') {
+          if (filterValues) {
             // go through each selection
-            const selected = filter.selected;
             // selected.var > Set()
             for (let each of Object.keys(selected)) {
               const nextValue = each === yearColumn ?
@@ -273,7 +278,7 @@ export default class Welcome extends React.Component {
               }
             }
           }
-          if (filter.what === 'coords') {
+          if (filterCoords) {
             // coords in 
             if (_.difference(filter.selected || this.state.coords,
               d.geometry.coordinates.flat()).length !== 0) {
@@ -311,9 +316,9 @@ export default class Welcome extends React.Component {
             alert: { content: 'Is there a matching geography column?' }
           })
           return
-        };        
-        // geojson returned
-        data = data.features;
+        };
+        // it was data.features when this function started
+        data = data.features || data;
       }
     }
     let layerStyle = (filter && filter.what ===
@@ -321,23 +326,33 @@ export default class Welcome extends React.Component {
       suggestDeckLayer(geography ? geography.features : data);
     // TODO: incorporate this into suggestDeckLayer
     if (!new RegExp("point", "i").test(geomType)) layerStyle = "geojson"
-    const switchToIcon = data.length < iconLimit && !column && 
+    const switchToIcon = data.length < iconLimit && !layerStyle && 
     (!filter || filter.what !== 'layerStyle') && geomType === "point";
     if (switchToIcon) layerStyle = 'icon';
-    const options = {
-      radius: radius ? radius : this.state.radius,
-      radiusScale: radius ? radius: this.state.radius,
-      cellSize: radius ? radius : this.state.radius,
-      elevationScale: elevation ? elevation : this.state.elevation,
+
+    const options = Object.assign({
+      ...this.state.layerOptions,      
       lightSettings: LIGHT_SETTINGS,
-      colorRange: colorRanges(cn || colorName)
-    };
+      colorRange: colorRanges(cn || colorName),
+      getColor: getColorArray(cn || colorName)
+    }, layerOptions);
+    
+    // generate a domain
+    const domain = generateDomain(data, columnNameOrIndex);
+    const getValue = (d) => 
+    // initialazied with 1 so +columnNameOrIndex is safe
+    d.properties[+columnNameOrIndex ?
+      Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]
+
     if (layerStyle === 'heatmap') {
       options.getPosition = d => d.geometry.coordinates
       // options.getWeight = d => d.properties[columnNameOrIndex]
+      options.updateTriggers = {
+        // even if nulls
+        getWeight: typeof(options.getWeight) === 'function' &&
+        data.map(d => options.getWeight(d))
+      }
     }
-    // generate a domain
-    const domain = generateDomain(data, columnNameOrIndex);
     if (geomType === 'linestring') {
       layerStyle = "line"
       // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
@@ -386,19 +401,14 @@ export default class Welcome extends React.Component {
 
     if (geomType === "polygon" || geomType === "multipolygon" ||
       layerStyle === 'geojson') {
-      const getValue = (d) => 
-      // initialazied with 1 so +columnNameOrIndex is safe
-      d.properties[+columnNameOrIndex ?
-        Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]
       const fill =  (d) => colorScale(
         +getValue(d) ? +getValue(d) : getValue(d),
         domain, 180, cn || this.state.colorName
       )
       options.getFillColor = fill;
-      // const triggerarray = data.map((d) => (d.properties[isNumber(columnNameOrIndex) ? 
-      //     Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]))
+
       options.updateTriggers = {
-        getFillColor: [data.map((d) => fill(d))]
+        getFillColor: data.map((d) => fill(d))
       }
       const isNumeric = +(data[0].properties[
         +columnNameOrIndex ?
@@ -419,9 +429,16 @@ export default class Welcome extends React.Component {
     if (layerStyle === 'barvis') {
       options.getPosition = d => [d.geometry.coordinates[0],
       d.geometry.coordinates[1], 0]
-      if (data[0].properties.result) options.getRotationAngle = d =>
-        d.properties.result.includes("gain from") ? 45 : 1
-      options.getScale = 200
+      // if (data[0].properties.result) options.getRotationAngle = d =>
+      //   d.properties.result.includes("gain from") ? 45 : 1
+      options.getScale = 20
+      options.updateTriggers = {
+        // TODO: get the functions & spread them
+        getRotationAngle: typeof(options.getRotationAngle) === 'function' &&
+          data.map(d => options.getRotationAngle(d)),
+        getWidth: typeof(options.getWidth) === 'function' &&
+          data.map(d => options.getWidth(d))
+      }
     }
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options
@@ -435,8 +452,12 @@ export default class Welcome extends React.Component {
       tooltip: "",
       filtered: data,
       layers: [alayer],
-      radius: radius ? radius : this.state.radius,
-      elevation: elevation ? elevation : this.state.elevation,
+      layerOptions: options,
+      // do not save if not given etc
+      multiVarSelect: filter && filter.what === "multi" ?
+        filter.selected : multiVarSelect,
+      road_type: filter && filter.what === 'road_type' ? filter.selected :
+        this.state.road_type,
       colorName: cn || colorName,
       column, // all checked
       coords: filter && filter.what === 'coords' ? filter.selected :
@@ -597,8 +618,7 @@ export default class Welcome extends React.Component {
               geography: null,
               column: null,
               tooltip: "",
-              radius: Constants.RADIUS,
-              elevation: Constants.ELEVATION,
+              road_type: "",
               loading: true,
               coords: null
             })
@@ -619,9 +639,10 @@ export default class Welcome extends React.Component {
             }
           }}
           column={this.state.column}
-          onSelectCallback={(selected) => this._generateLayer({ filter: selected })}
-          onChangeRadius={(value) => this._generateLayer({ radius: value })}
-          onChangeElevation={(value) => this._generateLayer({ elevation: value })}
+          onSelectCallback={(selected) => 
+            this._generateLayer({ filter: selected })}
+          onLayerOptionsCallback={(layerOptions) => 
+            this._generateLayer({ layerOptions })}
           toggleSubsetBoundsChange={(value) => {
             this.setState({
               loading: true,

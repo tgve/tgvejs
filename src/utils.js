@@ -1,11 +1,5 @@
 import React from 'react';
 import {
-  ScatterplotLayer, HexagonLayer, GeoJsonLayer,
-  ScreenGridLayer, GridLayer, LineLayer,
-  HeatmapLayer,
-  TextLayer
-} from 'deck.gl';
-import {
   interpolateOrRd, // schemeBlues
   interpolateReds, interpolateYlGnBu, interpolateGreens,
   interpolateOranges, interpolateSinebow
@@ -18,13 +12,12 @@ import mapping from './location-icon-mapping.json';
 import Constants from './Constants';
 import { isString, isNumber, isObject, randomToNumber } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
-import { ArcLayer, PathLayer } from '@deck.gl/layers';
-import BarLayer from './components/customlayers/BarLayer'
 import { isArray } from 'underscore';
 import csv2geojson from 'csv2geojson';
 import { ascending } from 'd3-array';
 import atlas from './img/location-icon-atlas.png';
 import { sfType } from './geojsonutils';
+import { getLayerProps } from './components/settings/settingsUtils';
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -175,58 +168,38 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       obj[key] = opt[key]
     )
   }
-  if (name === 'hex') {
-    const hexObj = {
-      id: 'hexagon-layer',
-      data: data,
-      pickable: true,
-      extruded: true,
-      radius: 100,
-      elevationScale: 1,
-      getPosition: d => d.geometry.coordinates,
-      onHover: renderTooltip
-    }
-    addOptionsToObject(options, hexObj)
-    return (new HexagonLayer(hexObj))
-  } else if (name === 'scatterplot') {
-    const scatterObj = {
-      id: 'scatterplot-layer',
-      data,
-      pickable: true,
-      opacity: 0.8,
-      radiusScale: 6,
-      radiusMinPixels: 1,
-      radiusMaxPixels: 100,
-      getPosition: d => d.geometry.coordinates,
-      // getRadius: d => Math.sqrt(d.exits),
-      getColor: d => [255, 140, 0],
-      onHover: renderTooltip
-    }
-    addOptionsToObject(options, scatterObj)
-    return (new ScatterplotLayer(scatterObj))
-  } else if (name === 'geojson') {
-    const geojsonObj = {
-      id: 'geojson-layer',
-      data,
-      pickable: true,
-      stroked: false,
-      filled: true,
-      extruded: true,
-      lineWidthScale: 20,
-      lineWidthMinPixels: 2,
-      // getFillColor: [160, 160, 180, 200],
-      // getLineColor: [255, 160, 180, 200],
-      getRadius: 100,
-      getLineWidth: 1,
-      getElevation: 30,
-      onHover: renderTooltip,
-      // for default repo only
-      getElevation: f => Math.sqrt(f.properties.valuePerSqm) * 10,
-      // getFillColor: f => COLOR_RANGE(f.properties.growth),
-    }
-    addOptionsToObject(options, geojsonObj)
-    return (new GeoJsonLayer(geojsonObj))
-  } else if (name === 'icon') {
+  
+ /** 
+ * @param {String} name passed down from generateDeckLayer
+ * @param {Object} data passed down from generateDeckLayer
+ * @param {Object} renderTooltip passed down from generateDeckLayer
+ * @returns 
+ */
+  function generateOptions(name, data, renderTooltip) {
+    const layerProps = getLayerProps(name);
+    if(!layerProps.class || !layerProps.class["value"]) return null
+    const layerOptions = {};
+    Object.keys(layerProps).forEach(key => {
+      const type = layerProps[key] && layerProps[key].type;
+      if (type === 'number' || type === 'column') {
+        layerOptions[key] = layerProps[key].default;
+      } else if (type === 'boolean' || type === 'class') {
+        layerOptions[key] = layerProps[key].value;
+      } else {
+        layerOptions[key] = layerProps[key]
+      }
+    });
+    // common properties
+    layerOptions.data = data;
+    layerOptions.id = name + "-layer";
+    layerOptions.onHover = renderTooltip;
+    layerOptions.getPosition = d => d.geometry.coordinates;
+    addOptionsToObject(options, layerOptions)
+
+    return new layerProps.class["value"](layerOptions);
+  }
+
+  if (name === 'icon') {
     /**
      * There are three files the layer need to display the icons:
      * (1) location-icon-atlas.png which is in /public
@@ -251,101 +224,9 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     }
     addOptionsToObject(options, iconObj)
     return (new IconClusterLayer(iconObj))
-  } else if (name === 'sgrid') {
-    const sgridObject = {
-      id: 'screen_grid',
-      data,
-      getPosition: d => d.geometry.coordinates,
-      // getWeight: d => d.properties.weight,
-      cellSizePixels: 4,
-      // colorRange,
-      // gpuAggregation,
-      onHover: renderTooltip
-    }
-    addOptionsToObject(options, sgridObject)
-    return (new ScreenGridLayer(sgridObject))
-  } else if (name === 'grid') {
-    const gridObject = {
-      id: 'grid',
-      data,
-      pickable: true,
-      extruded: true,
-      cellSize: 100,
-      elevationScale: 4,
-      getPosition: d => d.geometry.coordinates,
-      onHover: renderTooltip
-    }
-    addOptionsToObject(options, gridObject)
-    return (new GridLayer(gridObject))
-  } else if (name === 'line') {
-    const lineObject = {
-      id: 'line-layer',
-      data,
-      pickable: true,
-      onHover: renderTooltip
-    }
-    addOptionsToObject(options, lineObject)
-    return (new LineLayer(lineObject))
-  } else if (name === 'arc') {
-    const arcObject = {
-      id: 'arc-layer',
-      data,
-      pickable: true,
-      onHover: renderTooltip
-      // getSourcePosition: d => d.geometry.coordinates[0],
-      // getTargetPosition: d => d.geometry.coordinates[1],
-    }
-    addOptionsToObject(options, arcObject)
-    return (new ArcLayer(arcObject))
-  } else if (name === 'path') {
-    const pathObject = {
-      id: 'path-layer',
-      data,
-      pickable: true,
-      onHover: renderTooltip
-    }
-    addOptionsToObject(options, pathObject)
-    return (new PathLayer(pathObject))
-  } else if (name === 'heatmap') {
-    const heatObject = {
-      id: 'heatmap-layer',
-      data,
-      pickable: true,
-      onHover: renderTooltip,
-    }
-    addOptionsToObject(options, heatObject);
-    return (new HeatmapLayer(heatObject))
-  } else if (name === "scatterplot") {
-    const scatterObject = {
-      id: 'scatterplot',
-      data,
-      pickable: true,
-      onHover: renderTooltip,
-      opacity: 0.3
-    }
-    addOptionsToObject(options, scatterObject);
-    return (new ScatterplotLayer(scatterObject))
-  } else if (name === "text") {
-    const textObject = {
-      id: 'text-layer',
-      data,
-      pickable: true,
-      onHover: renderTooltip,
-    }
-    addOptionsToObject(options, textObject);
-    return (new TextLayer(textObject))
-  } else if (name === "barvis") {
-    const barvisObject = {
-      id: 'barvis-layer',
-      data,
-      pickable: true,
-      onHover: renderTooltip,
-    }
-    addOptionsToObject(options, barvisObject);
-    return (new BarLayer(barvisObject))
   }
 
-  return (null)
+  return generateOptions(name, data, renderTooltip)
 }
 
 const getCentroid = (coords) => {
@@ -640,6 +521,27 @@ const colorRanges = (name) => {
   return (colors[name])
 }
 
+/**
+ * TODO: much better colour array needed.
+ * The purpose here was to use the same
+ * colour palette used for the ranges.
+ * 
+ * @param {String} name 
+ * @returns 
+ */
+const getColorArray = (name) => {
+  if(!isString(name)) return null;
+  const colors = {
+    yellowblue: [0, 52, 148],
+    greens: [0, 255, 0],
+    oranges: [166, 166, 0],
+    diverge: [255, 102, 94],
+    inverseDefault: [255, 255, 178],
+    default: [189, 0, 38],
+  }
+  return (colors[name])
+}
+
 const iconJSType = (dataType) => {
   // describeFeatureVariables in geojsonutils
   // String, Number, Boolean and Object
@@ -819,10 +721,10 @@ const OSMTILES = {
  * @param {*} geoColumn geocode which is shared between `geojson` and `data`
  */
 const setGeojsonProps = (geojson, data, geoColumn) => {
-  // TODO:randomToNumber should use the samller of the two in future
-  // as either could be bigger. For now just use 0
-  // const r = randomToNumber(geojson && geojson.features.length);
+  // const r = randomToNumber(data && data.length);
   const r = 0;
+  const result = Object.assign({}, geojson)
+  result.features = []
   if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
     !geojson.features || !geojson.features[r] ||
     !geojson.features[r].properties[geoColumn] || !data[r] || 
@@ -831,12 +733,18 @@ const setGeojsonProps = (geojson, data, geoColumn) => {
   geojson.features.forEach(feature => {
     for (let i = 0; i < data.length; i++) {
       if (feature.properties[geoColumn] === data[i].properties[geoColumn]) {
-        feature.properties = data[i].properties;
+        // feature.properties = data[i].properties;
+        const obj = {
+          type: feature.type,
+          properties: data[i].properties,
+          geometry: feature.geometry
+        }
+        result.features.push(obj)
         break;
       }
     }
   });
-  return geojson
+  return result
 }
 
 /**
@@ -860,7 +768,7 @@ const getMessage = (array) => {
 const getMainMessage = (filtered, unfiltered) => {
   if(filtered && filtered.length && unfiltered && unfiltered) {
     return getMessage(filtered) + (filtered.length < unfiltered.length ? 
-    " (" + ((filtered.length/unfiltered.length)*100).toFixed(2) + "%)" : "")
+    " of " + unfiltered.length : "")
   } else if(filtered && filtered.length) {
     return getMessage(filtered)
     // TODO: check all rows before declaring
@@ -889,6 +797,7 @@ export {
   generateLegend,
   generateDomain,
   getMainMessage,
+  getColorArray,
   convertRange,
   getCentroid,
   shortenName,

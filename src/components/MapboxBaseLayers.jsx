@@ -14,36 +14,31 @@ export default class MapboxBaseLayers extends React.Component {
                 'satellite',
                 'No map'
             ],
-            selected: 'dark'
+            selected: props.dark ? "dark" : "streets"
         }
     }
 
     render() { 
         const {selected, bases} = this.state;
-        const {onSelectCallback} = this.props;
+        const {onSelectCallback, dark} = this.props;
+        // console.log(selected);
         
         return(
-          <MultiSelect 
-          title={selected === 'dark' ? "Default(dark)" : selected}
+          <MultiSelect
+            title={selected === 'dark' ? "Default(dark)" : 
+            !dark ? "Default(streets)" : selected}
             single={true}
-            values={bases.map(e => ({id:e, value:e}))}
-            onSelectCallback= {(selected) => {
-              const base = selected && selected[0] ?
-              selected[0].value : this.state.selected;
-              this.setState({selected: base});
-              typeof(onSelectCallback) === 'function' && base &&
-              onSelectCallback(base)
-          }}
+            values={
+              bases.map(e => ({ id: e, value: e }))
+            }
+            onSelectCallback={(selected) => {
+              if(selected && selected.length) {
+                this.setState({ selected: selected[0].value });
+                typeof (onSelectCallback) === 'function' &&
+                  onSelectCallback(selected[0].value)
+              }
+            }}
           />
-            // <RBDropDown
-            //     title={selected === 'dark' ? "Default(dark)" : selected}
-            //     menuitems={bases}
-            //     onSelectCallback= {(selected) => {
-            //         this.setState({selected});
-            //         typeof(onSelectCallback) === 'function' &&
-            //         onSelectCallback(selected)
-            //     }}
-            // />
         )
     }
 }
