@@ -163,9 +163,9 @@ const COLOR_RANGE = scaleThreshold()
   ]);
 
 const generateDeckLayer = (name, data, renderTooltip, options) => {
-  const addOptionsToObject = (opt, obj) => {
-    Object.keys(opt).forEach(key =>
-      obj[key] = opt[key]
+  const addOptionsToObject = (source, target) => {
+    Object.keys(source).forEach(key =>
+      target[key] = source[key]
     )
   }
   
@@ -196,6 +196,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     layerOptions.getPosition = d => d.geometry.coordinates;
     addOptionsToObject(options, layerOptions)
 
+    // the only way to call the constructor is to use ["string"]
     return new layerProps.class["value"](layerOptions);
   }
 

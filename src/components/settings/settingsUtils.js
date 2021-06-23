@@ -1,7 +1,7 @@
 import {
   ScatterplotLayer, HexagonLayer, GeoJsonLayer,
   ScreenGridLayer, GridLayer, LineLayer,
-  HeatmapLayer, TextLayer, ArcLayer, PathLayer
+  HeatmapLayer, TextLayer, ArcLayer, PathLayer, PointCloudLayer
 } from 'deck.gl';
 import IconClusterLayer from '../../icon-cluster-layer';
 import BarLayer from '../customlayers/BarLayer'
@@ -30,7 +30,7 @@ const hexObject = {
   // key: [type, min, max, step, default]
   radius: makeObject('number', 50, 1000, 100, 50),
   elevationScale: makeObject('number', 1, 8, 1, 2),
-  getPosition(d) { return d.geometry.coordinates},
+  // getPosition(d) { return d.geometry.coordinates},
   // opacity: ['number', 0, 1, 0.1, 0.3]
 }
 layers['hex'] = addOptionsToObject(options, hexObject)
@@ -87,7 +87,7 @@ const gridObject = {
 layers['grid'] = addOptionsToObject(options, gridObject)
 const lineObject = {
   class: { value: LineLayer, type: 'class' },
-  getPosition: function(d) { return d.geometry.coordinates},
+  // getPosition: function(d) { return d.geometry.coordinates},
   /**
    * TODO
    */
@@ -121,6 +121,15 @@ const barvisObject = {
 }
 layers["barvis"] = addOptionsToObject(options, barvisObject);
 
+const pointCloudObject = {
+  class: { value: PointCloudLayer, type: 'class' },
+  // TODO: add trigger arrays before defining these
+  // getPosition: { type: 'column', value: 'array', 
+  // default: (d) => d.geometry.coordinates},
+  // getNormal: { type: 'column', value: 'array', default: (d) => d.properties.normal},
+  // getColor: { type: 'column', value: 'array', default: (d) => d.properties.color}
+}
+layers["pointcloud"] = addOptionsToObject(options, pointCloudObject);
 /**
  * Frozen object to keep the properties intact.
  * 

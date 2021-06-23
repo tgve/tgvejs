@@ -89,8 +89,8 @@ export default function LayerSettings(props) {
               const newValues = {
                 ...values,
                 //is it resetting a key?
-                [key]: (d) => selected.length ?
-                  d.properties[selected[0].value] : options[key].default
+                [key]: selected.length ? (d) => d.properties[selected[0].value] :
+                  options[key].default
               }
               setValues(newValues)
               typeof onLayerOptionsCallback === 'function' &&
