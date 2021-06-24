@@ -16,7 +16,7 @@ const engine = new Styletron();
 class App extends Component {
   render() {    
     const { defaultURL, tooltipColumns, geographyURL, geographyColumn, 
-      column, data
+      column, data, layerName
     } = this.props;
     return (
       <main>
@@ -32,6 +32,7 @@ class App extends Component {
             geographyURL={ process.env.REACT_APP_GEOGRAPHY_URL || geographyURL}
             geographyColumn={ process.env.REACT_APP_GEOGRAPHY_COLUMN_NAME || geographyColumn}
             column= {process.env.REACT_APP_COLUMN_NAME || column}
+            layerStyle={ process.env.REACT_APP_LAYER_NAME || layerName}
             data={data}/>
           </BaseProvider>
         </StyletronProvider>

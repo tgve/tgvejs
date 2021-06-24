@@ -88,7 +88,8 @@ export default class Welcome extends React.Component {
       tooltipColumns: {column1: "accident_severity" , column2: "date"},
       geographyURL: props.geographyURL,
       geographyColumn: props.geographyColumn,
-      column: props.column
+      column: props.column,
+      layerStyle: props.layerStyle
     }
     
     this._generateLayer = this._generateLayer.bind(this)
