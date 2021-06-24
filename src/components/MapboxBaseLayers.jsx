@@ -21,7 +21,6 @@ export default class MapboxBaseLayers extends React.Component {
     render() { 
         const {selected, bases} = this.state;
         const {onSelectCallback, dark} = this.props;
-        // console.log(selected);
         
         return(
           <MultiSelect

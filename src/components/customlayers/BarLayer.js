@@ -97,7 +97,6 @@ export default class BarLayer extends Layer {
   //     // data is wrapped
   //     info.object = data.find(d => d.__source.index === index);
   //   }
-  //   // console.log(info);
     
   //   return info;
   // }

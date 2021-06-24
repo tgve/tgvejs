@@ -86,9 +86,9 @@ export default class Welcome extends React.Component {
       multiVarSelect: {},
       width: window.innerWidth, height: window.innerHeight,
       tooltipColumns: {column1: "accident_severity" , column2: "date"},
-      geographyURL: process.env.REACT_APP_GEOGRAPHY_URL || null,
-      geographyColumn: process.env.REACT_APP_GEOGRAPHY_COLUMN_NAME || null,
-      column: process.env.REACT_APP_COLUMN_NAME || null
+      geographyURL: props.geographyURL,
+      geographyColumn: props.geographyColumn,
+      column: props.column
     }
     
     this._generateLayer = this._generateLayer.bind(this)
@@ -226,7 +226,6 @@ export default class Welcome extends React.Component {
     const { layerOptions = {}, filter, cn } = values;
 
     if (filter && filter.what === 'mapstyle') {
-      console.log("fiq")
       const newStyle = "mapbox://styles/mapbox/" + filter.selected + "-v9";
       this.setState({
         mapStyle: filter.what === 'mapstyle' ? filter.selected === "No map" ?
@@ -241,7 +240,8 @@ export default class Welcome extends React.Component {
 
     let column = (filter && filter.what === 'column' && filter.selected) ||
       this.state.column;
-    const columnNameOrIndex = column || 1;
+    // in case there is no or one column
+    const columnNameOrIndex = column || 0;
 
     const { colorName, iconLimit, geography, geographyColumn,
       multiVarSelect } = this.state;
@@ -356,7 +356,7 @@ export default class Welcome extends React.Component {
     if (geomType === 'linestring') {
       layerStyle = "line"
       // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
-      options.getColor = d => [235, 170, 20]
+      options.getColor = [235, 170, 20]
       options.getPath = d => d.geometry.coordinates
       options.onClick = (info) => {
         if (info && info.hasOwnProperty('coordinate')) {
@@ -398,13 +398,14 @@ export default class Welcome extends React.Component {
       }
     }
     let newLegend = this.state.legend;
+    const fill =  (d) => colorScale(
+      +getValue(d) ? +getValue(d) : getValue(d),
+      domain, 180, cn || this.state.colorName
+    )
 
     if (geomType === "polygon" || geomType === "multipolygon" ||
       layerStyle === 'geojson') {
-      const fill =  (d) => colorScale(
-        +getValue(d) ? +getValue(d) : getValue(d),
-        domain, 180, cn || this.state.colorName
-      )
+      
       options.getFillColor = fill;
 
       options.updateTriggers = {
@@ -440,6 +441,23 @@ export default class Welcome extends React.Component {
           data.map(d => options.getWidth(d))
       }
     }
+
+    if (layerStyle === 'pointcloud') {
+      options.getColor = fill;
+      options.updateTriggers = {
+        getColor: data.map((d) => fill(d))
+      }
+      newLegend = generateLegend(
+        {
+          domain,
+          title: humanize(column),
+          interpolate: colorRangeNamesToInterpolate(
+            cn || this.state.colorName
+          )
+        }
+      )
+    }
+
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options
     )

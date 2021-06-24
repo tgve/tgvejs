@@ -57,8 +57,6 @@ export default function Variables(props) {
     id: humanize(e) + " [" + description[e].name + "]",
     value: e
   }))
-  // console.log(columns);
-  // console.log(syncColumns);
   // use synced column names
   return (
     <div style={props.style}>

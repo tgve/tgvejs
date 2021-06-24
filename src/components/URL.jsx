@@ -26,7 +26,6 @@ export default function URL(props) {
           onChange={(e) => {            
             const { value } = e.target;
             setUrl(value)
-            // console.log(isURL(value))
           }}
           style={{
             background: props.dark ? '#242730' : 'white',

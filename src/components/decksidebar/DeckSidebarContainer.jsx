@@ -16,8 +16,6 @@ export default (props) => {
   const [open, setOpen] = useState(!props.isMobile);
   const [hex, setHex] = useState(false);
 
-  // console.log(hex);
-
   return (
     <div className="side-panel-container"
       style={{ marginLeft: open ? 0 : '-320px' }}>

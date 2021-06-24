@@ -241,7 +241,6 @@ const convertRange = (oldValue = 2, values =
   { oldMax: 10, oldMin: 1, newMax: 1, newMin: 0 }) => {
   const value = (((oldValue - values.oldMin) * (values.newMax - values.newMin))
     / (values.oldMax - values.oldMin)) + values.newMin
-  // console.log(oldValue, values);
   return +(value.toFixed(2))
 }
 
@@ -613,7 +612,7 @@ const generateLegend = (options) => {
   //quick check 
   const { domain, interpolate = interpolateOrRd, title } = options;
   const r = randomToNumber(domain && domain.length)
-  if (!domain || !Array.isArray(domain) || !isNumber(domain[r])) return
+  if (!domain || !Array.isArray(domain) || !isNumber(domain[r])) return null
   const jMax = domain[domain.length - 1], jMin = domain[0];
   const legend = [<p key='title'>{title}</p>]
 
@@ -643,6 +642,7 @@ const generateLegend = (options) => {
  * @param {*} column 
  */
 const generateDomain = (data, column) => {
+  // TODO: if column === 0 it should be valid
   if (!data || !Array.isArray(data) || !column || !data.length) return;
   let domainIsNumeric = true;
   let domain = [];
