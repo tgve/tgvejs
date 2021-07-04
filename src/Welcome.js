@@ -19,7 +19,7 @@
  */
 import React from 'react';
 import DeckGL from 'deck.gl';
-import MapGL, { NavigationControl, FlyToInterpolator } from 'react-map-gl';
+import MapGL, { NavigationControl, FlyToInterpolator, ScaleControl } from 'react-map-gl';
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
 import _ from 'underscore';
@@ -113,6 +113,7 @@ export default class Welcome extends React.Component {
       geographyColumn !== geographyColumn ) {
       this._generateLayer()
     }
+    //TODO: return false?
   }
 
   componentDidMount() {
@@ -235,7 +236,11 @@ export default class Welcome extends React.Component {
       })
       return;
     }
-    let data = this.state.data && this.state.data.features
+    const { colorName, iconLimit, geography, geographyColumn,
+      multiVarSelect } = this.state;
+
+    let data = (this.props.data && this.props.data.features) 
+    || (this.state.data && this.state.data.features)
     // data or geography and add column data
     if (!data) return;
 
@@ -244,8 +249,6 @@ export default class Welcome extends React.Component {
     // in case there is no or one column
     const columnNameOrIndex = column || 0;
 
-    const { colorName, iconLimit, geography, geographyColumn,
-      multiVarSelect } = this.state;
     if (filter && filter.what === "%") {
       data = data.slice(0, filter.selected / 100 * data.length)
     }
@@ -446,7 +449,8 @@ export default class Welcome extends React.Component {
     if (layerStyle === 'pointcloud') {
       options.getColor = fill;
       options.updateTriggers = {
-        getColor: data.map((d) => fill(d))
+        getColor: data.map((d) => fill(d)),
+        getPosition: [data.length]
       }
       newLegend = generateLegend(
         {
@@ -570,6 +574,8 @@ export default class Welcome extends React.Component {
     const { tooltip, viewport, initialViewState,
       loading, mapStyle, alert, data, filtered,
       layerStyle, geomType, legend, coords } = this.state;
+    const showLegend = legend && (geomType === 'polygon'
+      || geomType === 'multipolygon' || layerStyle === "pointcloud")
 
     return (
       <div>
@@ -601,6 +607,11 @@ export default class Welcome extends React.Component {
               {...viewport}
               onViewportChange={viewport => this.setState({ viewport })}
             />
+            <ScaleControl maxWidth={100} unit="metric" 
+              style={{
+                left: 20,
+                bottom: 100
+              }} />
           </div>
           <DeckGL
             viewState={viewport ? viewport : initialViewState}
@@ -675,8 +686,7 @@ export default class Welcome extends React.Component {
           datasetName={this.props.defaultURL}
         />
         {
-          legend && (geomType === 'polygon' ||
-            geomType === 'multipolygon') &&
+          showLegend &&
           <div className="right-side-panel mapbox-legend">
             {legend}
           </div>

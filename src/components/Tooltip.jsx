@@ -133,14 +133,14 @@ export default class Tooltip extends React.Component {
     if (props) {
       const keys = Object.keys(props)
       DATA = keys
-        .slice(1, all ? keys.length : n)
+        .slice(0, all ? keys.length : n)
         .map(p => {
           return ([humanize(p), props[p]])
         })
     } else { // two points passed go through first one
       const keys = Object.keys(hoveredObject.points[0].properties);
       DATA = keys
-        .slice(1, all ? keys.length : n) // miss accident_index
+        .slice(0, all ? keys.length : n) // miss accident_index
         .map(p => {
           let points = [
             humanize(p),

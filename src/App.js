@@ -24,7 +24,7 @@ class App extends Component {
           <BaseProvider theme={DarkTheme}>
             <Welcome 
             dark={true}
-            // TODO get these from a settings-json file/objeect
+            // TODO get these from a settings-json file/object
             // as well as envs
             defaultURL={process.env.REACT_APP_DEFAULT_URL || defaultURL}
             tooltipColumns= {process.env.REACT_APP_TOOLTIP_COLUMNS || 
