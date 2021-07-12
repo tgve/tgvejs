@@ -12,7 +12,7 @@
  * and
  * DeckSidebarContainer which holds DeckSidebar object itself.
  * 
- * Main funcitons:
+ * Main functions:
  * _generateLayer which is the main/factory of filtering state
  * of the map area of the application.
  * 
@@ -28,7 +28,7 @@ import {
   fetchData, generateDeckLayer, suggestDeckLayer,
   getParamsFromSearch, getBbx, isMobile, colorScale, OSMTILES,
   colorRanges, generateDomain, setGeojsonProps,
-  convertRange, getMin, getMax, isURL, getFirstDateColumnName, 
+  convertRange, getMin, getMax, isURL, 
   generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
 } from './utils';
 import Constants, { LIGHT_SETTINGS } from './Constants';
@@ -39,7 +39,6 @@ import history from './history';
 import './App.css';
 import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
-import { DateTime } from 'luxon';
 import { throttle } from 'lodash';
 import { isObject } from './JSUtils';
 
@@ -111,7 +110,13 @@ export default class Welcome extends React.Component {
       defaultURL !== this.props.defaultURL ||
       geographyURL !== this.props.geographyURL ||
       geographyColumn !== geographyColumn ) {
-      this._generateLayer()
+      if(nextProps.hasOwnProperty("data")) {
+        this.setState({
+          data: nextProps.data
+        }, () => this._generateLayer())
+      } else {
+        this._generateLayer()
+      }
     }
     //TODO: return false?
   }
@@ -253,26 +258,24 @@ export default class Welcome extends React.Component {
       data = data.slice(0, filter.selected / 100 * data.length)
     }
     // to optimize the search keep state as the source of truth
-    if (this.state.coords) {
+    if (this.state.coords || (filter && filter.what === 'column')) {
       data = this.state.filtered;
     }
 
     //if resetting a value
-    const filterValues = filter && filter.what === 'multi' ||
+    const filterValues = (filter && filter.what === 'multi') ||
       Object.keys(multiVarSelect).length;
     const filterCoords = filter && filter.what === 'coords';
-    const selected = filter && filter.selected || multiVarSelect;
+    const selected = (filter && filter.what === 'multi' && filter.selected)
+      || multiVarSelect;
     if (filterValues || filterCoords) {
-      const yearColumn = getFirstDateColumnName(data[0].properties);
       data = data.filter(
         d => {
           if (filterValues) {
             // go through each selection
             // selected.var > Set()
             for (let each of Object.keys(selected)) {
-              const nextValue = each === yearColumn ?
-                DateTime.fromISO(d.properties[each]).year + "" : 
-                d.properties[each] + ""
+              const nextValue = d.properties[each] + ""
               // each from selected must be in d.properties
               // *****************************
               // compare string to string

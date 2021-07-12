@@ -60,7 +60,9 @@ export default class DeckSidebar extends React.Component {
       loading !== nextProps.loading ||
       layerStyle !== nextProps.layerStyle ||
       barChartVariable !== nextState.barChartVariable) return true;
-    //TODO:  a more functional way is needed        
+    //TODO:  a more functional way is needed
+    // e.g JSON.stringify like in Welcome.js etc
+    // consider change in unfilteredData too
     if (data && nextProps && nextProps.data &&
       data.length === nextProps.data.length) {
       return false

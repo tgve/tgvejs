@@ -11,7 +11,7 @@
  * Next will be replacing current "hard" code in the parent code,
  * so that all key values can be dynamically filtered.
  * 
- * This should be generalizeable to any GeoJSON file, or that is the
+ * This should be generalize-able to any GeoJSON file, or that is the
  * aim.
  */
 import React, { useState } from 'react';
@@ -40,7 +40,6 @@ export default function Variables(props) {
   // describe first feature
   const description = describeFeatureVariables(unfilteredData[0]);
   const dataCols = Object.keys(unfilteredData[0].properties)
-    .filter(e => e !== "date") // hardcode
     .map(e => ({
       // Format: Column Name [String]
       id: humanize(e) + " [" + description[e].name + "]",
@@ -49,7 +48,7 @@ export default function Variables(props) {
 
   // unique set of keys
   let syncColumns = Array.from(new Set(columns.map(e => e.value).concat(
-    Object.keys(multiVarSelect).filter(e => e !== "date") // hardcode
+    Object.keys(multiVarSelect) // hardcode
   )));
   // populate baseweb objects using description
   syncColumns = syncColumns.map(e => ({
@@ -105,12 +104,14 @@ export default function Variables(props) {
                 title={"Available (" + columnValues.length + ")"}
                 filter={key}
                 multiVarSelect={multiVarSelect}
+                // all values to "multi-select" from
                 // all string from here
                 values={columnValues.map(e => ({ id: e + "", value: e + "" }))}
                 onSelectCallback={(filter) => {
                   typeof (onSelectCallback) === 'function' &&
                     onSelectCallback(filter.selected || {});
                 }}
+                // value or values as this is multi-select
                 value={multiVarSelect[key] &&
                   Array.from(multiVarSelect[key])
                     .map(e => ({ id: e + "", value: e + "" }))

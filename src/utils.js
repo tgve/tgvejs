@@ -616,19 +616,18 @@ const generateLegend = (options) => {
   const jMax = domain[domain.length - 1], jMin = domain[0];
   const legend = [<p key='title'>{title}</p>]
 
-  for (var i = 0; i < 10; i += 1) {
+  const legendMax = domain.length < 10 ? domain.length : 10
+  for (var i = 0; i < legendMax; i += 1) {
     legend.push(
       <>
         {i === 0 &&
-          <i>{(title === humanize('Mean.Travel.Time..Seconds.') ?
-            +(jMin) / 300 : jMin).toFixed(2)
+          <i>{jMin.toFixed(2)
           }</i>
         }
-        <span key={i} style={{ background: interpolate(i / 10) }}>
+        <span key={i} style={{ background: interpolate(i / legendMax) }}>
         </span>
-        {i === 9 &&
-          <i>{(title === humanize('Mean.Travel.Time..Seconds.') ?
-            +(jMax) / 300 : jMax).toFixed(2)
+        {i === (legendMax - 1) &&
+          <i>{jMax.toFixed(2)
           }</i>
         }
       </>)

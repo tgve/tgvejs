@@ -124,6 +124,7 @@ layers["barvis"] = addOptionsToObject(options, barvisObject);
 const pointCloudObject = {
   class: { value: PointCloudLayer, type: 'class' },
   pointSize: makeObject('number', 1, 100, 10, 2),
+  opacity: makeObject('number', 0, 1, 0.5, 0.1),
   // TODO: add trigger arrays before defining these
   // getPosition: { type: 'column', value: 'array', 
   // default: (d) => d.geometry.coordinates},
