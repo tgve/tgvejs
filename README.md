@@ -4,7 +4,7 @@
 
 This is the npm package from eAtlas project.
 
-Currently these variables can be passed to the eAtlas app:
+Currently these variables can be passed to the eAtlas app, each can be passed as an environment variable like `REACT_APP_LAYER_NAME` or when using eAtlas as a component `<Eatlas layerName="geojson">`:
 
   - `data` valid geojson object.
 
@@ -25,6 +25,8 @@ Currently these variables can be passed to the eAtlas app:
   - `column` if provided, and if the geometry is of particular type
     which would need a column, it would be used. Defaults on to the
     second column as often first column is an ID of sort.
+
+  - `layerName` if provided, and if the given name is in the list of DeckGL layers supported by eAtlas, will be passed to generate the layer with the name given.
 
 None of the above is necessary and in the current release “Add data”
 button will allow loading data into eAtlas.
