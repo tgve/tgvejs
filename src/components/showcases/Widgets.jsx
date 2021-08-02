@@ -5,6 +5,7 @@ import GenerateUI from '../UI';
 import { DateTime } from "luxon";
 import { getPropertyValues } from '../../geojsonutils';
 import { getFirstDateColumnName } from '../../utils';
+import { isArray } from '../../JSUtils';
 
 const DateSlider = (props) => {
   const {data, multiVarSelect, onSelectCallback,
@@ -74,6 +75,9 @@ const yearSlider = (options) => {
   const years = getPropertyValues({ features: data }, yearColumn)
     // returned 2009-01-02, convert to 2009
     .map(e => DateTime.fromISO(e).year).sort()
+  
+  if(!years || !isArray(years) || !years.length || years.length == 1) return null
+
   return <GenerateUI
     title={
       <h5>Year(s): {year ? year :
