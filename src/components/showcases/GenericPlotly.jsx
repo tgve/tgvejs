@@ -28,7 +28,7 @@ const Plot = createPlotlyComponent(Plotly);
 export default function(props) {
   const { data, width = 250, height = 200, title = "Plot",
     dark, xaxis = {}, yaxis = {},
-    displayModeBar } = props; // Object.assign errs on undefined
+    displayModeBar, onClickCallback } = props; // Object.assign errs on undefined
   
   const axes = { visible: true, color: dark && '#fff'}
   const sColor = {color: dark && '#fff'};
@@ -39,12 +39,16 @@ export default function(props) {
       data={data}
       layout={{
         width, height, title: {text: title, font: sColor},
-        margin: { t: 30, r: 20, b: 50, l: 30 },
+        // margin: { t: 30, r: 20, b: 50, l: 30 },
         paper_bgcolor: dark && '#0000', plot_bgcolor: dark && '#0000',
         xaxis: Object.assign(axes, xaxis), 
         yaxis: Object.assign(sColor, yaxis),
         legend: {x: 0.35, y: -0.35, orientation: 'h',
         font: sColor}
+      }}
+      onClick={(e) => {
+        typeof onClickCallback === 'function'
+        && onClickCallback(e.points)
       }}
       config={{displayModeBar: !displayModeBar && false}}
     />

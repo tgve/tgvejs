@@ -605,8 +605,11 @@ const ATILOGO = (dark = true) => (
 )
 
 /**
+ * Helper function to generate a legend from: `domain`, 
+ * `interpolate` function and a `title`. 
  * 
- * @param {*} options 
+ * @param {Object} options 
+ * @returns {Object} React.Fragment
  */
 const generateLegend = (options) => {
   //quick check 
@@ -624,8 +627,8 @@ const generateLegend = (options) => {
           <i>{jMin.toFixed(2)
           }</i>
         }
-        <span key={i} style={{ background: interpolate(i / legendMax) }}>
-        </span>
+        <i key={i} style={{ background: interpolate(i / legendMax) }}>
+        </i>
         {i === (legendMax - 1) &&
           <i>{jMax.toFixed(2)
           }</i>
@@ -778,6 +781,14 @@ const getMainMessage = (filtered, unfiltered) => {
     return "Nothing to show"
   }
 }
+
+const theme = (dark) => {
+  return({
+    color: dark ? "white" : "black",
+    background: dark ? "#242730" : "white"
+  })
+}
+
 export {
   colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
@@ -813,5 +824,6 @@ export {
   getBbx,
   getMin,
   getMax,
+  theme,
   isURL,
 }

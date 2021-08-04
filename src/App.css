@@ -83,16 +83,22 @@
   margin: 0 0 10px;
 }
 
-.mapbox-legend span {
+.mapbox-legend span,
+.mapbox-legend i {
   border-radius: 50%;
-  display: inline-block;
-  margin-right: 5px;
+  display: block;
+  margin: 5px;
   width: 10px;
   height: 10px;
 }
 
-.mapbox-legend i:first-child {
-  margin-right: 5px;
+.mapbox-legend i:first-child,
+.mapbox-legend span:first-child {
+  margin-bottom: 10px;
+}
+.mapbox-legend i:last-child,
+.mapbox-legend span:last-child {
+  margin-top: 10px;
 }
 
 .legend {

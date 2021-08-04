@@ -29,9 +29,13 @@ import {
   getParamsFromSearch, getBbx, isMobile, colorScale, OSMTILES,
   colorRanges, generateDomain, setGeojsonProps,
   convertRange, getMin, getMax, isURL, 
-  generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
+  generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray, theme,
 } from './utils';
-import Constants, { LIGHT_SETTINGS } from './Constants';
+import Constants, {
+  LIGHT_SETTINGS,
+  BOTTOM_PANEL_MARGIN_LEFT, BOTTOM_PANEL_MARGIN_RIGHT,
+  LEGEND_MIN_HEIGHT, BOTTOM_PANEL_HEIGHT
+} from './Constants';
 import DeckSidebarContainer from
   './components/decksidebar/DeckSidebarContainer';
 import history from './history';
@@ -41,6 +45,7 @@ import Tooltip from './components/Tooltip';
 import { sfType } from './geojsonutils';
 import { throttle } from 'lodash';
 import { isObject } from './JSUtils';
+import { timePlot } from './components/showcases/plots';
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -88,7 +93,8 @@ export default class Welcome extends React.Component {
       geographyURL: props.geographyURL,
       geographyColumn: props.geographyColumn,
       column: props.column,
-      layerStyle: props.layerStyle
+      layerStyle: props.layerStyle,
+      bottomPanel: false,
     }
     
     this._generateLayer = this._generateLayer.bind(this)
@@ -488,7 +494,17 @@ export default class Welcome extends React.Component {
       column, // all checked
       coords: filter && filter.what === 'coords' ? filter.selected :
         this.state.coords,
-      legend: newLegend
+      legend: newLegend,
+      bottomPanel: timePlot({
+        data: this.state.data.features, 
+        property: column, dark: this.props.dark, 
+        title: "", height: BOTTOM_PANEL_HEIGHT,
+        width: window.innerWidth - BOTTOM_PANEL_MARGIN_LEFT 
+        - BOTTOM_PANEL_MARGIN_RIGHT - 50,
+        onClickCallback: (points) => {
+          console.log(points)
+        }
+      })
     })
   }
 
@@ -575,7 +591,7 @@ export default class Welcome extends React.Component {
 
   render() {
     const { tooltip, viewport, initialViewState,
-      loading, mapStyle, alert, data, filtered,
+      loading, mapStyle, alert, data, filtered, bottomPanel,
       layerStyle, geomType, legend, coords } = this.state;
     const showLegend = legend && (geomType === 'polygon'
       || geomType === 'multipolygon' || layerStyle === "pointcloud")
@@ -687,10 +703,16 @@ export default class Welcome extends React.Component {
             this._fitViewport(undefined, bboxLonLat)
           }}
           datasetName={this.props.defaultURL}
+          bottomPanel={bottomPanel}
         />
         {
           showLegend &&
-          <div className="right-side-panel mapbox-legend">
+          <div 
+            style={{
+              minHeight: LEGEND_MIN_HEIGHT,
+              ...theme(this.props.dark)
+            }}
+            className="right-side-panel mapbox-legend">
             {legend}
           </div>
         }
@@ -698,7 +720,17 @@ export default class Welcome extends React.Component {
     );
   }
   _resize() {
-    this.setState({ width: window.innerWidth, height: window.innerHeight });
+    this.setState({ 
+      width: window.innerWidth, 
+      height: window.innerHeight,
+      bottomPanel: timePlot({
+        data: this.state.data.features, 
+        property: this.state.column, dark: this.props.dark, 
+        title: "", height: BOTTOM_PANEL_HEIGHT,
+        width: window.innerWidth - BOTTOM_PANEL_MARGIN_LEFT 
+        - BOTTOM_PANEL_MARGIN_RIGHT - 50
+      })
+    });
   };
 
   _newRange (data, d, columnNameOrIndex, min, max) {

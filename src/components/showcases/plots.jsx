@@ -5,10 +5,10 @@ import {
 } from 'react-vis';
 import { format } from 'd3-format';
 
-import { isStringDate, propertyCountByProperty } from '../../geojsonutils';
-import { isArray } from '../../JSUtils';
+import { getPropertyValues, isStringDate, propertyCountByProperty } from '../../geojsonutils';
+import { isArray, isString } from '../../JSUtils';
 import { PLOT_W, TURQUOISE_RANGE } from '../../Constants';
-import { xyObjectByProperty, humanize } from '../../utils';
+import { xyObjectByProperty, humanize, getFirstDateColumnName } from '../../utils';
 import { scaleSequential } from 'd3-scale';
 
 import GenericPlotly from './GenericPlotly';
@@ -208,9 +208,35 @@ const arrayOfYearAndProperty = (data, column) => {
   return plot_data_multi;
 }
 
+const timePlot = (props = {}) => {
+  const { data, property, dark, title, height, width,
+  onClickCallback  } = props;
+  // feature array
+  if (!isString(property) || !data || !data.length) return null;
+  const dateColumn = getFirstDateColumnName(data[0].properties);
+  if(!dateColumn) return null;
+  const x = getPropertyValues({features: data}, dateColumn).map(e => new Date(e));
+  const y = getPropertyValues({features: data}, property);
+
+  return (
+    <GenericPlotly dark={dark} height={height} width={width}
+      title={title || (dateColumn + " v " + property)}
+      yaxis={{ showgrid: false }}
+      xaxis={{ showgrid: false }}
+      data={[{
+        // showlegend: false,
+        x, y,
+        mode: 'graph',
+        // marker: { color: TURQUOISE_RANGE[0] }
+      }]}
+      onClickCallback={onClickCallback} />
+  )
+}
+
 export {
   arrayOfYearAndProperty,
   plotByPropertyByDate,
   plotByProperty,
-  popPyramidPlot
+  popPyramidPlot,
+  timePlot
 }
