@@ -345,11 +345,11 @@ export default class Welcome extends React.Component {
     }, layerOptions);
     
     // generate a domain
-    const domain = generateDomain(data, columnNameOrIndex);
-    const getValue = (d) => 
-    // initialazied with 1 so +columnNameOrIndex is safe
-    d.properties[+columnNameOrIndex ?
-      Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]
+    const domain = generateDomain(
+      data, 
+      columnNameOrIndex === 0 ? 
+      // TODO better check than just data[0]
+      Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex);
 
     if (layerStyle === 'heatmap') {
       options.getPosition = d => d.geometry.coordinates
@@ -405,6 +405,18 @@ export default class Welcome extends React.Component {
       }
     }
     let newLegend = this.state.legend;
+    
+    const getValue = (d) => {
+      // columnNameOrIndex must be init with 0
+      // TODO write tests for no props at all
+      if(+columnNameOrIndex || +columnNameOrIndex === 0) {
+        // if not checking against 0 then, we will have 0 passed to properties
+        // which could return undefined like obj = {foo:'bar', baz: 'boo'}; obj[0]
+        return(d.properties[Object.keys(d.properties)[columnNameOrIndex]])
+      } else {
+        return(d.properties[columnNameOrIndex])
+      }
+    }
     const fill =  (d) => colorScale(
       +getValue(d) ? +getValue(d) : getValue(d),
       domain, 180, cn || this.state.colorName
@@ -419,14 +431,16 @@ export default class Welcome extends React.Component {
         getFillColor: data.map((d) => fill(d))
       }
       const isNumeric = +(data[0].properties[
-        +columnNameOrIndex ?
+        +columnNameOrIndex || +columnNameOrIndex === 0?
         Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex
       ])
       if(isNumeric) {
+        const columnName = +columnNameOrIndex || +columnNameOrIndex === 0 ? 
+        Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex
         newLegend = generateLegend(
           {
             domain,
-            title: humanize(column),
+            title: humanize(columnName),
             interpolate: colorRangeNamesToInterpolate(
               cn || this.state.colorName
             )
