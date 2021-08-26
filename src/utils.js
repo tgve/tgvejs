@@ -52,7 +52,7 @@ const getResultsFromGoogleMaps = (string, callback) => {
 };
 
 const fetchData = (url, callback) => {
-  fetch(url) // [0] => "", [1] => roads and [2] => qfactor
+  fetch(url) // 
     .then((response) => response.text())
     .then((response) => {
       // TODO: better check?
