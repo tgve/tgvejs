@@ -10,7 +10,8 @@ import qs from 'qs'; // importing it other ways would cause minification issue.
 
 import mapping from './location-icon-mapping.json';
 import Constants from './Constants';
-import { isString, isNumber, isObject, randomToNumber } from './JSUtils.js';
+import { isString, isNumber, isObject, randomToNumber, isStringNumeric, 
+  isNullUndefinedNaN } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
 import { isArray } from 'underscore';
 import csv2geojson from 'csv2geojson';
@@ -119,13 +120,15 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
   const map = new Map()
   data.forEach(feature => {
     let value = feature.properties[property];
-    if (noNulls && value) { // remove nulls here
-      const isNumValue =     (value) ? +(value) : value
-      if (map.get(isNumValue)) {
-        map.set(isNumValue, map.get(isNumValue) + 1)
-      } else {
-        map.set(isNumValue, 1)
-      }
+    if (noNulls && isNullUndefinedNaN(value)) { // remove nulls here
+      return
+    }
+    // some disagree with even this
+    value = isStringNumeric(value) ? +(value) : value
+    if (map.get(value)) {
+      map.set(value, map.get(value) + 1)
+    } else {
+      map.set(value, 1)
     }
   });
 
