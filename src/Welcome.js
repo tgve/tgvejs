@@ -1,5 +1,5 @@
 /**
- * Main entry to the application.
+ * App Home.
  * 
  * The crucial bits are:
  * 
@@ -19,7 +19,8 @@
  */
 import React from 'react';
 import DeckGL from 'deck.gl';
-import MapGL, { NavigationControl, FlyToInterpolator, ScaleControl } from 'react-map-gl';
+import MapGL, { NavigationControl, FlyToInterpolator, 
+  ScaleControl } from 'react-map-gl';
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
 import _ from 'underscore';
@@ -29,18 +30,22 @@ import {
   getParamsFromSearch, getBbx, isMobile, colorScale, OSMTILES,
   colorRanges, generateDomain, setGeojsonProps,
   convertRange, getMin, getMax, isURL, 
-  generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
+  generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray, theme,
 } from './utils';
-import Constants, { LIGHT_SETTINGS } from './Constants';
+import {
+  LIGHT_SETTINGS, DECKGL_INIT, ICONLIMIT,
+  BLANKSTYLE
+} from './Constants';
 import DeckSidebarContainer from
   './components/decksidebar/DeckSidebarContainer';
 import history from './history';
 
 import './App.css';
 import Tooltip from './components/Tooltip';
-import { sfType } from './geojsonutils';
+import { getPropertyValues, sfType } from './geojsonutils';
 import { throttle } from 'lodash';
 import { isObject } from './JSUtils';
+import { CustomSlider } from './components/showcases/Widgets';
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -56,7 +61,7 @@ const gradient = {
 export default class Welcome extends React.Component {
   constructor(props) {
     super(props)
-    const init = Constants.DECKGL_INIT
+    const init = DECKGL_INIT
     const param = getParamsFromSearch(props.location ? 
       props.location.search : window.location.search);
     if (param) {
@@ -80,7 +85,7 @@ export default class Welcome extends React.Component {
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
       colorName: 'default',
-      iconLimit: Constants.ICONLIMIT,
+      iconLimit: ICONLIMIT,
       legend: false,
       multiVarSelect: {},
       width: window.innerWidth, height: window.innerHeight,
@@ -88,7 +93,8 @@ export default class Welcome extends React.Component {
       geographyURL: props.geographyURL,
       geographyColumn: props.geographyColumn,
       column: props.column,
-      layerStyle: props.layerStyle
+      layerStyle: props.layerStyle,
+      bottomPanel: false,
     }
     
     this._generateLayer = this._generateLayer.bind(this)
@@ -236,7 +242,7 @@ export default class Welcome extends React.Component {
       const newStyle = "mapbox://styles/mapbox/" + filter.selected + "-v9";
       this.setState({
         mapStyle: filter.what === 'mapstyle' ? filter.selected === "No map" ?
-          Constants.BLANKSTYLE : !MAPBOX_ACCESS_TOKEN ? OSMTILES :
+          BLANKSTYLE : !MAPBOX_ACCESS_TOKEN ? OSMTILES :
           newStyle : this.state.mapStyle,
       })
       return;
@@ -345,11 +351,11 @@ export default class Welcome extends React.Component {
     }, layerOptions);
     
     // generate a domain
-    const domain = generateDomain(data, columnNameOrIndex);
-    const getValue = (d) => 
-    // initialazied with 1 so +columnNameOrIndex is safe
-    d.properties[+columnNameOrIndex ?
-      Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex]
+    const domain = generateDomain(
+      data, 
+      columnNameOrIndex === 0 ? 
+      // TODO better check than just data[0]
+      Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex);
 
     if (layerStyle === 'heatmap') {
       options.getPosition = d => d.geometry.coordinates
@@ -405,6 +411,18 @@ export default class Welcome extends React.Component {
       }
     }
     let newLegend = this.state.legend;
+    
+    const getValue = (d) => {
+      // columnNameOrIndex must be init with 0
+      // TODO write tests for no props at all
+      if(+columnNameOrIndex || +columnNameOrIndex === 0) {
+        // if not checking against 0 then, we will have 0 passed to properties
+        // which could return undefined like obj = {foo:'bar', baz: 'boo'}; obj[0]
+        return(d.properties[Object.keys(d.properties)[columnNameOrIndex]])
+      } else {
+        return(d.properties[columnNameOrIndex])
+      }
+    }
     const fill =  (d) => colorScale(
       +getValue(d) ? +getValue(d) : getValue(d),
       domain, 180, cn || this.state.colorName
@@ -417,21 +435,6 @@ export default class Welcome extends React.Component {
 
       options.updateTriggers = {
         getFillColor: data.map((d) => fill(d))
-      }
-      const isNumeric = +(data[0].properties[
-        +columnNameOrIndex ?
-        Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex
-      ])
-      if(isNumeric) {
-        newLegend = generateLegend(
-          {
-            domain,
-            title: humanize(column),
-            interpolate: colorRangeNamesToInterpolate(
-              cn || this.state.colorName
-            )
-          }
-        )
       }
     }
     if (layerStyle === 'barvis') {
@@ -455,16 +458,20 @@ export default class Welcome extends React.Component {
         getColor: data.map((d) => fill(d)),
         getPosition: [data.length]
       }
-      newLegend = generateLegend(
-        {
-          domain,
-          title: humanize(column),
-          interpolate: colorRangeNamesToInterpolate(
-            cn || this.state.colorName
-          )
-        }
-      )
     }
+
+    // attempt legend
+    const columnName = +columnNameOrIndex || +columnNameOrIndex === 0 ?
+      Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex
+    newLegend = generateLegend(
+      {
+        domain,
+        title: humanize(columnName),
+        interpolate: colorRangeNamesToInterpolate(
+          cn || this.state.colorName
+        )
+      }
+    )
 
     const alayer = generateDeckLayer(
       layerStyle, data, this._renderTooltip, options
@@ -488,7 +495,10 @@ export default class Welcome extends React.Component {
       column, // all checked
       coords: filter && filter.what === 'coords' ? filter.selected :
         this.state.coords,
-      legend: newLegend
+      legend: newLegend,
+      bottomPanel: <CustomSlider 
+        data={this.state.data.features} 
+        dates={getPropertyValues(this.state.data, "alt")}/>
     })
   }
 
@@ -575,7 +585,7 @@ export default class Welcome extends React.Component {
 
   render() {
     const { tooltip, viewport, initialViewState,
-      loading, mapStyle, alert, data, filtered,
+      loading, mapStyle, alert, data, filtered, bottomPanel,
       layerStyle, geomType, legend, coords } = this.state;
     const showLegend = legend && (geomType === 'polygon'
       || geomType === 'multipolygon' || layerStyle === "pointcloud")
@@ -687,10 +697,15 @@ export default class Welcome extends React.Component {
             this._fitViewport(undefined, bboxLonLat)
           }}
           datasetName={this.props.defaultURL}
+          bottomPanel={bottomPanel}
         />
         {
           showLegend &&
-          <div className="right-side-panel mapbox-legend">
+          <div 
+            style={{
+              ...theme(this.props.dark)
+            }}
+            className="right-side-panel mapbox-legend">
             {legend}
           </div>
         }
@@ -698,7 +713,10 @@ export default class Welcome extends React.Component {
     );
   }
   _resize() {
-    this.setState({ width: window.innerWidth, height: window.innerHeight });
+    this.setState({ 
+      width: window.innerWidth, 
+      height: window.innerHeight
+    });
   };
 
   _newRange (data, d, columnNameOrIndex, min, max) {

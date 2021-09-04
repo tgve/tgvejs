@@ -15,15 +15,15 @@ const engine = new Styletron();
 
 class App extends Component {
   render() {    
-    const { defaultURL, tooltipColumns, geographyURL, geographyColumn, 
-      column, data, layerName
+    const { defaultURL, tooltipColumns, geographyURL, 
+      geographyColumn, column, data, layerName, dark
     } = this.props;
     return (
       <main>
         <StyletronProvider value={engine}>
           <BaseProvider theme={DarkTheme}>
             <Welcome 
-            dark={true}
+            dark={process.env.REACT_APP_DARK || dark || true}
             // TODO get these from a settings-json file/object
             // as well as envs
             defaultURL={process.env.REACT_APP_DEFAULT_URL || defaultURL}

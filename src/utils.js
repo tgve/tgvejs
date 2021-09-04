@@ -114,12 +114,13 @@ const checkURLReachable = (URL, callback) => {
  */
 const xyObjectByProperty = (data, property, noNulls = true) => {
   if (!data || !property) return;
-  //data = [{...data = 12/12/12}]       
+  //data = [{...data = 12/12/12}]
+  console.log(data);       
   const map = new Map()
   data.forEach(feature => {
     let value = feature.properties[property];
     if (noNulls && value) { // remove nulls here
-      const isNumValue = +(value) ? +(value) : value
+      const isNumValue =     (value) ? +(value) : value
       if (map.get(isNumValue)) {
         map.set(isNumValue, map.get(isNumValue) + 1)
       } else {
@@ -605,8 +606,11 @@ const ATILOGO = (dark = true) => (
 )
 
 /**
+ * Helper function to generate a legend from: `domain`, 
+ * `interpolate` function and a `title`. 
  * 
- * @param {*} options 
+ * @param {Object} options 
+ * @returns {Object} React.Fragment
  */
 const generateLegend = (options) => {
   //quick check 
@@ -620,15 +624,14 @@ const generateLegend = (options) => {
   for (var i = 0; i < legendMax; i += 1) {
     legend.push(
       <>
-        {i === 0 &&
-          <i>{jMin.toFixed(2)
-          }</i>
-        }
+        {i === 0 ?
+          <i>{jMin.toFixed(2)}</i>
+        :
+        i === (legendMax - 1) ?
+        <i>{jMax.toFixed(2)}</i>
+        :
         <span key={i} style={{ background: interpolate(i / legendMax) }}>
         </span>
-        {i === (legendMax - 1) &&
-          <i>{jMax.toFixed(2)
-          }</i>
         }
       </>)
   }
@@ -778,12 +781,36 @@ const getMainMessage = (filtered, unfiltered) => {
     return "Nothing to show"
   }
 }
+
+const theme = (dark) => {
+  return({
+    color: dark ? "white" : "black",
+    background: dark ? "#242730" : "white"
+  })
+}
+
+const isColumnAllNumeric = (data, columnNameOrIndex) => {
+  if(!Array.isArray(data) 
+    && (!isString(columnNameOrIndex) || isNumber(columnNameOrIndex))) return null
+  let isNumeric = true;
+  data.forEach(d => {
+    if(!isNumber(d.properties[
+      +columnNameOrIndex || +columnNameOrIndex === 0 ?
+      Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex
+    ])) {
+      isNumeric = false
+    }
+  })
+  return isNumeric
+}
+
 export {
   colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
   getFirstDateColumnName,
   firstLastNCharacters,
   getParamsFromSearch,
+  isColumnAllNumeric,
   xyObjectByProperty,
   suggestUIforNumber,
   generateDeckLayer,
@@ -813,5 +840,6 @@ export {
   getBbx,
   getMin,
   getMax,
+  theme,
   isURL,
 }

@@ -11,7 +11,7 @@ import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   xyObjectByProperty, percentDiv,
   searchNominatom, firstLastNCharacters,
-  humanize, getMainMessage
+  humanize, getMainMessage, theme
 } from '../../utils';
 import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
@@ -119,8 +119,7 @@ export default class DeckSidebar extends React.Component {
       <>
         <div
           style={{
-            color: dark ? "white" : "black",
-            background: dark ? "#242730" : "white"
+            ...theme(dark)
           }}
           className="side-panel">
           <RBAlert alert={alert} />
