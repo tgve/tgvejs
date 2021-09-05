@@ -314,25 +314,23 @@ export default class Welcome extends React.Component {
     ).toLowerCase();
     // needs to happen as soon as filtering is done
     // assemble geometry from this.state.geometry if so
-    if (geomType === "polygon" || geomType === "multipolygon") {
-      // is there a geometry provided?
-      if (geography) {
-        // is geometry equal to or bigger than data provided?
-        if (data.length > geography.features.length) {
-          // for now just be aware
-          //TODO: alert or just stop it?
-        }
-        data = setGeojsonProps(geography, data, geographyColumn)
-        // critical check
-        if (!data || !data.features) {
-          this.setState({
-            alert: { content: 'Is there a matching geography column?' }
-          })
-          return
-        };
-        // it was data.features when this function started
-        data = data.features || data;
+    // is there a geometry provided?
+    if (geography) {
+      // is geometry equal to or bigger than data provided?
+      if (data.length > geography.features.length) {
+        // for now just be aware
+        //TODO: alert or just stop it?
       }
+      data = setGeojsonProps(geography, data, geographyColumn)
+      // critical check
+      if (!data || !data.features) {
+        this.setState({
+          alert: { content: 'Is there a matching geography column?' }
+        })
+        return
+      };
+      // it was data.features when this function started
+      data = data.features || data;
     }
     let layerStyle = (filter && filter.what ===
       'layerStyle' && filter.selected) || this.state.layerStyle || 

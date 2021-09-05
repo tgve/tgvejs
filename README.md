@@ -1,10 +1,12 @@
-12 March, 2021
+25 August, 2021
 
-# eAtlas · [![Node CI](https://github.com/layik/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/layik/eAtlas/actions?query=workflow%3A%22Node+CI%22)
+# TGVE · [![Node CI](https://github.com/layik/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22)
 
-This is the npm package from eAtlas project.
+This is the npm package output of TGVE (eAtlas) project.
 
-Currently these variables can be passed to the eAtlas app, each can be passed as an environment variable like `REACT_APP_LAYER_NAME` or when using eAtlas as a component `<Eatlas layerName="geojson">`:
+Currently these variables can be passed to the eAtlas app, each can be
+passed as an environment variable like `REACT_APP_LAYER_NAME` or when
+using eAtlas as a component `<Eatlas layerName="geojson">`:
 
   - `data` valid geojson object.
 
@@ -26,7 +28,9 @@ Currently these variables can be passed to the eAtlas app, each can be passed as
     which would need a column, it would be used. Defaults on to the
     second column as often first column is an ID of sort.
 
-  - `layerName` if provided, and if the given name is in the list of DeckGL layers supported by eAtlas, will be passed to generate the layer with the name given.
+  - `layerName` if provided, and if the given name is in the list of
+    DeckGL layers supported by eAtlas, will be passed to generate the
+    layer with the name given.
 
 None of the above is necessary and in the current release “Add data”
 button will allow loading data into eAtlas.
@@ -53,6 +57,8 @@ The package follows `create-react-app` testing kits and uses mainly
 
 ## Change log
 
+  - `1.3.0-beta.2`
+      - Minor fix for initial analysis of data column name.
   - `1.1.0-beta.0`
       - support for separating data from geography.
       - minor improvements elsewhere
