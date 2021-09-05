@@ -20,6 +20,8 @@ import atlas from './img/location-icon-atlas.png';
 import { sfType } from './geojsonutils';
 import { getLayerProps } from './components/settings/settingsUtils';
 
+const { DateTime } = require("luxon");
+
 const getResultsFromGoogleMaps = (string, callback) => {
 
   if (typeof (string) === 'string' && typeof (callback) === 'function') {
@@ -108,6 +110,7 @@ const checkURLReachable = (URL, callback) => {
  * TODO: Double check to see if it is slightly different
  * version of propertyCount
  * 
+ * TODO: move to geojsonutils
  * 
  * @param {Object} data 
  * @param {String} property 
@@ -792,28 +795,25 @@ const theme = (dark) => {
   })
 }
 
-const isColumnAllNumeric = (data, columnNameOrIndex) => {
-  if(!Array.isArray(data) 
-    && (!isString(columnNameOrIndex) || isNumber(columnNameOrIndex))) return null
-  let isNumeric = true;
-  data.forEach(d => {
-    if(!isNumber(d.properties[
-      +columnNameOrIndex || +columnNameOrIndex === 0 ?
-      Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex
-    ])) {
-      isNumeric = false
-    }
-  })
-  return isNumeric
+const isStringDate = (value) => {
+  return DateTime.fromFormat(value + '', 'MMMM dd yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'MMMM d yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'MMM d yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'MMM dd yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'dd/MM/yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'dd-MM-yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'yyyy/mm/dd').isValid ||
+    DateTime.fromFormat(value + '', 'yyyy-mm-dd').isValid ||
+    DateTime.fromISO(value).isValid || // "19-2-1999"
+    DateTime.fromHTTP(value).isValid ||
+    (typeof value === Number && DateTime.fromMillis(value).isValid);
 }
-
 export {
   colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
   getFirstDateColumnName,
   firstLastNCharacters,
   getParamsFromSearch,
-  isColumnAllNumeric,
   xyObjectByProperty,
   suggestUIforNumber,
   generateDeckLayer,
@@ -828,6 +828,7 @@ export {
   getMainMessage,
   getColorArray,
   convertRange,
+  isStringDate,
   getCentroid,
   shortenName,
   colorRanges,

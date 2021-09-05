@@ -23,7 +23,7 @@ export default (props) => {
 
   useEffect(() => {
 
-  }, props.bottomPanel)
+  }, [props.bottomPanel])
   return (
     <>
       <div className="side-panel-container"

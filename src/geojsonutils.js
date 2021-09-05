@@ -1,8 +1,7 @@
 import {
   isNumber, isBoolean, isObject, isString
 } from './JSUtils';
-
-const { DateTime } = require("luxon");
+import { isStringDate } from './utils';
 
 // thanks turfjs
 //http://wiki.geojson.org/GeoJSON_draft_version_6
@@ -225,29 +224,30 @@ const coordsAsXY = (geojson, sizeProperty) => {
   )
 }
 
+const isColumnAllNumeric = (data, columnNameOrIndex) => {
+  if(!Array.isArray(data) 
+    && (!isString(columnNameOrIndex) || isNumber(columnNameOrIndex))) return null
+  let isNumeric = true;
+  data.forEach(d => {
+    if(!isNumber(d.properties[
+      +columnNameOrIndex || +columnNameOrIndex === 0 ?
+      Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex
+    ])) {
+      isNumeric = false
+    }
+  })
+  return isNumeric
+}
+
 export {
   describeFeatureVariables,
   propertyCountByProperty,
+  isColumnAllNumeric,
   getPropertyValues,
   getKeyColumns,
   propertyCount,
-  isStringDate,
   properties,
   coordsAsXY,
   isONSCode,
   sfType
-}
-
-function isStringDate(value) {
-  return DateTime.fromFormat(value + '', 'MMMM dd yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'MMMM d yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'MMM d yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'MMM dd yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'dd/MM/yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'dd-MM-yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'yyyy/mm/dd').isValid ||
-    DateTime.fromFormat(value + '', 'yyyy-mm-dd').isValid ||
-    DateTime.fromISO(value).isValid || // "19-2-1999"
-    DateTime.fromHTTP(value).isValid ||
-    (typeof value === Number && DateTime.fromMillis(value).isValid);
 }

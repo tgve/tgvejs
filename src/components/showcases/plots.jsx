@@ -5,10 +5,11 @@ import {
 } from 'react-vis';
 import { format } from 'd3-format';
 
-import { getPropertyValues, isStringDate, propertyCountByProperty } from '../../geojsonutils';
+import { getPropertyValues, propertyCountByProperty } from '../../geojsonutils';
 import { isArray, isString } from '../../JSUtils';
 import { PLOT_W, TURQUOISE_RANGE } from '../../Constants';
-import { xyObjectByProperty, humanize, getFirstDateColumnName } from '../../utils';
+import { xyObjectByProperty, humanize, getFirstDateColumnName,
+  isStringDate } from '../../utils';
 import { scaleSequential } from 'd3-scale';
 
 import GenericPlotly from './GenericPlotly';
