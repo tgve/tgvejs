@@ -63,3 +63,11 @@ define("ELEVATION", 4)
 define("RADIUS", 100)
 
 define("DATE_REGEX", "date|time|datetime|year")
+
+define("BOTTOM_PANEL_MARGIN_LEFT", 340)
+define("BOTTOM_PANEL_MARGIN_RIGHT", 60)
+// matching mapbox-* classes
+define("BOTTOM_PANEL_MARGIN_BOTTOM", 30)
+define("BOTTOM_PANEL_HEIGHT", 120)
+// to match above
+define("LEGEND_MIN_HEIGHT", 100)

@@ -9,14 +9,14 @@ import './DeckSidebar.css';
 import DataInput from '../DataInput';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
-  xyObjectByProperty, percentDiv,
+  percentDiv,
   searchNominatom, firstLastNCharacters,
-  humanize, getMainMessage
+  humanize, getMainMessage, theme
 } from '../../utils';
 import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
-import { propertyCount } from '../../geojsonutils';
+import { propertyCount, arrayPlotProps } from '../../geojsonutils';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Modal';
 import DataTable from '../Table';
@@ -92,18 +92,14 @@ export default class DeckSidebar extends React.Component {
 
     const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
-    let columnData = notEmpty ?
-      xyObjectByProperty(data, column || barChartVariable) : [];
 
     const columnNames = notEmpty && Object.keys(data[0].properties)
       .filter(p => !isEmptyOrSpaces(p));
 
-    const columnPlot = {
-      data: columnData,
-      opacity: 1,
-      stroke: 'rgb(72, 87, 104)',
-      fill: 'rgb(18, 147, 154)',
-    }
+    const columnPlot = notEmpty ? arrayPlotProps(data,
+      //prop
+      column || barChartVariable
+    ) : [];
 
     const resetState = (urlOrName, button) => {
       this.setState({
@@ -119,8 +115,7 @@ export default class DeckSidebar extends React.Component {
       <>
         <div
           style={{
-            color: dark ? "white" : "black",
-            background: dark ? "#242730" : "white"
+            ...theme(dark)
           }}
           className="side-panel">
           <RBAlert alert={alert} />

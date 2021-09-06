@@ -28,7 +28,7 @@ const Plot = createPlotlyComponent(Plotly);
 export default function(props) {
   const { data, width = 250, height = 200, title = "Plot",
     dark, xaxis = {}, yaxis = {},
-    displayModeBar } = props; // Object.assign errs on undefined
+    displayModeBar, onClickCallback } = props; // Object.assign errs on undefined
   
   const axes = { visible: true, color: dark && '#fff'}
   const sColor = {color: dark && '#fff'};
@@ -45,6 +45,10 @@ export default function(props) {
         yaxis: Object.assign(sColor, yaxis),
         legend: {x: 0.35, y: -0.35, orientation: 'h',
         font: sColor}
+      }}
+      onClick={(e) => {
+        typeof onClickCallback === 'function'
+        && onClickCallback(e.points)
       }}
       config={{displayModeBar: !displayModeBar && false}}
     />

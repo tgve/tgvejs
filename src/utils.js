@@ -10,7 +10,8 @@ import qs from 'qs'; // importing it other ways would cause minification issue.
 
 import mapping from './location-icon-mapping.json';
 import Constants from './Constants';
-import { isString, isNumber, isObject, randomToNumber } from './JSUtils.js';
+import { isString, isNumber, isObject, randomToNumber, isStringNumeric, 
+  isNullUndefinedNaN } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
 import { isArray } from 'underscore';
 import csv2geojson from 'csv2geojson';
@@ -18,6 +19,8 @@ import { ascending } from 'd3-array';
 import atlas from './img/location-icon-atlas.png';
 import { sfType } from './geojsonutils';
 import { getLayerProps } from './components/settings/settingsUtils';
+
+const { DateTime } = require("luxon");
 
 const getResultsFromGoogleMaps = (string, callback) => {
 
@@ -107,6 +110,7 @@ const checkURLReachable = (URL, callback) => {
  * TODO: Double check to see if it is slightly different
  * version of propertyCount
  * 
+ * TODO: move to geojsonutils
  * 
  * @param {Object} data 
  * @param {String} property 
@@ -114,17 +118,20 @@ const checkURLReachable = (URL, callback) => {
  */
 const xyObjectByProperty = (data, property, noNulls = true) => {
   if (!data || !property) return;
-  //data = [{...data = 12/12/12}]       
+  //data = [{...data = 12/12/12}]
+  // console.log(data);       
   const map = new Map()
   data.forEach(feature => {
     let value = feature.properties[property];
-    if (noNulls && value) { // remove nulls here
-      const isNumValue = +(value) ? +(value) : value
-      if (map.get(isNumValue)) {
-        map.set(isNumValue, map.get(isNumValue) + 1)
-      } else {
-        map.set(isNumValue, 1)
-      }
+    if (noNulls && isNullUndefinedNaN(value)) { // remove nulls here
+      return
+    }
+    // some disagree with even this
+    value = isStringNumeric(value) ? +(value) : value
+    if (map.get(value)) {
+      map.set(value, map.get(value) + 1)
+    } else {
+      map.set(value, 1)
     }
   });
 
@@ -605,8 +612,11 @@ const ATILOGO = (dark = true) => (
 )
 
 /**
+ * Helper function to generate a legend from: `domain`, 
+ * `interpolate` function and a `title`. 
  * 
- * @param {*} options 
+ * @param {Object} options 
+ * @returns {Object} React.Fragment
  */
 const generateLegend = (options) => {
   //quick check 
@@ -620,15 +630,14 @@ const generateLegend = (options) => {
   for (var i = 0; i < legendMax; i += 1) {
     legend.push(
       <>
-        {i === 0 &&
-          <i>{jMin.toFixed(2)
-          }</i>
-        }
+        {i === 0 ?
+          <i>{jMin.toFixed(2)}</i>
+        :
+        i === (legendMax - 1) ?
+        <i>{jMax.toFixed(2)}</i>
+        :
         <span key={i} style={{ background: interpolate(i / legendMax) }}>
         </span>
-        {i === (legendMax - 1) &&
-          <i>{jMax.toFixed(2)
-          }</i>
         }
       </>)
   }
@@ -778,12 +787,48 @@ const getMainMessage = (filtered, unfiltered) => {
     return "Nothing to show"
   }
 }
+
+const theme = (dark) => {
+  return({
+    color: dark ? "white" : "black",
+    background: dark ? "#242730" : "white"
+  })
+}
+
+const isStringDate = (value) => {
+  return DateTime.fromFormat(value + '', 'MMMM dd yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'MMMM d yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'MMM d yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'MMM dd yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'dd/MM/yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'dd-MM-yyyy').isValid ||
+    DateTime.fromFormat(value + '', 'yyyy/mm/dd').isValid ||
+    DateTime.fromFormat(value + '', 'yyyy-mm-dd').isValid ||
+    DateTime.fromISO(value).isValid || // "19-2-1999"
+    DateTime.fromHTTP(value).isValid ||
+    (typeof value === Number && DateTime.fromMillis(value).isValid);
+}
+
+const arrayCardinality = (array) => {
+  if(!Array.isArray(array) || !array.length) return null
+  // 
+  return(Array.from(new Set(array)).length)
+}
+
+const uniqueValuePercentage = (array, test = 60) => {
+  // simple logic: over limit is unique
+  const cardinality = arrayCardinality(array)
+  if(!cardinality && cardinality !== 0) return null
+  return cardinality/array.length * 100 > test;
+}
+
 export {
   colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
   getFirstDateColumnName,
   firstLastNCharacters,
   getParamsFromSearch,
+  uniqueValuePercentage,
   xyObjectByProperty,
   suggestUIforNumber,
   generateDeckLayer,
@@ -798,6 +843,7 @@ export {
   getMainMessage,
   getColorArray,
   convertRange,
+  isStringDate,
   getCentroid,
   shortenName,
   colorRanges,
@@ -813,5 +859,6 @@ export {
   getBbx,
   getMin,
   getMax,
+  theme,
   isURL,
 }

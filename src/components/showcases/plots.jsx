@@ -5,10 +5,11 @@ import {
 } from 'react-vis';
 import { format } from 'd3-format';
 
-import { isStringDate, propertyCountByProperty } from '../../geojsonutils';
-import { isArray } from '../../JSUtils';
+import { getPropertyValues, propertyCountByProperty } from '../../geojsonutils';
+import { isArray, isString } from '../../JSUtils';
 import { PLOT_W, TURQUOISE_RANGE } from '../../Constants';
-import { xyObjectByProperty, humanize } from '../../utils';
+import { xyObjectByProperty, humanize, getFirstDateColumnName,
+  isStringDate } from '../../utils';
 import { scaleSequential } from 'd3-scale';
 
 import GenericPlotly from './GenericPlotly';
@@ -53,24 +54,23 @@ const plotByPropertyByDate = (data, property, dark) => {
 const plotByProperty = (data, property, dark, type, noLimit) => {
   if (!data || !isArray(data) || !data.length) return null;
   const limit = 10;
-  const isBarAndOverLimit = (!type || type !== "lines") && 
-  !noLimit && data.length > limit
+  const isOverLimit = !noLimit && data.length > limit
 
   const data_by_prop = data[0].properties.hasOwnProperty(property) &&
-    xyObjectByProperty(isBarAndOverLimit ? data.slice(0, limit) : data, property)
-  
+    xyObjectByProperty(isOverLimit ? data.slice(0, limit) : data, property)
+  // console.log(isOverLimit, data_by_prop);
   if(!data_by_prop) return null;
 
   return (
     <>
-      {isBarAndOverLimit && <h4>Plotting first {limit} values:</h4>}
+      {isOverLimit && <h4>Plotting first {limit} values:</h4>}
       <GenericPlotly dark={dark}
         yaxis={{ showgrid: false }}
         xaxis={{ showgrid: false }}
         data={[{
           // showlegend: false,
-          x: data_by_prop.map(e => +(e.x) ? +(e.x) : e.x),
-          y: data_by_prop.map(e => +(e.y) ? +(e.y) : e.y),
+          x: data_by_prop.map(e => e.x),
+          y: data_by_prop.map(e => e.y),
           marker: { color: TURQUOISE_RANGE[0] },
           type: type || 'lines'
         }]}
@@ -208,9 +208,35 @@ const arrayOfYearAndProperty = (data, column) => {
   return plot_data_multi;
 }
 
+const timePlot = (props = {}) => {
+  const { data, property, dark, title, height, width,
+  onClickCallback  } = props;
+  // feature array
+  if (!isString(property) || !data || !data.length) return null;
+  const dateColumn = getFirstDateColumnName(data[0].properties);
+  if(!dateColumn) return null;
+  const x = getPropertyValues({features: data}, dateColumn).map(e => new Date(e));
+  const y = getPropertyValues({features: data}, property);
+
+  return (
+    <GenericPlotly dark={dark} height={height} width={width}
+      title={title || (dateColumn + " v " + property)}
+      yaxis={{ showgrid: false }}
+      xaxis={{ showgrid: false }}
+      data={[{
+        // showlegend: false,
+        x, y,
+        mode: 'graph',
+        // marker: { color: TURQUOISE_RANGE[0] }
+      }]}
+      onClickCallback={onClickCallback} />
+  )
+}
+
 export {
   arrayOfYearAndProperty,
   plotByPropertyByDate,
   plotByProperty,
-  popPyramidPlot
+  popPyramidPlot,
+  timePlot
 }

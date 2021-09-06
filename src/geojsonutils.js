@@ -1,8 +1,7 @@
 import {
-  isNumber, isBoolean, isObject, isString
+  isNumber, isBoolean, isObject, isString, isStringNumeric
 } from './JSUtils';
-
-const { DateTime } = require("luxon");
+import { isStringDate, uniqueValuePercentage, xyObjectByProperty } from './utils';
 
 // thanks turfjs
 //http://wiki.geojson.org/GeoJSON_draft_version_6
@@ -224,30 +223,89 @@ const coordsAsXY = (geojson, sizeProperty) => {
     })
   )
 }
+/**
+ * This function checks every value in a given column against
+ * `isStringNumeric` function and tries to get a number value
+ * from the column specified. If even one fails, it returns false.
+ * 
+ * @param {*} data 
+ * @param {*} columnNameOrIndex 
+ * @returns 
+ */
+const isColumnAllNumeric = (data, columnNameOrIndex) => {
+  if(!Array.isArray(data) 
+  && (!isString(columnNameOrIndex) || !isNumber(columnNameOrIndex))) return null
+  let isNumeric = true;
+  data.forEach(d => {
+    if(!isStringNumeric(d.properties[
+      +columnNameOrIndex || +columnNameOrIndex === 0 ?
+      Object.keys(d.properties)[columnNameOrIndex] : columnNameOrIndex
+    ])) {
+      isNumeric = false
+    }
+  })
+  return isNumeric
+}
+
+
+/**
+ * Function to get an arrays plotable properties.
+ * This function checks the provided `geojson` properties,
+ * 1. determine if given array is mostly keys
+ * 2. determine if given array is mostly numerical
+ * 3. determine if given arrays is mostly cardinal value
+ * (male, female) or age groups
+ * 
+ * if(1) and not (2) do nothing
+ * if(2) return {x:1, y: v}
+ * if(3) return {x:v, y: n}
+ * 
+ * @param {*} data 
+ * @param {*} property 
+ * @returns {*}
+ */
+ const arrayPlotProps = (data, property) => {
+  const empty = {
+    data: [],
+    type: null
+  }
+  if (!data || !Array.isArray(data) 
+  || !data.length || !property) return empty;
+  const array = data.map(e => e.properties[property])
+  const unique = uniqueValuePercentage(array, 95)
+  
+  const allNumbers = [];
+  data.forEach(f => {
+    const v = f.properties[property];
+    if(isStringNumeric(v)) allNumbers.push(v);
+  })
+  
+  // 95% valid numbers are good for a chart
+  const mostlyNumbs = allNumbers.length/array.length * 100 > 95;
+  // 95% keys and not numbers
+  if(unique && !mostlyNumbs) return empty;
+
+  const props = {
+    data: mostlyNumbs ? 
+     data.map((e, i) => ({x: i, y: e.properties[property]})) 
+     : 
+     xyObjectByProperty(data, property),
+    type: mostlyNumbs ? "continuous" : "cardinal"
+  }
+
+  return(props)
+}
 
 export {
   describeFeatureVariables,
   propertyCountByProperty,
+  isColumnAllNumeric,
   getPropertyValues,
+  arrayPlotProps,
   getKeyColumns,
   propertyCount,
-  isStringDate,
   properties,
   coordsAsXY,
   isONSCode,
   sfType
-}
-
-function isStringDate(value) {
-  return DateTime.fromFormat(value + '', 'MMMM dd yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'MMMM d yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'MMM d yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'MMM dd yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'dd/MM/yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'dd-MM-yyyy').isValid ||
-    DateTime.fromFormat(value + '', 'yyyy/mm/dd').isValid ||
-    DateTime.fromFormat(value + '', 'yyyy-mm-dd').isValid ||
-    DateTime.fromISO(value).isValid || // "19-2-1999"
-    DateTime.fromHTTP(value).isValid ||
-    (typeof value === Number && DateTime.fromMillis(value).isValid);
 }

@@ -121,6 +121,20 @@ function randomToNumber (n = 0) {
   return Math.floor(Math.random() * n)
 }
 
+function isStringNumeric (str) {
+  if(typeof str !== 'string') return false
+  return !isNaN(str) && !isNaN(parseFloat(str))
+}
+
+function isNullUndefinedNaN (str) {
+  return str === null 
+      || str === undefined 
+      //typeof NaN === 'number'
+      || (typeof str === 'number' && isNaN(a))
+}
+
+exports.isNullUndefinedNaN = isNullUndefinedNaN;
+exports.isStringNumeric = isStringNumeric;
 exports.randomToNumber = randomToNumber;
 exports.isBoolean = isBoolean;
 exports.isString = isString;
