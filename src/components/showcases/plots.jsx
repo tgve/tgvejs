@@ -58,7 +58,7 @@ const plotByProperty = (data, property, dark, type, noLimit) => {
 
   const data_by_prop = data[0].properties.hasOwnProperty(property) &&
     xyObjectByProperty(isOverLimit ? data.slice(0, limit) : data, property)
-  console.log(isOverLimit, data_by_prop);
+  // console.log(isOverLimit, data_by_prop);
   if(!data_by_prop) return null;
 
   return (

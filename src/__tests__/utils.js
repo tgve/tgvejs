@@ -1,7 +1,7 @@
-import { sample } from 'underscore';
 import {firstLastNCharacters, humanize,
   colorScale, generateDomain, xyObjectByProperty,
-  suggestDeckLayer
+  suggestDeckLayer,
+  uniqueValuePercentage
 } from '../utils';
 import { LAYERSTYLES } from '../Constants';
 
@@ -78,4 +78,16 @@ test("xyObjectByProperty", () => {
 test("suggestDeckLayer", () => {
   const s = suggestDeckLayer(sampleGeojson.features)
   expect(LAYERSTYLES).toContain(s)
+})
+
+const array = Array.from({length: 10}, (v, i) => i)
+
+test("uniqueValuePercentage", () => {
+  expect(uniqueValuePercentage(array)).toBe.true
+  expect(uniqueValuePercentage(
+    array.concat(array)
+  )).toBe(false)
+  expect(uniqueValuePercentage(
+    array.concat(array), 49 // it is 50 so true
+  )).toBe(true)
 })

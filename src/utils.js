@@ -119,7 +119,7 @@ const checkURLReachable = (URL, callback) => {
 const xyObjectByProperty = (data, property, noNulls = true) => {
   if (!data || !property) return;
   //data = [{...data = 12/12/12}]
-  console.log(data);       
+  // console.log(data);       
   const map = new Map()
   data.forEach(feature => {
     let value = feature.properties[property];
@@ -808,12 +808,27 @@ const isStringDate = (value) => {
     DateTime.fromHTTP(value).isValid ||
     (typeof value === Number && DateTime.fromMillis(value).isValid);
 }
+
+const arrayCardinality = (array) => {
+  if(!Array.isArray(array) || !array.length) return null
+  // 
+  return(Array.from(new Set(array)).length)
+}
+
+const uniqueValuePercentage = (array, test = 60) => {
+  // simple logic: over limit is unique
+  const cardinality = arrayCardinality(array)
+  if(!cardinality && cardinality !== 0) return null
+  return cardinality/array.length * 100 > test;
+}
+
 export {
   colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
   getFirstDateColumnName,
   firstLastNCharacters,
   getParamsFromSearch,
+  uniqueValuePercentage,
   xyObjectByProperty,
   suggestUIforNumber,
   generateDeckLayer,
