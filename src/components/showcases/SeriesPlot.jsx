@@ -14,7 +14,7 @@ const FlexibleXYPlot = makeWidthFlexible(XYPlot);
 
 export default function SeriesPlot(options) {
   const [hint, setHint] = useState();
-  const [selected, setSelected] = useState([]);
+  // const [selected, setSelected] = useState([]);
 
   const ReactSeries = options.type;
   if (!ReactSeries) return null;

@@ -624,6 +624,8 @@ const generateLegend = (options) => {
   const r = randomToNumber(domain && domain.length)
   if (!domain || !Array.isArray(domain) || !isNumber(domain[r])) return null
   const jMax = domain[domain.length - 1], jMin = domain[0];
+  if(!isNumber(jMax) || !isNumber(jMin)) return null
+  
   const legend = [<p key='title'>{title}</p>]
 
   const legendMax = domain.length < 10 ? domain.length : 10
