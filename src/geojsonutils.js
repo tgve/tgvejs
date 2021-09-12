@@ -284,9 +284,6 @@ const isColumnAllNumeric = (data, columnNameOrIndex) => {
   // for anything above 10 (magic number?)
   // anything below that (50%)
   const percentage = allNumbers.length/array.length * 100;
-  console.log("percentage: ", percentage)
-  console.log("allNumbers: ", allNumbers)
-  console.log("array: ", array);
   const mostlyNumbs = allNumbers.length > 10 ? 
   percentage > 95 : percentage > 50;
   // 95% keys and not numbers

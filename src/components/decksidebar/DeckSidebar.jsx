@@ -49,8 +49,7 @@ export default class DeckSidebar extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const { data, alert, loading, layerStyle, column } = this.props;
-    const { radius, reset, year,
-      barChartVariable } = this.state;
+    const { reset, year, barChartVariable } = this.state;
     // avoid rerender as directly operating on document.get* 
     // does not look neat. Keeping it React way.
     if (reset !== nextState.reset ||
@@ -63,8 +62,8 @@ export default class DeckSidebar extends React.Component {
     //TODO:  a more functional way is needed
     // e.g JSON.stringify like in Welcome.js etc
     // consider change in unfilteredData too
-    if (data && nextProps && nextProps.data &&
-      data.length === nextProps.data.length) {
+    if (!data || (data && nextProps && nextProps.data &&
+      data.length === nextProps.data.length)) {
       return false
     }
     return true;

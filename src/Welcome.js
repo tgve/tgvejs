@@ -275,6 +275,21 @@ export default class Welcome extends React.Component {
     const selected = (filter && filter.what === 'multi' && filter.selected)
       || multiVarSelect;
     if (filterValues || filterCoords) {
+      /**
+       * The algorithm is as follows
+       * 
+       * 1. Loop through the geojson featuers only once
+       * 2. Loop through the selected column values only once
+       * 3. Does the set in (2) include property valu from (1)
+       * 
+       * e.g:
+       * 1. {features:[{properties:{a:1, b:2}}]}
+       * 2. selected: {a: Set([1])}
+       * 3. selected.a.includes(features[0].properties.a)?
+       * 
+       * That means the maximum number of loops will be
+       * n columns 
+       */
       data = data.filter(
         d => {
           if (filterValues) {
