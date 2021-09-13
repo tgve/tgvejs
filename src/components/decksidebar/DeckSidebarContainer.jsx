@@ -2,12 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import DeckSidebar from "./DeckSidebar";
 import HexPlot from './HexPlot';
-import {
-  BOTTOM_PANEL_MARGIN_LEFT, BOTTOM_PANEL_MARGIN_RIGHT,
-  BOTTOM_PANEL_MARGIN_BOTTOM
-} from '../../Constants';
 
-import { theme, isMobile } from '../../utils';
 /**
  * The idea of this component is to avoid 
  * rerender in the main component, everytime
@@ -53,8 +48,6 @@ export default (props) => {
           </div>
         </div>
       </div>
-      {/* {console.log(!isMobile() && props.bottomPanel)} */}
-
     </>
   );
 }

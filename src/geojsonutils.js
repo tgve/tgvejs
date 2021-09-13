@@ -281,7 +281,11 @@ const isColumnAllNumeric = (data, columnNameOrIndex) => {
   })
   
   // 95% valid numbers are good for a chart
-  const mostlyNumbs = allNumbers.length/array.length * 100 > 95;
+  // for anything above 10 (magic number?)
+  // anything below that (50%)
+  const percentage = allNumbers.length/array.length * 100;
+  const mostlyNumbs = allNumbers.length > 10 ? 
+  percentage > 95 : percentage > 50;
   // 95% keys and not numbers
   if(unique && !mostlyNumbs) return empty;
 

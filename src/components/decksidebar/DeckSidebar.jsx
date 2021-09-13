@@ -49,8 +49,7 @@ export default class DeckSidebar extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const { data, alert, loading, layerStyle, column } = this.props;
-    const { radius, reset, year,
-      barChartVariable } = this.state;
+    const { reset, year, barChartVariable } = this.state;
     // avoid rerender as directly operating on document.get* 
     // does not look neat. Keeping it React way.
     if (reset !== nextState.reset ||
@@ -63,8 +62,8 @@ export default class DeckSidebar extends React.Component {
     //TODO:  a more functional way is needed
     // e.g JSON.stringify like in Welcome.js etc
     // consider change in unfilteredData too
-    if (data && nextProps && nextProps.data &&
-      data.length === nextProps.data.length) {
+    if (!data || (data && nextProps && nextProps.data &&
+      data.length === nextProps.data.length)) {
       return false
     }
     return true;
@@ -75,7 +74,7 @@ export default class DeckSidebar extends React.Component {
    * Partly because we like to load from a URL.
    */
   render() {
-    const { year, subsetBoundsChange, multiVarSelect, 
+    const { year, subsetBoundsChange, multiVarSelect,
       barChartVariable, datasetName } = this.state;
     const { onLayerOptionsCallback,
       onSelectCallback, data, colourCallback, unfilteredData,
@@ -194,7 +193,9 @@ export default class DeckSidebar extends React.Component {
                     <AddVIS data={data} dark={dark} plotStyle={{ width: 270, margin: 10 }} />
                   )}
                   {/* distribution example */}
-                  {plotByProperty(data, "age_of_casualty", dark)}
+                  {notEmpty && plotByProperty(
+                    data.filter(d => Boolean(d.properties["age_of_casualty"])), 
+                    "age_of_casualty", dark, undefined, true)}
                   {plotByPropertyByDate(data, "sex_of_casualty", dark)}
                   {notEmpty && columnNames.length > 0 &&
                     layerStyle !== "grid" &&
@@ -325,33 +326,33 @@ export default class DeckSidebar extends React.Component {
                     >Subset by map boundary</Checkbox>
                   }
                 </Tab>
-                <Tab eventKey="3" title={
-                  <i style={{ fontSize: '2rem' }}
-                    className="fa fa-filter" >{
-                      multiVarSelect && Object.keys(multiVarSelect).length ?
-                        Object.keys(multiVarSelect).length : ""
-                    }</i>
-                }>
-                  {
-                    unfilteredData && unfilteredData.length > 0 &&
-                    this._headerComponent(dark, <Variables
-                      dark={dark}
-                      multiVarSelect={multiVarSelect}
-                      onSelectCallback={(mvs) => {
-                        typeof (onSelectCallback) === 'function' &&
-                          onSelectCallback(
-                            Object.keys(mvs).length === 0 ?
-                              { what: '' } : { what: 'multi', selected: mvs })
-                        this.setState({ multiVarSelect: mvs })
-                      }}
-                      unfilteredData={unfilteredData} />
-                    )
-                  }
-                </Tab>
+                {unfilteredData && unfilteredData.length > 0 &&
+                  <Tab eventKey="3" title={
+                    <i style={{ fontSize: '2rem' }}
+                      className="fa fa-filter" >{
+                        multiVarSelect && Object.keys(multiVarSelect).length ?
+                          Object.keys(multiVarSelect).length : ""
+                      }</i>
+                  }>
+                    {
+                      this._headerComponent(dark, <Variables
+                        dark={dark}
+                        multiVarSelect={multiVarSelect}
+                        onSelectCallback={(mvs) => {
+                          typeof (onSelectCallback) === 'function' &&
+                            onSelectCallback(
+                              Object.keys(mvs).length === 0 ?
+                                { what: '' } : { what: 'multi', selected: mvs })
+                          this.setState({ multiVarSelect: mvs })
+                        }}
+                        unfilteredData={unfilteredData} />
+                      )
+                    }
+                  </Tab>}
               </Tabs>
             </div>
             <div className="space"></div>
-            {this._headerComponent(dark, "Vis: " + (layerStyle || "None"))}
+            {notEmpty && this._headerComponent(dark, "Vis: " + (layerStyle || "None"))}
             <form className="search-form" onSubmit={(e) => {
               e.preventDefault();
               searchNominatom(this.state.search, (json) => {
