@@ -142,6 +142,11 @@ export default class DeckSidebar extends React.Component {
                 component={<DataTable data={data} />} />}
             {
               this.state.reset &&
+              // can check alert content to see if
+              // recent DataInput just failed
+              // TODO: further genrealise this in
+              // constants or from parent
+              (!alert || !alert.content.includes("Could not reach:")) &&
               <Button
                 kind={KIND.secondary} size={SIZE.compact}
                 onClick={() => {
