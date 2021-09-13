@@ -130,7 +130,7 @@ function isNullUndefinedNaN (str) {
   return str === null 
       || str === undefined 
       //typeof NaN === 'number'
-      || (typeof str === 'number' && isNaN(a))
+      || (typeof str === 'number' && isNaN(str))
 }
 
 exports.isNullUndefinedNaN = isNullUndefinedNaN;

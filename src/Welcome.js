@@ -102,6 +102,8 @@ export default class Welcome extends React.Component {
     this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
     this._fitViewport = this._fitViewport.bind(this);
     this._initWithGeojson = this._initWithGeojson.bind(this);
+    this._initDataState = this._initDataState.bind(this);
+    this._updateStateAndLayers = this._updateStateAndLayers.bind(this);
     this._resize = this._resize.bind(this);
     this._updateURL = this._updateURL.bind(this);
     // TODO: can let user change the 300
@@ -128,8 +130,13 @@ export default class Welcome extends React.Component {
   }
 
   componentDidMount() {
-    const {data, defaultURL} = this.props;
-    if(isObject(data) && data.features && data.features.length) {
+    this._initDataState();
+    window.addEventListener('resize', this._resize)
+  }
+  
+  _initDataState() {
+    const { data, defaultURL } = this.props;
+    if (isObject(data) && data.features && data.features.length) {
       // load the data given
       this.setState({
         loading: false,
@@ -138,18 +145,17 @@ export default class Welcome extends React.Component {
         this._fitViewport();
         this._generateLayer();
       });
-      
+
     } else {
-      if (defaultURL)  {
+      if (defaultURL) {
         this._fetchAndUpdateState(defaultURL);
       } else {
         // this._generateLayer();
-        this.setState({loading: false}) 
+        this.setState({ loading: false });
       }
     }
-    window.addEventListener('resize', this._resize)
   }
-  
+
   componentWillUnmount() {
     window.removeEventListener('resize', this._resize);  
   }
@@ -173,27 +179,50 @@ export default class Welcome extends React.Component {
       if(isURL(geographyURL)) {
         // it will always show geojson empty as column is not set
         fetchData(geographyURL, (geojson, geoErr) => {
-          if(!geoErr) {
-            this.setState({
-              loading: false,
-              geography: geojson,
-              data: data,
-              alert: customError || null
-            }, () => {
-              this._fitViewport(geojson);
-              this._generateLayer();
-            });
-          } else {
-            this.setState({
-              loading: false,
-              alert: { content: 'Could not reach: ' + geographyURL }
-            });
-          }
+          this._updateStateAndLayers(geoErr, geojson, data, customError, geographyURL);
         })
       } else {
         this._initWithGeojson(error, data, customError, aURL);
       }
     })
+  }
+
+  /**
+   * Purely functional reason for refactoring this.
+   * The function is used:
+   * 1. when state is first loaded and we have a
+   * geographyURL
+   * 2. when state is set having received geojson
+   * data from url_returned from <InputData /> 
+   * component. In the case of latter slightly
+   * abnormal way of using it but keeps flow
+   * consistent.
+   * 
+   * @param {*} geoErr error from having tried a 
+   * geographyURL
+   * @param {*} geojson returned from geographyURL attempt
+   * @param {*} data data with or without geography (1) and (2)
+   * @param {*} customError 
+   * @param {*} geographyURL 
+   */
+  _updateStateAndLayers(geoErr, 
+    geojson, data, customError, geographyURL) {
+    if (!geoErr) {
+      this.setState({
+        loading: false,
+        geography: geojson,
+        data: data,
+        alert: customError || null
+      }, () => {
+        this._fitViewport(geojson);
+        this._generateLayer();
+      });
+    } else {
+      this.setState({
+        loading: false,
+        alert: { content: 'Could not reach: ' + geographyURL }
+      });
+    }
   }
 
   /**
@@ -670,17 +699,35 @@ export default class Welcome extends React.Component {
           }
           urlCallback={(url_returned, geojson_returned) => {
             this.setState({
-              // TODO: full sync in future
+              /**
+               * This set state can take care of all 
+               * but one of the options forward:
+               * 1. if a geojson has been returned, then
+               * update state fully and let 
+               * `this._fitViewport(geojson_returned)` &&
+               * `this._generateLayer` take care of it.
+               * 
+               * 2. if a URL has been returned, 
+               * 
+               * 3. if we are resetting, that means start from
+               * fresh: this._initDataState
+               * 
+               * 4. if (1) is the case but geojson
+               * is invalid or corrupt, then do not
+               * update data state and fail on the try
+               */
               geography: null,
               column: null,
               tooltip: "",
-              road_type: "",
               loading: true,
-              coords: null
+              coords: null,
             })
             if (geojson_returned) {
               // confirm valid geojson
               try {
+                // do not move this setState up
+                // as data returned could be
+                // corrupt 
                 this.setState({
                   data: geojson_returned
                 })
@@ -688,10 +735,29 @@ export default class Welcome extends React.Component {
                 this._generateLayer()
               } catch (error) {
                 // load up default
-                this._fetchAndUpdateState(undefined, { content: error.message });
+                this._fetchAndUpdateState(undefined, 
+                  { content: error.message });
               }
             } else {
-              this._fetchAndUpdateState(url_returned);
+              if(isURL(url_returned)) {
+                fetchData(url_returned, (data, error) => {
+                  if(!error) {
+                    this._updateStateAndLayers(
+                      // geoErr, geojson, data, customError, geographyURL
+                      false, null, data
+                    )
+                  } else {
+                    this.setState({
+                      loading: false,
+                      alert: { content: 'Could not reach: ' + url_returned }
+                    });
+                  }
+                })
+              } else {
+                // empty, so might be resetting
+                // current geography and defaulturl
+                this._initDataState()
+              }
             }
           }}
           column={this.state.column}
@@ -709,6 +775,7 @@ export default class Welcome extends React.Component {
           onlocationChange={(bboxLonLat) => {
             this._fitViewport(undefined, bboxLonLat)
           }}
+          // TODO: generalise datasetName
           datasetName={this.props.defaultURL}
           bottomPanel={bottomPanel}
         />
