@@ -163,32 +163,6 @@ exports[`App - should create snapshot 1`] = `
                       />
                     </a>
                   </li>
-                  <li
-                    className=""
-                    role="presentation"
-                  >
-                    <a
-                      aria-controls="main-tabs-pane-3"
-                      aria-selected={false}
-                      href="#"
-                      id="main-tabs-tab-3"
-                      onClick={[Function]}
-                      onKeyDown={[Function]}
-                      role="tab"
-                      tabIndex={-1}
-                    >
-                      <i
-                        className="fa fa-filter"
-                        style={
-                          Object {
-                            "fontSize": "2rem",
-                          }
-                        }
-                      >
-                        
-                      </i>
-                    </a>
-                  </li>
                 </ul>
                 <div
                   className="tab-content"
@@ -305,30 +279,12 @@ exports[`App - should create snapshot 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div
-                    aria-hidden={true}
-                    aria-labelledby="main-tabs-tab-3"
-                    className="fade tab-pane"
-                    id="main-tabs-pane-3"
-                    role="tabpanel"
-                  />
                 </div>
               </div>
             </div>
             <div
               className="space"
             />
-            <div
-              className="side-pane-header"
-              style={
-                Object {
-                  "background": "#29323C",
-                  "marginTop": 2,
-                }
-              }
-            >
-              Vis: None
-            </div>
             <form
               className="search-form"
               onSubmit={[Function]}
