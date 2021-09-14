@@ -112,19 +112,14 @@ export default class Welcome extends React.Component {
 
   componentDidUpdate(nextProps) {
     // props change
-    const { data, defaultURL, geographyURL, geographyColumn } = nextProps;
-    // TODO: heavy handed
+    const { data, defaultURL, geographyURL, 
+      geographyColumn } = nextProps;
     if(JSON.stringify(data) !== JSON.stringify(this.props.data) ||
       defaultURL !== this.props.defaultURL ||
       geographyURL !== this.props.geographyURL ||
       geographyColumn !== geographyColumn ) {
-      if(nextProps.hasOwnProperty("data")) {
-        this.setState({
-          data: nextProps.data
-        }, () => this._generateLayer())
-      } else {
-        this._generateLayer()
-      }
+      this._initDataState()
+      return true
     }
     //TODO: return false?
   }
@@ -687,6 +682,7 @@ export default class Welcome extends React.Component {
           </DeckGL>
         </MapGL>
         <DeckSidebarContainer
+          leftSidebarContent={this.props.leftSidebarContent}
           dark={this.props.dark}
           layerStyle={layerStyle}
           isMobile={isMobile()}
