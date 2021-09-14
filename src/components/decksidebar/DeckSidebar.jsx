@@ -63,7 +63,7 @@ export default class DeckSidebar extends React.Component {
     // e.g JSON.stringify like in Welcome.js etc
     // consider change in unfilteredData too
     if (!data || (data && nextProps && nextProps.data &&
-      data.length === nextProps.data.length)) {
+      JSON.stringify(data) === JSON.stringify(nextProps.data))) {
       return false
     }
     return true;
@@ -356,6 +356,9 @@ export default class DeckSidebar extends React.Component {
                   </Tab>}
               </Tabs>
             </div>
+            {/* TODO: find the right place for this */}
+            {this.props.leftSidebarContent}
+            {/* TODO: find the right place for above */}
             <div className="space"></div>
             {notEmpty && this._headerComponent(dark, "Vis: " + (layerStyle || "None"))}
             <form className="search-form" onSubmit={(e) => {
