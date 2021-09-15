@@ -28,13 +28,12 @@ import {
   fetchData, generateDeckLayer, suggestDeckLayer,
   getParamsFromSearch, getBbx, isMobile, colorScale, OSMTILES,
   colorRanges, generateDomain, setGeojsonProps,
-  convertRange, getMin, getMax, isURL, getFirstDateColumnName,
-  generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
+  convertRange, getMin, getMax, isURL, getFirstDateColumnName, 
+  generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray, updateHistory,
 } from './utils';
 import Constants, { LIGHT_SETTINGS } from './Constants';
 import DeckSidebarContainer from
   './components/decksidebar/DeckSidebarContainer';
-import history from './history';
 
 import './App.css';
 import Tooltip from './components/Tooltip';
@@ -489,20 +488,12 @@ export default class Welcome extends React.Component {
   }
 
   _updateURL(viewport) {
-    const { latitude, longitude, zoom, bearing, pitch, altitude } = viewport;
     const { subsetBoundsChange, lastViewPortChange } = this.state;
 
     //if we do history.replace/push 100 times in less than 30 secs 
     // browser will crash
     if (new Date() - lastViewPortChange > 1000) {
-      history.push(
-        `/?lat=${latitude.toFixed(3)}` +
-        `&lng=${longitude.toFixed(3)}` +
-        `&zoom=${zoom.toFixed(2)}` +
-        `&bea=${bearing}` +
-        `&pit=${pitch}` +
-        `&alt=${altitude}`
-      )
+      updateHistory(viewport)
       this.setState({ lastViewPortChange: new Date() })
     }
     const bounds = this.map && this.map.getBounds()
