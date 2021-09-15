@@ -27,13 +27,14 @@ class App extends Component {
             dark={process.env.REACT_APP_DARK || dark || true}
             // TODO get these from a settings-json file/object
             // as well as envs
-            defaultURL={process.env.REACT_APP_DEFAULT_URL || defaultURL}
-            tooltipColumns= {process.env.REACT_APP_TOOLTIP_COLUMNS || 
-              tooltipColumns || {column1: "accident_severity" , column2: "date"}}
-            geographyURL={ process.env.REACT_APP_GEOGRAPHY_URL || geographyURL}
-            geographyColumn={ process.env.REACT_APP_GEOGRAPHY_COLUMN_NAME || geographyColumn}
-            column= {process.env.REACT_APP_COLUMN_NAME || column}
-            layerStyle={ process.env.REACT_APP_LAYER_NAME || layerName}
+            defaultURL={ defaultURL || process.env.REACT_APP_DEFAULT_URL }
+            tooltipColumns= { 
+              tooltipColumns || process.env.REACT_APP_TOOLTIP_COLUMNS
+              || {column1: "accident_severity" , column2: "date"}}
+            geographyURL={ geographyURL || process.env.REACT_APP_GEOGRAPHY_URL}
+            geographyColumn={ geographyColumn|| process.env.REACT_APP_GEOGRAPHY_COLUMN_NAME}
+            column= { column || process.env.REACT_APP_COLUMN_NAME}
+            layerStyle={ layerName|| process.env.REACT_APP_LAYER_NAME}
             // doubt they can be injected from envs
             data={data}
             leftSidebarContent={leftSidebarContent}/>

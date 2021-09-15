@@ -45,6 +45,8 @@ const scatterObj = {
 layers['scatterplot'] = addOptionsToObject(options, scatterObj)
 const geojsonObject = {
   class: { value: GeoJsonLayer, type: 'class' },
+  pickable: { type: 'boolean', value: true },
+  extruded: { type: 'boolean', value: false }, 
   stroked: { type: 'boolean', value: false },
   filled: { type: 'boolean', value: true },
   lineWidthScale: makeObject('number', 20, 100, 20, 5),
@@ -57,7 +59,7 @@ const geojsonObject = {
   // getElevation: f => Math.sqrt(f.properties.valuePerSqm) * 10,
   // getFillColor: f => COLOR_RANGE(f.properties.growth),
 }
-layers['geojson'] = addOptionsToObject(options, geojsonObject)
+layers['geojson'] = geojsonObject;
 const iconObject = {
   class: { value: IconClusterLayer, type: 'class' },
   // iconAtlas: atlas,
