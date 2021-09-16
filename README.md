@@ -75,9 +75,10 @@ The package follows `create-react-app` testing kits and uses mainly
 
 ## Change log
 
--   `1.3.2-beta.0`
+-   `1.3.3-beta.0`
     -   More APIs as TGVE is in showcase driven development.
     -   Added `viewport` API JSON variable.
+-   `1.3.2-beta.0`
     -   Better history management and respects host paths.
 -   `1.3.1-beta.0`
     -   Preparing to remove the `beta` tag.
