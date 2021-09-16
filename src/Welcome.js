@@ -61,7 +61,7 @@ const gradient = {
 export default class Welcome extends React.Component {
   constructor(props) {
     super(props)
-    const init = Object.keys(props.viewport) ?
+    const init = props.viewport && Object.keys(props.viewport) ?
       Object.assign(DECKGL_INIT, props.viewport) : DECKGL_INIT;
     const param = getParamsFromSearch(props.location ? 
       props.location.search : window.location.search);
