@@ -61,7 +61,8 @@ const gradient = {
 export default class Welcome extends React.Component {
   constructor(props) {
     super(props)
-    const init = DECKGL_INIT
+    const init = Object.keys(props.viewport) ?
+      Object.assign(DECKGL_INIT, props.viewport) : DECKGL_INIT;
     const param = getParamsFromSearch(props.location ? 
       props.location.search : window.location.search);
     if (param) {
@@ -129,6 +130,13 @@ export default class Welcome extends React.Component {
     window.addEventListener('resize', this._resize)
   }
   
+  /**
+   * This sequence of checking source of data is 
+   * repeated three times:
+   * 1. when the application first loads,
+   * 2. when the source of data changes
+   * 3. when the application is reset; that is back to (1)
+   */
   _initDataState() {
     const { data, defaultURL } = this.props;
     if (isObject(data) && data.features && data.features.length) {
