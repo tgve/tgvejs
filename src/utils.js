@@ -21,6 +21,7 @@ import { sfType } from './geojsonutils';
 import { getLayerProps } from './components/settings/settingsUtils';
 import history from './history';
 import { StyledLink } from "baseui/link";
+import html2canvas from 'html2canvas';
 
 const { DateTime } = require("luxon");
 
@@ -881,7 +882,15 @@ const downloadButton = (data, name) => {
   </StyledLink>)
 }
 
-const screenshot = (map, deck) => {
+/**
+ * Basic version of saving a screenshot of TGVE.
+ * 
+ * @param {*} map mapbox instance fully loaded
+ * @param {*} deck deckgl current instance
+ * @param {*} includeBody include TGVE sidebar/legend etc, default `true`
+ * @returns 
+ */
+const screenshot = (map, deck, includeBody = true) => {
   const fileName = "tgve-screenshot.png";
   // console.log(map, deck);
   console.log("ping");
@@ -902,9 +911,19 @@ const screenshot = (map, deck) => {
   context.drawImage(mapboxCanvas, 0, 0);
   context.globalAlpha = 1.0;
   context.drawImage(deckglCanvas, 0, 0);
+  if(!includeBody) { 
+    saveCanvas(canvas, fileName)
+  } else {
+    html2canvas(document.body).then((htmlCanvas) => {
+      context.drawImage(htmlCanvas, 0, 0)
+      saveCanvas(canvas, fileName);
+    });
+  }
+  // window.location.href = image; // it will save locally  
+}
 
+const saveCanvas = (canvas, fileName) => {
   const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-  // window.location.href = image; // it will save locally
   var link = document.createElement('a');
   link.download = fileName;
   link.href = image;
