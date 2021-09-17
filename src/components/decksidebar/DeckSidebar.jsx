@@ -11,7 +11,7 @@ import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   percentDiv,
   searchNominatom, firstLastNCharacters,
-  humanize, getMainMessage, theme, downloadButton
+  humanize, getMainMessage, theme, downloadButton, iWithFaName
 } from '../../utils';
 import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
@@ -159,6 +159,11 @@ export default class DeckSidebar extends React.Component {
                 }}>Reset</Button>
             }
             {notEmpty && downloadButton(data)}
+            {iWithFaName("fa fa-save", () => {
+              const {screenshot} = this.props;
+              typeof screenshot === 'function'
+              && screenshot()
+            })}
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">

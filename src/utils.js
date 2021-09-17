@@ -880,6 +880,46 @@ const downloadButton = (data, name) => {
       className={"fa fa-download"}></i>}
   </StyledLink>)
 }
+
+const screenshot = (map, deck) => {
+  const fileName = "tgve-screenshot.png";
+  // console.log(map, deck);
+  console.log("ping");
+  if (!map || !deck) {
+    return;
+  }
+  const mapboxCanvas = map.getCanvas();
+  deck.redraw(true);
+  const deckglCanvas = deck.canvas;
+  // console.log(mapboxCanvas, deckglCanvas)
+  const canvas = document.createElement("canvas");
+  canvas.width = mapboxCanvas.width;
+  canvas.height = mapboxCanvas.height;
+
+  const context = canvas.getContext("2d");
+
+  context.globalAlpha = 1.0;
+  context.drawImage(mapboxCanvas, 0, 0);
+  context.globalAlpha = 1.0;
+  context.drawImage(deckglCanvas, 0, 0);
+
+  const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+  // window.location.href = image; // it will save locally
+  var link = document.createElement('a');
+  link.download = fileName;
+  link.href = image;
+  link.click();
+}
+
+const iWithFaName = (faName, onClick) => <i
+  style={{
+    margin: 5,
+    cursor: 'pointer',
+    fontSize: '1.5em'
+  }}
+  onClick={onClick}
+className={faName || "fa fa-info"}></i>
+
 export {
   colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
@@ -908,6 +948,8 @@ export {
   shortenName,
   colorRanges,
   COLOR_RANGE,
+  iWithFaName,
+  screenshot,
   percentDiv,
   iconJSType,
   colorScale,
