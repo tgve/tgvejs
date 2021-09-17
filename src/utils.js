@@ -20,6 +20,7 @@ import atlas from './img/location-icon-atlas.png';
 import { sfType } from './geojsonutils';
 import { getLayerProps } from './components/settings/settingsUtils';
 import history from './history';
+import { StyledLink } from "baseui/link";
 
 const { DateTime } = require("luxon");
 
@@ -851,6 +852,34 @@ const updateHistory = (viewport) => {
     history.push(entry) : history.replace(entry);
 }
 
+/**
+ * Generates a `data:text/json` URI and assigned
+ * to a `href` attribute of the dom therefore
+ * opened by browsers as a file.
+ * 
+ * @param {*} data feature array to be assembled as GeoJSON
+ * @param {*} name optional filename 
+ * @returns 
+ */
+const downloadButton = (data, name) => {
+  return (<StyledLink
+    download={name || "tgve-data.geojson"}
+    href={
+      "data:text/json;charset=utf-8," +
+      encodeURIComponent(JSON.stringify({
+        type: 'FeatureCollection',
+        features: data
+      }))
+    }>
+    {<i
+      style={{
+        margin: 5,
+        cursor: 'pointer',
+        fontSize: '1.5em'
+      }}
+      className={"fa fa-download"}></i>}
+  </StyledLink>)
+}
 export {
   colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
@@ -867,6 +896,7 @@ export {
   setGeojsonProps,
   colorRangeNames,
   searchNominatom,
+  downloadButton,
   generateLegend,
   generateDomain,
   getMainMessage,

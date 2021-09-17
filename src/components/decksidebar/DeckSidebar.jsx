@@ -11,7 +11,7 @@ import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   percentDiv,
   searchNominatom, firstLastNCharacters,
-  humanize, getMainMessage, theme
+  humanize, getMainMessage, theme, downloadButton
 } from '../../utils';
 import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
@@ -157,6 +157,7 @@ export default class DeckSidebar extends React.Component {
                     this.props.showLegend(false);
                 }}>Reset</Button>
             }
+            {notEmpty && downloadButton(data)}
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
