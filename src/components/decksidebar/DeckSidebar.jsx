@@ -79,7 +79,8 @@ export default class DeckSidebar extends React.Component {
     const { onLayerOptionsCallback,
       onSelectCallback, data, colourCallback, unfilteredData,
       toggleSubsetBoundsChange, urlCallback, alert, layerStyle,
-      onlocationChange, column, dark, toggleOpen, toggleHexPlot
+      onlocationChange, column, dark, toggleOpen, toggleHexPlot,
+      hideChartGenerator
     } = this.props;
 
     const notEmpty = data && data.length > 1;
@@ -195,7 +196,7 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-info" />
                 }>
                   {/* pick a column and vis type */}
-                  {this._panel(dark,
+                  {!hideChartGenerator && this._panel(dark,
                     <AddVIS data={data} dark={dark} plotStyle={{ width: 270, margin: 10 }} />
                   )}
                   {/* distribution example */}
