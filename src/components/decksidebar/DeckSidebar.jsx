@@ -107,7 +107,7 @@ export default class DeckSidebar extends React.Component {
         year: "",
         multiVarSelect: {},
         barChartVariable: "road_type",
-        datasetName: urlOrName || datasetName
+        datasetName: urlOrName || this.props.datasetName
       })
     }
 
