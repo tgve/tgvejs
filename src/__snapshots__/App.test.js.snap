@@ -94,6 +94,17 @@ exports[`App - should create snapshot 1`] = `
             >
               Add data
             </button>
+            <i
+              className="fa fa-save"
+              onClick={[Function]}
+              style={
+                Object {
+                  "cursor": "pointer",
+                  "fontSize": "1.5em",
+                  "margin": 5,
+                }
+              }
+            />
           </div>
           <div
             className="side-panel-body"
