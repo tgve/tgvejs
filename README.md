@@ -1,4 +1,4 @@
-16 September, 2021
+18 September, 2021
 
 # TGVE · [![Node CI](https://github.com/tgve/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22)
 
@@ -50,6 +50,9 @@ using eAtlas as a component `<Eatlas layerName="geojson">`:
     If any of these are missing, they will be populated from these
     default values.
 
+-   `hideChartGenerator` boolean value which would hide the sidebar
+    component which generates charts from the data.
+
 None of the above is necessary and in the current release “Add data”
 button will allow loading data into eAtlas.
 
@@ -75,6 +78,12 @@ The package follows `create-react-app` testing kits and uses mainly
 
 ## Change log
 
+-   `1.3.4.beta.0`
+    -   API value `hideChartGenerator` is one of the few from the wider
+        and potentially `hideSidebar`.
+    -   Added basic version of “screenshot” or save. The future plan for
+        this is a full analytic report (PDF) generation.
+    -   Minor fixes and changes
 -   `1.3.3-beta.0`
     -   More APIs as TGVE is in showcase driven development.
     -   Added `viewport` API JSON variable.
