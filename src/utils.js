@@ -702,16 +702,20 @@ const getMin = (arr) => {
   return arr.reduce((max, v) => max <= v ? max : v, Infinity);
 }
 
-const OSMTILES = {
+const getOSMTiles = (name) => {
+  const TILES = {
+    OSM: "http://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    OSMB: "http://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    TONER: "http://tile.stamen.com/toner/{z}/{x}/{y}.png",
+    STAMEN: 'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg'
+  }
+  return({
   "version": 8,
   "sources": {
     "simple-tiles": {
       "type": "raster",
       "tiles": [
-        // "http://tile.openstreetmap.org/{z}/{x}/{y}.png",
-        // "http://b.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        // "http://tile.stamen.com/toner/{z}/{x}/{y}.png"
-        'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg'
+        TILES[name] || TILES["STAMEN"]
       ],
       "tileSize": 256
     }
@@ -721,7 +725,8 @@ const OSMTILES = {
     "type": "raster",
     "source": "simple-tiles",
   }]
-};
+});
+}
 
 /**
  * 
@@ -968,12 +973,12 @@ export {
   colorRanges,
   COLOR_RANGE,
   iWithFaName,
+  getOSMTiles,
   screenshot,
   percentDiv,
   iconJSType,
   colorScale,
   fetchData,
-  OSMTILES,
   humanize,
   isMobile,
   ATILOGO,

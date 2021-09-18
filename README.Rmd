@@ -37,6 +37,8 @@ Currently these variables can be passed to the eAtlas app, each can be passed as
   - `viewport`: TGVE's main functionality is to auto-adjust the viewport (see DeckGL docs). However, the initial viewport can be set using this JSON parameter. The default values are:
   `{longitude: -1.6362, latitude: 53.8321, zoom: 10, pitch: 55, bearing: 0}`. If any of these are missing, they will be populated from these default values.
 
+  - `hideChartGenerator` boolean value which would hide the sidebar component which generates charts from the data.
+
 None of the above is necessary and in the current release “Add data”
 button will allow loading data into eAtlas.
 
@@ -61,6 +63,10 @@ The package follows `create-react-app` testing kits and uses mainly
 `jest`. Run `npm run test`.
 
 ## Change log
+- `1.3.4.beta.0`
+  - API value `hideChartGenerator` is one of the few from the wider and potentially `hideSidebar`.
+  - Added basic version of "screenshot" or save. The future plan for this is a full analytic report (PDF) generation.
+  - Minor fixes and changes
 - `1.3.3-beta.0`
   - More APIs as TGVE is in showcase driven development.
   - Added `viewport` API JSON variable.

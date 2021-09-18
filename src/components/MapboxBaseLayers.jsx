@@ -1,43 +1,45 @@
 import React from 'react';
 import MultiSelect from './MultiSelect';
 
-export default class MapboxBaseLayers extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            bases: [
-                'dark',
-                'basic',
-                'streets',
-                'bright',
-                'light',
-                'satellite',
-                'No map'
-            ],
-            selected: props.dark ? "dark" : "streets"
-        }
-    }
+const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
-    render() { 
-        const {selected, bases} = this.state;
-        const {onSelectCallback, dark} = this.props;
-        
-        return(
-          <MultiSelect
-            title={selected === 'dark' ? "Default(dark)" : 
-            !dark ? "Default(streets)" : selected}
-            single={true}
-            values={
-              bases.map(e => ({ id: e, value: e }))
-            }
-            onSelectCallback={(selected) => {
-              if(selected && selected.length) {
-                this.setState({ selected: selected[0].value });
-                typeof (onSelectCallback) === 'function' &&
-                  onSelectCallback(selected[0].value)
-              }
-            }}
-          />
-        )
+export default class MapboxBaseLayers extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      bases: MAPBOX_ACCESS_TOKEN ? [
+        'dark',
+        'basic',
+        'streets',
+        'bright',
+        'light',
+        'satellite',
+        'No map'
+      ] : ['OSM', 'OSMB', 'TONER', 'STAMEN'],
+      selected: props.dark ? "dark" : "streets"
     }
+  }
+
+  render() {
+    const { selected, bases } = this.state;
+    const { onSelectCallback, dark } = this.props;
+
+    return (
+      <MultiSelect
+        title={selected === 'dark' ? "Default(dark)" :
+          !dark ? "Default(streets)" : selected}
+        single={true}
+        values={
+          bases.map(e => ({ id: e, value: e }))
+        }
+        onSelectCallback={(selected) => {
+          if (selected && selected.length) {
+            this.setState({ selected: selected[0].value });
+            typeof (onSelectCallback) === 'function' &&
+              onSelectCallback(selected[0].value)
+          }
+        }}
+      />
+    )
+  }
 }

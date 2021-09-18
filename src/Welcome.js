@@ -27,7 +27,7 @@ import _, { lastIndexOf } from 'underscore';
 
 import {
   fetchData, generateDeckLayer, suggestDeckLayer,
-  getParamsFromSearch, getBbx, isMobile, colorScale, OSMTILES,
+  getParamsFromSearch, getBbx, isMobile, colorScale, getOSMTiles,
   colorRanges, generateDomain, setGeojsonProps,
   convertRange, getMin, getMax, isURL, 
   generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray, 
@@ -81,7 +81,7 @@ export default class Welcome extends React.Component {
       layers: [],
       backgroundImage: gradient.backgroundImage,
       mapStyle: MAPBOX_ACCESS_TOKEN ? ("mapbox://styles/mapbox/" +
-        (props.dark ? "dark" : "streets") + "-v9") : OSMTILES,
+        (props.dark ? "dark" : "streets") + "-v9") : getOSMTiles(),
       initialViewState: init,
       subsetBoundsChange: false,
       lastViewPortChange: new Date(),
@@ -274,7 +274,7 @@ export default class Welcome extends React.Component {
       const newStyle = "mapbox://styles/mapbox/" + filter.selected + "-v9";
       this.setState({
         mapStyle: filter.what === 'mapstyle' ? filter.selected === "No map" ?
-          BLANKSTYLE : !MAPBOX_ACCESS_TOKEN ? OSMTILES :
+          BLANKSTYLE : !MAPBOX_ACCESS_TOKEN ? getOSMTiles(filter.selected) :
           newStyle : this.state.mapStyle,
       })
       return;
