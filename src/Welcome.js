@@ -23,7 +23,7 @@ import MapGL, { NavigationControl, FlyToInterpolator,
   ScaleControl } from 'react-map-gl';
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
-import _ from 'underscore';
+import _, { lastIndexOf } from 'underscore';
 
 import {
   fetchData, generateDeckLayer, suggestDeckLayer,
@@ -31,7 +31,7 @@ import {
   colorRanges, generateDomain, setGeojsonProps,
   convertRange, getMin, getMax, isURL, 
   generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray, 
-  theme, updateHistory,
+  theme, updateHistory, screenshot
 } from './utils';
 import {
   LIGHT_SETTINGS, DECKGL_INIT, ICONLIMIT,
@@ -621,6 +621,8 @@ export default class Welcome extends React.Component {
   }
 
   render() {
+    const { hideChartGenerator, dark, defaultURL,
+      leftSidebarContent } = this.props;
     const { tooltip, viewport, initialViewState,
       loading, mapStyle, alert, data, filtered, bottomPanel,
       layerStyle, geomType, legend, coords } = this.state;
@@ -635,6 +637,7 @@ export default class Welcome extends React.Component {
             mapStyle.endsWith("No map-v9") ? 'hidden' : 'visible'
         }} />
         <MapGL
+          preserveDrawingBuffer={true}
           ref={ref => {
             // save a reference to the mapboxgl.Map instance
             this.map = ref && ref.getMap();
@@ -664,6 +667,7 @@ export default class Welcome extends React.Component {
               }} />
           </div>
           <DeckGL
+            ref={ref => this.deck = ref && ref.deck}
             viewState={viewport ? viewport : initialViewState}
             initialViewState={initialViewState}
             layers={this.state.layers}
@@ -682,8 +686,10 @@ export default class Welcome extends React.Component {
           </DeckGL>
         </MapGL>
         <DeckSidebarContainer
-          leftSidebarContent={this.props.leftSidebarContent}
-          dark={this.props.dark}
+          screenshot={() => screenshot(this.map, this.deck)}
+          hideChartGenerator={hideChartGenerator}
+          leftSidebarContent={leftSidebarContent}
+          dark={dark}
           layerStyle={layerStyle}
           isMobile={isMobile()}
           key="decksidebar"
@@ -772,7 +778,7 @@ export default class Welcome extends React.Component {
             this._fitViewport(undefined, bboxLonLat)
           }}
           // TODO: generalise datasetName
-          datasetName={this.props.defaultURL}
+          datasetName={defaultURL}
           bottomPanel={bottomPanel}
         />
         {

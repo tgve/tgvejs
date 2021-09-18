@@ -20,6 +20,8 @@ import atlas from './img/location-icon-atlas.png';
 import { sfType } from './geojsonutils';
 import { getLayerProps } from './components/settings/settingsUtils';
 import history from './history';
+import { StyledLink } from "baseui/link";
+import html2canvas from 'html2canvas';
 
 const { DateTime } = require("luxon");
 
@@ -851,6 +853,92 @@ const updateHistory = (viewport) => {
     history.push(entry) : history.replace(entry);
 }
 
+/**
+ * Generates a `data:text/json` URI and assigned
+ * to a `href` attribute of the dom therefore
+ * opened by browsers as a file.
+ * 
+ * @param {*} data feature array to be assembled as GeoJSON
+ * @param {*} name optional filename 
+ * @returns 
+ */
+const downloadButton = (data, name) => {
+  return (<StyledLink
+    download={name || "tgve-data.geojson"}
+    href={
+      "data:text/json;charset=utf-8," +
+      encodeURIComponent(JSON.stringify({
+        type: 'FeatureCollection',
+        features: data
+      }))
+    }>
+    {<i
+      style={{
+        margin: 5,
+        cursor: 'pointer',
+        fontSize: '1.5em'
+      }}
+      className={"fa fa-download"}></i>}
+  </StyledLink>)
+}
+
+/**
+ * Basic version of saving a screenshot of TGVE.
+ * 
+ * @param {*} map mapbox instance fully loaded
+ * @param {*} deck deckgl current instance
+ * @param {*} includeBody include TGVE sidebar/legend etc, default `true`
+ * @returns 
+ */
+const screenshot = (map, deck, includeBody = true) => {
+  const fileName = "tgve-screenshot.png";
+  // console.log(map, deck);
+  console.log("ping");
+  if (!map || !deck) {
+    return;
+  }
+  const mapboxCanvas = map.getCanvas();
+  deck.redraw(true);
+  const deckglCanvas = deck.canvas;
+  // console.log(mapboxCanvas, deckglCanvas)
+  const canvas = document.createElement("canvas");
+  canvas.width = mapboxCanvas.width;
+  canvas.height = mapboxCanvas.height;
+
+  const context = canvas.getContext("2d");
+
+  context.globalAlpha = 1.0;
+  context.drawImage(mapboxCanvas, 0, 0);
+  context.globalAlpha = 1.0;
+  context.drawImage(deckglCanvas, 0, 0);
+  if(!includeBody) { 
+    saveCanvas(canvas, fileName)
+  } else {
+    html2canvas(document.body).then((htmlCanvas) => {
+      context.drawImage(htmlCanvas, 0, 0)
+      saveCanvas(canvas, fileName);
+    });
+  }
+  // window.location.href = image; // it will save locally  
+}
+
+const saveCanvas = (canvas, fileName) => {
+  const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+  var link = document.createElement('a');
+  link.download = fileName;
+  link.href = image;
+  link.click();
+}
+
+const iWithFaName = (faName, onClick) => <i
+  style={{
+    margin: 5,
+    cursor: 'pointer',
+    fontSize: '1.5em'
+  }}
+  onClick={onClick}
+className={faName || "fa fa-info"}></i>
+
 export {
   colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
@@ -867,6 +955,7 @@ export {
   setGeojsonProps,
   colorRangeNames,
   searchNominatom,
+  downloadButton,
   generateLegend,
   generateDomain,
   getMainMessage,
@@ -878,6 +967,8 @@ export {
   shortenName,
   colorRanges,
   COLOR_RANGE,
+  iWithFaName,
+  screenshot,
   percentDiv,
   iconJSType,
   colorScale,

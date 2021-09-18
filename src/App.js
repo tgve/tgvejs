@@ -17,7 +17,7 @@ class App extends Component {
   render() {
     const { defaultURL, tooltipColumns, geographyURL,
       geographyColumn, column, data, layerName, dark,
-      leftSidebarContent, viewport
+      leftSidebarContent, viewport, hideChartGenerator
     } = this.props;
     const isDark = dark || process.env.REACT_APP_DARK || true;
     return (
@@ -40,6 +40,7 @@ class App extends Component {
               data={data}
               leftSidebarContent={leftSidebarContent}
               viewport={viewport}
+              hideChartGenerator={hideChartGenerator}
               />
           </BaseProvider>
         </StyletronProvider>

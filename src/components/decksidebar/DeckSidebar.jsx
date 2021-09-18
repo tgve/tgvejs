@@ -11,7 +11,7 @@ import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   percentDiv,
   searchNominatom, firstLastNCharacters,
-  humanize, getMainMessage, theme
+  humanize, getMainMessage, theme, downloadButton, iWithFaName
 } from '../../utils';
 import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
@@ -79,7 +79,8 @@ export default class DeckSidebar extends React.Component {
     const { onLayerOptionsCallback,
       onSelectCallback, data, colourCallback, unfilteredData,
       toggleSubsetBoundsChange, urlCallback, alert, layerStyle,
-      onlocationChange, column, dark, toggleOpen, toggleHexPlot
+      onlocationChange, column, dark, toggleOpen, toggleHexPlot,
+      hideChartGenerator
     } = this.props;
 
     const notEmpty = data && data.length > 1;
@@ -157,6 +158,12 @@ export default class DeckSidebar extends React.Component {
                     this.props.showLegend(false);
                 }}>Reset</Button>
             }
+            {notEmpty && downloadButton(data)}
+            {iWithFaName("fa fa-save", () => {
+              const {screenshot} = this.props;
+              typeof screenshot === 'function'
+              && screenshot()
+            })}
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
@@ -194,7 +201,7 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-info" />
                 }>
                   {/* pick a column and vis type */}
-                  {this._panel(dark,
+                  {!hideChartGenerator && this._panel(dark,
                     <AddVIS data={data} dark={dark} plotStyle={{ width: 270, margin: 10 }} />
                   )}
                   {/* distribution example */}
