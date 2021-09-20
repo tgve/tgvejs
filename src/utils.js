@@ -407,14 +407,71 @@ const percentDiv = (title, left, cb, dark) => {
   )
 }
 
+if(!Array.prototype.flat) {
+  Object.defineProperty(Array.prototype, 'flat', {
+    value: function(depth = 1) {
+      return this.reduce(function (flat, toFlatten) {
+        return flat.concat((Array.isArray(toFlatten) && (depth>1)) ? toFlatten.flat(depth-1) : toFlatten);
+      }, []);
+    }
+  });
+}
+const ll = ["http://localhost", "http://127.0.0.1"]
+const devURLS = ll.map(lh => [lh, lh+":8080", lh+":8000",
+lh+":5000", lh+":3000"]).flat()
+const urlRegex = new RegExp(
+  "^" +
+    // protocol identifier (optional)
+    // short syntax // still required
+    "(?:(?:(?:https?|ftp):)?\\/\\/)" +
+    // user:pass BasicAuth (optional)
+    "(?:\\S+(?::\\S*)?@)?" +
+    "(?:" +
+      // IP address exclusion
+      // private & local networks
+      "(?!(?:10|127)(?:\\.\\d{1,3}){3})" +
+      "(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})" +
+      "(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})" +
+      // IP address dotted notation octets
+      // excludes loopback network 0.0.0.0
+      // excludes reserved space >= 224.0.0.0
+      // excludes network & broadcast addresses
+      // (first & last IP address of each class)
+      "(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])" +
+      "(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}" +
+      "(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))" +
+    "|" +
+      // host & domain names, may end with dot
+      // can be replaced by a shortest alternative
+      // (?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.)+
+      "(?:" +
+        "(?:" +
+          "[a-z0-9\\u00a1-\\uffff]" +
+          "[a-z0-9\\u00a1-\\uffff_-]{0,62}" +
+        ")?" +
+        "[a-z0-9\\u00a1-\\uffff]\\." +
+      ")+" +
+      // TLD identifier name, may end with dot
+      // TGVE edit: remove requirement of TLD
+      "(?:[a-z\\u00a1-\\uffff]{2,}\\.?)?" +
+    ")" +
+    // port number (optional)
+    "(?::\\d{2,5})?" +
+    // resource path (optional)
+    "(?:[/?#]\\S*)?" +
+  "$", "i"
+);
 /**
- * Thanks to https://stackoverflow.com/a/34695026/2332101
+ * TGVE should do a basic check and suffice.
+ * Even this is too much.
+ * 
+ * Thanks to https://gist.github.com/dperini/729294
  * @param {*} str 
  */
 const isURL = (str) => {
-  var a = document.createElement('a');
-  a.href = str;
-  return (a.host && a.host !== window.location.host);
+  if(!isString(str)) return false;
+  if(devURLS.some(e => str.startsWith(e))) return true
+  return urlRegex.test(str)
 }
 
 const isMobile = function () {
