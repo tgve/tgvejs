@@ -1,6 +1,6 @@
 import {firstLastNCharacters, humanize,
   colorScale, generateDomain, xyObjectByProperty,
-  suggestDeckLayer,
+  suggestDeckLayer, isURL,
   uniqueValuePercentage
 } from '../utils';
 import { LAYERSTYLES } from '../Constants';
@@ -90,4 +90,21 @@ test("uniqueValuePercentage", () => {
   expect(uniqueValuePercentage(
     array.concat(array), 49 // it is 50 so true
   )).toBe(true)
+})
+
+test("isURL", () => {
+  if(!Array.prototype.flat) {
+    Object.defineProperty(Array.prototype, 'flat', {
+      value: function(depth = 1) {
+        return this.reduce(function (flat, toFlatten) {
+          return flat.concat((Array.isArray(toFlatten) && (depth>1)) ? toFlatten.flat(depth-1) : toFlatten);
+        }, []);
+      }
+    });
+  }
+  const ll = ["http://localhost", "http://127.0.0.1"]
+  const devURLS = ll.map(lh => [lh, lh+":8080", lh+":8000",
+  lh+":5000", lh+":3000"]).flat()
+  expect(isURL(ll[0])).toBe(true)
+  devURLS.slice(-4).forEach(e => expect(isURL(e)).toBe(true))
 })
