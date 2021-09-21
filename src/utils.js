@@ -469,8 +469,10 @@ const urlRegex = new RegExp(
  * @param {*} str 
  */
 const isURL = (str) => {
-  if(!isString(str)) return false;
-  if(process.env.NODE_ENV === 'development'
+  if (!isString(str)) return false;
+  console.log(process.env.NODE_ENV);
+  if ((process.env.NODE_ENV === 'development'
+    || process.env.NODE_ENV === 'test')
     && devURLS.some(e => str.startsWith(e))) return true
   return urlRegex.test(str)
 }
