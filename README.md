@@ -1,4 +1,4 @@
-18 September, 2021
+22 September, 2021
 
 # TGVE · [![Node CI](https://github.com/tgve/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22)
 
@@ -52,6 +52,9 @@ using eAtlas as a component `<Eatlas layerName="geojson">`:
 
 -   `hideChartGenerator` boolean value which would hide the sidebar
     component which generates charts from the data.
+
+-   `hideCharts` boolean value which would hide all charts. This takes
+    priority over `hideChartGenerator` parameter.
 
 None of the above is necessary and in the current release “Add data”
 button will allow loading data into eAtlas.

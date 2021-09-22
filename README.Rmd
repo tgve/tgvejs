@@ -39,6 +39,8 @@ Currently these variables can be passed to the eAtlas app, each can be passed as
 
   - `hideChartGenerator` boolean value which would hide the sidebar component which generates charts from the data.
 
+  - `hideCharts` boolean value which would hide all charts. This takes priority over `hideChartGenerator` parameter.
+
 None of the above is necessary and in the current release “Add data”
 button will allow loading data into eAtlas.
 

@@ -470,7 +470,6 @@ const urlRegex = new RegExp(
  */
 const isURL = (str) => {
   if (!isString(str)) return false;
-  console.log(process.env.NODE_ENV);
   if ((process.env.NODE_ENV === 'development'
     || process.env.NODE_ENV === 'test')
     && devURLS.some(e => str.startsWith(e))) return true

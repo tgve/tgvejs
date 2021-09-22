@@ -7,15 +7,14 @@ export default class MapboxBaseLayers extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      bases: MAPBOX_ACCESS_TOKEN ? [
+      bases: ['No map'].concat(MAPBOX_ACCESS_TOKEN ? [
         'dark',
         'basic',
         'streets',
         'bright',
         'light',
         'satellite',
-        'No map'
-      ] : ['OSM', 'OSMB', 'TONER', 'STAMEN'],
+      ] : ['OSM', 'OSMB', 'TONER', 'STAMEN']),
       selected: props.dark ? "dark" : "streets"
     }
   }
