@@ -23,7 +23,6 @@ import MapGL, { NavigationControl, FlyToInterpolator,
   ScaleControl } from 'react-map-gl';
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
-import _, { lastIndexOf } from 'underscore';
 
 import {
   fetchData, generateDeckLayer, suggestDeckLayer,
@@ -621,7 +620,7 @@ export default class Welcome extends React.Component {
   }
 
   render() {
-    const { hideChartGenerator, dark, defaultURL,
+    const { hideCharts, hideChartGenerator, dark, defaultURL,
       leftSidebarContent } = this.props;
     const { tooltip, viewport, initialViewState,
       loading, mapStyle, alert, data, filtered, bottomPanel,
@@ -686,6 +685,7 @@ export default class Welcome extends React.Component {
           </DeckGL>
         </MapGL>
         <DeckSidebarContainer
+          hideCharts={hideCharts}
           screenshot={() => screenshot(this.map, this.deck)}
           hideChartGenerator={hideChartGenerator}
           leftSidebarContent={leftSidebarContent}

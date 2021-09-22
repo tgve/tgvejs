@@ -80,7 +80,7 @@ export default class DeckSidebar extends React.Component {
       onSelectCallback, data, colourCallback, unfilteredData,
       toggleSubsetBoundsChange, urlCallback, alert, layerStyle,
       onlocationChange, column, dark, toggleOpen, toggleHexPlot,
-      hideChartGenerator
+      hideChartGenerator, hideCharts
     } = this.props;
 
     const notEmpty = data && data.length > 1;
@@ -96,10 +96,11 @@ export default class DeckSidebar extends React.Component {
     const columnNames = notEmpty && Object.keys(data[0].properties)
       .filter(p => !isEmptyOrSpaces(p));
 
-    const columnPlot = notEmpty ? arrayPlotProps(data,
-      //prop
-      column || barChartVariable
-    ) : [];
+    const columnPlot = !hideCharts && notEmpty ?
+      arrayPlotProps(data,
+        //prop
+        column || barChartVariable
+      ) : [];
 
     const resetState = (urlOrName, button) => {
       this.setState({
@@ -110,7 +111,6 @@ export default class DeckSidebar extends React.Component {
         datasetName: urlOrName || this.props.datasetName
       })
     }
-
     return (
       <>
         <div
@@ -236,7 +236,7 @@ export default class DeckSidebar extends React.Component {
                       />
                     </>
                   }
-                  {<SeriesPlot
+                  {!hideCharts && <SeriesPlot
                     dark={dark}
                     data={columnPlot.data}
                     type={VerticalBarSeries}
@@ -258,7 +258,8 @@ export default class DeckSidebar extends React.Component {
                     plotStyle={{ marginBottom: 100 }} noYAxis={true}
 
                   />}
-                  {popPyramidPlot({ data, dark: dark })}
+                  {!hideCharts
+                    && popPyramidPlot({ data, dark: dark })}
                 </Tab>
                 <Tab eventKey="2" title={
                   <i style={{ fontSize: '2rem' }}

@@ -21,6 +21,8 @@
 
 .right-side-panel {
   background-color: #242730;
+  text-align: center;
+  max-width: 30%;
   /* max-width: 350px; defined in the component */
   /* max-height: 350px; again defined in the component */
 }
