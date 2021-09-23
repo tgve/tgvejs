@@ -29,11 +29,13 @@ As of version `1.3.4-beta.1` these API variables can be passed to TGVE:
     `defaultURL`, eAtlas uses the `geographyColumn` to join them. eAtlas
     does this oth on initialization and when `reset` button is pressed.
 
--   `geographyColumn`: a column name which is shared between data return
-    from `defaultURL` and `geographyURL`. This is the joining column
-    that will result in dynamically generating `geojson` data for eAtlas
-    to consume. If a valid column name is not provided TGVE will fail to
-    load any data to the given geography.
+-   `geographyColumn`: a column name which is shared between data within
+    the `defaultURL` and `geographyURL` or a mapping between the two. If
+    a mapping is provided it must be in this format:
+    `defaultURLColumnName:geographyURLColumnName`. This is the joining
+    column that will result in dynamically generating `geojson` data for
+    eAtlas to consume. If a valid column name is not provided TGVE will
+    fail to load any data to the given geography.
 
 -   `column`: if provided, and if the geometry is of particular type
     which would need a column, it would be used. Defaults on to the
