@@ -1,6 +1,8 @@
 name: Node CI
 
 on: [push]
+  paths-ignore: 
+    - '**/README.md'
 
 jobs:
   build:
