@@ -795,21 +795,26 @@ const getOSMTiles = (name) => {
  * {features:[], type:}
  * @param {*} data a json {properties:{}} object with matchin 
  * `geoColumn` to `geojson` param. Typically features of another geojons.
- * @param {*} geoColumn geocode which is shared between `geojson` and `data`
+ * @param {*} geoColumn geocode which is shared between `geojson` and `data`.
+ * It can be the same column name or mapped as `dataCol:geographyCol` string.
  */
 const setGeojsonProps = (geojson, data, geoColumn) => {
   // const r = randomToNumber(data && data.length);
+  // either split or same values
+  const dataColumn = geoColumn.split(":")[0];
+  const geojsonColumn = geoColumn.split(":")[1] || geoColumn
   const r = 0;
   const result = Object.assign({}, geojson)
   result.features = []
   if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
     !geojson.features || !geojson.features[r] ||
-    !geojson.features[r].properties[geoColumn] || !data[r] || 
-    !data[r].properties || !data[r].properties[geoColumn]) return null
+    !geojson.features[r].properties[geojsonColumn] || !data[r] || 
+    !data[r].properties || !data[r].properties[dataColumn]) return null
   // for now modify the object itself
   geojson.features.forEach(feature => {
     for (let i = 0; i < data.length; i++) {
-      if (feature.properties[geoColumn] === data[i].properties[geoColumn]) {
+      if (feature.properties[geojsonColumn] === 
+        data[i].properties[dataColumn]) {
         // feature.properties = data[i].properties;
         const obj = {
           type: feature.type,
