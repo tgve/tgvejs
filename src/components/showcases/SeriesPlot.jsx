@@ -25,7 +25,7 @@ export default function SeriesPlot(options) {
     : options.data;
 
   const { plotStyle, title, noXAxis, noYAxis,
-    onValueClick, onDragSelected } = options;
+    onValueClick } = options;
 
   if (!data || !data.length) return null
 

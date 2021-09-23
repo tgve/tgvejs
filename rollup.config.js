@@ -1,7 +1,7 @@
 import babel from '@rollup/plugin-babel';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import scss from 'rollup-plugin-scss';
+import postcss from 'rollup-plugin-postcss';
 import json from '@rollup/plugin-json';
 import image from '@rollup/plugin-image';
 
@@ -95,7 +95,9 @@ export default [{
       extensions,
     }),
     commonjs(),
-    scss(),
+    postcss({
+      plugins: []
+    }),
     json(),
     image()
   ],

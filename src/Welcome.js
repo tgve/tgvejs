@@ -23,6 +23,7 @@ import MapGL, { NavigationControl, FlyToInterpolator,
   ScaleControl } from 'react-map-gl';
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
+import { difference } from 'underscore';
 
 import {
   fetchData, generateDeckLayer, suggestDeckLayer,
@@ -339,7 +340,7 @@ export default class Welcome extends React.Component {
           }
           if (filterCoords) {
             // coords in 
-            if (_.difference(filter.selected || this.state.coords,
+            if (difference(filter.selected || this.state.coords,
               d.geometry.coordinates.flat()).length !== 0) {
               return false;
             }
