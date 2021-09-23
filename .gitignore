@@ -17,6 +17,7 @@
 
 # misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
@@ -45,8 +46,5 @@ quant*
 
 /data
 /dist
-/R
-/public
-notes
-/.github
+
 README.html
