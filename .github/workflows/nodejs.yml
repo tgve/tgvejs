@@ -8,6 +8,7 @@ on:
       - spenser
     paths-ignore:
       - '**/README.*md'
+      - '**/.gitignore'
 
 jobs:
   build:

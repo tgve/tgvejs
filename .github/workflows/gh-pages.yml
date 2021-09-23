@@ -6,6 +6,7 @@ on:
       - master
     paths-ignore:
       - '**/README.*md'
+      - '**/.gitignore'
 
 jobs:
     gh-pages-deploy:
