@@ -32,6 +32,7 @@ export default function LayerSettings(props) {
     const lp = getLayerProps(props.layerName);
     if (!lp) return
     setOptions(lp)
+    setValues({}) //reset
   }, [props.layerName])
 
   return (
@@ -92,6 +93,7 @@ export default function LayerSettings(props) {
                 [key]: selected.length ? (d) => d.properties[selected[0].value] :
                   options[key].default
               }
+              console.log(newValues[key].toString(), selected);
               setValues(newValues)
               typeof onLayerOptionsCallback === 'function' &&
                 onLayerOptionsCallback(newValues)

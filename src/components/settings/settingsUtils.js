@@ -37,7 +37,7 @@ layers['hex'] = addOptionsToObject(options, hexObject)
 const scatterObj = {
   class: { value: ScatterplotLayer, type: 'class' },
   opacity: makeObject('number', 0, 1, 0.8, 0.1),
-  getRadius: makeObject('number', 10, 1000, 30, 10),
+  getRadius: {type: 'column', value: 'number', default: 30},
   radiusScale: makeObject('number', 0, 1, 0.8, 0.1),
   radiusMinPixels: makeObject('number', 1, 10, 1, 1),
   radiusMaxPixels: makeObject('number', 1, 100, 100, 5),
@@ -53,8 +53,10 @@ const geojsonObject = {
   lineWidthMinPixels: makeObject('number', 2, 20, 2, 2),
   // getFillColor: [160, 160, 180, 200],
   // getLineColor: [255, 160, 180, 200],
-  getRadius: makeObject('number', 10, 1000, 30, 10),
-  getLineWidth: makeObject('number', 1, 10, 1, 1),
+  // getRadius: makeObject('number', 10, 1000, 30, 10),
+  // getLineWidth: makeObject('number', 1, 10, 1, 1),
+  getRadius: { type: 'column', value: 'number', default: 30},
+  getLineWidth: { type: 'column', value: 'number', default: 1},
   getElevation: makeObject('number', 30, 100, 30, 10),
   // getElevation: f => Math.sqrt(f.properties.valuePerSqm) * 10,
   // getFillColor: f => COLOR_RANGE(f.properties.growth),
@@ -83,7 +85,7 @@ const sgridObject = {
 layers['sgrid'] = addOptionsToObject(options, sgridObject)
 const gridObject = {
   class: { value: GridLayer, type: 'class' },
-  cellSize: makeObject('number', 100, 5000, 100, 50),
+  cellSize: makeObject('number', 100, 50000, 100, 50),
   elevationScale: makeObject('number', 4, 10, 4, 2),
 }
 layers['grid'] = addOptionsToObject(options, gridObject)
@@ -111,7 +113,7 @@ const heatObject = {
   class: { value: HeatmapLayer, type: 'class' },
   getWeight: { type: 'column', value: 'number', default: 1}
 }
-layers['heatmap'] = addOptionsToObject(options, heatObject);
+// layers['heatmap'] = addOptionsToObject(options, heatObject);
 const textObject = {
   class: { value: TextLayer, type: 'class' },
 }

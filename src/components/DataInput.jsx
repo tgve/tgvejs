@@ -11,6 +11,7 @@ import {
 
 import File from './File'
 import URL from './URL';
+import RBAlert from './RBAlert';
 
 /**
  * The package is by mapbox. 
@@ -32,6 +33,8 @@ const csv2geojson = require('csv2geojson');
 
 export default function (props) {
   const [isOpen, setOpen] = React.useState(false);
+  const [alert, setAlert] = React.useState(false);
+
   const { urlCallback, toggleOpen } = props;
 
   return (
@@ -39,20 +42,21 @@ export default function (props) {
       <Button
         kind={KIND.secondary} size={SIZE.compact}
         onClick={() => {
-          setOpen(s => !s); // or s === isOpen
-          typeof toggleOpen === 'function' && toggleOpen()
+          toggleSelfAndParent(toggleOpen, setOpen);
         }}>Add data</Button>
       <Modal
         onClose={() => {
-          typeof (toggleOpen) === 'function' && toggleOpen()
-          setOpen(false);
+          toggleSelfAndParent(toggleOpen, setOpen);
         }}
         isOpen={isOpen}>
-        <ModalHeader>Your data remains on your browser. It is NOT uploaded anywhere.</ModalHeader>
+        <ModalHeader>
+          <RBAlert alert={alert} />
+          Your data remains on your browser. It is NOT uploaded anywhere.
+        </ModalHeader>
         <ModalBody>
           <FocusOnce>
             <URL urlCallback={(url) => {
-              setOpen(false);
+              toggleSelfAndParent(toggleOpen, setOpen);
               typeof (urlCallback) === 'function'
                 && urlCallback(url)
             }} />
@@ -64,7 +68,7 @@ export default function (props) {
                 const json = JSON.parse(text);
                 typeof (urlCallback) === 'function'
                   && urlCallback(null, json, name)
-                setOpen(false);
+                  toggleSelfAndParent(toggleOpen, setOpen);
               } catch (e) {
                 console.log(e);
               }
@@ -72,8 +76,19 @@ export default function (props) {
               // err has any parsing errors
               csv2geojson.csv2geojson(text, (err, data) => {
                 if (!err) {
+                  toggleSelfAndParent(toggleOpen, setOpen);
                   typeof (urlCallback) === 'function'
                     && urlCallback(null, data, name)
+                } else {
+                  // console.log(err);
+                  /** err == array with feature errors? */
+                  const message = Array.isArray(err)
+                    && err[0] && err[0].message;
+                  setAlert({
+                    time: 5000,
+                    content: "Invalid format. " 
+                    + (message ?  "ERROR: " + message : "")
+                  })
                 }
               });
             }
@@ -97,3 +112,8 @@ const itemProps = {
   alignItems: 'center',
   justifyContent: 'center',
 };
+
+function toggleSelfAndParent(toggleOpen, setOpen) {
+  typeof (toggleOpen) === 'function' && toggleOpen();
+  setOpen(o => !o);
+}

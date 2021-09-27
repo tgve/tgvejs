@@ -134,9 +134,7 @@ export default class DeckSidebar extends React.Component {
                 resetState(url || name);
                 typeof (urlCallback) === 'function'
                   && urlCallback(url, geojson);
-                typeof (toggleOpen) === 'function' && toggleOpen()
-              }
-              } />
+              }} />
             {notEmpty &&
               <Modal
                 toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
