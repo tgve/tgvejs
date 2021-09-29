@@ -16,7 +16,8 @@ export default function Export(props) {
         dismissOnClickOutside={false}
         accessibilityType={'tooltip'}
         content={({ close }) => (
-          <Block padding="10px" data-html2canvas-ignore="true">
+          <Block 
+            data-html2canvas-ignore="true">
             {iWithFaName("fa fa-times", close)}
             <Preview screenshot={screenshot} />
             {notEmpty && downloadButton(props.data)}

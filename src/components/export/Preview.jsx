@@ -39,23 +39,25 @@ export default function Preview(props) {
         setOpen(o => !o))}
       <Modal
         isOpen={isOpen}>
-        <ModalHeader>
+        <ModalHeader data-html2canvas-ignore="true">
           {loading ? <Spinner /> : "Screenshot Preview"}
         </ModalHeader>
-        <ModalBody>
+        <ModalBody data-html2canvas-ignore="true">
           <Card
             overrides={{ Root: { style: { width: '100%' } } }}
             headerImage={image}
           />
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter data-html2canvas-ignore="true">
           <Checkbox
+            data-html2canvas-ignore="true"
             checked={noSidebar}
             onChange={e => setNoSidebar(e.target.checked)}
           >
             No sidebar
           </Checkbox>
           <ModalButton
+            data-html2canvas-ignore="true"
             kind="tertiary"
             autoFocus onClick={() => {
               const link = document.createElement('a');
@@ -65,6 +67,7 @@ export default function Preview(props) {
               link.click();
             }}> Download </ModalButton>
           <ModalButton
+            data-html2canvas-ignore="true"
             kind="tertiary"
             onClick={() => {
               setOpen(false);
