@@ -14,7 +14,7 @@ import URL from './URL';
 import RBAlert from './RBAlert';
 
 /**
- * The package is by mapbox. 
+ * The csv2geojson package is by mapbox. 
  * 
  * GDAL specs have been taken into consideration according to
  * package docs. The package creats lines and polygons from 
@@ -104,14 +104,6 @@ export default function (props) {
     </React.Fragment >
   );
 }
-
-const itemProps = {
-  // backgroundColor: 'mono300',
-  // height: 'scale1000',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-};
 
 function toggleSelfAndParent(toggleOpen, setOpen) {
   typeof (toggleOpen) === 'function' && toggleOpen();

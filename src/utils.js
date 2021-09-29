@@ -20,7 +20,6 @@ import atlas from './img/location-icon-atlas.png';
 import { sfType } from './geojsonutils';
 import { getLayerProps } from './components/settings/settingsUtils';
 import history from './history';
-import { StyledLink } from "baseui/link";
 import html2canvas from 'html2canvas';
 
 const { DateTime } = require("luxon");
@@ -923,46 +922,17 @@ const updateHistory = (viewport) => {
 }
 
 /**
- * Generates a `data:text/json` URI and assigned
- * to a `href` attribute of the dom therefore
- * opened by browsers as a file.
- * 
- * @param {*} data feature array to be assembled as GeoJSON
- * @param {*} name optional filename 
- * @returns 
- */
-const downloadButton = (data, name) => {
-  return (<StyledLink
-    download={name || "tgve-data.geojson"}
-    href={
-      "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify({
-        type: 'FeatureCollection',
-        features: data
-      }))
-    }>
-    {<i
-      style={{
-        margin: 5,
-        cursor: 'pointer',
-        fontSize: '1.5em'
-      }}
-      className={"fa fa-download"}></i>}
-  </StyledLink>)
-}
-
-/**
  * Basic version of saving a screenshot of TGVE.
  * 
  * @param {*} map mapbox instance fully loaded
  * @param {*} deck deckgl current instance
  * @param {*} includeBody include TGVE sidebar/legend etc, default `true`
+ * @param {function} callback returns the canvas based on params
  * @returns 
  */
-const screenshot = (map, deck, includeBody = true) => {
+const screenshot = (map, deck, includeBody = true, callback) => {
   const fileName = "tgve-screenshot.png";
   // console.log(map, deck);
-  console.log("ping");
   if (!map || !deck) {
     return;
   }
@@ -980,11 +950,19 @@ const screenshot = (map, deck, includeBody = true) => {
   context.drawImage(mapboxCanvas, 0, 0);
   context.globalAlpha = 1.0;
   context.drawImage(deckglCanvas, 0, 0);
-  if(!includeBody) { 
+  if(!includeBody) {
+    if(typeof callback === 'function') {
+      callback(canvas, fileName);
+      return
+    }
     saveCanvas(canvas, fileName)
   } else {
     html2canvas(document.body).then((htmlCanvas) => {
       context.drawImage(htmlCanvas, 0, 0)
+      if(typeof callback === 'function') {
+        callback(canvas, fileName);
+        return
+      }
       saveCanvas(canvas, fileName);
     });
   }
@@ -999,11 +977,11 @@ const saveCanvas = (canvas, fileName) => {
   link.click();
 }
 
-const iWithFaName = (faName, onClick) => <i
+const iWithFaName = (faName, onClick, fontSize) => <i
   style={{
     margin: 5,
     cursor: 'pointer',
-    fontSize: '1.5em'
+    fontSize: fontSize || '1.5em'
   }}
   onClick={onClick}
 className={faName || "fa fa-info"}></i>
@@ -1024,7 +1002,6 @@ export {
   setGeojsonProps,
   colorRangeNames,
   searchNominatom,
-  downloadButton,
   generateLegend,
   generateDomain,
   getMainMessage,

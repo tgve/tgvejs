@@ -687,7 +687,9 @@ export default class Welcome extends React.Component {
         </MapGL>
         <DeckSidebarContainer
           hideCharts={hideCharts}
-          screenshot={() => screenshot(this.map, this.deck)}
+          screenshot={(options, callback) =>
+            screenshot(this.map, this.deck, options, callback)
+          }
           hideChartGenerator={hideChartGenerator}
           leftSidebarContent={leftSidebarContent}
           dark={dark}
