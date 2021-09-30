@@ -21,7 +21,7 @@
     "@turf/bbox": "^6.3.0",
     "@turf/bezier-spline": "^6.2.0",
     "@turf/centroid": "^6.2.0",
-    "baseui": "^7.8.0",
+    "baseui": "^10.3.0",
     "csv2geojson": "^5.1.1",
     "d3-array": "^2.9.1",
     "d3-format": "^1.4.5",
@@ -43,7 +43,7 @@
     "react-scripts": "3.4.0",
     "react-vis": "^1.11.7",
     "styletron-engine-atomic": "^1.4.6",
-    "styletron-react": "^5.2.7",
+    "styletron-react": ">=5.2.2 < 7",
     "underscore": "^1.12.0"
   },
   "scripts": {
@@ -74,8 +74,8 @@
     "libraryTarget": "commonjs2"
   },
   "peerDependencies": {
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
+    "react": ">= 16.8.0 < 18",
+    "react-dom": ">= 16.8.0 < 18"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
