@@ -56,24 +56,23 @@ export default function Preview(props) {
           >
             No sidebar
           </Checkbox>
-          <ModalButton
-            data-html2canvas-ignore="true"
-            kind="tertiary"
-            autoFocus onClick={() => {
-              const link = document.createElement('a');
-              const fileName = "tgve-screenshot.png";
-              link.download = fileName;
-              link.href = image;
-              link.click();
-            }}> Download </ModalButton>
-          <ModalButton
-            data-html2canvas-ignore="true"
-            kind="tertiary"
-            onClick={() => {
-              setOpen(false);
-            }}>Close</ModalButton>
+          {modalButtonWithCallback("Download", () => {
+            const link = document.createElement('a');
+            const fileName = "tgve-screenshot.png";
+            link.download = fileName;
+            link.href = image;
+            link.click();
+          })}
+          {modalButtonWithCallback("Close", () => setOpen(false))}
         </ModalFooter>
       </Modal>
     </React.Fragment >
   );
+}
+
+const modalButtonWithCallback = (title, onClick) => {
+  return <ModalButton
+    data-html2canvas-ignore="true"
+    kind="tertiary"
+    onClick={onClick}>{title}</ModalButton>
 }
