@@ -11,7 +11,7 @@ import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   percentDiv,
   searchNominatom, firstLastNCharacters,
-  humanize, getMainMessage, theme, downloadButton, iWithFaName
+  humanize, getMainMessage, theme
 } from '../../utils';
 import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
@@ -33,6 +33,7 @@ import AddVIS from '../AddVIS';
 import Boxplot from '../boxplot/Boxplot';
 import LayerSettings from '../settings/LayerSettings';
 import { LAYERS } from '../settings/settingsUtils'
+import Export from '../export/Export';
 
 export default class DeckSidebar extends React.Component {
   constructor(props) {
@@ -134,13 +135,7 @@ export default class DeckSidebar extends React.Component {
                 resetState(url || name);
                 typeof (urlCallback) === 'function'
                   && urlCallback(url, geojson);
-                typeof (toggleOpen) === 'function' && toggleOpen()
-              }
-              } />
-            {notEmpty &&
-              <Modal
-                toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
-                component={<DataTable data={data} />} />}
+              }} />
             {
               this.state.reset &&
               // can check alert content to see if
@@ -158,12 +153,12 @@ export default class DeckSidebar extends React.Component {
                     this.props.showLegend(false);
                 }}>Reset</Button>
             }
-            {notEmpty && downloadButton(data)}
-            {iWithFaName("fa fa-save", () => {
-              const {screenshot} = this.props;
-              typeof screenshot === 'function'
-              && screenshot()
-            })}
+            {notEmpty &&
+              <Modal
+                toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
+                component={<DataTable data={data} />} />}
+            <Export data={data} notEmpty={notEmpty} 
+            screenshot={this.props.screenshot}/>
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
