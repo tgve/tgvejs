@@ -195,6 +195,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       } else if (type === 'boolean' || type === 'class') {
         layerOptions[key] = layerProps[key].value;
       } else {
+        // such as default functions defined for layers
         layerOptions[key] = layerProps[key]
       }
     });
@@ -203,8 +204,8 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     layerOptions.id = name + "-layer";
     layerOptions.onHover = renderTooltip;
     layerOptions.getPosition = d => d.geometry.coordinates;
+    // (source, target) vs Object.assign(target, source)
     addOptionsToObject(options, layerOptions)
-
     return new layerProps.class["value"](layerOptions);
   }
 
@@ -469,9 +470,7 @@ const urlRegex = new RegExp(
  */
 const isURL = (str) => {
   if (!isString(str)) return false;
-  if ((process.env.NODE_ENV === 'development'
-    || process.env.NODE_ENV === 'test')
-    && devURLS.some(e => str.startsWith(e))) return true
+  if (devURLS.some(e => str.startsWith(e))) return true
   return urlRegex.test(str)
 }
 

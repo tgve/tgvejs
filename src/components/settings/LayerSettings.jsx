@@ -53,7 +53,7 @@ export default function LayerSettings(props) {
     if (key === 'class') return null
     switch (v) {
       case 'number':
-        return <>
+        return <React.Fragment key={key}>
           {key}
           <Slider
             // raw number is kept in values 
@@ -67,9 +67,10 @@ export default function LayerSettings(props) {
               typeof onLayerOptionsCallback === 'function' &&
                 onLayerOptionsCallback(newValues)
             }} />
-        </>;
+        </React.Fragment>;
       case 'boolean':
         return <Checkbox
+          key={key}
           checked={values.hasOwnProperty(key) ?
             values[key] : options[key].value}
           onChange={() => {
@@ -80,7 +81,7 @@ export default function LayerSettings(props) {
           }}
         >{humanize(key)}</Checkbox>;
       default:
-        return <>
+        return <React.Fragment key={key}>
           {key}
           <MultiSelect
             title={humanize(key)}
@@ -90,16 +91,16 @@ export default function LayerSettings(props) {
               const newValues = {
                 ...values,
                 //is it resetting a key?
-                [key]: selected.length ? (d) => d.properties[selected[0].value] :
-                  options[key].default
+                [key]: selected.length ? 
+                (d) => d && d.properties 
+                && d.properties[selected[0].value] : options[key].default
               }
-              console.log(newValues[key].toString(), selected);
               setValues(newValues)
               typeof onLayerOptionsCallback === 'function' &&
                 onLayerOptionsCallback(newValues)
 
             }} />
-        </>;
+        </React.Fragment>;
     }
   }
 }
