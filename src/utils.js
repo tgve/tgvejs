@@ -10,7 +10,7 @@ import qs from 'qs'; // importing it other ways would cause minification issue.
 
 import mapping from './location-icon-mapping.json';
 import Constants from './Constants';
-import { isString, isNumber, isObject, randomToNumber, isStringNumeric, 
+import { isString, isNumber, isObject, randomToNumber, isStringNumeric,
   isNullUndefinedNaN } from './JSUtils.js';
 import IconClusterLayer from './icon-cluster-layer';
 import { isArray } from 'underscore';
@@ -57,7 +57,7 @@ const getResultsFromGoogleMaps = (string, callback) => {
 };
 
 const fetchData = (url, callback) => {
-  fetch(url) // 
+  fetch(url) //
     .then((response) => response.text())
     .then((response) => {
       // TODO: better check?
@@ -86,11 +86,11 @@ const fetchData = (url, callback) => {
 }
 
 /**
- * 
+ *
  * Simple fetch check of URL
- * 
- * @param {*} URL 
- * @param {*} callback 
+ *
+ * @param {*} URL
+ * @param {*} callback
  */
 const checkURLReachable = (URL, callback) => {
   fetch(URL)
@@ -108,20 +108,20 @@ const checkURLReachable = (URL, callback) => {
 
 /**
  * Function to count frequency of values of `property` given.
- * 
+ *
  * TODO: Double check to see if it is slightly different
  * version of propertyCount
- * 
+ *
  * TODO: move to geojsonutils
- * 
- * @param {Object} data 
- * @param {String} property 
- * @param {Boolean} noNulls 
+ *
+ * @param {Object} data
+ * @param {String} property
+ * @param {Boolean} noNulls
  */
 const xyObjectByProperty = (data, property, noNulls = true) => {
   if (!data || !property) return;
   //data = [{...data = 12/12/12}]
-  // console.log(data);       
+  // console.log(data);
   const map = new Map()
   data.forEach(feature => {
     let value = feature.properties[property];
@@ -141,7 +141,7 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
 
   if(!sortedArray || !sortedArray.length) return;
   sortedArray.sort(ascending)
-  
+
   return sortedArray.map(key => {
     return (
       {
@@ -177,21 +177,29 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
       obj[key] = opt[key]
     )
   }
-  
- /** 
+
+ /**
  * @param {String} name passed down from generateDeckLayer
  * @param {Object} data passed down from generateDeckLayer
  * @param {Object} renderTooltip passed down from generateDeckLayer
- * @returns 
+ * @returns
  */
   function generateOptions(name, data, renderTooltip) {
     const layerProps = getLayerProps(name);
     if(!layerProps.class || !layerProps.class["value"]) return null
-    const layerOptions = {};
+    const layerOptions = {}, updateTriggers = {};
     Object.keys(layerProps).forEach(key => {
       const type = layerProps[key] && layerProps[key].type;
       if (type === 'number' || type === 'column') {
         layerOptions[key] = layerProps[key].default;
+        // TODO: generalize updateTriggers using the layerProps
+        // only properties with type "column"
+        // odd fill colour etc can be added.
+        if (type === 'column' && typeof options[key] === 'function') {
+          updateTriggers[key] =
+              typeof (options[key]) === 'function'
+              && data.map(d => options[key](d))
+        }
       } else if (type === 'boolean' || type === 'class') {
         layerOptions[key] = layerProps[key].value;
       } else {
@@ -206,6 +214,8 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     layerOptions.getPosition = d => d.geometry.coordinates;
     // (source, target) vs Object.assign(target, source)
     addOptionsToObject(options, layerOptions)
+    layerOptions.updateTriggers = {
+      ...layerOptions.updateTriggers, ...updateTriggers}
     return new layerProps.class["value"](layerOptions);
   }
 
@@ -247,7 +257,7 @@ const getCentroid = (coords) => {
   return center;
 }
 
-const convertRange = (oldValue = 2, values = 
+const convertRange = (oldValue = 2, values =
   { oldMax: 10, oldMin: 1, newMax: 1, newMin: 0 }) => {
   const value = (((oldValue - values.oldMin) * (values.newMax - values.newMin))
     / (values.oldMax - values.oldMin)) + values.newMin
@@ -294,19 +304,19 @@ const getBbx = (bounds) => {
 
 /**
  * Current version simply picks up a feature out of
- * array of features, compares it to the available 
+ * array of features, compares it to the available
  * list of DeckGL layers supported by eAtlas
  * and returns one of them.
- * 
- * @param {Array} features 
- * @returns 
+ *
+ * @param {Array} features
+ * @returns
  */
 const suggestDeckLayer = (features) => {
   const r = randomToNumber(features && features.length)
   if(!features || !features[r].geometry ||
     !features[r].geometry.type) return null
   // basic version should suggest a layer based
-  // on a simple check of a random geometry type from 
+  // on a simple check of a random geometry type from
   // array of features
   // TODO: go through each feature? in case of features.
   const type = sfType(features[r]);
@@ -318,14 +328,14 @@ const suggestDeckLayer = (features) => {
   } else {
     return "geojson"
   }
-  
+
 }
 const suggestUIforNumber = (number) => {
-  // "checkbox",     
-  // "radio",        
-  // "buttongroups", 
-  // "dropdown",     
-  // "slider"])      
+  // "checkbox",
+  // "radio",
+  // "buttongroups",
+  // "dropdown",
+  // "slider"])
   const { UI_LIST } = Constants;
   if (!number) return UI_LIST[1];
   if (number === 1) {
@@ -344,8 +354,8 @@ const suggestUIforNumber = (number) => {
 /**
  * Changes a `_` separated `str` to space separated and
  * camel cases all words
- * 
- * @param {*} str 
+ *
+ * @param {*} str
  */
 const humanize = (str) => {
   if (!str) return str
@@ -374,7 +384,7 @@ const shortenName = (name, n = 26) => {
 const firstLastNCharacters = (str, n = 5) => {
   if (+str || !str) return str;
   return str.slice(0, n) + (str.length > n + n ?
-    "..." + str.slice(str.length - n, str.length) : 
+    "..." + str.slice(str.length - n, str.length) :
     str.length > n ? "..." : "")
 }
 
@@ -464,9 +474,9 @@ const urlRegex = new RegExp(
 /**
  * TGVE should do a basic check and suffice.
  * Even this is too much.
- * 
+ *
  * Thanks to https://gist.github.com/dperini/729294
- * @param {*} str 
+ * @param {*} str
  */
 const isURL = (str) => {
   if (!isString(str)) return false;
@@ -493,7 +503,7 @@ function hexToRgb(hex) {
 /**
  * Generate colour scale for unique set of values
  * based on the index of a value in an array domain of the set.
- * 
+ *
  * @param {any} v particular value to use in interpolateOrRd
  * @param {Array} domain domain to use in interpolateOrRd
  * @param {Number} alpha value to add to colour pallete
@@ -502,8 +512,8 @@ function hexToRgb(hex) {
 const colorScale = (v, domain, alpha = 180, colorName) => {
   if (!v || !isArray(domain) || !domain.length) return null;
   const index = domain.indexOf(v)
-  const d3InterpolateFn = isString(colorName) && 
-  colorRangeNamesToInterpolate(colorName) ? 
+  const d3InterpolateFn = isString(colorName) &&
+  colorRangeNamesToInterpolate(colorName) ?
   colorRangeNamesToInterpolate(colorName) : interpolateOrRd;
   let rgb = d3InterpolateFn(index / domain.length);
   rgb = rgb.substring(4, rgb.length - 1)
@@ -591,9 +601,9 @@ const colorRanges = (name) => {
  * TODO: much better colour array needed.
  * The purpose here was to use the same
  * colour palette used for the ranges.
- * 
- * @param {String} name 
- * @returns 
+ *
+ * @param {String} name
+ * @returns
  */
 const getColorArray = (name) => {
   if(!isString(name)) return null;
@@ -672,20 +682,20 @@ const ATILOGO = (dark = true) => (
 )
 
 /**
- * Helper function to generate a legend from: `domain`, 
- * `interpolate` function and a `title`. 
- * 
- * @param {Object} options 
+ * Helper function to generate a legend from: `domain`,
+ * `interpolate` function and a `title`.
+ *
+ * @param {Object} options
  * @returns {Object} React.Fragment
  */
 const generateLegend = (options) => {
-  //quick check 
+  //quick check
   const { domain, interpolate = interpolateOrRd, title } = options;
   const r = randomToNumber(domain && domain.length)
   if (!domain || !Array.isArray(domain) || !isNumber(domain[r])) return null
   const jMax = domain[domain.length - 1], jMin = domain[0];
   if(!isNumber(jMax) || !isNumber(jMin)) return null
-  
+
   const legend = [<p key='title'>{title}</p>]
 
   const legendMax = domain.length < 10 ? domain.length : 10
@@ -707,9 +717,9 @@ const generateLegend = (options) => {
 }
 
 /**
- * 
+ *
  * @param {*} data features from a geojson object
- * @param {*} column 
+ * @param {*} column
  */
 const generateDomain = (data, column) => {
   // TODO: if column === 0 it should be valid
@@ -786,12 +796,12 @@ const getOSMTiles = (name) => {
 }
 
 /**
- * 
+ *
  * Function modifies `geojson` in place.
- * 
+ *
  * @param {*} geojson a gejson with matching `geoColumn` to `data` param
  * {features:[], type:}
- * @param {*} data a json {properties:{}} object with matchin 
+ * @param {*} data a json {properties:{}} object with matchin
  * `geoColumn` to `geojson` param. Typically features of another geojons.
  * @param {*} geoColumn geocode which is shared between `geojson` and `data`.
  * It can be the same column name or mapped as `dataCol:geographyCol` string.
@@ -806,12 +816,12 @@ const setGeojsonProps = (geojson, data, geoColumn) => {
   result.features = []
   if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
     !geojson.features || !geojson.features[r] ||
-    !geojson.features[r].properties[geojsonColumn] || !data[r] || 
+    !geojson.features[r].properties[geojsonColumn] || !data[r] ||
     !data[r].properties || !data[r].properties[dataColumn]) return null
   // for now modify the object itself
   geojson.features.forEach(feature => {
     for (let i = 0; i < data.length; i++) {
-      if (feature.properties[geojsonColumn] === 
+      if (feature.properties[geojsonColumn] ===
         data[i].properties[dataColumn]) {
         // feature.properties = data[i].properties;
         const obj = {
@@ -828,10 +838,10 @@ const setGeojsonProps = (geojson, data, geoColumn) => {
 }
 
 /**
- * 
+ *
  * @param {Object} obj Object with keys to compare keys to
  * regex
- * 
+ *
  * @returns first key in the objec that matches the regex
  */
 const getFirstDateColumnName = (obj) => {
@@ -847,12 +857,12 @@ const getMessage = (array) => {
 }
 const getMainMessage = (filtered, unfiltered) => {
   if(filtered && filtered.length && unfiltered && unfiltered) {
-    return getMessage(filtered) + (filtered.length < unfiltered.length ? 
+    return getMessage(filtered) + (filtered.length < unfiltered.length ?
     " of " + unfiltered.length : "")
   } else if(filtered && filtered.length) {
     return getMessage(filtered)
     // TODO: check all rows before declaring
-  } else if(unfiltered && unfiltered.length && 
+  } else if(unfiltered && unfiltered.length &&
     !unfiltered[randomToNumber(unfiltered.length)].geometry) {
     return getMessage(unfiltered) + " - no geometry"
   } else {
@@ -883,7 +893,7 @@ const isStringDate = (value) => {
 
 const arrayCardinality = (array) => {
   if(!Array.isArray(array) || !array.length) return null
-  // 
+  //
   return(Array.from(new Set(array)).length)
 }
 
@@ -897,9 +907,9 @@ const uniqueValuePercentage = (array, test = 60) => {
 /**
  * Gently update browser history using a DeckGL/mapbox
  * viewport object.
- * 
- * @param {*} viewport 
- * @returns 
+ *
+ * @param {*} viewport
+ * @returns
  */
 const updateHistory = (viewport) => {
   if(!viewport) return;
@@ -922,12 +932,12 @@ const updateHistory = (viewport) => {
 
 /**
  * Basic version of saving a screenshot of TGVE.
- * 
+ *
  * @param {*} map mapbox instance fully loaded
  * @param {*} deck deckgl current instance
  * @param {*} includeBody include TGVE sidebar/legend etc, default `true`
  * @param {function} callback returns the canvas based on params
- * @returns 
+ * @returns
  */
 const screenshot = (map, deck, includeBody = true, callback) => {
   const fileName = "tgve-screenshot.png";
@@ -965,7 +975,7 @@ const screenshot = (map, deck, includeBody = true, callback) => {
       saveCanvas(canvas, fileName);
     });
   }
-  // window.location.href = image; // it will save locally  
+  // window.location.href = image; // it will save locally
 }
 
 const saveCanvas = (canvas, fileName) => {

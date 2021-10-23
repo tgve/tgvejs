@@ -394,10 +394,6 @@ export default class Welcome extends React.Component {
       colorRange: colorRanges(cn || colorName),
       getColor: getColorArray(cn || colorName)
     }, layerOptions);
-    // TODO: generalize updateTriggers using the layerProps
-    // only properties with type "column"
-    // odd fill colour etc can be added.
-
     // generate a domain
     const domain = generateDomain(
       data, 
@@ -487,13 +483,6 @@ export default class Welcome extends React.Component {
         // TODO: get the functions & spread them
         getRotationAngle: typeof(options.getRotationAngle) === 'function' &&
           data.map(d => options.getRotationAngle(d)),
-        getWidth: typeof(options.getWidth) === 'function' &&
-          data.map(d => options.getWidth(d))
-      }
-    }
-    if (layerStyle === 'arc' 
-    || layerStyle === 'line') {
-      options.updateTriggers = {
         getWidth: typeof(options.getWidth) === 'function' &&
           data.map(d => options.getWidth(d))
       }
