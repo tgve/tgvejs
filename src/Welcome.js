@@ -169,7 +169,7 @@ export default class Welcome extends React.Component {
    * @param {String} aURL to use if not state.defaultURL is used.
    * @param {Object} customError to use in case of urlCallback object/urls.
    */
-  _fetchAndUpdateState(aURL, customError) {    
+  _fetchAndUpdateState(aURL, customError) { 
     if (aURL && !isURL(aURL)) {
       if(this.state.loading) {
         this.setState({loading: false})
@@ -383,7 +383,7 @@ export default class Welcome extends React.Component {
       'layerStyle' && filter.selected) || this.state.layerStyle || 
       suggestDeckLayer(geography ? geography.features : data);
     // TODO: incorporate this into suggestDeckLayer
-    if (!new RegExp("point", "i").test(geomType)) layerStyle = "geojson"
+    // if (!new RegExp("point", "i").test(geomType)) layerStyle = "geojson"
     const switchToIcon = data.length < iconLimit && !layerStyle && 
     (!filter || filter.what !== 'layerStyle') && geomType === "point";
     if (switchToIcon) layerStyle = 'icon';
@@ -394,7 +394,6 @@ export default class Welcome extends React.Component {
       colorRange: colorRanges(cn || colorName),
       getColor: getColorArray(cn || colorName)
     }, layerOptions);
-    
     // generate a domain
     const domain = generateDomain(
       data, 
@@ -412,13 +411,13 @@ export default class Welcome extends React.Component {
       }
     }
     if (geomType === 'linestring') {
-      layerStyle = "line"
+      // layerStyle = "line"
       // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
       options.getColor = [235, 170, 20]
       options.getPath = d => d.geometry.coordinates
       options.onClick = (info) => {
         if (info && info.hasOwnProperty('coordinate')) {
-          if (['path', 'arc', 'line'].includes(this.state.layerStyle) &&
+          if (['path', 'arc', 'line'].includes(layerStyle) &&
             info.object.geometry.coordinates) {
             this._generateLayer({
               filter: {
@@ -428,14 +427,6 @@ export default class Welcome extends React.Component {
             })
           }
         }
-      }
-      if (layerStyle === 'line') {
-        // options.getSourceColor = d => 
-        // [Math.sqrt(+(d.properties.base)) * 1000, 140, 0]
-        // options.getTargetColor = d => 
-        // [Math.sqrt(+(d.properties.hs2)) * 1e13, 140, 0]
-        options.getSourcePosition = d => d.geometry.coordinates[0] // geojson
-        options.getTargetPosition = d => d.geometry.coordinates[1] // geojson
       }
       if (+(data[0] && data[0].properties &&
         data[0].properties[columnNameOrIndex])) {
@@ -496,7 +487,6 @@ export default class Welcome extends React.Component {
           data.map(d => options.getWidth(d))
       }
     }
-
     if (layerStyle === 'pointcloud') {
       options.getColor = fill;
       options.updateTriggers = {
@@ -787,6 +777,7 @@ export default class Welcome extends React.Component {
         {
           showLegend &&
           <div 
+            id="tgve-legend"
             style={{
               ...theme(this.props.dark)
             }}
