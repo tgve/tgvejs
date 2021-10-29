@@ -4,6 +4,10 @@ import { getLayerProps } from './settingsUtils';
 import {
   humanize
 } from '../../utils';
+import {
+  isStringNumeric
+} from '../../JSUtils';
+
 import { Slider } from 'baseui/slider';
 import { Checkbox } from "baseui/checkbox";
 import { isString } from '../../JSUtils';
@@ -90,10 +94,18 @@ export default function LayerSettings(props) {
             onSelectCallback={(selected) => {
               const newValues = {
                 ...values,
-                //is it resetting a key?
-                [key]: selected.length ? 
-                (d) => d && d.properties 
-                && d.properties[selected[0].value] : options[key].default
+              }
+              const f = (d) => {
+                const numeric = options[key].value === 'number'
+                let r = d && d.properties
+                  && d.properties[selected[0].value]
+                if(isStringNumeric(r) && numeric) r = +r
+                return r
+              }
+              //is it resetting a key?
+              newValues[key] = options[key].default
+              if(selected.length) {
+                newValues[key] = f
               }
               setValues(newValues)
               typeof onLayerOptionsCallback === 'function' &&
