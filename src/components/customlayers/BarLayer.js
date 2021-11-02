@@ -21,12 +21,14 @@ const vs = `
   varying vec4 vColor;
   varying vec2 vPosition;
 
-  vec2 rotate_by_angle(vec2 vertex, float angle) {
+  vec2 rotate_by_angle(vec2 v, float angle) {
     float angle_radian = angle * PI / 180.0;
     float cos_angle = cos(angle_radian);
     float sin_angle = sin(angle_radian);
+    // v.x = v.x * cos_angle - v.x * sin_angle;
+    // v.y = v.y * sin_angle + v.y * cos_angle;
     mat2 rotationMatrix = mat2(cos_angle, -sin_angle, sin_angle, cos_angle);
-    return rotationMatrix * vertex;
+    return rotationMatrix * v;
   }
 
   void main(void) {
@@ -61,7 +63,7 @@ const fs = `
   varying vec2 vPosition;
 
   void main(void) {
-    gl_FragColor = vec4(vColor.rgb, vColor.a);
+    gl_FragColor = vColor;
     DECKGL_FILTER_COLOR(gl_FragColor, geometry);
   }`;
 const defaultProps = {
@@ -113,7 +115,7 @@ export default class BarLayer extends Layer {
         size: 4,
         type: GL.UNSIGNED_BYTE,
         accessor: 'getColor',
-        defaultValue: [1, 0, 0, 255]
+        defaultValue: [255, 0, 0, 255]
       },
       instanceScale: {
         size: 1,
