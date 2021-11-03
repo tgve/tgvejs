@@ -10,7 +10,7 @@ const vs = `
   attribute vec4 instanceColors;
   attribute float instanceScale;
   attribute float instanceRotationAngle;
-  attribute float instanceWidth;
+  // attribute float instanceWidth;
   // for onHover to work must
   // delcare instancePickingColors here and assign it to
   // geometry.pickingColor
@@ -21,12 +21,14 @@ const vs = `
   varying vec4 vColor;
   varying vec2 vPosition;
 
-  vec2 rotate_by_angle(vec2 vertex, float angle) {
+  vec2 rotate_by_angle(vec2 v, float angle) {
     float angle_radian = angle * PI / 180.0;
     float cos_angle = cos(angle_radian);
     float sin_angle = sin(angle_radian);
+    // v.x = v.x * cos_angle - v.x * sin_angle;
+    // v.y = v.y * sin_angle + v.y * cos_angle;
     mat2 rotationMatrix = mat2(cos_angle, -sin_angle, sin_angle, cos_angle);
-    return rotationMatrix * vertex;
+    return rotationMatrix * v;
   }
 
   void main(void) {
@@ -34,8 +36,11 @@ const vs = `
 
     vec3 offsetCommon = positions * project_size(instanceRadius);
     offsetCommon = vec3(rotate_by_angle(offsetCommon.xy, instanceRotationAngle), 0);
-    offsetCommon.x = offsetCommon.x * instanceWidth;
-    // width first
+    offsetCommon.x = offsetCommon.x * 8.0;
+    offsetCommon.y = offsetCommon.y * 3.0;
+    // width if active
+    // offsetCommon = offsetCommon.x + offsetCommon.x / instanceWidth;
+    
     offsetCommon = offsetCommon * instanceScale;
     
     vec3 positionCommon = project_position(instancePositions, instancePositions64Low);
@@ -54,20 +59,11 @@ const vs = `
 const fs = `
   precision highp float;
 
-  uniform float smoothRadius;
-
   varying vec4 vColor;
   varying vec2 vPosition;
 
-  void main(void) {    
-    float distToCenter = length(vPosition);
-
-    if (distToCenter > 1.0) {
-      discard;
-    }
-
-    float alpha = smoothstep(1.0, 1.0 - smoothRadius, distToCenter);
-    gl_FragColor = vec4(vColor.rgb, vColor.a * alpha);
+  void main(void) {
+    gl_FragColor = vColor;
     DECKGL_FILTER_COLOR(gl_FragColor, geometry);
   }`;
 const defaultProps = {
@@ -77,14 +73,12 @@ const defaultProps = {
   getRadius: {type: 'accessor', value: 30},
   // Color of each circle, in [R, G, B, (A)]
   getColor: {type: 'accessor', value: [0, 0, 0, 255]},
-  // Amount to soften the edges
-  smoothRadius: {type: 'number', min: 0, value: 0.5},
   // Amount to scale bottom of arrow
   getScale: {type: 'accessor', value: 1},
   // Amount to rotate line with
   getRotationAngle: {type: 'accessor', value: 1},
   // Amount to thicken the line with
-  getWidth: {type: 'accessor', value: 1},
+  // getWidth: {type: 'accessor', value: 1},
 };
 
 export default class BarLayer extends Layer {
@@ -121,14 +115,7 @@ export default class BarLayer extends Layer {
         size: 4,
         type: GL.UNSIGNED_BYTE,
         accessor: 'getColor',
-        defaultValue: [1, 0, 0, 255]
-      },
-      smoothRadius: {
-        size: 1,
-        normalized: true,
-        type: GL.UNSIGNED_BYTE,
-        accessor: 'smoothRadius',
-        defaultValue: [1, 0, 0, 255]
+        defaultValue: [255, 0, 0, 255]
       },
       instanceScale: {
         size: 1,
@@ -139,12 +126,12 @@ export default class BarLayer extends Layer {
         size: 1,
         accessor: 'getRotationAngle',
         defaultValue: 1
-      },
-      instanceWidth: {
-        size: 1,
-        accessor: 'getWidth',
-        defaultValue: 1
       }
+      // instanceWidth: {
+      //   size: 1,
+      //   accessor: 'getWidth',
+      //   defaultValue: 1
+      // }
     })
   }
   updateState({props, oldProps, changeFlags}) {
@@ -162,9 +149,6 @@ export default class BarLayer extends Layer {
   draw({uniforms}) {
     this.state.model
       .setUniforms(uniforms)
-      .setUniforms({
-        smoothRadius: this.props.smoothRadius
-      })
       .draw();    
   }
 

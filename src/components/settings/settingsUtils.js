@@ -129,8 +129,8 @@ const textObject = {
 layers["text"] = addOptionsToObject(options, textObject);
 const barvisObject = {
   class: { value: BarLayer, type: 'class' },
-  getRotationAngle: { type: 'column', value: 'number', default: 1},
-  getWidth: { type: 'column', value: 'number', default: 1}
+  getRotationAngle: { type: 'column', value: 'number', default: 0},
+  getScale: { type: 'column', value: 'number', default: 20}
 }
 layers["barvis"] = addOptionsToObject(options, barvisObject);
 

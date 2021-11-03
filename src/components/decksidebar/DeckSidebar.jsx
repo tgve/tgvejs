@@ -63,8 +63,9 @@ export default class DeckSidebar extends React.Component {
     //TODO:  a more functional way is needed
     // e.g JSON.stringify like in Welcome.js etc
     // consider change in unfilteredData too
-    if (!data || (data && nextProps && nextProps.data &&
-      JSON.stringify(data) === JSON.stringify(nextProps.data))) {
+    if (!data && !nextProps.data) return false
+    if (data && nextProps && nextProps.data &&
+      JSON.stringify(data) === JSON.stringify(nextProps.data)) {
       return false
     }
     return true;

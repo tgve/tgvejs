@@ -2,7 +2,8 @@ import React from 'react';
 import {
   interpolateOrRd, // schemeBlues
   interpolateReds, interpolateYlGnBu, interpolateGreens,
-  interpolateOranges, interpolateSinebow
+  interpolateOranges, interpolateSinebow,
+  schemeSet1
 } from 'd3-scale-chromatic';
 import {scaleThreshold} from 'd3-scale';
 
@@ -491,12 +492,16 @@ const isMobile = function () {
   return check;
 };
 
-function hexToRgb(hex) {
+const cb9 = [[228,26,28,255], [55,126,184,255], [77,175,74,255],
+[152,78,163,255], [255,127,0,255], [255,255,51,255], [166,86,40,255],
+[247,129,191,255]]
+
+function hexToRgb(hex, array = false) {
   let bigint = parseInt(hex.substring(1, hex.length), 16);
   let r = (bigint >> 16) & 255;
   let g = (bigint >> 8) & 255;
   let b = bigint & 255;
-
+  if(array) return [r/255,g/255,b/255]
   return 'rgb(' + r + "," + g + "," + b + ")";
 }
 
@@ -511,6 +516,10 @@ function hexToRgb(hex) {
  */
 const colorScale = (v, domain, alpha = 180, colorName) => {
   if (!v || !isArray(domain) || !domain.length) return null;
+  if(colorName === colorRangeNames[5] && domain.length <= 10) {
+    const rgb = hexToRgb(schemeSet1[domain.indexOf(v)], true);
+    return [...rgb, alpha]
+  }
   const index = domain.indexOf(v)
   const d3InterpolateFn = isString(colorName) &&
   colorRangeNamesToInterpolate(colorName) ?
@@ -856,16 +865,20 @@ const getMessage = (array) => {
   array.length + " row" + (array.length > 1 ? "s" : "")
 }
 const getMainMessage = (filtered, unfiltered) => {
-  if(filtered && filtered.length && unfiltered && unfiltered) {
+  if(filtered && filtered.length && unfiltered && unfiltered.length) {
     return getMessage(filtered) + (filtered.length < unfiltered.length ?
     " of " + unfiltered.length : "")
   } else if(filtered && filtered.length) {
     return getMessage(filtered)
     // TODO: check all rows before declaring
-  } else if(unfiltered && unfiltered.length &&
-    !unfiltered[randomToNumber(unfiltered.length)].geometry) {
-    return getMessage(unfiltered) + " - no geometry"
-  } else {
+  } 
+  // else if(unfiltered && unfiltered.length) {
+  //   const r = randomToNumber(unfiltered.length);
+  //   console.log(r);
+  //   if(!unfiltered[r].geometry) return getMessage(unfiltered) + " - no geometry"
+  //   return getMessage(unfiltered)
+  // } 
+  else {
     return "Nothing to show"
   }
 }

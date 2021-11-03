@@ -473,21 +473,8 @@ export default class Welcome extends React.Component {
         getFillColor: data.map((d) => fill(d))
       }
     }
-    if (layerStyle === 'barvis') {
-      options.getPosition = d => [d.geometry.coordinates[0],
-      d.geometry.coordinates[1], 0]
-      // if (data[0].properties.result) options.getRotationAngle = d =>
-      //   d.properties.result.includes("gain from") ? 45 : 1
-      options.getScale = 20
-      options.updateTriggers = {
-        // TODO: get the functions & spread them
-        getRotationAngle: typeof(options.getRotationAngle) === 'function' &&
-          data.map(d => options.getRotationAngle(d)),
-        getWidth: typeof(options.getWidth) === 'function' &&
-          data.map(d => options.getWidth(d))
-      }
-    }
-    if (layerStyle === 'pointcloud') {
+
+    if (layerStyle === 'pointcloud' || layerStyle === 'barvis') {
       options.getColor = fill;
       options.updateTriggers = {
         getColor: data.map((d) => fill(d)),
