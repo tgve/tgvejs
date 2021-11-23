@@ -116,6 +116,7 @@ const arcObject = {
 layers['arc'] = addOptionsToObject(options, arcObject)
 const pathObject = {
   class: { value: PathLayer, type: 'class' },
+  getPath: d => d.geometry.coordinates
 }
 layers['path'] = addOptionsToObject(options, pathObject)
 const heatObject = {
