@@ -1,4 +1,4 @@
-23 September, 2021
+24 November, 2021
 
 # TGVE · [![Node CI](https://github.com/tgve/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22) [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
 
@@ -91,6 +91,9 @@ The package follows `create-react-app` testing kits and uses mainly
 
 ## Change log
 
+-   `1.3.4.beta.4`
+    -   Minor issues and post tgver package Tests
+    -   Path layer API in
 -   `1.3.4.beta.0`
     -   API value `hideChartGenerator` is one of the few from the wider
         and potentially `hideSidebar`.

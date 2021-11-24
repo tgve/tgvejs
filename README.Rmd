@@ -64,6 +64,9 @@ The package follows `create-react-app` testing kits and uses mainly
 `jest`. Run `npm run test`.
 
 ## Change log
+- `1.3.4.beta.4`
+  - Minor issues and post tgver package Tests
+  - Path layer API in
 - `1.3.4.beta.0`
   - API value `hideChartGenerator` is one of the few from the wider and potentially `hideSidebar`.
   - Added basic version of "screenshot" or save. The future plan for this is a full analytic report (PDF) generation.
