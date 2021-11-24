@@ -116,7 +116,12 @@ const arcObject = {
 layers['arc'] = addOptionsToObject(options, arcObject)
 const pathObject = {
   class: { value: PathLayer, type: 'class' },
-  getPath: d => d.geometry.coordinates
+  // TODO: drop down to switch
+  widthUnits: 'pixels',
+  getPath: d => d.geometry.coordinates,
+  getWidth: { type: 'column', value: 'number', default: 2},
+  widthScale: { type: 'column', value: 'number', default: 1},
+  widthMinScale: makeObject('number', 0, 100, 1, 2),
 }
 layers['path'] = addOptionsToObject(options, pathObject)
 const heatObject = {
