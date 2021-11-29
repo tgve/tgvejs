@@ -1,10 +1,9 @@
 import React from 'react';
 
 import { isArray } from '../../JSUtils';
-import Plotly from "plotly.js";
 import createPlotlyComponent from "./factory";
 
-const Plot = createPlotlyComponent(Plotly);
+const Plot = createPlotlyComponent(window.Plotly);
 /**
  * React Hook generic Plotly plot which takes data in the following format:
  * [
@@ -26,6 +25,7 @@ const Plot = createPlotlyComponent(Plotly);
  * @param {Object} props 
  */
 export default function(props) {
+  console.log("fiq");
   const { data, width = 250, height = 200, title = "Plot",
     dark, xaxis = {}, yaxis = {},
     displayModeBar, onClickCallback } = props; // Object.assign errs on undefined
