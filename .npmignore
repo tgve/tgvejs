@@ -6,3 +6,8 @@ public/
 .vscode/
 nodetes.md
 __snapshots__/
+Dockerfile
+refs.bib
+rollup.config.js
+semver.md
+notes.md
