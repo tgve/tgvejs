@@ -19,7 +19,7 @@ import { isString, isNumber, isObject, randomToNumber, isStringNumeric,
   isNullUndefinedNaN } from './JSUtils.js';
 import IconClusterLayer from '../icon-cluster-layer';
 import atlas from '../img/location-icon-atlas.png';
-import { sfType } from '../geojsonutils';
+import { sfType } from './geojsonutils';
 import { getLayerProps } from '../components/settings/settingsUtils';
 import history from '../history';
 

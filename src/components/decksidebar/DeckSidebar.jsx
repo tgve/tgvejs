@@ -16,7 +16,7 @@ import {
 import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
-import { propertyCount, arrayPlotProps } from '../../geojsonutils';
+import { propertyCount, arrayPlotProps } from '../../utils/geojsonutils';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Modal';
 import DataTable from '../Table';

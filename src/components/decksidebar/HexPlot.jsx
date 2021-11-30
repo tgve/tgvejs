@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import HexbinSeries from '../showcases/HexbinSeries';
 
-import { coordsAsXY } from '../../geojsonutils';
+import { coordsAsXY } from '../../utils/geojsonutils';
 
 export default (props) => {
   // const [value, setValue] = useState([]);

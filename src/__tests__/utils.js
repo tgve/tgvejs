@@ -83,7 +83,7 @@ test("suggestDeckLayer", () => {
 const array = Array.from({length: 10}, (v, i) => i)
 
 test("uniqueValuePercentage", () => {
-  expect(uniqueValuePercentage(array)).toBe.true
+  expect(uniqueValuePercentage(array)).toBe(true)
   expect(uniqueValuePercentage(
     array.concat(array)
   )).toBe(false)

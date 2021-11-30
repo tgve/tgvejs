@@ -5,7 +5,7 @@ import {
 } from 'react-vis';
 import { format } from 'd3-format';
 
-import { getPropertyValues, propertyCountByProperty } from '../../geojsonutils';
+import { getPropertyValues, propertyCountByProperty } from '../../utils/geojsonutils';
 import { isArray, isString } from '../../utils/JSUtils';
 import { PLOT_W, TURQUOISE_RANGE } from '../../Constants';
 import { xyObjectByProperty, humanize, getFirstDateColumnName,
