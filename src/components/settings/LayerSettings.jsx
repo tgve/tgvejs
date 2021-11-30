@@ -6,11 +6,11 @@ import {
 } from '../../utils/utils';
 import {
   isStringNumeric
-} from '../../JSUtils';
+} from '../../utils/JSUtils';
 
 import { Slider } from 'baseui/slider';
 import { Checkbox } from "baseui/checkbox";
-import { isString } from '../../JSUtils';
+import { isString } from '../../utils/JSUtils';
 import { Accordion, Panel } from 'baseui/accordion';
 
 

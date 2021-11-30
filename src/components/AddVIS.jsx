@@ -6,7 +6,7 @@ import { VerticalBarSeries, HorizontalBarSeries, LineSeries } from 'react-vis';
 import MultiSelect from './MultiSelect';
 import TreeMap from './TreeMap';
 import { humanize } from '../utils/utils';
-import { isString, isNumber } from '../JSUtils';
+import { isString, isNumber } from '../utils/JSUtils';
 import { xyObjectByProperty } from '../utils/utils';
 import SeriesPlot from './showcases/SeriesPlot';
 

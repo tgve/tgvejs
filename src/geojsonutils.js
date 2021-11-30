@@ -1,6 +1,6 @@
 import {
   isNumber, isBoolean, isObject, isString, isStringNumeric
-} from './JSUtils';
+} from './utils/JSUtils';
 import { isStringDate, uniqueValuePercentage, xyObjectByProperty } from './utils/utils';
 
 // thanks turfjs

@@ -16,7 +16,7 @@ import qs from 'qs'; // importing it other ways would cause minification issue.
 import mapping from '../location-icon-mapping.json';
 import Constants from '../Constants';
 import { isString, isNumber, isObject, randomToNumber, isStringNumeric,
-  isNullUndefinedNaN } from '../JSUtils.js';
+  isNullUndefinedNaN } from './JSUtils.js';
 import IconClusterLayer from '../icon-cluster-layer';
 import atlas from '../img/location-icon-atlas.png';
 import { sfType } from '../geojsonutils';

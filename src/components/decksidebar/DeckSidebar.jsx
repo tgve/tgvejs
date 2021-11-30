@@ -27,7 +27,7 @@ import {
   plotByProperty
 } from '../showcases/plots';
 import SeriesPlot from '../showcases/SeriesPlot';
-import { isEmptyOrSpaces } from '../../JSUtils';
+import { isEmptyOrSpaces } from '../../utils/JSUtils';
 import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
 import Boxplot from '../boxplot/Boxplot';
