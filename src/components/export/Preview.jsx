@@ -10,7 +10,7 @@ import {
   ModalFooter,
   ModalButton,
 } from 'baseui/modal';
-import { iWithFaName } from '../../utils';
+import { iWithFaName } from '../../utils/utils';
 
 export default function Preview(props) {
   const [isOpen, setOpen] = React.useState(false);

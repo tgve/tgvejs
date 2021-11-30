@@ -12,7 +12,7 @@ import {
   percentDiv,
   searchNominatom, firstLastNCharacters,
   humanize, getMainMessage, theme
-} from '../../utils';
+} from '../../utils/utils';
 import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';

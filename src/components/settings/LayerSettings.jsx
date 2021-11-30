@@ -3,7 +3,7 @@ import MultiSelect from '../MultiSelect';
 import { getLayerProps } from './settingsUtils';
 import {
   humanize
-} from '../../utils';
+} from '../../utils/utils';
 import {
   isStringNumeric
 } from '../../JSUtils';

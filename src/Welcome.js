@@ -32,7 +32,7 @@ import {
   convertRange, getMin, getMax, isURL, 
   generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray, 
   theme, updateHistory, screenshot
-} from './utils';
+} from './utils/utils';
 import {
   LIGHT_SETTINGS, DECKGL_INIT, ICONLIMIT,
   BLANKSTYLE

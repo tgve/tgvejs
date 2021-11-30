@@ -4,7 +4,7 @@ import { Input, SIZE } from "baseui/input";
 import GenerateUI from '../UI';
 import { DateTime } from "luxon";
 import { getPropertyValues } from '../../geojsonutils';
-import { getFirstDateColumnName } from '../../utils';
+import { getFirstDateColumnName } from '../../utils/utils';
 
 import { Slider } from 'baseui/slider';
 

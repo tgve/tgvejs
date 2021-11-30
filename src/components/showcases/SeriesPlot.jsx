@@ -6,7 +6,7 @@ import {
 } from 'react-vis';
 import { format } from 'd3-format';
 
-import { shortenName } from '../../utils';
+import { shortenName } from '../../utils/utils';
 import { PLOT_W } from '../../Constants';
 
 const W = PLOT_W;

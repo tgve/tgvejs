@@ -9,7 +9,7 @@ import { getPropertyValues, propertyCountByProperty } from '../../geojsonutils';
 import { isArray, isString } from '../../JSUtils';
 import { PLOT_W, TURQUOISE_RANGE } from '../../Constants';
 import { xyObjectByProperty, humanize, getFirstDateColumnName,
-  isStringDate } from '../../utils';
+  isStringDate } from '../../utils/utils';
 import { scaleSequential } from 'd3-scale';
 
 import GenericPlotly from './GenericPlotly';

@@ -1,7 +1,7 @@
 import {
   isNumber, isBoolean, isObject, isString, isStringNumeric
 } from './JSUtils';
-import { isStringDate, uniqueValuePercentage, xyObjectByProperty } from './utils';
+import { isStringDate, uniqueValuePercentage, xyObjectByProperty } from './utils/utils';
 
 // thanks turfjs
 //http://wiki.geojson.org/GeoJSON_draft_version_6

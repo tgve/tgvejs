@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table } from 'baseui/table';
-import { humanize } from '../utils';
+import { humanize } from '../utils/utils';
 import { getPropertyValues, propertyCountByProperty } from '../geojsonutils';
 import Plot from './showcases/GenericPlotly';
 import { scaleSequential } from 'd3-scale';
