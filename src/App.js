@@ -15,11 +15,15 @@ import { params } from './utils/api';
 const engine = new Styletron();
 
 export default function (props) {
-  const apis = params(props)
+  const apis = params(props, 
+    props.location ? 
+      props.location.search : window.location.search)
+      
   return (
     <main>
       <StyletronProvider value={engine}>
-        <BaseProvider theme={apis.dark ? DarkTheme : LightTheme}>
+        <BaseProvider 
+          theme={apis.dark === false ? LightTheme : DarkTheme}>
           <Welcome
             {...apis}
           />
