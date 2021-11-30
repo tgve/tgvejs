@@ -27,12 +27,12 @@ import { difference } from 'underscore';
 
 import {
   fetchData, generateDeckLayer, suggestDeckLayer,
-  getParamsFromSearch, getBbx, isMobile, colorScale, getOSMTiles,
+  getViewportParams, getBbx, isMobile, colorScale, getOSMTiles,
   colorRanges, generateDomain, setGeojsonProps,
   convertRange, getMin, getMax, isURL, 
   generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray, 
   theme, updateHistory, screenshot
-} from './utils';
+} from './utils/utils';
 import {
   LIGHT_SETTINGS, DECKGL_INIT, ICONLIMIT,
   BLANKSTYLE
@@ -42,9 +42,9 @@ import DeckSidebarContainer from
 
 import './App.css';
 import Tooltip from './components/Tooltip';
-import { getPropertyValues, sfType } from './geojsonutils';
+import { getPropertyValues, sfType } from './utils/geojsonutils';
 import { throttle } from 'lodash';
-import { isObject } from './JSUtils';
+import { isObject } from './utils/JSUtils';
 import { CustomSlider } from './components/showcases/Widgets';
 
 // Set your mapbox access token here
@@ -63,7 +63,7 @@ export default class Welcome extends React.Component {
     super(props)
     const init = props.viewport && Object.keys(props.viewport) ?
       Object.assign(DECKGL_INIT, props.viewport) : DECKGL_INIT;
-    const param = getParamsFromSearch(props.location ? 
+    const param = getViewportParams(props.location ? 
       props.location.search : window.location.search);
     if (param) {
       //lat=53.814&lng=-1.534&zoom=11.05&bea=0&pit=55&alt=1.5

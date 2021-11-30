@@ -1,4 +1,4 @@
-import {randomToNumber} from '../JSUtils'
+import {randomToNumber} from '../utils/JSUtils'
 
 test("randomToNumber", () => {
   expect(randomToNumber(null)).toEqual(0)

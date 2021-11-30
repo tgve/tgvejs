@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { isArray } from '../../JSUtils';
+import { isArray } from '../../utils/JSUtils';
 import Plotly from "plotly.js";
 import createPlotlyComponent from "./factory";
 

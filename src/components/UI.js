@@ -8,7 +8,7 @@ import { StatefulSelect, TYPE } from 'baseui/select';
 
 import {
   suggestUIforNumber, humanize
-} from '../utils';
+} from '../utils/utils';
 
 export default class UI extends React.Component {
   constructor(props) {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Table } from 'baseui/table';
 import { Pagination } from 'baseui/pagination';
 
-import { humanize } from '../utils';
+import { humanize } from '../utils/utils';
 
 export default function DataTable(props) {
   const [currentPage, setCurrentPage] = React.useState(1);

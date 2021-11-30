@@ -4,7 +4,7 @@ import {
   Glyphicon, FormGroup
 } from 'react-bootstrap';
 
-import { isURL } from '../utils';
+import { isURL } from '../utils/utils';
 
 export default function URL(props) {
   const { urlCallback } = props;

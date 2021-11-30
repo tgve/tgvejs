@@ -5,7 +5,7 @@ import {
 } from 'deck.gl';
 import IconClusterLayer from '../../icon-cluster-layer';
 import BarLayer from '../customlayers/BarLayer'
-import { isString } from '../../JSUtils';
+import { isString } from '../../utils/JSUtils';
 
 const addOptionsToObject = (opt, obj) => {
   Object.keys(opt).forEach(key => {

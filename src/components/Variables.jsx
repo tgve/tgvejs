@@ -17,9 +17,9 @@
 import React, { useState } from 'react';
 
 import './style.css';
-import { humanize } from '../utils';
-import { isEmptyOrSpaces } from '../JSUtils';
-import { describeFeatureVariables } from '../geojsonutils';
+import { humanize } from '../utils/utils';
+import { isEmptyOrSpaces } from '../utils/JSUtils';
+import { describeFeatureVariables } from '../utils/geojsonutils';
 import { Select, TYPE } from 'baseui/select';
 import MultiSelect from './MultiSelect';
 
