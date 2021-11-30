@@ -118,7 +118,7 @@ export default class Welcome extends React.Component {
     if(JSON.stringify(data) !== JSON.stringify(this.props.data) ||
       defaultURL !== this.props.defaultURL ||
       geographyURL !== this.props.geographyURL ||
-      geographyColumn !== geographyColumn ) {
+      geographyColumn !== this.props.geographyColumn ) {
       this._initDataState()
       return true
     }
