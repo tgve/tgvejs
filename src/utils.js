@@ -265,8 +265,8 @@ const convertRange = (oldValue = 2, values =
   return +(value.toFixed(2))
 }
 
-const getParamsFromSearch = (search) => {
-  if (!search) return (null);
+const getViewportParams = (search) => {
+  if (typeof search !== 'object') return (null);
 
   const qsResult = qs.parse(search.replace("?", ""))
   // 3 decimal points is street level
@@ -1012,11 +1012,11 @@ export {
   colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
   getFirstDateColumnName,
-  firstLastNCharacters,
-  getParamsFromSearch,
   uniqueValuePercentage,
+  firstLastNCharacters,
   xyObjectByProperty,
   suggestUIforNumber,
+  getViewportParams,
   generateDeckLayer,
   checkURLReachable,
   suggestDeckLayer,
