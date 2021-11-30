@@ -1,9 +1,9 @@
 import React from 'react';
-import {shallow, mount} from 'enzyme';
-import { BrowserRouter } from 'react-router-dom';
+import {shallow} from 'enzyme';
+// import { BrowserRouter } from 'react-router-dom';
 
 import Welcome from '../Welcome';
-import DeckGL from 'deck.gl';
+// import DeckGL from 'deck.gl';
 
 test('Welcome shallow and mount', () => {
   const w = shallow(<Welcome location={{search: null}}/>);

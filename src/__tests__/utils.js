@@ -2,7 +2,7 @@ import {firstLastNCharacters, humanize,
   colorScale, generateDomain, xyObjectByProperty,
   suggestDeckLayer, isURL,
   uniqueValuePercentage
-} from '../utils';
+} from '../utils/utils';
 import { LAYERSTYLES } from '../Constants';
 
 const sampleGeojson = { "type": "FeatureCollection",
