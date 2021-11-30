@@ -266,7 +266,7 @@ const convertRange = (oldValue = 2, values =
 }
 
 const getViewportParams = (search) => {
-  if (typeof search !== 'object') return (null);
+  if (!search) return (null);
 
   const qsResult = qs.parse(search.replace("?", ""))
   // 3 decimal points is street level
