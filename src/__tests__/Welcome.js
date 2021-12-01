@@ -4,11 +4,15 @@ import {shallow} from 'enzyme';
 
 import Welcome from '../Welcome';
 // import DeckGL from 'deck.gl';
+const w = shallow(<Welcome location={{search: null}}/>);
 
 test('Welcome shallow and mount', () => {
-  const w = shallow(<Welcome location={{search: null}}/>);
   // console.log(w.debug())
   expect(w.find('DeckGL')).not.toBeNull(); 
   expect(w.find('InteractiveMap')).not.toBeNull();
   expect(w.find("div.loader").length).toBe(1)
+})
+
+test('Welcome child DeckSidebarContainer', () => {
+  const ds = w.find('div');
 })
