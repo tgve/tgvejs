@@ -12,7 +12,7 @@ import HexPlot from './HexPlot';
  * if need be.
  * 
  */
-export default (props) => {
+export default function DeckSidebarContainer (props) {
   const [open, setOpen] = useState(!props.isMobile);
   const [hex, setHex] = useState(false);
 
