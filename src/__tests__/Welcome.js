@@ -15,5 +15,4 @@ test('Welcome shallow and mount', () => {
 
 test('Welcome child DeckSidebarContainer', () => {
   const ds = w.find('div');
-  console.log(ds.debug());
 })
