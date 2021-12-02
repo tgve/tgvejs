@@ -14,5 +14,9 @@ test('Welcome shallow and mount', () => {
 })
 
 test('Welcome child DeckSidebarContainer', () => {
-  const ds = w.find('div');
+  const wd = shallow(<Welcome hideCharts={true}/>);
+  const ds = wd.find('div').find('DeckSidebarContainer');
+  // console.log(ds.debug());
+  expect(ds.props().hideCharts).toBe(true)
+
 })
