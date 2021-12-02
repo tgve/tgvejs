@@ -43,8 +43,8 @@ const params = function (props, search = "") {
     hideCharts: qsr.hasOwnProperty("hideCharts") ? 
       boolStr(qsr.hideCharts) : typeof hideCharts === "boolean" ?
       hideCharts : process.env.REACT_APP_HIDE_CHARTS,
-    // doubt they can be injected from envs
-    data,
+    // doubt these can be injected from envs
+    data: jsonStr(qsr.data) || data,
     leftSidebarContent,
     viewport,
   })
@@ -54,6 +54,17 @@ const boolStr = function(str) {
   if(str === 'true') return true
   return false
 }
+
+const jsonStr = function(str) {
+  try {
+    const json = JSON.parse(str);
+    return json
+  } catch (e) {
+    return false;
+  }
+}
+
 export {
+  jsonStr,
   params
 }
