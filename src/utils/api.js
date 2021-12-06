@@ -16,7 +16,9 @@ const params = function (props, search = "") {
   const { defaultURL, tooltipColumns, geographyURL,
     geographyColumn, column, data, layerName, dark,
     leftSidebarContent, viewport, hideChartGenerator,
-    hideCharts } = props;
+    hideCharts, 
+    // > version 1.3.5-beta.0
+    hideSidebar } = props;
     
   return ({
     dark: qsr.hasOwnProperty("dark") ? 
@@ -43,6 +45,10 @@ const params = function (props, search = "") {
     hideCharts: qsr.hasOwnProperty("hideCharts") ? 
       boolStr(qsr.hideCharts) : typeof hideCharts === "boolean" ?
       hideCharts : process.env.REACT_APP_HIDE_CHARTS,
+    // > version 1.3.5-beta.0
+    hideSidebar: (qsr.hasOwnProperty("hideSidebar")) ?
+      boolStr(qsr.hideSidebar) : typeof hideSidebar === "boolean" ?
+      hideSidebar : process.env.REACT_APP_HIDE_SIDEBAR,
     // doubt these can be injected from envs
     data: jsonStr(qsr.data) || data,
     leftSidebarContent,
