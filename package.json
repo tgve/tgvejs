@@ -40,7 +40,7 @@
     "react-map-gl": "5.2.1",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^4.0.3",
+    "react-scripts": "3.4.4",
     "react-vis": "^1.11.7",
     "styletron-engine-atomic": "^1.4.6",
     "styletron-react": ">=5.2.2 < 7",
