@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x]
+        node-version: [12.x, 14.x]
 
     steps:
     - uses: actions/checkout@v1
@@ -20,10 +20,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: npm install and test
-      run: |
-        npm i
-        npm i react react-dom
-        npm test
+    - name: npm install
+      run: npm i
       env:
         CI: true
+    - name: install react & react-dom
+      run: npm i react react-dom
+    - name: npm test
+      run: npm test
