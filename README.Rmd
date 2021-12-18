@@ -42,6 +42,8 @@ As of version `1.3.4-beta.1` these API variables can be passed to TGVE:
 
   - `hideCharts` boolean value which would hide all charts. This takes priority over `hideChartGenerator` parameter.
 
+  - `hideSidebar` boolean value which would hide the left sidebar.
+
 None of the above is necessary and in the current release “Add data”
 button will allow loading data into eAtlas.
 

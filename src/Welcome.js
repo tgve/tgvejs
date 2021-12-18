@@ -599,7 +599,7 @@ export default class Welcome extends React.Component {
 
   render() {
     const { hideCharts, hideChartGenerator, dark, defaultURL,
-      leftSidebarContent } = this.props;
+      leftSidebarContent, hideSidebar } = this.props;
     const { tooltip, viewport, initialViewState,
       loading, mapStyle, alert, data, filtered, bottomPanel,
       layerStyle, geomType, legend, coords } = this.state;
@@ -662,7 +662,7 @@ export default class Welcome extends React.Component {
             {tooltip}
           </DeckGL>
         </MapGL>
-        <DeckSidebarContainer
+        {!hideSidebar && <DeckSidebarContainer
           hideCharts={hideCharts}
           screenshot={(options, callback) =>
             screenshot(this.map, this.deck, options, callback)
@@ -760,7 +760,7 @@ export default class Welcome extends React.Component {
           // TODO: generalise datasetName
           datasetName={defaultURL}
           bottomPanel={bottomPanel}
-        />
+        />}
         {
           showLegend &&
           <div 

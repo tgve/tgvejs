@@ -1,4 +1,4 @@
-02 December, 2021
+06 December, 2021
 
 # TGVE · [![Node CI](https://github.com/tgve/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22) [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
 
@@ -68,6 +68,8 @@ As of version `1.3.4-beta.1` these API variables can be passed to TGVE:
 
 -   `hideCharts` boolean value which would hide all charts. This takes
     priority over `hideChartGenerator` parameter.
+
+-   `hideSidebar` boolean value which would hide the left sidebar.
 
 None of the above is necessary and in the current release “Add data”
 button will allow loading data into eAtlas.
