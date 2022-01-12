@@ -78,7 +78,7 @@ Then you can run
 
 ``` r
 library(geoplumber)
-gp_plumb()
+geoplumber::gp_plumb()
 ```
 
 visit `localhost:8000`
