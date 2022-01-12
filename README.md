@@ -60,7 +60,7 @@ library(geoplumber)
 gp_build()
 ```
 
-To run the app using `geoplumber`, tha front-end is built using
+To run the app using `geoplumber`, the front-end is built using
 `geoplumber` and therefore:
 
 -   (optional) TGVE will be looking for a Mapbox API key, having
