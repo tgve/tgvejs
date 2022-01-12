@@ -53,7 +53,13 @@ The whole application is a
 is an R powered backend API (think Flask in Python) and a ReactJS front
 end.
 
-To build the frontend, from an R console:
+To build the frontend, ensure you have geoplumber installed:
+
+``` r
+devtools::install_github("ATFutures/geoplumber")
+```
+
+and then from the R console run:
 
 ``` r
 library(geoplumber)
