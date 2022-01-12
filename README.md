@@ -49,7 +49,7 @@ The frontend is a
 ### R
 
 The whole application is a
-[geopumber](https://github.com/ATFutures/geoplumber) app. That means it
+[geoplumber](https://github.com/ATFutures/geoplumber) app. That means it
 is an R powered backend API (think Flask in Python) and a ReactJS front
 end.
 
