@@ -49,17 +49,11 @@ The frontend is a
 ### R
 
 The whole application is a
-[geoplumber](https://github.com/ATFutures/geoplumber) app. That means it
+[geoplumber](https://github.com/ATFutures/geoplumber) app, so follow the instructions to install that library. That means it
 is an R powered backend API (think Flask in Python) and a ReactJS front
 end.
 
-To build the frontend, ensure you have geoplumber installed:
-
-``` r
-devtools::install_github("ATFutures/geoplumber")
-```
-
-and then from the R console run:
+To build the frontend, from the R console:
 
 ``` r
 library(geoplumber)
