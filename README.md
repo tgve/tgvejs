@@ -53,11 +53,11 @@ The whole application is a
 is an R powered backend API (think Flask in Python) and a ReactJS front
 end.
 
-To build the frontend, from the R console:
+To build the frontend, from the R console (with the eAtlas folder as working directory):
 
 ``` r
 library(geoplumber)
-gp_build()
+geoplumber::gp_build()
 ```
 
 To run the app using `geoplumber`, the front-end is built using
