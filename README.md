@@ -44,7 +44,7 @@ npm start
 
 The frontend is a
 [`create-react-app`](https://create-react-app.dev/docs/getting-started/)
-(CRA) so all the standard commands of CRA appliees.
+(CRA) so all the standard commands of CRA apply.
 
 ### R
 
