@@ -96,7 +96,7 @@ docker build -t eatlas .
 docker run -d -p 8000:8001 --name eatlas eatlas
 ```
 
-Use your favourite document server (nginx for example) to proxy requets
+Use your favourite document server (nginx for example) to proxy requests
 (watch out for a Wiki entry on this).
 
 ## Notes
