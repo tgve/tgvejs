@@ -2,6 +2,8 @@
 
 # TGVE · [![Node CI](https://github.com/tgve/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22) [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
 
+<!-- to build this document on a machine with R, just go `R -e "rmarkdown::render('README.Rmd')"` -->
+
 This is a React Component ES Module that can be embedded in your React
 applications. This is an npm package output of TGVE (eAtlas) project.
 
