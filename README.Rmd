@@ -59,8 +59,16 @@ repo to publish your data using eAtlas.
 
 ## Development
 
-See the main repo for more details but the package is a fork from a
-`create-react-app` boilerplate.
+This `npm` package is a React component, see `package.json` for `peerDependencies`. To add features, make changes please use the `npm-dev` branch and create PR's.
+
+The workflow for development is carried out via an example project and the easiest way is to use `eatlas-template` repository and in your own React app just make the dependency a local build of this package:
+
+```js
+//package.json
+  //...
+  "eatlas": "file:../path/to/eAtlas",
+  //...
+```
 
 ## Tests
 
