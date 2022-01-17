@@ -86,26 +86,11 @@ more details but you can use a template
 ([`tgve/eatlas-template`](https://github.com/tgve/eatlas-template)) repo
 to publish your data using eAtlas.
 
-## Developing an eAtlas-based application
+## Setting up an eAtlas development workflow
 
-This `npm` package is a React component, see `package.json` for
-`peerDependencies`. To add features, make changes please use the
-`npm-dev` branch and create PR’s.
+This `npm` package is a React component; see `package.json` for `peerDependencies`. 
 
-The workflow for development is carried out via an example project and
-the easiest way is to use `eatlas-template` repository and in your own
-React app just make the dependency a local build of this package:
-
-``` js
-//package.json
-  //...
-  "eatlas": "file:../path/to/eAtlas",
-  //...
-```
-
-## Making changes to eAtlas itself
-
-Clone both the `eAtlas` and `eatlas-template` repositories into the same folder, and follow the pattern above to point the `eatlas-template` app to your local copy of `eAtlas`:
+Clone both the `eAtlas` and `eatlas-template` repositories into the same folder, and update the `package.json` entry for `eatlas-template` so that the `eAtlas` dependency point to your local copy:
 
 ``` js
 //package.json
@@ -113,6 +98,8 @@ Clone both the `eAtlas` and `eatlas-template` repositories into the same folder,
   "eatlas": "link:../eAtlas",
   //...
 ```
+
+To make changes, use the `npm-dev` branch and create pull requests.
 
 ## Tests
 
