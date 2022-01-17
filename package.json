@@ -47,6 +47,9 @@
     "underscore": "^1.12.0"
   },
   "scripts": {
+    "test": "react-scripts test --updateSnapshot",
+    "eject": "react-scripts eject",
+    "coverage": "react-scripts test --env=jsdom --coverage",
     "dist": "rm -rf dist && NODE_ENV=production node_modules/.bin/babel src/ --out-dir dist --copy-files --no-copy-ignored",
     "bundle": "npx rollup -c 'rollup.config.js'",
     "watch": "watch 'npm run dist' ./src",
