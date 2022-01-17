@@ -1,6 +1,8 @@
-06 December, 2021
+16 January, 2022
 
 # TGVE · [![Node CI](https://github.com/tgve/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22) [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
+
+<!-- to build this document on a machine with R, just go `R -e "rmarkdown::render('README.Rmd')"` -->
 
 This is a React Component ES Module that can be embedded in your React
 applications. This is an npm package output of TGVE (eAtlas) project.
@@ -86,8 +88,20 @@ to publish your data using eAtlas.
 
 ## Development
 
-See the main repo for more details but the package is a fork from a
-`create-react-app` boilerplate.
+This `npm` package is a React component, see `package.json` for
+`peerDependencies`. To add features, make changes please use the
+`npm-dev` branch and create PR’s.
+
+The workflow for development is carried out via an example project and
+the easiest way is to use `eatlas-template` repository and in your own
+React app just make the dependency a local build of this package:
+
+``` js
+//package.json
+  //...
+  "eatlas": "file:../path/to/eAtlas",
+  //...
+```
 
 ## Tests
 
