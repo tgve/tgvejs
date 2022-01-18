@@ -88,7 +88,7 @@ to publish your data using eAtlas.
 
 ## Setting up an eAtlas development workflow
 
-This `npm` package is a React component; see `package.json` for `peerDependencies`. 
+This `npm` package is a React component; see `package.json` for `peerDependencies`.
 
 Clone both the `eAtlas` and `eatlas-template` repositories into the same folder, and update the `package.json` entry for `eatlas-template` so that the `eAtlas` dependency point to your local copy:
 
@@ -105,32 +105,3 @@ To make changes, use the `npm-dev` branch and create pull requests.
 
 The package follows `create-react-app` testing kits and uses mainly
 `jest`. Run `npm run test`.
-
-## Change log
-
--   `1.3.5-beta.0`
-    -   The TGVE now accepts the API variables as URL query parameters.
--   `1.3.4.beta.4`
-    -   Minor issues and post tgver package Tests
-    -   Path layer API in
--   `1.3.4.beta.0`
-    -   API value `hideChartGenerator` is one of the few from the wider
-        and potentially `hideSidebar`.
-    -   Added basic version of “screenshot” or save. The future plan for
-        this is a full analytic report (PDF) generation.
-    -   Minor fixes and changes
--   `1.3.3-beta.0`
-    -   More APIs as TGVE is in showcase driven development.
-    -   Added `viewport` API JSON variable.
--   `1.3.2-beta.0`
-    -   Better history management and respects host paths.
--   `1.3.1-beta.0`
-    -   Preparing to remove the `beta` tag.
-    -   TGVE has now been migrated to its organisation on github.com
-    -   Added two new API variables (`dark`, `leftSidebarContent`)
-    -   Lots of improvements and minor fixes
--   `1.3.0-beta.2`
-    -   Minor fix for initial analysis of data column name.
--   `1.1.0-beta.0`
-    -   support for separating data from geography.
-    -   minor improvements elsewhere
