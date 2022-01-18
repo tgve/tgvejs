@@ -2,8 +2,6 @@
 
 # TGVE · [![Node CI](https://github.com/tgve/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22) [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
 
-<!-- to build this document on a machine with R, just go `R -e "rmarkdown::render('README.Rmd')"` -->
-
 This is a React Component ES Module that can be embedded in your React
 applications. This is an npm package output of TGVE (eAtlas) project.
 
@@ -80,8 +78,7 @@ See the main repo for more about the project.
 
 ## Using github pages
 
-See the main [repo
-guide](https://github.com/tgve/eAtlas/blob/master/notes/guide.md) for
+See the main [repo guide](https://github.com/tgve/eAtlas/blob/master/notes/guide.md) for
 more details but you can use a template
 ([`tgve/eatlas-template`](https://github.com/tgve/eatlas-template)) repo
 to publish your data using eAtlas.
@@ -99,9 +96,9 @@ Clone both the `eAtlas` and `eatlas-template` repositories into the same folder,
   //...
 ```
 
-To make changes, use the `npm-dev` branch and create pull requests.
+To make changes to `eAtlas`, use the `npm-dev` branch and create pull requests.
 
-## Tests
+## Testing
 
 The package follows `create-react-app` testing kits and uses mainly
 `jest`. Run `npm run test`.
