@@ -1,0 +1,91 @@
+---
+title: Reproducibility
+output:
+  github_document
+---
+
+```{r setup, echo=FALSE}
+# save the built-in output hook
+hook_output <- knitr::knit_hooks$get("output")
+
+# set a new output hook to truncate text output
+knitr::knit_hooks$set(output = function(x, options) {
+  if (!is.null(n <- options$out.lines)) {
+    x <- xfun::split_lines(x)
+    if (length(x) > n) {
+      # truncate the output
+      x <- c(head(x, n/2), '....', tail(x, n/2 + 1))
+    }
+    x <- paste(x, collapse = "\n")
+  }
+  hook_output(x, options)
+})
+```
+
+As documented elsewhere, TGVE is a `geoplumber` application and therefore there is a particular directory structure to it. That is R at the backend based on `plumber` APIs and fronted being a CRA app.
+
+This document shows how TGVE is a fully reproducible using R code. This markdown document itself is prodcued using Rmarkdown companion document.
+
+```{r}
+# we need goeplumber
+# & curl
+library(geoplumber)
+library(RCurl)
+message("geoplumber v: ", packageVersion("geoplumber"))
+
+# create a geoplumber test app
+d <- file.path(tempdir(), "gp")
+gp_create(d)
+od <- setwd(d)
+stopifnot(gp_is_wd_geoplumber())
+
+# download some data
+download.file("https://github.com/saferactive/saferactive/releases/download/0.1/london_junction_point_cas.geojson",
+              destfile = "london.geojson")
+# pass it to geoplumber's `gp_explore` as an sf object
+ps <- gp_explore(sf = sf::st_read("london.geojson"), build = F)
+# wait for plumber to start
+Sys.sleep(2)
+ps
+
+# is the API endpoint serving?
+gpExploreURL <- "http://localhost:8000/api/explore"
+webpage <- getURL(gpExploreURL)
+webpage <- readLines(tc <- textConnection(webpage)); close(tc)
+# expercting start of geojson object
+substr(tail(webpage)[1],start = 1, stop=50)
+
+# navigate to the build (not built)
+gpURL <- "http://localhost:8000/"
+webpage <- getURL(gpURL)
+webpage <- readLines(tc <- textConnection(webpage)); close(tc)
+tail(webpage)
+# we know first line of the tail is the warning message from geoplumber
+all(grepl("build missing", tail(webpage)[1]), ignore.case = TRUE)
+
+# cleanup
+setwd(od)
+ps$kill()
+```
+
+As we can see from the output of the R chunk, we do the following:
+
+1. Create a clean geoplumber instance
+2. Download some data
+3. Read (2) and pass it to `gp_explore`
+4. Do some extra checks on the app.
+
+## Front-end
+
+We can follow standard CRA app commands, though eAtlas repository may have slightly different `scripts` defined. The `geoplumber` commands (functions) related to the front-end also should work as shown below:
+```{r, out.lines=4}
+od <- setwd(d)
+stopifnot(gp_is_wd_geoplumber())
+# npm run build
+# or
+gp_build()
+```
+
+
+
+
