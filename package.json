@@ -31,7 +31,7 @@
     "deck.gl": "^8.3.14",
     "html2canvas": "^1.3.2",
     "luxon": "^1.25.0",
-    "marked": "^0.7.0",
+    "marked": "^4.0.10",
     "plotly.js": "^1.58.4",
     "prop-types": "^15.6.2",
     "react-bootstrap": "^0.32.4",
