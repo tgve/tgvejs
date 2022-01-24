@@ -7,9 +7,7 @@ See the [Node.js package documentation](https://github.com/tgve/eAtlas/wiki/Node
 
 ## TGVE in React apps
 
-See the [guide](https://github.com/tgve/eAtlas/wiki/Using-TGVE) for
-more details but you can use a template
-([`tgve/app`](https://github.com/tgve/app)) repo for
+You can use a template ([`tgve/app`](https://github.com/tgve/app)) repo for
 various purposes including publish your data using eAtlas.
 
 ## Testing
