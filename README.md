@@ -1,6 +1,6 @@
 16 January, 2022
 
-# TGVE · [![Node CI](https://github.com/tgve/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22) [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
+# TGVE · [![Node CI](https://github.com/tgve/eAtlas/workflows/Node%20CI/badge.svg?branch=release)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22) [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
 
 This is a React Component ES Module that can be embedded in your React
 applications. This is an npm package output of TGVE (eAtlas) project.
@@ -74,29 +74,13 @@ As of version `1.3.4-beta.1` these API variables can be passed to TGVE:
 None of the above is necessary and in the current release “Add data”
 button will allow loading data into eAtlas.
 
-See the main repo for more about the project.
-
 ## Using github pages
 
-See the main [repo guide](https://github.com/tgve/eAtlas/blob/master/notes/guide.md) for
+See the [guide](https://github.com/tgve/eAtlas/wiki/Using-TGVE) for
 more details but you can use a template
-([`tgve/eatlas-template`](https://github.com/tgve/eatlas-template)) repo
-to publish your data using eAtlas.
+([`tgve/app`](https://github.com/tgve/app)) repo
+various purposes including publish your data using eAtlas.
 
-## Setting up an eAtlas development workflow
-
-This `npm` package is a React component; see `package.json` for `peerDependencies`.
-
-Clone both the `eAtlas` and `eatlas-template` repositories into the same folder, and update the `package.json` entry for `eatlas-template` so that the `eAtlas` dependency point to your local copy:
-
-``` js
-//package.json
-  //...
-  "eatlas": "link:../eAtlas",
-  //...
-```
-
-To make changes to `eAtlas`, use the `npm-dev` branch and create pull requests.
 
 ## Testing
 
