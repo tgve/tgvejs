@@ -74,7 +74,7 @@ As of version `1.3.4-beta.1` these API variables can be passed to TGVE:
 None of the above is necessary and in the current release “Add data”
 button will allow loading data into eAtlas.
 
-## Using github pages
+## TGVE in React apps
 
 See the [guide](https://github.com/tgve/eAtlas/wiki/Using-TGVE) for
 more details but you can use a template
