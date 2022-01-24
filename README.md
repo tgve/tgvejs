@@ -1,4 +1,4 @@
-24 November, 2021
+16 January, 2022
 
 # TGVE · [![Node CI](https://github.com/tgve/eAtlas/workflows/Node%20CI/badge.svg?branch=master)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22) [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
 
@@ -8,10 +8,13 @@ applications. This is an npm package output of TGVE (eAtlas) project.
 Currently these variables can be passed to the eAtlas app, each (except
 objects) can be passed as an environment variable like
 `REACT_APP_LAYER_NAME` or when using eAtlas as a component
-`<Eatlas layerName="geojson">`. The exception is that
-`leftSidebarContent` cannot be passed as an environment variable. For
-more on passing variables to a React app and the prefix of `REACT_App_`
-please see React docs
+`<Eatlas layerName="geojson">`. As of version `1.3.5-beta.0`, they can
+also be passed to the TGVE as URL query parameters. For instance
+`localhost:3000?dark=false`.
+
+The exception is that `leftSidebarContent` cannot be passed as an
+environment variable. For more on passing variables to a React app and
+the prefix of `REACT_App_` please see React docs
 [here](https://create-react-app.dev/docs/adding-custom-environment-variables).
 
 As of version `1.3.4-beta.1` these API variables can be passed to TGVE:
@@ -66,6 +69,8 @@ As of version `1.3.4-beta.1` these API variables can be passed to TGVE:
 -   `hideCharts` boolean value which would hide all charts. This takes
     priority over `hideChartGenerator` parameter.
 
+-   `hideSidebar` boolean value which would hide the left sidebar.
+
 None of the above is necessary and in the current release “Add data”
 button will allow loading data into eAtlas.
 
@@ -73,45 +78,27 @@ See the main repo for more about the project.
 
 ## Using github pages
 
-See the main [repo
-guide](https://github.com/tgve/eAtlas/blob/master/notes/guide.md) for
+See the main [repo guide](https://github.com/tgve/eAtlas/blob/master/notes/guide.md) for
 more details but you can use a template
 ([`tgve/eatlas-template`](https://github.com/tgve/eatlas-template)) repo
 to publish your data using eAtlas.
 
-## Development
+## Setting up an eAtlas development workflow
 
-See the main repo for more details but the package is a fork from a
-`create-react-app` boilerplate.
+This `npm` package is a React component; see `package.json` for `peerDependencies`.
 
-## Tests
+Clone both the `eAtlas` and `eatlas-template` repositories into the same folder, and update the `package.json` entry for `eatlas-template` so that the `eAtlas` dependency point to your local copy:
+
+``` js
+//package.json
+  //...
+  "eatlas": "link:../eAtlas",
+  //...
+```
+
+To make changes to `eAtlas`, use the `npm-dev` branch and create pull requests.
+
+## Testing
 
 The package follows `create-react-app` testing kits and uses mainly
 `jest`. Run `npm run test`.
-
-## Change log
-
--   `1.3.4.beta.4`
-    -   Minor issues and post tgver package Tests
-    -   Path layer API in
--   `1.3.4.beta.0`
-    -   API value `hideChartGenerator` is one of the few from the wider
-        and potentially `hideSidebar`.
-    -   Added basic version of “screenshot” or save. The future plan for
-        this is a full analytic report (PDF) generation.
-    -   Minor fixes and changes
--   `1.3.3-beta.0`
-    -   More APIs as TGVE is in showcase driven development.
-    -   Added `viewport` API JSON variable.
--   `1.3.2-beta.0`
-    -   Better history management and respects host paths.
--   `1.3.1-beta.0`
-    -   Preparing to remove the `beta` tag.
-    -   TGVE has now been migrated to its organisation on github.com
-    -   Added two new API variables (`dark`, `leftSidebarContent`)
-    -   Lots of improvements and minor fixes
--   `1.3.0-beta.2`
-    -   Minor fix for initial analysis of data column name.
--   `1.1.0-beta.0`
-    -   support for separating data from geography.
-    -   minor improvements elsewhere

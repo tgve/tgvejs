@@ -6,22 +6,22 @@ import {
   schemeSet1
 } from 'd3-scale-chromatic';
 import {scaleThreshold} from 'd3-scale';
-
-import qs from 'qs'; // importing it other ways would cause minification issue.
-
-import mapping from './location-icon-mapping.json';
-import Constants from './Constants';
-import { isString, isNumber, isObject, randomToNumber, isStringNumeric,
-  isNullUndefinedNaN } from './JSUtils.js';
-import IconClusterLayer from './icon-cluster-layer';
 import { isArray } from 'underscore';
 import csv2geojson from 'csv2geojson';
 import { ascending } from 'd3-array';
-import atlas from './img/location-icon-atlas.png';
-import { sfType } from './geojsonutils';
-import { getLayerProps } from './components/settings/settingsUtils';
-import history from './history';
 import html2canvas from 'html2canvas';
+
+import qs from 'qs'; // importing it other ways would cause minification issue.
+
+import mapping from '../location-icon-mapping.json';
+import Constants from '../Constants';
+import { isString, isNumber, isObject, randomToNumber, isStringNumeric,
+  isNullUndefinedNaN } from './JSUtils.js';
+import IconClusterLayer from '../icon-cluster-layer';
+import atlas from '../img/location-icon-atlas.png';
+import { sfType } from './geojsonutils';
+import { getLayerProps } from '../components/settings/settingsUtils';
+import history from '../history';
 
 const { DateTime } = require("luxon");
 
@@ -265,8 +265,8 @@ const convertRange = (oldValue = 2, values =
   return +(value.toFixed(2))
 }
 
-const getParamsFromSearch = (search) => {
-  if (!search) return (null);
+const getViewportParams = (search) => {
+  if (typeof search !== 'string' || !search) return (null);
 
   const qsResult = qs.parse(search.replace("?", ""))
   // 3 decimal points is street level
@@ -492,9 +492,9 @@ const isMobile = function () {
   return check;
 };
 
-const cb9 = [[228,26,28,255], [55,126,184,255], [77,175,74,255],
-[152,78,163,255], [255,127,0,255], [255,255,51,255], [166,86,40,255],
-[247,129,191,255]]
+// const cb9 = [[228,26,28,255], [55,126,184,255], [77,175,74,255],
+// [152,78,163,255], [255,127,0,255], [255,255,51,255], [166,86,40,255],
+// [247,129,191,255]]
 
 function hexToRgb(hex, array = false) {
   let bigint = parseInt(hex.substring(1, hex.length), 16);
@@ -1012,11 +1012,11 @@ export {
   colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
   getFirstDateColumnName,
-  firstLastNCharacters,
-  getParamsFromSearch,
   uniqueValuePercentage,
+  firstLastNCharacters,
   xyObjectByProperty,
   suggestUIforNumber,
+  getViewportParams,
   generateDeckLayer,
   checkURLReachable,
   suggestDeckLayer,

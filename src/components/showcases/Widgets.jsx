@@ -3,12 +3,12 @@ import { Input, SIZE } from "baseui/input";
 
 import GenerateUI from '../UI';
 import { DateTime } from "luxon";
-import { getPropertyValues } from '../../geojsonutils';
-import { getFirstDateColumnName } from '../../utils';
+import { getPropertyValues } from '../../utils/geojsonutils';
+import { getFirstDateColumnName } from '../../utils/utils';
 
 import { Slider } from 'baseui/slider';
 
-import { isArray } from '../../JSUtils';
+import { isArray } from '../../utils/JSUtils';
 /**
  * Function currently only accepts ISO standard date/datetime.
  * This function generates a "Year" slider with option to set

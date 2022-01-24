@@ -2,7 +2,9 @@
 
 exports[`App - should create snapshot 1`] = `
 <main>
-  <div>
+  <div
+    className=""
+  >
     <div>
       <div
         className="loader"
@@ -87,10 +89,12 @@ exports[`App - should create snapshot 1`] = `
           </div>
           <div>
             <button
-              className="ae af ag ah ai aj ak al am an ao ap aq ar as at au av aw ax ay az b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 ba bb bc bd"
+              className="ae af ag ah ai aj ak al am an ao ap aq ar as at au av aw ax ay az b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 ba bb bc bd be bf bg bh bi bj bk"
               data-baseweb="button"
               disabled={false}
+              onBlur={[Function]}
               onClick={[Function]}
+              onFocus={[Function]}
             >
               Add data
             </button>
@@ -216,12 +220,13 @@ exports[`App - should create snapshot 1`] = `
                         aria-controls={null}
                         aria-expanded="false"
                         aria-haspopup="true"
-                        className="ax ay be b0 bf ae"
+                        className="b5 bl bm bn bo bp bq"
                         data-baseweb="select"
+                        onBlur={[Function]}
                         onClick={[Function]}
                       >
                         <div
-                          className="b3 b1 b2 b4 bf bg bh bi bj bk bl bm bn an ao b9 bo ba"
+                          className="bb b9 ba bc bo br bq bs bt bu bv bw bx by bz c0 c1 c2 c3 av c4 bh c5 c6 c7 c8 c9"
                           onClick={[Function]}
                           onKeyDown={[Function]}
                           onTouchEnd={[Function]}
@@ -229,11 +234,12 @@ exports[`App - should create snapshot 1`] = `
                           onTouchStart={[Function]}
                         >
                           <div
-                            className="bi bp bq br bs ap bt bu ag"
+                            className="bs ca bh cb cc ax cd ce cf ag"
                           >
                             <svg
-                              className="bv bp bw bx bs"
+                              className="cg ca ch ci cc"
                               data-baseweb="icon"
+                              title="search"
                               viewBox="0 0 24 24"
                             >
                               <title>
@@ -246,29 +252,27 @@ exports[`App - should create snapshot 1`] = `
                               />
                             </svg>
                           </div>
-                          <span
-                            className="bf ae by bz c0 bi ag c1 bg c2 c3 c4 c5"
+                          <div
+                            className="bo bp cj ck cl bs ag cm br bd be cn co"
                           >
                             <div
-                              className="bt c6 c7 c8 c9 bq ca bg cb cc c2 c3 c4 c5"
-                            >
-                              Default(dark)
-                            </div>
-                            <div
-                              className="ae bv ca cd ai ce ak au aw at av cf cg ch c5 ci"
+                              className="bp cg cp cq am an ao ap ar bo aq b2 b4 b1 b3 cr cs ct co cu cv"
                             >
                               <input
+                                aria-activedescendant={null}
                                 aria-autocomplete="list"
+                                aria-controls={null}
                                 aria-describedby={null}
                                 aria-disabled={null}
+                                aria-errormessage={null}
                                 aria-expanded={false}
-                                aria-haspopup={false}
-                                aria-label={null}
+                                aria-haspopup="listbox"
+                                aria-label=""
                                 aria-labelledby={null}
                                 aria-required={null}
-                                className="ax ay be b0 cj ck ca cl ai ce bv ak au aw at av cf cg ch c5"
+                                className="b5 bl bm bn bh cw cx cp cy am an ao ap ar cg aq b2 b4 b1 b3 cr cs ct co"
                                 disabled={null}
-                                onBlur={[Function]}
+                                id={null}
                                 onChange={[Function]}
                                 onFocus={[Function]}
                                 required={null}
@@ -277,14 +281,19 @@ exports[`App - should create snapshot 1`] = `
                                 value=""
                               />
                               <div
-                                className="ax ay be b0 bt c6 c9 cm cn co cp"
+                                className="b5 bl bm bn cd ce cz d0 d1 d2 d3"
                               >
                                 
                               </div>
                             </div>
-                          </span>
+                            <div
+                              className="d4 cp br d5 d6"
+                            >
+                              Default(dark)
+                            </div>
+                          </div>
                           <div
-                            className="bf ae bi cq ag cr b8"
+                            className="bo bp bs d7 ag d8 bg"
                           />
                         </div>
                       </div>
@@ -366,6 +375,8 @@ exports[`App - should create snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div />
+  <div
+    className=""
+  />
 </main>
 `;

@@ -4,9 +4,9 @@ import { StyledLink } from "baseui/link";
 import { Block } from 'baseui/block';
 import { Notification, KIND } from "baseui/notification";
 
-import { iWithFaName } from '../../utils';
+import { iWithFaName } from '../../utils/utils';
 import Preview from './Preview';
-import { isString } from '../../JSUtils';
+import { isString } from '../../utils/JSUtils';
 
 export default function Export(props) {
   const [notification, setNotification] = useState(false)

@@ -1,8 +1,8 @@
 import React from 'react';
 import { ascending, quantile } from 'd3-array';
 
-import { isNumber } from '../../JSUtils';
-import { convertRange } from '../../utils';
+import { isNumber } from '../../utils/JSUtils';
+import { convertRange } from '../../utils/utils';
 
 import './style.css'
 

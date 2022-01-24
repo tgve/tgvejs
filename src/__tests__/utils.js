@@ -2,7 +2,7 @@ import {firstLastNCharacters, humanize,
   colorScale, generateDomain, xyObjectByProperty,
   suggestDeckLayer, isURL,
   uniqueValuePercentage
-} from '../utils';
+} from '../utils/utils';
 import { LAYERSTYLES } from '../Constants';
 
 const sampleGeojson = { "type": "FeatureCollection",
@@ -83,7 +83,7 @@ test("suggestDeckLayer", () => {
 const array = Array.from({length: 10}, (v, i) => i)
 
 test("uniqueValuePercentage", () => {
-  expect(uniqueValuePercentage(array)).toBe.true
+  expect(uniqueValuePercentage(array)).toBe(true)
   expect(uniqueValuePercentage(
     array.concat(array)
   )).toBe(false)
