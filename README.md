@@ -85,21 +85,6 @@ the prefix of `REACT_App_` please see React docs
 None of the above is necessary and in the current release “Add data”
 button will allow loading data into eAtlas.
 
-## Running and testing
-
-To run the front end only without need for the backend, having cloned
-the `eAtlas` repo:
-
-``` js
-npm i # or yarn
-# and run
-npm start
-```
-
-The frontend is a
-[`create-react-app`](https://create-react-app.dev/docs/getting-started/)
-(CRA) so all the standard commands of CRA applies.
-
 ### Testing
 
 The package follows `create-react-app` testing kits and uses mainly
