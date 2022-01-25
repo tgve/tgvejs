@@ -1,17 +1,3 @@
-Turing Geovisualization Engine
-================
-
-  - [Introduction](#introduction)
-  - [npm package](#npm-package)
-  - [Using GitHub pages](#using-github-pages)
-  - [Using docker](#using-docker)
-  - [Using R package](#using-r-package)
-  - [Using npm](#using-npm)
-  - [Outside the browser](#outside-the-browser)
-  - [Showcases](#showcases)
-  - [Roadmap](#roadmap)
-  - [References](#references)
-
 ## Using docker
 
 This is the method of using the full application. It means you can
