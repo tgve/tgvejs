@@ -1,19 +1,3 @@
-## Using docker
-
-This is the method of using the full application. It means you can
-update the data served and also add your own backend connections, data
-workflows and more by leveraging the power of R langague.
-
-It also means you would need some knowledge of R to be able to write
-such data workflows. The
-[`plumber`](https://github.com/rstudio/plumber/) package (now owned by
-RStudio) is rather new and the stable release came out in
-[Sep 2020](https://github.com/rstudio/plumber/releases/tag/v1.0.0). The
-Dockerfile has gone through few versions and this should be expected as
-underlying libraries change and grow.
-
-Currently the ready to use (with default dataset) images are hosted at.
-
 ## Outside the browser
 
 Compiling JS applications to WebAssembly (Haas et al. 2017) is becoming
