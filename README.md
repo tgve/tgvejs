@@ -18,7 +18,9 @@ function App() {
 
 ## Configuration settings
 
-Currently these variables can be passed to the eAtlas app, each (except
+eAtlas supports separately-provided geography (in GeoJSON) and point data sources (in CSV). Other formats are not supported.
+
+The following parameters can be passed to the eAtlas app, each (except
 objects) can be passed as an environment variable like
 `REACT_APP_LAYER_NAME` or when using eAtlas as a component
 `<Eatlas layerName="geojson">`. They can
