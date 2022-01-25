@@ -14,39 +14,6 @@ underlying libraries change and grow.
 
 Currently the ready to use (with default dataset) images are hosted at.
 
-## Using R package
-
-The application is a fully decoupled R + JavaScript two tier application
-which is built on top RStudio’s plumber APIs using an R package called
-`geoplumber` which is not yet on CRAN. This means in future the R
-backend can also be replaced with other choices of backend such as
-Python or NodeJS.
-
-Once the dependencies of `geoplumber` and particularly the NodeJS system
-dependenices are all in place. An example of visualizing R’s `sf` object
-format in `geoplumber` using eAtlas is as simple as following lines:
-
-``` r
-# installing the R package from github requires 
-# R package devtools
-devtools::install_github("ATFutures/geoplumber")
-# load the libray
-library(geoplumber)
-# create new project at temporary directory called `reprex`
-p = file.path(tempdir(),"reprex")
-gp_create(p)
-# making it the working directory
-setwd(p)
-# build the application (front-end)
-gp_build()
-# gp_explore uses eAtlas by default
-gp_explore()
-```
-
-In RStudio you should now be able to see something like following
-screenshot:
-<img width="100%" alt="RStuio viewer showing eAtlas" src="https://user-images.githubusercontent.com/408568/81685038-9452c100-944f-11ea-946c-795ef70791b3.png">
-
 ## Outside the browser
 
 Compiling JS applications to WebAssembly (Haas et al. 2017) is becoming
