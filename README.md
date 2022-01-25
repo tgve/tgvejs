@@ -104,3 +104,5 @@ The frontend is a
 
 The package follows `create-react-app` testing kits and uses mainly
 `jest`. Run `npm run test`.
+
+<img width="100%" alt="guide-shot" src="https://user-images.githubusercontent.com/408568/108049506-44d59d00-7040-11eb-9f4e-0a083829bfa5.png">
