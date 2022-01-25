@@ -21,6 +21,7 @@ spatial data.
 | Node.js package | [tgve/eAtlas](https://github.com/tgve/eAtlas) |
 | R package | [tgve/tgver](https://github.com/tgve/tgver) |
 | Application template | [tgve/app](https://github.com/tgve/app) |
+| Full-stack application template | [tgve/full-app](https://github.com/tgve/full-app) |
 
 TGVE can also be used from [Python](https://github.com/tgve/app/blob/main/docs/python-flask.md).
 
