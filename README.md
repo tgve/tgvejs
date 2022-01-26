@@ -71,14 +71,12 @@ eAtlas supports separately-provided geography (in GeoJSON) and point data source
 The following parameters can be passed to the eAtlas app, each (except
 objects) can be passed as an environment variable like
 `REACT_APP_LAYER_NAME` or when using eAtlas as a component
-`<Eatlas layerName="geojson">`. They can
-also be passed to the TGVE as URL query parameters. For instance
-`localhost:3000?dark=false`.
-
-The exception is that `leftSidebarContent` cannot be passed as an
+`<Eatlas layerName="geojson">`. The mapping between parameters names and the corresponding REACT_APP environment variables is not entirely consistent; see [here](https://github.com/tgve/eAtlas/blob/release/src/utils/api.js) for the mapping, and note that `leftSidebarContent` cannot be passed as an
 environment variable. For more on passing variables to a React app and
-the `REACT_APP_` prefix please see React docs
-[here](https://create-react-app.dev/docs/adding-custom-environment-variables). (Parameters names below do not map to REACT_APP variables in an entirely consistent way; see https://github.com/tgve/eAtlas/blob/release/src/utils/api.js for the mapping.)
+the `REACT_APP_` prefix please see [React docs](https://create-react-app.dev/docs/adding-custom-environment-variables).
+
+They can also be passed to the TGVE as URL query parameters. For instance
+`localhost:3000?dark=false`.
 
 -   `data`: valid geojson object. If a valid GeoJSON object is provided
     both `defaultURL` and `geographyURL` will be ignored, which also
