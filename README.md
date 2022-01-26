@@ -78,7 +78,7 @@ also be passed to the TGVE as URL query parameters. For instance
 The exception is that `leftSidebarContent` cannot be passed as an
 environment variable. For more on passing variables to a React app and
 the `REACT_APP_` prefix please see React docs
-[here](https://create-react-app.dev/docs/adding-custom-environment-variables).
+[here](https://create-react-app.dev/docs/adding-custom-environment-variables). (Parameters names below do not map to REACT_APP variables in an entirely consistent way; see https://github.com/tgve/eAtlas/blob/release/src/utils/api.js for the mapping.)
 
 -   `data`: valid geojson object. If a valid GeoJSON object is provided
     both `defaultURL` and `geographyURL` will be ignored, which also
