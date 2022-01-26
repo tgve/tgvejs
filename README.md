@@ -162,11 +162,6 @@ on the horizon:
 
   - More configuration options, for disabling the sidebar, defining sidebar contents, and customizing the default visualizations.
 
-### Development plan
-
-See the vignette called
-[dev-plan](https://tgve.github.io/tgver/articles/dev-plan.html) for details.
-
 ## Contributing
 
 See the TGVE [Contributor Code of Conduct](https://github.com/tgve/tgver/blob/master/CODE_OF_CONDUCT.md).
