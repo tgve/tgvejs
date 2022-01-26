@@ -77,7 +77,7 @@ also be passed to the TGVE as URL query parameters. For instance
 
 The exception is that `leftSidebarContent` cannot be passed as an
 environment variable. For more on passing variables to a React app and
-the prefix of `REACT_App_` please see React docs
+the `REACT_APP_` prefix please see React docs
 [here](https://create-react-app.dev/docs/adding-custom-environment-variables).
 
 -   `data`: valid geojson object. If a valid GeoJSON object is provided
