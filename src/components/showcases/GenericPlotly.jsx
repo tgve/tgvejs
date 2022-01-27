@@ -25,7 +25,6 @@ const Plot = createPlotlyComponent(window.Plotly);
  * @param {Object} props 
  */
 export default function(props) {
-  console.log("fiq");
   const { data, width = 250, height = 200, title = "Plot",
     dark, xaxis = {}, yaxis = {},
     displayModeBar, onClickCallback } = props; // Object.assign errs on undefined
