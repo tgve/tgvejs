@@ -1,10 +1,9 @@
 import React from 'react';
 
 import { isArray } from '../../utils/JSUtils';
-import Plotly from "plotly.js";
 import createPlotlyComponent from "./factory";
 
-const Plot = createPlotlyComponent(Plotly);
+const Plot = createPlotlyComponent(window.Plotly);
 /**
  * React Hook generic Plotly plot which takes data in the following format:
  * [

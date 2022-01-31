@@ -138,6 +138,15 @@ button will allow loading data into eAtlas.
 The package follows `create-react-app` testing kits and uses mainly
 `jest`. Run `npm run test`.
 
+## External dependenices
+The package relies on Plotly to be available as `window.Plotly`. You can satisify this dependency by adding Pltly in your HTML build where the package is used. For instance version `2.6.3` minifed:
+
+```html
+<script src="https://cdn.plot.ly/plotly-2.6.3.min.js"></script>
+```
+If you are not sure, please see the [`app`](https://github.com/tgve/app) repository.
+
+
 ## Roadmap
 
 The current version of the app has limited functionality. However, these are
@@ -163,7 +172,6 @@ on the horizon:
   - More configuration options, for disabling the sidebar, defining sidebar contents, and customizing the default visualizations.
 
 ## Contributing
-
 See the TGVE [Contributor Code of Conduct](https://github.com/tgve/tgver/blob/master/CODE_OF_CONDUCT.md).
 
 ## Package Status
