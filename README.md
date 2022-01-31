@@ -1,7 +1,7 @@
 [![Node CI](https://github.com/tgve/eAtlas/workflows/Node%20CI/badge.svg?branch=release)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22) 
 [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
 
-The Turing Geovisualisation Engine (TGVE or eAtlas) is a web-based,
+The Turing Geovisualisation Engine (TGVE) is a web-based,
 interactive visual analytics tool for geospatial data analysis, built
 using R and JavaScript/React, that can be used as a complete
 server-client application or just as a front-end stand-alone
