@@ -306,7 +306,7 @@ const getBbx = (bounds) => {
 /**
  * Current version simply picks up a feature out of
  * array of features, compares it to the available
- * list of DeckGL layers supported by eAtlas
+ * list of DeckGL layers supported by TGVE
  * and returns one of them.
  *
  * @param {Array} features
@@ -871,13 +871,13 @@ const getMainMessage = (filtered, unfiltered) => {
   } else if(filtered && filtered.length) {
     return getMessage(filtered)
     // TODO: check all rows before declaring
-  } 
+  }
   // else if(unfiltered && unfiltered.length) {
   //   const r = randomToNumber(unfiltered.length);
   //   console.log(r);
   //   if(!unfiltered[r].geometry) return getMessage(unfiltered) + " - no geometry"
   //   return getMessage(unfiltered)
-  // } 
+  // }
   else {
     return "Nothing to show"
   }

@@ -21,7 +21,7 @@ We propose the following specific steps in the **primary section** of the table 
 |  4 | Npm package  | Docs and code comment review |5
 |  5 | TGVE instance use of URLS | Feedback, Security paradigm etc |  2
 |  6 | The ecosystem and the github organisation | Feedback and better code arrangement? |  1
-|  7 | Github.com/tgve/eAtlas  |  Manage repository source code |   1
+|  7 | Github.com/tgve/tgvejs  |  Manage repository source code |   1
 
 
 ### Primary sprints for REG collaboration

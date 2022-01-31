@@ -5,15 +5,15 @@ function define(name, value) {
   });
 }
 
-// TODO: change to domain name 
-define("PRD_URL", 'https://layik.github.io/eAtlas');
+// TODO: change to domain name
+define("PRD_URL", 'https://tgve.github.io/tgvejs');
 define("DEV_URL", 'http://localhost:8000');
 define("UI_LIST", [
   "checkbox",
   "radio",
   "buttongroups",
   "dropdown",
-  "slider"]) 
+  "slider"])
 define("LAYERSTYLES", [
   "arc",
   "geojson",
