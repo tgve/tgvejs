@@ -139,7 +139,7 @@ The package follows `create-react-app` testing kits and uses mainly
 `jest`. Run `npm run test`.
 
 ## External dependenices
-The package relies on Plotly to be available as `window.Plotly`. You can satisify this dependency by adding Pltly in your HTML build where the package is used. For instance version `2.6.3` minifed:
+The package relies on Plotly to be available as `window.Plotly`. You can satisify this dependency by adding Plotly in your HTML build where the package is used. For instance version `2.6.3` minifed:
 
 ```html
 <script src="https://cdn.plot.ly/plotly-2.6.3.min.js"></script>
