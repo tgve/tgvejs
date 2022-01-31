@@ -84,7 +84,7 @@ They can also be passed to the TGVE as URL query parameters. For instance
 
 -   `defaultURL`: which returns a valid geojson object when `fetched`.
     It can be used to fetch CSVs which is converted to `geojson` by
-    eAtlas after fetching.
+    TGVE after fetching.
 
 -   `geographyURL`: which returns a valid `geojson` dataset. If this
     variable is provided, data is fetched separately along with
@@ -104,7 +104,7 @@ They can also be passed to the TGVE as URL query parameters. For instance
     second column as often first column is an ID of sort.
 
 -   `layerName`: if provided, and if the given name is in the list of
-    DeckGL layers supported by eAtlas, will be passed to generate the
+    DeckGL layers supported by TGVE, will be passed to generate the
     layer with the name given.
 
 -   `dark`: by default `baseui/baseweb` is set to dark, you can change
@@ -167,7 +167,7 @@ on the horizon:
     [isochrones](https://en.wikipedia.org/wiki/Isochrone_map).
 
   - Reconsider `geojson` as the central data format of the application
-    and how buffer (unit arrays) can boost performance of eAtlas.
+    and how buffer (unit arrays) can boost performance of TGVE.
 
   - More configuration options, for disabling the sidebar, defining sidebar contents, and customizing the default visualizations.
 
