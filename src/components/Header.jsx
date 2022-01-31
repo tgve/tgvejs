@@ -52,7 +52,7 @@ function Header(props) {
           }
         </Nav>
         <Nav pullRight>
-          <NavItem href="https://github.com/layik/eAtlas">
+          <NavItem href="https://github.com/tgve/tgvejs">
             <i style={{ fontSize: '1.5em' }} className="fa fa-github"></i>
           </NavItem>
         </Nav>

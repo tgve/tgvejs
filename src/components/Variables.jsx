@@ -1,16 +1,14 @@
 /**
- * eAtlas code
- *  
  * React component which takes a GeoJSON object. Loops through its
- * properties and show the list to start with. Each property 
+ * properties and show the list to start with. Each property
  * can show all avialable values. Each value can be selected/deselected.
  *
  * Current code can deal with only one GeoJSON property's keys.
- * 
+ *
  * Next is handling multiple GeoJSON key value pairs.
  * Next will be replacing current "hard" code in the parent code,
  * so that all key values can be dynamically filtered.
- * 
+ *
  * This should be generalize-able to any GeoJSON file, or that is the
  * aim.
  */
@@ -26,7 +24,7 @@ import MultiSelect from './MultiSelect';
 export default function Variables(props) {
   const { onSelectCallback, multiVarSelect,
     unfilteredData } = props;
-  const [columns, setColumns] = useState(multiVarSelect && 
+  const [columns, setColumns] = useState(multiVarSelect &&
     Object.keys(multiVarSelect))
 
   if (!unfilteredData || !unfilteredData[0]) return null;
@@ -68,8 +66,8 @@ export default function Variables(props) {
         type={TYPE.search}
         multi={true}
         onChange={({ value }) => {
-          // sync with multiVarSelect 
-          // here we remove any key in multiVarSelect that is not 
+          // sync with multiVarSelect
+          // here we remove any key in multiVarSelect that is not
           // in the values here
           const columnsArray = value.map(e => e.value)
           Object.keys(multiVarSelect).map(key => {

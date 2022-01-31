@@ -1,4 +1,4 @@
-[![Node CI](https://github.com/tgve/eAtlas/workflows/Node%20CI/badge.svg?branch=release)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22) 
+[![Node CI](https://github.com/tgve/tgvejs/workflows/Node%20CI/badge.svg?branch=release)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22)
 [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
 
 The Turing Geovisualisation Engine (TGVE) is a web-based,
@@ -12,13 +12,13 @@ visualization design and techniques from Geographic Information Science
 to implement automatic aggregation of temporal and
 spatial data.
 
-<img width=70% alt="eAtlas screen shot" src="https://user-images.githubusercontent.com/408568/76419738-c46edc80-6398-11ea-8bbe-496394f90adc.png">
+<img width=70% alt="TGVE screen shot" src="https://user-images.githubusercontent.com/408568/76419738-c46edc80-6398-11ea-8bbe-496394f90adc.png">
 
 ## Key components
 
 | Component | Repo |
 | ---- | ---- |
-| Node.js package | [tgve/eAtlas](https://github.com/tgve/eAtlas) |
+| Node.js package | [tgve/tgvejs](https://github.com/tgve/tgvejs) |
 | R package | [tgve/tgver](https://github.com/tgve/tgver) |
 | Application template | [tgve/app](https://github.com/tgve/app) |
 | Full-stack application template | [tgve/full-app](https://github.com/tgve/full-app) |
@@ -28,7 +28,7 @@ TGVE can also be used from [Python](https://github.com/tgve/app/blob/main/docs/p
 ## Example applications
 
 As researchers at the University of Leeds, we have vast amount of data
-which require scalable solutions such as the eAtlas. One of these is
+which require scalable solutions such as TGVE. One of these is
 SPENSER. To dive into the dataset read this short blogpost [here](https://layik.github.io/spenser).
 
 ### SPENSER
@@ -49,7 +49,7 @@ See [SaferActive home page](https://saferactive.github.io/).
 
 ## Node.js package
 
-This is a React Component ES Module that can be embedded in your React applications, as an Node.js package. For an example how to import the `eAtlas` package using `npm`, see the `tgve/app` repo. Following is a snippet of ReactJS from that repo:
+This is a React Component ES Module that can be embedded in your React applications, as an Node.js package. For an example how to import the TGVE package using `npm`, see the `tgve/app` repo. Following is a snippet of ReactJS from that repo:
 
 ``` javascript
 import React from 'react';
@@ -66,12 +66,12 @@ function App() {
 
 ### Configuration settings
 
-eAtlas supports separately-provided geography (in GeoJSON) and point data sources (in CSV). Other formats are not supported.
+TGVE supports separately-provided geography (in GeoJSON) and point data sources (in CSV). Other formats are not supported.
 
-The following parameters can be passed to the eAtlas app, each (except
+The following parameters can be passed to the TGVE app, each (except
 objects) can be passed as an environment variable like
-`REACT_APP_LAYER_NAME` or when using eAtlas as a component
-`<Eatlas layerName="geojson">`. The mapping between parameters names and the corresponding REACT_APP environment variables is not entirely consistent; see [here](https://github.com/tgve/eAtlas/blob/release/src/utils/api.js) for the mapping, and note that `leftSidebarContent` cannot be passed as an
+`REACT_APP_LAYER_NAME` or when using TGVE as a component
+`<Eatlas layerName="geojson">`. The mapping between parameters names and the corresponding REACT_APP environment variables is not entirely consistent; see [here](https://github.com/tgve/tgvejs/blob/release/src/utils/api.js) for the mapping, and note that `leftSidebarContent` cannot be passed as an
 environment variable. For more on passing variables to a React app and
 the `REACT_APP_` prefix please see [React docs](https://create-react-app.dev/docs/adding-custom-environment-variables).
 
@@ -84,19 +84,19 @@ They can also be passed to the TGVE as URL query parameters. For instance
 
 -   `defaultURL`: which returns a valid geojson object when `fetched`.
     It can be used to fetch CSVs which is converted to `geojson` by
-    eAtlas after fetching.
+    TGVE after fetching.
 
 -   `geographyURL`: which returns a valid `geojson` dataset. If this
     variable is provided, data is fetched separately along with
-    `defaultURL`, eAtlas uses the `geographyColumn` to join them. eAtlas
-    does this oth on initialization and when `reset` button is pressed.
+    `defaultURL`, TGVE uses the `geographyColumn` to join them. TGVE
+    does this on initialization and when `reset` button is pressed.
 
 -   `geographyColumn`: a column name which is shared between data within
     the `defaultURL` and `geographyURL` or a mapping between the two. If
     a mapping is provided it must be in this format:
     `defaultURLColumnName:geographyURLColumnName`. This is the joining
     column that will result in dynamically generating `geojson` data for
-    eAtlas to consume. If a valid column name is not provided TGVE will
+    TGVE to consume. If a valid column name is not provided TGVE will
     fail to load any data to the given geography.
 
 -   `column`: if provided, and if the geometry is of particular type
@@ -104,7 +104,7 @@ They can also be passed to the TGVE as URL query parameters. For instance
     second column as often first column is an ID of sort.
 
 -   `layerName`: if provided, and if the given name is in the list of
-    DeckGL layers supported by eAtlas, will be passed to generate the
+    DeckGL layers supported by TGVE, will be passed to generate the
     layer with the name given.
 
 -   `dark`: by default `baseui/baseweb` is set to dark, you can change
@@ -167,7 +167,7 @@ on the horizon:
     [isochrones](https://en.wikipedia.org/wiki/Isochrone_map).
 
   - Reconsider `geojson` as the central data format of the application
-    and how buffer (unit arrays) can boost performance of eAtlas.
+    and how buffer (unit arrays) can boost performance of TGVE.
 
   - More configuration options, for disabling the sidebar, defining sidebar contents, and customizing the default visualizations.
 
