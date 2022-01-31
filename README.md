@@ -98,6 +98,14 @@ Clone both the `eAtlas` and `eatlas-template` repositories into the same folder,
 
 To make changes to `eAtlas`, use the `npm-dev` branch and create pull requests.
 
+## External dependenices
+The package relies on Plotly to be available as `window.Plotly`. You can satisify this dependency by adding Pltly in your HTML build where the package is used. For instance version `2.6.3` minifed:
+
+```html
+<script src="https://cdn.plot.ly/plotly-2.6.3.min.js"></script>
+```
+If you are not sure, please see the [`app`](https://github.com/tgve/app) repository.
+
 ## Testing
 
 The package follows `create-react-app` testing kits and uses mainly
