@@ -2,60 +2,21 @@
 [![npm version](https://badge.fury.io/js/eatlas.svg)](https://badge.fury.io/js/eatlas)
 
 The Turing Geovisualisation Engine (TGVE) is a web-based,
-interactive visual analytics tool for geospatial data analysis, built
-using R and JavaScript/React, that can be used as a complete
-server-client application or just as a front-end stand-alone
-application. The visual views and interaction mechanisms designed
-into the tool is underpinned by empirically-informed guidelines around
-visualization design and techniques from Geographic Information Science
-(GIScience). Additionally, techniques from geographic information science (GIScience) and related domains are used
+interactive visual analytics tool for geospatial data analysis, built using R and JavaScript/React, that can be used as a complete server-client application or just as a front-end stand-alone application. The visual views and interaction mechanisms designed into the tool is underpinned by empirically-informed guidelines around
+visualization design and techniques from Geographic Information Science (GIScience). Additionally, techniques from geographic information science (GIScience) and related domains are used
 to implement automatic aggregation of temporal and
 spatial data.
 
-<img width=70% alt="TGVE screen shot" src="https://user-images.githubusercontent.com/408568/76419738-c46edc80-6398-11ea-8bbe-496394f90adc.png">
+<img width=90% alt="TGVE screen shot" src="https://user-images.githubusercontent.com/408568/76419738-c46edc80-6398-11ea-8bbe-496394f90adc.png">
 
-## Key components
 
-| Component | Repo |
-| ---- | ---- |
-| Node.js package | [tgve/tgvejs](https://github.com/tgve/tgvejs) |
-| R package | [tgve/tgver](https://github.com/tgve/tgver) |
-| Application template | [tgve/app](https://github.com/tgve/app) |
-| Full-stack application template | [tgve/full-app](https://github.com/tgve/full-app) |
+## npm package
 
-TGVE can also be used from [Python](https://github.com/tgve/app/blob/main/docs/python-flask.md).
-
-## Example applications
-
-As researchers at the University of Leeds, we have vast amount of data
-which require scalable solutions such as TGVE. One of these is
-SPENSER. To dive into the dataset read this short blogpost [here](https://layik.github.io/spenser).
-
-### SPENSER
-
-The application is served from an 8GB Ubuntu server from Germany on
-hosting company Hetzner’s datacenter. The deployment is all done in
-Docker and any chance in data can be fully automated.
-
-``` r
-# knitr::include_url("https://geospenser.com/index.html")
-```
-
-To see SPENSER visit: [www.geospenser.com](https://geospenser.com)
-
-### SaferActive
-
-See [SaferActive home page](https://saferactive.github.io/).
-
-## Node.js package
-
-This is a React Component ES Module that can be embedded in your React applications, as an Node.js package. For an example how to import the TGVE package using `npm`, see the `tgve/app` repo. Following is a snippet of ReactJS from that repo:
+This is a React Component ES Module that can be embedded in your React applications. For an example how to import the TGVE package using `npm`, see the [`tgve/app`](https://github.com/tgve/app) repo. Following is a snippet of ReactJS from that repo:
 
 ``` javascript
 import React from 'react';
 import Eatlas from 'eatlas';
-
-import './App.css';
 
 function App() {
   return (
@@ -133,11 +94,6 @@ They can also be passed to the TGVE as URL query parameters. For instance
 None of the above is necessary and in the current release “Add data”
 button will allow loading data into eAtlas.
 
-### Testing
-
-The package follows `create-react-app` testing kits and uses mainly
-`jest`. Run `npm run test`.
-
 ## External dependenices
 The package relies on Plotly to be available as `window.Plotly`. You can satisify this dependency by adding Plotly in your HTML build where the package is used. For instance version `2.6.3` minifed:
 
@@ -147,37 +103,17 @@ The package relies on Plotly to be available as `window.Plotly`. You can satisif
 If you are not sure, please see the [`app`](https://github.com/tgve/app) repository.
 
 
-## Roadmap
+### Testing
 
-The current version of the app has limited functionality. However, these are
-on the horizon:
-
-  - Multiple layers: Currently adding data replaces what is already in
-    the application.
-
-  - Smarter filtering: currently the filtering relies on matching
-    key-value pairs, this can be extended to ranges and more. One other
-    area of filtering is spatial filtering. The required
-    packages/libraries are there and there is already a basic example of
-    filtering “lines” implemented.
-
-  - Basic data wrangling: one of the showcases “hard-coded” in the
-    application does a simple conversion of seconds to minutes column to
-    generate meaningful
-    [isochrones](https://en.wikipedia.org/wiki/Isochrone_map).
-
-  - Reconsider `geojson` as the central data format of the application
-    and how buffer (unit arrays) can boost performance of TGVE.
-
-  - More configuration options, for disabling the sidebar, defining sidebar contents, and customizing the default visualizations.
+The package follows `create-react-app` testing kits and uses mainly
+`jest`. Run `npm run test`.
 
 ## Contributing
 See the TGVE [Contributor Code of Conduct](https://github.com/tgve/tgver/blob/master/CODE_OF_CONDUCT.md).
 
 ## Package Status
 
-This package is part of ongoing research at the University of Leeds, is provided “as is” and is likely to be changed without
-warning to meet the research needs of the University.
+This package is part of ongoing research at the University of Leeds, is provided “as is” and is likely to be changed without warning to meet the research needs of the University.
 
 ## Funding
 
