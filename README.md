@@ -74,7 +74,7 @@ They can also be passed to the TGVE as URL query parameters. For instance
 -   `leftSidebarContent`: is based on React standard children. This is
     where users can add their own UI and more, though this requires
     competent React concepts. A simple use would be to pass plain text
-    description of data/project etc. Please see TGVE documentations.
+    description of data/project etc.
 
 -   `viewport`: TGVE’s main functionality is to auto-adjust the viewport
     (see DeckGL docs). However, the initial viewport can be set using
