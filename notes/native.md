@@ -11,18 +11,18 @@ of TGVE being a [CRA](https://create-react-app.dev) app is that tools
 like Tauri can build it.
 
 Let us clone the template
-[repository](https://github.com/layik/eatlas-template) which runs the
-latest `eAtlas` package in [CRA](https://create-react-app.dev) app, then
-install dependenices and build it like this:
+[repository](https://github.com/tgve/app) which runs the
+latest TGVE package in a [CRA](https://create-react-app.dev) app, then
+install dependencies and build it like this:
 
 ``` sh
 # clone the template repository app
-git clone https://github.com/layik/eatlas-template
-cd eatlas-template
+git clone https://github.com/tgve/app
+cd app
 yarn install
 ```
 
-    ## Cloning into 'eatlas-template'...
+    ## Cloning into 'app'...
     ## yarn install v1.22.10
     ....
     ## [4/4] Building fresh packages...
@@ -38,10 +38,10 @@ yarn run build
     ## yarn run v1.22.10
     ## $ react-scripts --max_old_space_size=4096 build
     ....
-    ## 
+    ##
     ## Done in 175.58s.
 
-We now assume that you have followed the Tauri [documentations]() to set
+We now assume that you have followed the Tauri [documentation]() to set
 up the requirements, including any platform specific (such as OSX)
 requirements and you are ready to add Tauri npm package:
 
@@ -64,7 +64,7 @@ questions, otherwise we could go full reproducible:
 
 ``` sh
 ./node_modules/tauri/tauri.js init
-# check build folder in 
+# check build folder in
 ./node_modules/tauri/tauri.js build
 ```
 
@@ -72,8 +72,8 @@ We should then be instructed, in our case on an OSX machine, to look for
 the `dmg` in a path like
 `src-tauri/target/release/bundle/dmg/tgve*.dmg`. This is an executable
 and we should be able to see something like following image. The
-screenshot shows the default `eatlas-tempate` UK (London area)
-casualtites.csv dataset.
+screenshot shows the default `app` UK (London area)
+casualties.csv dataset.
 
 <img width="100%" alt="TGVE Native App Grid" src="https://user-images.githubusercontent.com/408568/119277580-71d5b500-bc18-11eb-8926-40114f899b97.png">
 
@@ -89,14 +89,14 @@ all results from code chunks are generated using real command runs on:
 
     ## $OS.type
     ## [1] "unix"
-    ## 
+    ##
     ## $file.sep
     ## [1] "/"
-    ## 
+    ##
     ....
-    ## 
+    ##
     ## $path.sep
     ## [1] ":"
-    ## 
+    ##
     ## $r_arch
     ## [1] ""

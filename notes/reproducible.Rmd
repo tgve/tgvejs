@@ -77,7 +77,7 @@ As we can see from the output of the R chunk, we do the following:
 
 ## Front-end
 
-We can follow standard CRA app commands, though eAtlas repository may have slightly different `scripts` defined. The `geoplumber` commands (functions) related to the front-end also should work as shown below:
+We can follow standard CRA app commands, though the TGVE repository may have slightly different `scripts` defined. The `geoplumber` commands (functions) related to the front-end also should work as shown below:
 ```{r, out.lines=4}
 od <- setwd(d)
 stopifnot(gp_is_wd_geoplumber())

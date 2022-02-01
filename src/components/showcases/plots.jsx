@@ -44,10 +44,10 @@ const plotByPropertyByDate = (data, property, dark) => {
   )
 }
 /**
- * 
+ *
  * @param {Object} data json array of geojson data.features
  * @param {String} property property of `data` to be passed to `xyObjectByProperty`
- * @param {Boolean} dark eAtlas theme
+ * @param {Boolean} dark TGVE theme
  * @param {String} type Plotly accepted chart type, defaults to "lines"
  * @param {Boolean} noLimit whether data is sliced to first 10 values for bar charts
  */
@@ -82,11 +82,11 @@ const plotByProperty = (data, property, dark, type, noLimit) => {
 /**
  * Generate a population pyramid using Rect-vis series objects.
  * Series objects are formatted as {left,right,bottom, top}
- * 
+ *
  * Currently semi hardcoded for sex_of_casualty and date from
  * STATS19 dataset
- * 
- * @param {Object} options 
+ *
+ * @param {Object} options
  */
 const popPyramidPlot = (options) => {
   if (!options || !options.data || !options.data[0] ||
@@ -161,12 +161,12 @@ const popPyramidPlot = (options) => {
 /**
  * Function looks at date for two properties and generates a react-vis
  * ready two-dimensional array of the two propties. Currently it is semi-hard-coded.
- * 
+ *
  * A function like this is meant to make converting geojson data object given,
  * to charting library ready format to be consumed.
- * 
- * @param {Object} data 
- * @param {String} column 
+ *
+ * @param {Object} data
+ * @param {String} column
  */
 const arrayOfYearAndProperty = (data, column) => {
   const notEmpty = isArray(data) && data.length > 0 && column;

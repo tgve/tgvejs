@@ -1,8 +1,8 @@
 /**
  * App Home.
- * 
+ *
  * The crucial bits are:
- * 
+ *
      this.state = {
       data,            <= main data holding param
       layers: [],      <= mapgl layers object
@@ -11,15 +11,15 @@
     }
  * and
  * DeckSidebarContainer which holds DeckSidebar object itself.
- * 
+ *
  * Main functions:
  * _generateLayer which is the main/factory of filtering state
  * of the map area of the application.
- * 
+ *
  */
 import React from 'react';
 import DeckGL from 'deck.gl';
-import MapGL, { NavigationControl, FlyToInterpolator, 
+import MapGL, { NavigationControl, FlyToInterpolator,
   ScaleControl } from 'react-map-gl';
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
@@ -29,8 +29,8 @@ import {
   fetchData, generateDeckLayer, suggestDeckLayer,
   getViewportParams, getBbx, isMobile, colorScale, getOSMTiles,
   colorRanges, generateDomain, setGeojsonProps,
-  convertRange, getMin, getMax, isURL, 
-  generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray, 
+  convertRange, getMin, getMax, isURL,
+  generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
   theme, updateHistory, screenshot
 } from './utils/utils';
 import {
@@ -55,7 +55,7 @@ const gradient = {
   // TODO: which browsers?
   backgroundColor: 'red', /* For browsers that do not support gradients */
   /* Standard syntax (must be last) */
-  backgroundImage: 'linear-gradient(to top, red , yellow)' 
+  backgroundImage: 'linear-gradient(to top, red , yellow)'
 }
 
 export default class Welcome extends React.Component {
@@ -63,7 +63,7 @@ export default class Welcome extends React.Component {
     super(props)
     const init = props.viewport && Object.keys(props.viewport) ?
       Object.assign(DECKGL_INIT, props.viewport) : DECKGL_INIT;
-    const param = getViewportParams(props.location ? 
+    const param = getViewportParams(props.location ?
       props.location.search : window.location.search);
     if (param) {
       //lat=53.814&lng=-1.534&zoom=11.05&bea=0&pit=55&alt=1.5
@@ -97,7 +97,7 @@ export default class Welcome extends React.Component {
       layerStyle: props.layerStyle,
       bottomPanel: false,
     }
-    
+
     this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
     this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
@@ -113,7 +113,7 @@ export default class Welcome extends React.Component {
 
   componentDidUpdate(nextProps) {
     // props change
-    const { data, defaultURL, geographyURL, 
+    const { data, defaultURL, geographyURL,
       geographyColumn } = nextProps;
     if(JSON.stringify(data) !== JSON.stringify(this.props.data) ||
       defaultURL !== this.props.defaultURL ||
@@ -129,9 +129,9 @@ export default class Welcome extends React.Component {
     this._initDataState();
     window.addEventListener('resize', this._resize)
   }
-  
+
   /**
-   * This sequence of checking source of data is 
+   * This sequence of checking source of data is
    * repeated three times:
    * 1. when the application first loads,
    * 2. when the source of data changes
@@ -160,16 +160,16 @@ export default class Welcome extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this._resize);  
+    window.removeEventListener('resize', this._resize);
   }
 
   /**
    * Main function to fetch data and update state.
-   * 
+   *
    * @param {String} aURL to use if not state.defaultURL is used.
    * @param {Object} customError to use in case of urlCallback object/urls.
    */
-  _fetchAndUpdateState(aURL, customError) { 
+  _fetchAndUpdateState(aURL, customError) {
     if (aURL && !isURL(aURL)) {
       if(this.state.loading) {
         this.setState({loading: false})
@@ -196,19 +196,19 @@ export default class Welcome extends React.Component {
    * 1. when state is first loaded and we have a
    * geographyURL
    * 2. when state is set having received geojson
-   * data from url_returned from <InputData /> 
+   * data from url_returned from <InputData />
    * component. In the case of latter slightly
    * abnormal way of using it but keeps flow
    * consistent.
-   * 
-   * @param {*} geoErr error from having tried a 
+   *
+   * @param {*} geoErr error from having tried a
    * geographyURL
    * @param {*} geojson returned from geographyURL attempt
    * @param {*} data data with or without geography (1) and (2)
-   * @param {*} customError 
-   * @param {*} geographyURL 
+   * @param {*} customError
+   * @param {*} geographyURL
    */
-  _updateStateAndLayers(geoErr, 
+  _updateStateAndLayers(geoErr,
     geojson, data, customError, geographyURL) {
     if (!geoErr) {
       this.setState({
@@ -229,12 +229,12 @@ export default class Welcome extends React.Component {
   }
 
   /**
-   * Helper function to simply set state with geojson `data` and 
+   * Helper function to simply set state with geojson `data` and
    * name the source with `fullURL`. The other params are error management.
-   * 
+   *
    * @param {*} error any error to avoid setting data param
-   * @param {*} data geojson valid object to use throughout eAtlas
-   * @param {*} customError any custom error similar to `error` used by 
+   * @param {*} data geojson valid object to use throughout TGVE
+   * @param {*} customError any custom error similar to `error` used by
    * `this.state.alert`
    * @param {*} fullURL here used as naming source of data and shown on header
    */
@@ -261,7 +261,7 @@ export default class Welcome extends React.Component {
    * The main function generating DeckGL layer and customizing mapbox styles.
    * The reason why state is not updated down in <DeckSidebarContainer />
    * is to optimise the number of setState or equivalent React hooks.
-   * 
+   *
    * @param {*} values includes
    * @param {Object} filter multivariate filter of properties
    * @param {String} cn short for colorName passed from callback
@@ -282,7 +282,7 @@ export default class Welcome extends React.Component {
     const { colorName, iconLimit, geography, geographyColumn,
       multiVarSelect } = this.state;
 
-    let data = (this.props.data && this.props.data.features) 
+    let data = (this.props.data && this.props.data.features)
     || (this.state.data && this.state.data.features)
     // data or geography and add column data
     if (!data) return;
@@ -309,18 +309,18 @@ export default class Welcome extends React.Component {
     if (filterValues || filterCoords) {
       /**
        * The algorithm is as follows
-       * 
+       *
        * 1. Loop through the geojson featuers only once
        * 2. Loop through the selected column values only once
        * 3. Does the set in (2) include property valu from (1)
-       * 
+       *
        * e.g:
        * 1. {features:[{properties:{a:1, b:2}}]}
        * 2. selected: {a: Set([1])}
        * 3. selected.a.includes(features[0].properties.a)?
-       * 
+       *
        * That means the maximum number of loops will be
-       * n columns 
+       * n columns
        */
       data = data.filter(
         d => {
@@ -339,7 +339,7 @@ export default class Welcome extends React.Component {
             }
           }
           if (filterCoords) {
-            // coords in 
+            // coords in
             if (difference(filter.selected || this.state.coords,
               d.geometry.coordinates.flat()).length !== 0) {
               return false;
@@ -380,24 +380,24 @@ export default class Welcome extends React.Component {
       data = data.features || data;
     }
     let layerStyle = (filter && filter.what ===
-      'layerStyle' && filter.selected) || this.state.layerStyle || 
+      'layerStyle' && filter.selected) || this.state.layerStyle ||
       suggestDeckLayer(geography ? geography.features : data);
     // TODO: incorporate this into suggestDeckLayer
     // if (!new RegExp("point", "i").test(geomType)) layerStyle = "geojson"
-    const switchToIcon = data.length < iconLimit && !layerStyle && 
+    const switchToIcon = data.length < iconLimit && !layerStyle &&
     (!filter || filter.what !== 'layerStyle') && geomType === "point";
     if (switchToIcon) layerStyle = 'icon';
 
     const options = Object.assign({
-      ...this.state.layerOptions,      
+      ...this.state.layerOptions,
       lightSettings: LIGHT_SETTINGS,
       colorRange: colorRanges(cn || colorName),
       getColor: getColorArray(cn || colorName)
     }, layerOptions);
     // generate a domain
     const domain = generateDomain(
-      data, 
-      columnNameOrIndex === 0 ? 
+      data,
+      columnNameOrIndex === 0 ?
       // TODO better check than just data[0]
       Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex);
 
@@ -431,12 +431,12 @@ export default class Welcome extends React.Component {
       if (+(data[0] && data[0].properties &&
         data[0].properties[columnNameOrIndex])) {
         options.getWidth = d => {
-          return this._newRange(data, d, columnNameOrIndex, 
+          return this._newRange(data, d, columnNameOrIndex,
             getMin(domain), getMax(domain));
         }; // avoid id
       }
     }
-    // TODO 
+    // TODO
     if (layerStyle === 'scatter') {
       if (+(data[0] && data[0].properties &&
         data[0].properties[columnNameOrIndex])) {
@@ -447,7 +447,7 @@ export default class Welcome extends React.Component {
       }
     }
     let newLegend = this.state.legend;
-    
+
     const getValue = (d) => {
       // columnNameOrIndex must be init with 0
       // TODO write tests for no props at all
@@ -466,7 +466,7 @@ export default class Welcome extends React.Component {
 
     if (geomType === "polygon" || geomType === "multipolygon" ||
       layerStyle === 'geojson') {
-      
+
       options.getFillColor = fill;
 
       options.updateTriggers = {
@@ -518,8 +518,8 @@ export default class Welcome extends React.Component {
       coords: filter && filter.what === 'coords' ? filter.selected :
         this.state.coords,
       legend: newLegend,
-      bottomPanel: <CustomSlider 
-        data={this.state.data.features} 
+      bottomPanel: <CustomSlider
+        data={this.state.data.features}
         dates={getPropertyValues(this.state.data, "alt")}/>
     })
   }
@@ -529,7 +529,7 @@ export default class Welcome extends React.Component {
     if ((!data || data.length === 0) && !bboxLonLat) return;
     const bounds = bboxLonLat ?
       bboxLonLat.bbox : bbox(data)
-    const center = bboxLonLat ? 
+    const center = bboxLonLat ?
     [bboxLonLat.lon, bboxLonLat.lat] : centroid(data).geometry.coordinates;
 
     this.map.fitBounds(bounds, {padding:'100px'})
@@ -547,8 +547,8 @@ export default class Welcome extends React.Component {
 
   /**
    * Currently the tooltip focuses on aggregated layer (grid).
-   * 
-   * @param {Object} params passed from DeckGL layer. 
+   *
+   * @param {Object} params passed from DeckGL layer.
    */
   _renderTooltip(params) {
     const { x, y, object } = params;
@@ -571,7 +571,7 @@ export default class Welcome extends React.Component {
   _updateURL(viewport) {
     const { subsetBoundsChange, lastViewPortChange } = this.state;
 
-    //if we do history.replace/push 100 times in less than 30 secs 
+    //if we do history.replace/push 100 times in less than 30 secs
     // browser will crash
     if (new Date() - lastViewPortChange > 1000) {
       updateHistory(viewport);
@@ -637,7 +637,7 @@ export default class Welcome extends React.Component {
               {...viewport}
               onViewportChange={viewport => this.setState({ viewport })}
             />
-            <ScaleControl maxWidth={100} unit="metric" 
+            <ScaleControl maxWidth={100} unit="metric"
               style={{
                 left: 20,
                 bottom: 100
@@ -682,18 +682,18 @@ export default class Welcome extends React.Component {
           urlCallback={(url_returned, geojson_returned) => {
             this.setState({
               /**
-               * This set state can take care of all 
+               * This set state can take care of all
                * but one of the options forward:
                * 1. if a geojson has been returned, then
-               * update state fully and let 
+               * update state fully and let
                * `this._fitViewport(geojson_returned)` &&
                * `this._generateLayer` take care of it.
-               * 
-               * 2. if a URL has been returned, 
-               * 
+               *
+               * 2. if a URL has been returned,
+               *
                * 3. if we are resetting, that means start from
                * fresh: this._initDataState
-               * 
+               *
                * 4. if (1) is the case but geojson
                * is invalid or corrupt, then do not
                * update data state and fail on the try
@@ -709,7 +709,7 @@ export default class Welcome extends React.Component {
               try {
                 // do not move this setState up
                 // as data returned could be
-                // corrupt 
+                // corrupt
                 this.setState({
                   data: geojson_returned
                 })
@@ -717,7 +717,7 @@ export default class Welcome extends React.Component {
                 this._generateLayer()
               } catch (error) {
                 // load up default
-                this._fetchAndUpdateState(undefined, 
+                this._fetchAndUpdateState(undefined,
                   { content: error.message });
               }
             } else {
@@ -743,9 +743,9 @@ export default class Welcome extends React.Component {
             }
           }}
           column={this.state.column}
-          onSelectCallback={(selected) => 
+          onSelectCallback={(selected) =>
             this._generateLayer({ filter: selected })}
-          onLayerOptionsCallback={(layerOptions) => 
+          onLayerOptionsCallback={(layerOptions) =>
             this._generateLayer({ layerOptions })}
           toggleSubsetBoundsChange={(value) => {
             this.setState({
@@ -763,7 +763,7 @@ export default class Welcome extends React.Component {
         />}
         {
           showLegend &&
-          <div 
+          <div
             id="tgve-legend"
             style={{
               ...theme(this.props.dark)
@@ -776,8 +776,8 @@ export default class Welcome extends React.Component {
     );
   }
   _resize() {
-    this.setState({ 
-      width: window.innerWidth, 
+    this.setState({
+      width: window.innerWidth,
       height: window.innerHeight
     });
   };

@@ -9,25 +9,6 @@ uptake of the TGVE."
 In the "Delivery plan" section of the document we also have "...involvement of Turing REG in months 6-8 where the stability of the software and utility to the user will be stress tested." This is what
 this document is prepared for. As we have not done this before, and if the Turing colleagues have done similar work before, we are happy to rewrite this document and work with their method/workflow.
 
-## Outline of repositories of TGVE
-
-It would be worth it for us to go through the "framework" around which the TGVE has been developed and get the team up to speed with the repositories. But for reference, the TGVE is made up of a few repositories. The two main repositories are:
-
--   <https://gitthub.com/tgve/eAtlas> this has been the main repository
-    and includes the \`npm\` branch which is what is used to publish
-    TGVE as a npm package.
-
-    -   package: <https://www.npmjs.com/package/eatlas>
-
-    -   docs: <https://github.com/tgve/eAtlas/wiki/> (lots of work to
-        catchup with dev work)
-
--   <https://github.com/tgve/tgver> this is the new R package under
-    development and marked as WIP for now.
-
-As the "application" is a full stack geospatial web application, it runs on R + JavaScript (React). The R side has been reliant on a structure using a separate (precursor project to TGVE) called `geoplumber`.
-However, as the R package `tgver` is evolving, there are more efficient and faster ways of driving the front-end from R.
-
 ## REG sprints
 
 We propose the following specific steps in the **primary section** of the table to be the starting point of the sprints by our REG colleagues:
@@ -38,9 +19,9 @@ We propose the following specific steps in the **primary section** of the table 
 |  2 | Npm package  |  Security?                | 5
 |  3 | Npm package  | General code-review?      | 3
 |  4 | Npm package  | Docs and code comment review |5
-|  5 | TGVE instance use of URLS | Feedback, Security paradigm etc |  2                              
-|  6 | The ecosystem and the github organisation | Feedback and better code arrangement? |  1                    
-|  7 | Github.com/tgve/eAtlas  |  Manage repository source code |   1
+|  5 | TGVE instance use of URLS | Feedback, Security paradigm etc |  2
+|  6 | The ecosystem and the github organisation | Feedback and better code arrangement? |  1
+|  7 | Github.com/tgve/tgvejs  |  Manage repository source code |   1
 
 
 ### Primary sprints for REG collaboration
