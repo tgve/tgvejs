@@ -12,7 +12,7 @@ spatial data.
 
 ## npm package
 
-> note: the older versions released under https://www.npmjs.com/package/eatlas will be deprecated.
+> note: the older versions released under https://www.npmjs.com/package/eatlas is deprecated.
 
 This is a React Component ES Module that can be embedded in your React applications. For an example how to import the TGVE package using `npm`, see the [`tgve/app`](https://github.com/tgve/app) repo. Following is a snippet of ReactJS from that repo:
 
