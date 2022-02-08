@@ -12,15 +12,17 @@ spatial data.
 
 ## npm package
 
+> note: the older versions released under https://www.npmjs.com/package/eatlas will be deprecated.
+
 This is a React Component ES Module that can be embedded in your React applications. For an example how to import the TGVE package using `npm`, see the [`tgve/app`](https://github.com/tgve/app) repo. Following is a snippet of ReactJS from that repo:
 
 ``` javascript
 import React from 'react';
-import Eatlas from 'eatlas';
+import Tgve from '@tgve/tgvejs';
 
 function App() {
   return (
-    <Eatlas defaultURL={process.env.REACT_APP_DEFAULT_URL}/>
+    <Tgve defaultURL={process.env.REACT_APP_DEFAULT_URL}/>
   );
 }
 ```
