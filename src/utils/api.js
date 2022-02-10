@@ -54,7 +54,7 @@ const params = function (props, search = "") {
       boolStr(qsr.hideSidebar) : typeof hideSidebar === "boolean" ?
       hideSidebar : process.env.REACT_APP_HIDE_SIDEBAR,
     // doubt these can be injected from envs
-    data: staticData || jsonStr(qsr.data) || data,
+    data: jsonStr(qsr.data) || data || staticData,
     leftSidebarContent,
     viewport,
   })
