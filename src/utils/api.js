@@ -20,7 +20,9 @@ const params = function (props, search = "") {
     // > version 1.3.5-beta.0
     hideSidebar } = props;
   
-  const staticData = JSON.parse(document.getElementById('tgve-data').textContent);
+  const staticData = document.getElementById('tgve-data') 
+    && document.getElementById('tgve-data').textContent 
+    && jsonStr(document.getElementById('tgve-data').textContent);
 
   return ({
     dark: qsr.hasOwnProperty("dark") ? 
