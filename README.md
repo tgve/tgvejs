@@ -41,9 +41,7 @@ the `REACT_APP_` prefix please see [React docs](https://create-react-app.dev/doc
 They can also be passed to the TGVE as URL query parameters. For instance
 `localhost:3000?dark=false`.
 
--   `data`: valid geojson object. If a valid GeoJSON object is provided
-    both `defaultURL` and `geographyURL` will be ignored, which also
-    means `geographyColumn` would be ignored, too.
+-   `data`: valid geojson object. This can be a component prop value, a URL query parameter or `<script id="tgve-data" type="application/json">{geojson:object}</script>` as per standard [`script`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#embedding_data_in_html) tag use. If a valid GeoJSON object is provided both `defaultURL` and `geographyURL` will be ignored, which also means `geographyColumn` would be ignored, too.
 
 -   `defaultURL`: which returns a valid geojson object when `fetched`.
     It can be used to fetch CSVs which is converted to `geojson` by
