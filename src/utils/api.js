@@ -19,7 +19,9 @@ const params = function (props, search = "") {
     hideCharts, 
     // > version 1.3.5-beta.0
     hideSidebar } = props;
-    
+  
+  const staticData = JSON.parse(document.getElementById('tgve-data').textContent);
+
   return ({
     dark: qsr.hasOwnProperty("dark") ? 
       boolStr(qsr.dark) : typeof dark === 'boolean' ? 
@@ -50,7 +52,7 @@ const params = function (props, search = "") {
       boolStr(qsr.hideSidebar) : typeof hideSidebar === "boolean" ?
       hideSidebar : process.env.REACT_APP_HIDE_SIDEBAR,
     // doubt these can be injected from envs
-    data: jsonStr(qsr.data) || data,
+    data: staticData || jsonStr(qsr.data) || data,
     leftSidebarContent,
     viewport,
   })
