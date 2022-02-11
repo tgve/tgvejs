@@ -37,9 +37,10 @@ const params = function (props, search = "") {
     && document.getElementById('tgve-data').textContent
     && jsonStr(document.getElementById('tgve-data').textContent);
 
-  const settings = !document.getElementById('tgve-settings') ?
-    {} : document.getElementById('tgve-settings').textContent
-    && jsonStr(document.getElementById('tgve-settings').textContent);
+  const settings = (document.getElementById('tgve-settings')
+    && document.getElementById('tgve-settings').textContent
+    && jsonStr(document.getElementById('tgve-settings').textContent))
+    || {};
 
   const apiValue = function (param, paramName, ENV_NAME, bool = false) {
     if (qsr.hasOwnProperty(paramName)) {
