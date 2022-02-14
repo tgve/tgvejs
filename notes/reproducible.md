@@ -85,8 +85,8 @@ webpage <- readLines(tc <- textConnection(webpage)); close(tc)
 tail(webpage)
 ```
 
-    ## [1] "    <p>build missing</p>" "  </div>"                
-    ## [3] "</div>"                   ""                        
+    ## [1] "    <p>build missing</p>" "  </div>"
+    ## [3] "</div>"                   ""
     ## [5] "</body>"                  "</html>"
 
 ``` r
@@ -113,7 +113,7 @@ As we can see from the output of the R chunk, we do the following:
 
 ## Front-end
 
-We can follow standard CRA app commands, though eAtlas repository may
+We can follow standard CRA app commands, though `tgve` repository may
 have slightly different `scripts` defined. The `geoplumber` commands
 (functions) related to the front-end also should work as shown below:
 
