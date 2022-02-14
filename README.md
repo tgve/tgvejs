@@ -98,7 +98,6 @@ They can also be passed to the TGVE as URL query parameters. For instance
 
 -   `hideSidebar` boolean value which would hide the left sidebar.
 
-<<<<<<< HEAD
 None of the above is necessary and in the current release “Add data” button will allow loading data into eAtlas.
 
 ### Data and settings 
@@ -111,9 +110,6 @@ As stated above, you can create a `script` tag to pass data and above configurat
 <script id="tgve-settings" type="application/json">{'defaultURL':'https://raw.githubusercontent.com/layik/eatlas-data/main/casualties_100.geojson','dark':'false'}</script>
 
 ```
-=======
-None of the above is necessary; the “Add data” button will allow loading data into TGVE.
->>>>>>> 9713223d1bb6b161e0e5b7878fcd5c899e6b31a2
 
 ## External dependenices
 The package relies on Plotly to be available as `window.Plotly`. You can satisify this dependency by adding Plotly in your HTML build where the package is used. For instance version `2.6.3` minifed:
