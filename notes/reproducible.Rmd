@@ -24,7 +24,7 @@ knitr::knit_hooks$set(output = function(x, options) {
 
 As documented elsewhere, TGVE is a `geoplumber` application and therefore there is a particular directory structure to it. That is R at the backend based on `plumber` APIs and fronted being a CRA app.
 
-This document shows how TGVE is a fully reproducible using R code. This markdown document itself is prodcued using Rmarkdown companion document.
+This document shows how TGVE is a fully reproducible using R code. This markdown document itself is produced using Rmarkdown companion document.
 
 ```{r}
 # we need goeplumber
