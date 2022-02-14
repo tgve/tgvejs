@@ -91,8 +91,7 @@ They can also be passed to the TGVE as URL query parameters. For instance
 
 -   `hideSidebar` boolean value which would hide the left sidebar.
 
-None of the above is necessary and in the current release “Add data”
-button will allow loading data into eAtlas.
+None of the above is necessary; the “Add data” button will allow loading data into TGVE.
 
 ## External dependenices
 The package relies on Plotly to be available as `window.Plotly`. You can satisify this dependency by adding Plotly in your HTML build where the package is used. For instance version `2.6.3` minifed:
