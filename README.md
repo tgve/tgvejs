@@ -14,7 +14,14 @@ spatial data.
 
 > note: the older versions released under https://www.npmjs.com/package/eatlas is deprecated.
 
-This is a React Component ES Module that can be embedded in your React applications. For an example how to import the TGVE package using `npm`, see the [`tgve/app`](https://github.com/tgve/app) repo. Following is a snippet of ReactJS from that repo:
+This is a React Component ES Module that can be embedded in your React applications. To install in your project:
+
+```sh
+npm install @tgve/tgvejs
+# or
+yarn add @tgve/tgvejs
+```
+Then, for an example to import the TGVE package and use it as the main component in a React app, see the [`tgve/app`](https://github.com/tgve/app) repo. Following is a snippet of ReactJS from that repo:
 
 ``` javascript
 import React from 'react';
@@ -91,8 +98,18 @@ They can also be passed to the TGVE as URL query parameters. For instance
 
 -   `hideSidebar` boolean value which would hide the left sidebar.
 
-None of the above is necessary and in the current release “Add data”
-button will allow loading data into eAtlas.
+None of the above is necessary and in the current release “Add data” button will allow loading data into eAtlas.
+
+### Data and settings 
+
+As stated above, you can create a `script` tag to pass data and above configurations as `JSON` to where TGVE is being rendered; for example in an `index.html` where the component is rendered like:
+
+```html
+<!--notice the ID names-->
+<script id="tgve-data" type="application/json">{'valid':'geojson'}</script>
+<script id="tgve-settings" type="application/json">{'defaultURL':'https://raw.githubusercontent.com/layik/eatlas-data/main/casualties_100.geojson','dark':'false'}</script>
+
+```
 
 ## External dependenices
 The package relies on Plotly to be available as `window.Plotly`. You can satisify this dependency by adding Plotly in your HTML build where the package is used. For instance version `2.6.3` minifed:
