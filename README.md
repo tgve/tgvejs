@@ -41,7 +41,7 @@ TGVE supports separately-provided geography (in GeoJSON) and point data sources 
 The following parameters can be passed to the TGVE app, each (except
 objects) can be passed as an environment variable like
 `REACT_APP_LAYER_NAME` or when using TGVE as a component
-`<Eatlas layerName="geojson">`. The mapping between parameters names and the corresponding REACT_APP environment variables is not entirely consistent; see [here](https://github.com/tgve/tgvejs/blob/release/src/utils/api.js) for the mapping, and note that `leftSidebarContent` cannot be passed as an
+`<Tgve layerName="geojson">`. The mapping between parameters names and the corresponding REACT_APP environment variables is not entirely consistent; see [here](https://github.com/tgve/tgvejs/blob/release/src/utils/api.js) for the mapping, and note that `leftSidebarContent` cannot be passed as an
 environment variable. For more on passing variables to a React app and
 the `REACT_APP_` prefix please see [React docs](https://create-react-app.dev/docs/adding-custom-environment-variables).
 
@@ -98,6 +98,7 @@ They can also be passed to the TGVE as URL query parameters. For instance
 
 -   `hideSidebar` boolean value which would hide the left sidebar.
 
+<<<<<<< HEAD
 None of the above is necessary and in the current release “Add data” button will allow loading data into eAtlas.
 
 ### Data and settings 
@@ -110,6 +111,9 @@ As stated above, you can create a `script` tag to pass data and above configurat
 <script id="tgve-settings" type="application/json">{'defaultURL':'https://raw.githubusercontent.com/layik/eatlas-data/main/casualties_100.geojson','dark':'false'}</script>
 
 ```
+=======
+None of the above is necessary; the “Add data” button will allow loading data into TGVE.
+>>>>>>> 9713223d1bb6b161e0e5b7878fcd5c899e6b31a2
 
 ## External dependenices
 The package relies on Plotly to be available as `window.Plotly`. You can satisify this dependency by adding Plotly in your HTML build where the package is used. For instance version `2.6.3` minifed:

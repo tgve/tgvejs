@@ -76,8 +76,8 @@ export default [{
   output: {
     intro: 'const ENVIRONMENT = "production";',
     format: "cjs",
-    file: "dist/eatlas.js",
-    name: 'eatlas'
+    file: "dist/tgve.js",
+    name: 'tgve'
   },
   watch: {
     exclude: 'node_modules/**'
