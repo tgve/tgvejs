@@ -100,7 +100,7 @@ They can also be passed to the TGVE as URL query parameters. For instance
 
 None of the above is necessary and in the current release “Add data” button will allow loading data into eAtlas.
 
-### Data and settings 
+### Data and settings
 
 As stated above, you can create a `script` tag to pass data and above configurations as `JSON` to where TGVE is being rendered; for example in an `index.html` where the component is rendered like:
 
@@ -126,7 +126,10 @@ The package follows `create-react-app` testing kits and uses mainly
 `jest`. Run `npm run test`.
 
 ## Contributing
-See the TGVE [Contributor Code of Conduct](https://github.com/tgve/tgver/blob/master/CODE_OF_CONDUCT.md).
+
+See:
+- [Contributor Code of Conduct](https://github.com/tgve/tgver/blob/master/CODE_OF_CONDUCT.md)
+- [developer setup instructions](notes/dev-setup.md)
 
 ## Package Status
 
