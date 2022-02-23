@@ -15,16 +15,16 @@ import { Accordion, Panel } from 'baseui/accordion';
 
 
 /**
- * One idea is to do the same done in Variables. When a set of 
+ * One idea is to do the same done in Variables. When a set of
  * properties need to be assigned different types of primitive
- * values, one drop down could lead to each property shown 
+ * values, one drop down could lead to each property shown
  * along with suitable UI to assign value to.
- * 
+ *
  * Current version shows all properties with their suitable UI
  * (using baseui) so that each value can be set.
- * 
- * @param {*} props 
- * @returns 
+ *
+ * @param {*} props
+ * @returns
  */
 export default function LayerSettings(props) {
   const { layerName, columnNames, onLayerOptionsCallback } = props;
@@ -60,7 +60,7 @@ export default function LayerSettings(props) {
         return <React.Fragment key={key}>
           {key}
           <Slider
-            // raw number is kept in values 
+            // raw number is kept in values
             value={(values[key] && [values[key]]) || [options[key].default]}
             min={options[key].min}
             max={options[key].max}

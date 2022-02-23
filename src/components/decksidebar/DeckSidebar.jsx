@@ -51,7 +51,7 @@ export default class DeckSidebar extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     const { data, alert, loading, layerStyle, column } = this.props;
     const { reset, year, barChartVariable } = this.state;
-    // avoid rerender as directly operating on document.get* 
+    // avoid rerender as directly operating on document.get*
     // does not look neat. Keeping it React way.
     if (reset !== nextState.reset ||
       year !== nextState.year ||
@@ -158,7 +158,7 @@ export default class DeckSidebar extends React.Component {
               <Modal
                 toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
                 component={<DataTable data={data} />} />}
-            <Export data={data} notEmpty={notEmpty} 
+            <Export data={data} notEmpty={notEmpty}
             screenshot={this.props.screenshot}/>
           </div>
           <div className="side-panel-body">
@@ -202,7 +202,7 @@ export default class DeckSidebar extends React.Component {
                   )}
                   {/* distribution example */}
                   {notEmpty && plotByProperty(
-                    data.filter(d => Boolean(d.properties["age_of_casualty"])), 
+                    data.filter(d => Boolean(d.properties["age_of_casualty"])),
                     "age_of_casualty", dark, undefined, true)}
                   {plotByPropertyByDate(data, "sex_of_casualty", dark)}
                   {notEmpty && columnNames.length > 0 &&
@@ -425,4 +425,3 @@ export default class DeckSidebar extends React.Component {
       </div>)
   }
 }
-

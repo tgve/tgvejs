@@ -14,20 +14,20 @@ import URL from './URL';
 import RBAlert from './RBAlert';
 
 /**
- * The csv2geojson package is by mapbox. 
- * 
+ * The csv2geojson package is by mapbox.
+ *
  * GDAL specs have been taken into consideration according to
- * package docs. The package creats lines and polygons from 
+ * package docs. The package creats lines and polygons from
  * correct csv files.
- * 
+ *
  * There has been good effort into guessing the naming of
- * lat/longs, see 
+ * lat/longs, see
  * https://github.com/mapbox/csv2geojson/blob/gh-pages/index.js
- * 
+ *
  * From the package
  * var latRegex = /(Lat)(itude)?/gi,
  *  lonRegex = /(L)(on|ng)(gitude)?/i;
- * 
+ *
  */
 const csv2geojson = require('csv2geojson');
 
@@ -86,7 +86,7 @@ export default function (props) {
                     && err[0] && err[0].message;
                   setAlert({
                     time: 5000,
-                    content: "Invalid format. " 
+                    content: "Invalid format. "
                     + (message ?  "ERROR: " + message : "")
                   })
                 }

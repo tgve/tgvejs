@@ -35,7 +35,7 @@ export default function Export(props) {
                       close()
                     } else {
                       // setNotification("Could not write to clipboard")
-                      window.prompt("Copy to clipboard: Ctrl+C, Enter", 
+                      window.prompt("Copy to clipboard: Ctrl+C, Enter",
                       window.location.href)
                     }
                   });
@@ -67,10 +67,10 @@ export default function Export(props) {
  * Generates a `data:text/json` URI and assigned
  * to a `href` attribute of the dom therefore
  * opened by browsers as a file.
- * 
+ *
  * @param {*} data feature array to be assembled as GeoJSON
- * @param {*} name optional filename 
- * @returns 
+ * @param {*} name optional filename
+ * @returns
  */
 const downloadButton = (data, name) => {
   return (<StyledLink
@@ -97,11 +97,11 @@ const downloadButton = (data, name) => {
  * in the relevant SO answer with credit to community.
  * Fallback is ignored as document.execCommand("copy")
  * is deprecated.
- * 
+ *
  * https://stackoverflow.com/a/30810322
- * 
- * @param {*} text 
- * @returns 
+ *
+ * @param {*} text
+ * @returns
  */
 const copyTextToClipboard = (text, callback) => {
   if (!isString(text)) return

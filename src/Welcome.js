@@ -187,8 +187,8 @@ export default class Welcome extends React.Component {
       } else {
         if (geographyURL && !isURL(geographyURL)) {
           // only when set but !isURL
-          this._initWithGeojson(error, data, 
-            customError || { content: 'Invalid URL: ' + geographyURL }, 
+          this._initWithGeojson(error, data,
+            customError || { content: 'Invalid URL: ' + geographyURL },
             aURL);
         } else {
           this._initWithGeojson(error, data, customError, aURL);

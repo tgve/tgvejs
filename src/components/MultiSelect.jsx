@@ -4,7 +4,7 @@ import { Select, TYPE } from 'baseui/select';
 export default (props) => {
   const [value, setValue] = useState([]);
   const { onSelectCallback, values, filter, multiVarSelect,
-    title, single } = props;  
+    title, single } = props;
   return (
     <Select
       options={values}

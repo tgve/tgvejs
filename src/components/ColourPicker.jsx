@@ -19,7 +19,7 @@ export default function ColorPicker(props) {
                 }}
                 className={"color-box" + (chosen === i ? " color-box-active" : "")}
                 onClick={() => {
-                  setChosen(i)              
+                  setChosen(i)
                   typeof colourCallback === 'function' &&
                     colourCallback(each)
                 }}/>

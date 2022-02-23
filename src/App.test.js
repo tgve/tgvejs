@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import renderer from 'react-test-renderer'; 
+import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
 import { BaseProvider, DarkTheme, LightTheme } from 'baseui';
 
@@ -13,12 +13,12 @@ it('renders without crashing', () => {
   ReactDOM.unmountComponentAtNode(div);
 });
 
-test('App - should create snapshot', () => { 
-  const component = renderer.create( 
-    <BrowserRouter><App /></BrowserRouter> 
-  ); 
-  const tree = component.toJSON(); 
-  expect(tree).toMatchSnapshot(); 
+test('App - should create snapshot', () => {
+  const component = renderer.create(
+    <BrowserRouter><App /></BrowserRouter>
+  );
+  const tree = component.toJSON();
+  expect(tree).toMatchSnapshot();
 })
 
 test('App - dark/light themes set', () => {

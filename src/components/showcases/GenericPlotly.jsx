@@ -15,20 +15,20 @@ const Plot = createPlotlyComponent(window.Plotly);
       marker: { color: 'red' },
       name: 'fiq',
     },
-    { 
-      x: [1, 2], 
+    {
+      x: [1, 2],
       y: [2, 5],
-      type: 'line', 
+      type: 'line',
       name: 'lush'
     },
   ]
- * @param {Object} props 
+ * @param {Object} props
  */
 export default function(props) {
   const { data, width = 250, height = 200, title = "Plot",
     dark, xaxis = {}, yaxis = {},
     displayModeBar, onClickCallback } = props; // Object.assign errs on undefined
-  
+
   const axes = { visible: true, color: dark && '#fff'}
   const sColor = {color: dark && '#fff'};
 
@@ -40,7 +40,7 @@ export default function(props) {
         width, height, title: {text: title, font: sColor},
         margin: { t: 30, r: 20, b: 50, l: 30 },
         paper_bgcolor: dark && '#0000', plot_bgcolor: dark && '#0000',
-        xaxis: Object.assign(axes, xaxis), 
+        xaxis: Object.assign(axes, xaxis),
         yaxis: Object.assign(sColor, yaxis),
         legend: {x: 0.35, y: -0.35, orientation: 'h',
         font: sColor}

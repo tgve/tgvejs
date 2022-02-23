@@ -122,14 +122,14 @@ export default (props) => {
                 }}></circle>)
             }
             {/* axis */}
-            {/* <line 
+            {/* <line
             x1={'5%'} y1="80%" x2={(W - 10) + "%"} y2={'80%'} /> */}
             {
               scale && scale.map((v, i) => {
                 const x1 = i * (W / scale.length);
                 return (
                   <g key={x1 + "-" + i}>
-                    {/* <line 
+                    {/* <line
                     style={{ stroke: 'white', strokeWidth: 0.5 }}
                   x1={x1 + "%"} y1={"80%"} x2={x1} y2={'82%'} /> */}
                     <text x={(x1 + 2) + "%"} y={"85%"}

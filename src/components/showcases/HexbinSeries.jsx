@@ -45,11 +45,11 @@ export default class HexHeatmap extends Component {
             radius={radius}
             data={data}
           />
-          {options && !options.noXAxis && 
+          {options && !options.noXAxis &&
           <XAxis tickLabelAngle={-45} style={{
             text: { fill: '#fff', fontWeight: 400 }
           }} />}
-          {options && !options.noYAxis && 
+          {options && !options.noYAxis &&
           <YAxis tickLabelAngle={-45} style={{
             text: { fill: '#fff', fontWeight: 400 }
           }} />}
