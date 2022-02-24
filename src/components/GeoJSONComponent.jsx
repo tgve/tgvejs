@@ -7,8 +7,6 @@
  *
  * @param fetchURL default = 'http://localhost:8000/api/data'
  * @param radius default 8
- *
- * geoplumber R package React code.
  */
 import React from 'react';
 import { GeoJSON } from 'react-leaflet';
@@ -121,7 +119,7 @@ export default class GeoJSONComponent extends React.Component {
                 return(null) //nothing is passed to me.
             }
         }
-        // we have type: "FeatureCollection"        
+        // we have type: "FeatureCollection"
         return (
             geojson.features.map((feature, i) => {
                 return (

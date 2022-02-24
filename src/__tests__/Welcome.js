@@ -8,7 +8,7 @@ const w = shallow(<Welcome location={{search: null}}/>);
 
 test('Welcome shallow and mount', () => {
   // console.log(w.debug())
-  expect(w.find('DeckGL')).not.toBeNull(); 
+  expect(w.find('DeckGL')).not.toBeNull();
   expect(w.find('InteractiveMap')).not.toBeNull();
   expect(w.find("div.loader").length).toBe(1)
 })
@@ -18,5 +18,4 @@ test('Welcome child DeckSidebarContainer', () => {
   const ds = wd.find('div').find('DeckSidebarContainer');
   // console.log(ds.debug());
   expect(ds.props().hideCharts).toBe(true)
-
 })

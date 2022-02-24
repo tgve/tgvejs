@@ -23,7 +23,7 @@ export default function URL(props) {
       <FormGroup>
         <InputGroup>
           <FormControl
-          onChange={(e) => {            
+          onChange={(e) => {
             const { value } = e.target;
             setUrl(value)
           }}
@@ -38,7 +38,7 @@ export default function URL(props) {
             background: props.dark ? '#242730' : 'white',
             color: props.dark ? 'white' : 'black'
           }}>
-            <Glyphicon 
+            <Glyphicon
             glyph="globe" />
           </InputGroup.Addon>
         </InputGroup>

@@ -47,21 +47,21 @@ export default class Tooltip extends React.Component {
     const type_feature = hoveredObject.type &&
       hoveredObject.type === 'Feature';
     const cluster = hoveredObject && hoveredObject.cluster
-    // {cluster: true, cluster_id: 8, point_count: 54, 
+    // {cluster: true, cluster_id: 8, point_count: 54,
     // point_count_abbreviated: 54}
 
     let severity_data_separate = [];
     if (!type_feature && !cluster) {
       // separate the severity into [[],[]] arrays
       const severity_keys = column1 && getPropertyValues(
-        { features: hoveredObject.points.map(e => e.source) }, 
+        { features: hoveredObject.points.map(e => e.source) },
         column1);
       const severity_by_year = column1 && column2 &&
         propertyCountByProperty(
-          hoveredObject.points.map(e => e.source), 
+          hoveredObject.points.map(e => e.source),
           column1, column2);
-      //{2009: {Slight: 1}, 2010: {Slight: 3}, 2012: {Slight: 4}, 
-      // 2013: {Slight: 3}, 2014: {Serious: 1}, 2015: {Slight: 6}, 
+      //{2009: {Slight: 1}, 2010: {Slight: 3}, 2012: {Slight: 4},
+      // 2013: {Slight: 3}, 2014: {Serious: 1}, 2015: {Slight: 6},
       // 2016: {Serious: 1, Slight: 2}, 2017: {Slight: 1}}
       // now turn it into [{},{}]
 
@@ -124,8 +124,8 @@ export default class Tooltip extends React.Component {
   }
 
   _listPropsAndValues(hoveredObject, all = false, n = 6) {
-    if(!hoveredObject.properties || 
-      (hoveredObject.points && (!hoveredObject.points || 
+    if(!hoveredObject.properties ||
+      (hoveredObject.points && (!hoveredObject.points ||
        !hoveredObject.points[0].properties))) return null
 
     let DATA = []

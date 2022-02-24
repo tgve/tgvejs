@@ -3,7 +3,7 @@ import { makeWidthFlexible, Treemap } from 'react-vis';
 
 import { PLOT_W } from '../Constants';
 
-const FlexibleTreemap = makeWidthFlexible(Treemap); 
+const FlexibleTreemap = makeWidthFlexible(Treemap);
 
 const H = PLOT_W;
 /**
@@ -21,13 +21,13 @@ const H = PLOT_W;
  *     }
  *   ))
  * }
- * 
+ *
  * @param {Object} props react props
  */
 export default function TreeMap(props) {
   const [hoveredNode, setHoveredNode] = useState(false)
   const { data, plotStyle, title } = props;
-  
+
   const treeProps = {
     animation: {
       damping: 9,
@@ -39,7 +39,7 @@ export default function TreeMap(props) {
     // onLeafClick: () => this.setState({ treemapData: _getRandomData() }),
     mode: 'squarify',
     getLabel: x => x.name,
-    // see 
+    // see
     // https://github.com/uber/react-vis/issues/262#issuecomment-281757385
     width: plotStyle && plotStyle.width || H + 50,
     height: plotStyle && plotStyle.height || H

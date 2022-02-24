@@ -127,8 +127,8 @@ function isStringNumeric (str) {
 }
 
 function isNullUndefinedNaN (str) {
-  return str === null 
-      || str === undefined 
+  return str === null
+      || str === undefined
       //typeof NaN === 'number'
       || (typeof str === 'number' && isNaN(str))
 }

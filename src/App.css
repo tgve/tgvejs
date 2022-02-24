@@ -9,12 +9,12 @@
 * TODO: don not overwrite React default package created.
 */
 .xyz {
-  pointer-events: none; 
-  position: absolute; 
-  z-index: 999; 
-  font-size: 12px; 
-  padding: 5px; 
-  background: #000; 
+  pointer-events: none;
+  position: absolute;
+  z-index: 999;
+  font-size: 12px;
+  padding: 5px;
+  background: #000;
   color: #fff;
   /* max-height: 320px; */
   /* overflow-y: scroll; */
@@ -42,7 +42,7 @@
   10% { opacity: 0.9; }
   15% { opacity: 0.7; }
   100% { opacity: 0; }
-} 
+}
 
 @keyframes load8 {
   0% {

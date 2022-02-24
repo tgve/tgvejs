@@ -14,7 +14,14 @@ spatial data.
 
 > note: the older versions released under https://www.npmjs.com/package/eatlas is deprecated.
 
-This is a React Component ES Module that can be embedded in your React applications. For an example how to import the TGVE package using `npm`, see the [`tgve/app`](https://github.com/tgve/app) repo. Following is a snippet of ReactJS from that repo:
+This is a React Component ES Module that can be embedded in your React applications. To install in your project:
+
+```sh
+npm install @tgve/tgvejs
+# or
+yarn add @tgve/tgvejs
+```
+Then, for an example to import the TGVE package and use it as the main component in a React app, see the [`tgve/app`](https://github.com/tgve/app) repo. Following is a snippet of ReactJS from that repo:
 
 ``` javascript
 import React from 'react';
@@ -34,7 +41,7 @@ TGVE supports separately-provided geography (in GeoJSON) and point data sources 
 The following parameters can be passed to the TGVE app, each (except
 objects) can be passed as an environment variable like
 `REACT_APP_LAYER_NAME` or when using TGVE as a component
-`<Eatlas layerName="geojson">`. The mapping between parameters names and the corresponding REACT_APP environment variables is not entirely consistent; see [here](https://github.com/tgve/tgvejs/blob/release/src/utils/api.js) for the mapping, and note that `leftSidebarContent` cannot be passed as an
+`<Tgve layerName="geojson">`. The mapping between parameters names and the corresponding REACT_APP environment variables is not entirely consistent; see [here](https://github.com/tgve/tgvejs/blob/release/src/utils/api.js) for the mapping, and note that `leftSidebarContent` cannot be passed as an
 environment variable. For more on passing variables to a React app and
 the `REACT_APP_` prefix please see [React docs](https://create-react-app.dev/docs/adding-custom-environment-variables).
 
@@ -91,8 +98,18 @@ They can also be passed to the TGVE as URL query parameters. For instance
 
 -   `hideSidebar` boolean value which would hide the left sidebar.
 
-None of the above is necessary and in the current release “Add data”
-button will allow loading data into eAtlas.
+None of the above is necessary and in the current release “Add data” button will allow loading data into eAtlas.
+
+### Data and settings
+
+As stated above, you can create a `script` tag to pass data and above configurations as `JSON` to where TGVE is being rendered; for example in an `index.html` where the component is rendered like:
+
+```html
+<!--notice the ID names-->
+<script id="tgve-data" type="application/json">{'valid':'geojson'}</script>
+<script id="tgve-settings" type="application/json">{'defaultURL':'https://raw.githubusercontent.com/layik/eatlas-data/main/casualties_100.geojson','dark':'false'}</script>
+
+```
 
 ## External dependenices
 The package relies on Plotly to be available as `window.Plotly`. You can satisify this dependency by adding Plotly in your HTML build where the package is used. For instance version `2.6.3` minifed:
@@ -109,7 +126,10 @@ The package follows `create-react-app` testing kits and uses mainly
 `jest`. Run `npm run test`.
 
 ## Contributing
-See the TGVE [Contributor Code of Conduct](https://github.com/tgve/tgver/blob/master/CODE_OF_CONDUCT.md).
+
+See:
+- [Contributor Code of Conduct](https://github.com/tgve/tgver/blob/master/CODE_OF_CONDUCT.md)
+- [developer setup instructions](notes/dev-setup.md)
 
 ## Package Status
 

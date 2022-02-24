@@ -1,14 +1,14 @@
 /**
  * WIP to see if it is possible to match data to appropriate UI.
- * 
+ *
  * Expert/novice users could decide to explore the data they want
- * they way they want. 
- * 
+ * they way they want.
+ *
  * 1. Select your variable.
  * 2. Select the type of UI for the variable.
  * 3. Select the values you like to explore
  * 4. Select the visualization for those values.
- * 
+ *
  */
 import React from 'react';
 import { FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';

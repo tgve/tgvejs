@@ -24,7 +24,7 @@ const properties = (geojson) => {
  * Find all columns which can be considered as key/unique columns.
  * Using `getPropertyValues` we compare the length with
  * geojson objects and determin which olumn can be considered as key.
- * 
+ *
  * @param {Object} geojson to process
  * @returns array of keys or null if none.
  */
@@ -37,7 +37,7 @@ const getKeyColumns = (geojson) => {
       geojson.features.length) {
       keys.push(column);
       // if property values of column === geojson.features
-      // must be unique      
+      // must be unique
     }
   })
   return keys.length > 0 ? keys : null;
@@ -48,8 +48,8 @@ const getKeyColumns = (geojson) => {
  * all values within the array and returns true if all matches
  * pattern for UK ONS codes.
  * See https://en.wikipedia.org/wiki/ONS_coding_system
- * 
- * @param {*} array 
+ *
+ * @param {*} array
  */
 const isONSCode = (array) => {
   if (!array || array.length === 0) return false;
@@ -64,7 +64,7 @@ const isONSCode = (array) => {
 /**
  * {some: data, another: value}
  * turn it into {some: type, another: type}
- * @param {Object} feature 
+ * @param {Object} feature
  */
 const describeFeatureVariables = (feature) => {
   if (!feature || feature.type !== 'Feature') return null;
@@ -91,12 +91,12 @@ const describeFeatureVariables = (feature) => {
 /**
  * This function takes a geojson object and optionally a property
  * it returns a set (in array) object of all values for that property.
- * 
+ *
  * If no property is given it gets all properties
  * of each feature and adds unique values for each in a Set.
- * 
- * @param {Object} geojson 
- * @param {String} property 
+ *
+ * @param {Object} geojson
+ * @param {String} property
  */
 const getPropertyValues = (geojson, property) => {
   if (!geojson || !geojson.features) return null;
@@ -106,7 +106,7 @@ const getPropertyValues = (geojson, property) => {
     feature.properties && Object.keys(feature.properties) &&
     Object.keys(feature.properties).forEach((each) => {
       if (property && property === each) {
-        // if the right property, 
+        // if the right property,
         // add it to the value to be returnd
         values.add(feature.properties[each])
       } else {
@@ -123,15 +123,15 @@ const getPropertyValues = (geojson, property) => {
 }
 
 /**
- * Get a list of {x:property, y:count} objects for a features in 
+ * Get a list of {x:property, y:count} objects for a features in
  * a geojson object. The function can return the counts for
- * a specific list provided or it would get all values in 
+ * a specific list provided or it would get all values in
  * the given key/column of the data.
- * 
- * @param {Object} data features to loop through. 
+ *
+ * @param {Object} data features to loop through.
  * @param {String} key a particular property as key
  * @param {Object} list of values to limit return their counts
- * 
+ *
  * @returns {Object}
  */
 const propertyCount = (data, key, list) => {
@@ -147,7 +147,7 @@ const propertyCount = (data, key, list) => {
     Object.keys(feature.properties).forEach(each => {
       if (each === key) {
         // create an array matching given list
-        // if no list match first 
+        // if no list match first
         const i = list_copy.indexOf(feature.properties[each]);
         if (sub_data[i] &&
           sub_data[i].x === feature.properties[each]) {
@@ -164,19 +164,19 @@ const propertyCount = (data, key, list) => {
 
 /**
  * Generate an object with frequency of values of a particular property, arranged
- * under a different property. Given features = 
+ * under a different property. Given features =
  * [{p1: a, p2: b, p3: v1},
  * {p1: a, p2: b, p3: v1},
  * {p1: b, p2: a, p3: v2},
  * ].
  * The function returns an object {v1: {a: 2, b: 2}, v2: {a:1, b:1}}
- * 
- * @param {Object} data features to loop through. 
+ *
+ * @param {Object} data features to loop through.
  * @param {String} key a particular property as key
  * @param {String} key2 a different property as key
  * @param {Boolean} year extract year out of Date string?
- * 
- * @returns {Object} 
+ *
+ * @returns {Object}
  */
 const propertyCountByProperty = (data, key, key2, year = true) => {
   if (!data || !key || !key2 || key === key2) return;
@@ -185,10 +185,10 @@ const propertyCountByProperty = (data, key, key2, year = true) => {
     const props = feature.properties;
     if(!props || !Object.keys(props)) return
     /**
-     * TODO: 
+     * TODO:
      */
     const k2 = year && new Date(props[key2]) &&
-    new Date(props[key2]).getFullYear() ? 
+    new Date(props[key2]).getFullYear() ?
     new Date(props[key2]).getFullYear() : props[key2];
     Object.keys(props).forEach(each => {
       if (each === key) {
@@ -227,13 +227,13 @@ const coordsAsXY = (geojson, sizeProperty) => {
  * This function checks every value in a given column against
  * `isStringNumeric` function and tries to get a number value
  * from the column specified. If even one fails, it returns false.
- * 
- * @param {*} data 
- * @param {*} columnNameOrIndex 
- * @returns 
+ *
+ * @param {*} data
+ * @param {*} columnNameOrIndex
+ * @returns
  */
 const isColumnAllNumeric = (data, columnNameOrIndex) => {
-  if(!Array.isArray(data) 
+  if(!Array.isArray(data)
   && (!isString(columnNameOrIndex) || !isNumber(columnNameOrIndex))) return null
   let isNumeric = true;
   data.forEach(d => {
@@ -255,13 +255,13 @@ const isColumnAllNumeric = (data, columnNameOrIndex) => {
  * 2. determine if given array is mostly numerical
  * 3. determine if given arrays is mostly cardinal value
  * (male, female) or age groups
- * 
+ *
  * if(1) and not (2) do nothing
  * if(2) return {x:1, y: v}
  * if(3) return {x:v, y: n}
- * 
- * @param {*} data 
- * @param {*} property 
+ *
+ * @param {*} data
+ * @param {*} property
  * @returns {*}
  */
  const arrayPlotProps = (data, property) => {
@@ -269,30 +269,30 @@ const isColumnAllNumeric = (data, columnNameOrIndex) => {
     data: [],
     type: null
   }
-  if (!data || !Array.isArray(data) 
+  if (!data || !Array.isArray(data)
   || !data.length || !property) return empty;
   const array = data.map(e => e.properties[property])
   const unique = uniqueValuePercentage(array, 95)
-  
+
   const allNumbers = [];
   data.forEach(f => {
     const v = f.properties[property];
     if(isStringNumeric(v)) allNumbers.push(v);
   })
-  
+
   // 95% valid numbers are good for a chart
   // for anything above 10 (magic number?)
   // anything below that (50%)
   const percentage = allNumbers.length/array.length * 100;
-  const mostlyNumbs = allNumbers.length > 10 ? 
+  const mostlyNumbs = allNumbers.length > 10 ?
   percentage > 95 : percentage > 50;
   // 95% keys and not numbers
   if(unique && !mostlyNumbs) return empty;
 
   const props = {
-    data: mostlyNumbs ? 
-     data.map((e, i) => ({x: i, y: e.properties[property]})) 
-     : 
+    data: mostlyNumbs ?
+     data.map((e, i) => ({x: i, y: e.properties[property]}))
+     :
      xyObjectByProperty(data, property),
     type: mostlyNumbs ? "continuous" : "cardinal"
   }

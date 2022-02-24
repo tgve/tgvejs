@@ -86,7 +86,7 @@ export default class UI extends React.Component {
         labelKey="id"
         placeholder={"Choose " + humanize(title)}
         type={TYPE.search}
-        onChange={event => 
+        onChange={event =>
           console.log(event && event.value[0] && event.value[0].id)
         }
       />

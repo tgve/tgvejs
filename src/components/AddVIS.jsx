@@ -16,7 +16,7 @@ const VIS = ['Vertical Bar', 'Horizontal Bar',
 /**
  * Generate approprate series/marks for a React-vis
  * type from data and column name.
- * 
+ *
  * @param {Object} data geojson features to generate counts from
  * @param {String} column name of column in feature to generate counts from
  * @param {String} vis type of visualization (react-vis type)
@@ -148,7 +148,7 @@ export default function AddVIS(props) {
           </Accordion> :
           <center>
             {list.map((plot, i) =>
-              plot && 
+              plot &&
               <div>
                 <Button
                   kind={KIND.secondary} size={SIZE.compact}

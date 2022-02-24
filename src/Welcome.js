@@ -185,7 +185,14 @@ export default class Welcome extends React.Component {
           this._updateStateAndLayers(geoErr, geojson, data, customError, geographyURL);
         })
       } else {
-        this._initWithGeojson(error, data, customError, aURL);
+        if (geographyURL && !isURL(geographyURL)) {
+          // only when set but !isURL
+          this._initWithGeojson(error, data,
+            customError || { content: 'Invalid URL: ' + geographyURL },
+            aURL);
+        } else {
+          this._initWithGeojson(error, data, customError, aURL);
+        }
       }
     })
   }
@@ -240,14 +247,12 @@ export default class Welcome extends React.Component {
    */
   _initWithGeojson(error, data, customError, fullURL) {
     if (!error) {
-      // this._updateURL(viewport)
       this.setState({
         loading: false,
-        data: data,
-        alert: customError || null
+        data: data
       });
       this._fitViewport(data);
-      this._generateLayer();
+      this._generateLayer({customError: customError || null});
     } else {
       this.setState({
         loading: false,
@@ -259,16 +264,18 @@ export default class Welcome extends React.Component {
 
   /**
    * The main function generating DeckGL layer and customizing mapbox styles.
-   * The reason why state is not updated down in <DeckSidebarContainer />
+   * The reason why state is not updated in <DeckSidebarContainer />
    * is to optimise the number of setState or equivalent React hooks.
    *
-   * @param {*} values includes
-   * @param {Object} filter multivariate filter of properties
-   * @param {String} cn short for colorName passed from callback
-   * @param {Object} layerOptions
+   * @param {*} values includes:
+   * {Object} filter multivariate filter of properties
+   * {String} cn short for colorName passed from callbacks
+   * {Object} layerOptions to override layer properties
+   * {Object} customError useful to show an alert when layer
+   * is generated
    */
   _generateLayer(values = {}) {
-    const { layerOptions = {}, filter, cn } = values;
+    const { layerOptions = {}, filter, cn, customError } = values;
 
     if (filter && filter.what === 'mapstyle') {
       const newStyle = "mapbox://styles/mapbox/" + filter.selected + "-v9";
@@ -500,7 +507,8 @@ export default class Welcome extends React.Component {
     )
 
     this.setState({
-      alert: switchToIcon ? { content: 'Switched to icon mode. ' } : null,
+      alert: switchToIcon ?
+        { content: 'Switched to icon mode. ' } : customError || null,
       loading: false,
       layerStyle,
       geomType,
