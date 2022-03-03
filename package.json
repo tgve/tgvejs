@@ -49,7 +49,7 @@
     "underscore": "^1.12.0"
   },
   "scripts": {
-    "test": "react-scripts test --updateSnapshot",
+    "test": "yarn install --check-files && react-scripts test --updateSnapshot",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --env=jsdom --coverage",
     "dist": "node_modules/.bin/babel src/ --out-dir dist --copy-files --no-copy-ignored",
@@ -94,6 +94,8 @@
     "geckodriver": "^2.0.4",
     "mocha": "^9.1.3",
     "postcss": "^8.3.7",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-test-renderer": "^16.14.0",
     "rollup": "^2.47.0",
     "rollup-plugin-postcss": "^4.0.1",

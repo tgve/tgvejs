@@ -1,14 +1,16 @@
-# Developer notes
+# Setting up a development workflow for `tgvejs`
 
-To set up a development workflow for `tgvejs`:
+## Preliminaries
 
-1. clone the `tgvejs` and `app` repositories to your local machine
-2. in `tgvejs`, run `yarn link` to register local copy of `@tgve/tgvejs`
-3. in `app`, run `yarn link @tgve/tgvejs` to symlink to local copy
-4. in `jgvejs`, start `yarn watch` to automatically publish changes to `dist`
-5. in `app`, run `yarn start` to start a development server
+1. Clone the `tgvejs` and `app` repositories to your local machine.
+2. In `tgvejs`, run `yarn link` to register local copy of `@tgve/tgvejs`.
+3. In `app`, run `yarn link @tgve/tgvejs` to symlink to local copy.
 
-## WIP
+## Building and automated testing with tgvejs
 
-- `yarn add npm-link-shared --dev`
-- `yarn npm-link-shared ./node_modules/@tgve/tgvejs/node_modules . react react-dom`
+1. `yarn watch` will automatically publish changes to `dist`.
+2. `yarn test` will start a continuous testing process. It will also reinstall any missing `node_modules` (in particular .`react` and `react-dom`, if they have been deleted by `yarn start` in `app`; see below).
+
+## Running via the app
+
+1. `yarn start` will start a development server. It will also purge `react` and `react-dom` (by deleting them from `node_modules`) in the locally linked `@tgve/tgvejs`, which will have them installed by default as dev dependencies. This avoids the [more than one copy of React in the same app](https://stackoverflow.com/questions/66488492/solve-having-more-than-one-copy-of-react-in-the-same-app) problem.
