@@ -54,9 +54,9 @@
     "coverage": "react-scripts test --env=jsdom --coverage",
     "dist": "node_modules/.bin/babel src/ --out-dir dist --copy-files --no-copy-ignored",
     "bundle": "npx rollup -c 'rollup.config.js'",
-    "watch": "watch 'npm run dist' ./src",
-    "pub-dry": "npm run dist && npm --dry-run publish",
-    "pub": "npm run dist && npm publish"
+    "watch": "watch --wait=1 'yarn run dist' ./src",
+    "pub-dry": "yarn run dist && yarn --dry-run publish",
+    "pub": "yarn run dist && yarn publish"
   },
   "eslintConfig": {
     "extends": "react-app"
