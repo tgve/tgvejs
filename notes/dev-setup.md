@@ -3,12 +3,14 @@
 ## Preliminaries
 
 1. Clone the `tgvejs` and `app` repositories to your local machine.
-2. In `tgvejs`, run `yarn link` to register local copy of `@tgve/tgvejs`. If you get a warning "There's already a package called '@tgve/tgvejs' registered", [you can probably ignore it](https://www.xolv.io/blog/dev-notes/dreaded-yarn-link-theres-already-a-package-called-x-registered/).
-3. In `app`, run `yarn link @tgve/tgvejs` to symlink to local copy.
+2. In `tgvejs`:
+ 1. run `yarn link` to register local copy of `@tgve/tgvejs`. If you get a warning "There's already a package called '@tgve/tgvejs' registered", [you can probably ignore it](https://www.xolv.io/blog/dev-notes/dreaded-yarn-link-theres-already-a-package-called-x-registered/).
+ 2. Run at least one build to populate `dist` (see below).
+4. In `app`, run `yarn link @tgve/tgvejs` to symlink to local copy.
 
 ## Building and automated testing with tgvejs
 
-1. `yarn watch` will automatically publish changes to `dist`.
+1. `yarn dist` (`yarn watch`) will publish (automatically publish) changes to `dist`.
 2. `yarn test` will start continuous testing. First, it will reinstall any missing `node_modules` (in particular .`react` and `react-dom`, if they have been deleted by `yarn start` in `app`; see below).
 
 ## Running via the app
