@@ -49,8 +49,7 @@
     "underscore": "^1.12.0"
   },
   "scripts": {
-    "test-fresh": "yarn add react && yarn add react-dom && yarn test",
-    "test": "react-scripts test --updateSnapshot",
+    "test": "yarn install --check-files && react-scripts test --updateSnapshot",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --env=jsdom --coverage",
     "dist": "node_modules/.bin/babel src/ --out-dir dist --copy-files --no-copy-ignored",
