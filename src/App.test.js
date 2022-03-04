@@ -45,6 +45,7 @@ test('App - API params set', () => {
 })
 
 test('App - API params ENV',() => {
+  process.env.REACT_APP_DEFAULT_URL = "https://react.com"
   const m = shallow(<App />).find('Welcome');
-  expect(m.props().defaultURL).toEqual(undefined);
+  expect(m.props().defaultURL).toEqual("https://react.com");
 })
