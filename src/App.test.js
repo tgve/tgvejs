@@ -78,6 +78,8 @@ test('App - API params ENV',() => {
   process.env.REACT_APP_LAYER_STYLE = "layerStyle"
   process.env.REACT_APP_DARK = true
   process.env.REACT_APP_HIDE_CHART_GENERATOR = true
+  process.env.REACT_APP_HIDE_CHARTS = true
+  process.env.REACT_APP_HIDE_SIDEBAR = true
   const m = shallow(<App />).find('Welcome');
   expect(m.props().defaultURL).toEqual("https://react.com");
   expect(m.props().geographyURL).toEqual("geographyURL");
@@ -87,4 +89,6 @@ test('App - API params ENV',() => {
   expect(m.props().layerStyle).toEqual("layerStyle");
   expect(m.props().dark).toEqual(true);
   expect(m.props().hideChartGenerator).toEqual(true);
+  expect(m.props().hideCharts).toEqual(true);
+  expect(m.props().hideSidebar).toEqual(true);
 })
