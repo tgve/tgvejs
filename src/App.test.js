@@ -76,6 +76,7 @@ test('App - API params ENV',() => {
   process.env.REACT_APP_COLUMN = "column"
   process.env.REACT_APP_TOOLTIP_COLUMNS = "tooltipColumns"
   process.env.REACT_APP_LAYER_STYLE = "layerStyle"
+  process.env.REACT_APP_DARK = true
   const m = shallow(<App />).find('Welcome');
   expect(m.props().defaultURL).toEqual("https://react.com");
   expect(m.props().geographyURL).toEqual("geographyURL");
@@ -83,5 +84,6 @@ test('App - API params ENV',() => {
   expect(m.props().column).toEqual("column");
   expect(m.props().tooltipColumns).toEqual("tooltipColumns");
   expect(m.props().layerStyle).toEqual("layerStyle");
+  expect(m.props().dark).toEqual(true);
 
 })
