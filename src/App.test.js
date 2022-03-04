@@ -53,7 +53,7 @@ test('App - API params set', () => {
     column: apiValue(column, "column", "REACT_APP_COLUMN"),
     tooltipColumns: apiValue(tooltipColumns, "tooltipColumns",
     "REACT_APP_TOOLTIP_COLUMNS"),
-    layerStyle: apiValue(layerName, "layerName", "REACT_APP_LAYER_NAME"),
+    layerStyle: apiValue(layerName, "layerName", "REACT_APP_LAYER_STYLE"),
     // if no boolean found set a default value
     dark: expected(apiValue(dark, "dark", "REACT_APP_DARK", true),
       "boolean", true),
@@ -75,10 +75,13 @@ test('App - API params ENV',() => {
   process.env.REACT_APP_GEOGRAPHY_COLUMN = "geographyColumn"
   process.env.REACT_APP_COLUMN = "column"
   process.env.REACT_APP_TOOLTIP_COLUMNS = "tooltipColumns"
+  process.env.REACT_APP_LAYER_NAME = "layerStyle"
   const m = shallow(<App />).find('Welcome');
   expect(m.props().defaultURL).toEqual("https://react.com");
   expect(m.props().geographyURL).toEqual("geographyURL");
   expect(m.props().geographyColumn).toEqual("geographyColumn");
   expect(m.props().column).toEqual("column");
   expect(m.props().tooltipColumns).toEqual("tooltipColumns");
+  expect(m.props().layerStyle).toEqual("layerStyle");
+
 })
