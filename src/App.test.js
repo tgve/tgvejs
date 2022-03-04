@@ -75,7 +75,7 @@ test('App - API params ENV',() => {
   process.env.REACT_APP_GEOGRAPHY_COLUMN = "geographyColumn"
   process.env.REACT_APP_COLUMN = "column"
   process.env.REACT_APP_TOOLTIP_COLUMNS = "tooltipColumns"
-  process.env.REACT_APP_LAYER_NAME = "layerStyle"
+  process.env.REACT_APP_LAYER_STYLE = "layerStyle"
   const m = shallow(<App />).find('Welcome');
   expect(m.props().defaultURL).toEqual("https://react.com");
   expect(m.props().geographyURL).toEqual("geographyURL");
