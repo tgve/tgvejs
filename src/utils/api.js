@@ -67,7 +67,7 @@ const params = function (props, search = "") {
     "REACT_APP_GEOGRAPHY_URL"),
     geographyColumn: apiValue(geographyColumn, "geographyColumn",
     "REACT_APP_GEOGRAPHY_COLUMN"),
-    column: apiValue(column, "column", "REACT_APP_COLUMN_NAME"),
+    column: apiValue(column, "column", "REACT_APP_COLUMN"),
     tooltipColumns: apiValue(tooltipColumns, "tooltipColumns",
     "REACT_APP_TOOLTIP_COLUMNS"),
     layerStyle: apiValue(layerName, "layerName", "REACT_APP_LAYER_NAME"),

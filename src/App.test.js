@@ -50,7 +50,7 @@ test('App - API params set', () => {
     "REACT_APP_GEOGRAPHY_URL"),
     geographyColumn: apiValue(geographyColumn, "geographyColumn",
     "REACT_APP_GEOGRAPHY_COLUMN"),
-    column: apiValue(column, "column", "REACT_APP_COLUMN_NAME"),
+    column: apiValue(column, "column", "REACT_APP_COLUMN"),
     tooltipColumns: apiValue(tooltipColumns, "tooltipColumns",
     "REACT_APP_TOOLTIP_COLUMNS"),
     layerStyle: apiValue(layerName, "layerName", "REACT_APP_LAYER_NAME"),
@@ -72,12 +72,12 @@ test('App - API params set', () => {
 test('App - API params ENV',() => {
   process.env.REACT_APP_DEFAULT_URL = "https://react.com"
   process.env.REACT_APP_GEOGRAPHY_URL = "geographyURL"
-  process.env.REACT_APP_GEOGRAPHY_COLUMN = "geographyColumnName"
-  process.env.REACT_APP_COLUMN_NAME = "columnName"
+  process.env.REACT_APP_GEOGRAPHY_COLUMN = "geographyColumn"
+  process.env.REACT_APP_COLUMN = "column"
   const m = shallow(<App />).find('Welcome');
   expect(m.props().defaultURL).toEqual("https://react.com");
   expect(m.props().geographyURL).toEqual("geographyURL");
-  expect(m.props().geographyColumn).toEqual("geographyColumnName");
-  expect(m.props().column).toEqual("columnName");
+  expect(m.props().geographyColumn).toEqual("geographyColumn");
+  expect(m.props().column).toEqual("column");
 
 })
