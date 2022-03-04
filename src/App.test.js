@@ -43,3 +43,8 @@ test('App - API params set', () => {
   expect(n.props().hideCharts).toEqual(true);
 
 })
+
+test('App - API params ENV',() => {
+  const m = shallow(<App />).find('Welcome');
+  expect(m.props().defaultURL).toEqual(undefined);
+})
