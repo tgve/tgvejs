@@ -73,8 +73,11 @@ test('App - API params ENV',() => {
   process.env.REACT_APP_DEFAULT_URL = "https://react.com"
   process.env.REACT_APP_GEOGRAPHY_URL = "geographyURL"
   process.env.REACT_APP_GEOGRAPHY_COLUMN_NAME = "geographyColumnName"
+  process.env.REACT_APP_COLUMN_NAME = "columnName"
   const m = shallow(<App />).find('Welcome');
   expect(m.props().defaultURL).toEqual("https://react.com");
   expect(m.props().geographyURL).toEqual("geographyURL");
   expect(m.props().geographyColumn).toEqual("geographyColumnName");
+  expect(m.props().column).toEqual("columnName");
+
 })
