@@ -51,7 +51,7 @@ const params = function (props, search = "") {
     geographyColumn: apiValue("geographyColumn", "REACT_APP_GEOGRAPHY_COLUMN"),   // String 
     column: apiValue("column", "REACT_APP_COLUMN"),                               // String 
     tooltipColumns: apiValue("tooltipColumns", "REACT_APP_TOOLTIP_COLUMNS"),      // Object
-    layerStyle: apiValue("layerName", "REACT_APP_LAYER_STYLE"),                   // String 
+    layerName: apiValue("layerName", "REACT_APP_LAYER_NAME"),                   // String 
     // if no boolean found set a default value
     dark: expected(apiValue("dark", "REACT_APP_DARK", true),                      // Boolean 
       "boolean", true),

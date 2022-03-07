@@ -51,7 +51,7 @@ test('App - API params ENV',() => {
   process.env.REACT_APP_GEOGRAPHY_COLUMN = "geographyColumn"
   process.env.REACT_APP_COLUMN = "column"
   process.env.REACT_APP_TOOLTIP_COLUMNS = "tooltipColumns"
-  process.env.REACT_APP_LAYER_STYLE = "layerStyle"
+  process.env.REACT_APP_LAYER_NAME = "layerName"
   process.env.REACT_APP_DARK = true
   process.env.REACT_APP_HIDE_CHART_GENERATOR = true
   process.env.REACT_APP_HIDE_CHARTS = true
@@ -62,7 +62,7 @@ test('App - API params ENV',() => {
   expect(m.props().geographyColumn).toEqual("geographyColumn");
   expect(m.props().column).toEqual("column");
   expect(m.props().tooltipColumns).toEqual("tooltipColumns");
-  expect(m.props().layerStyle).toEqual("layerStyle");
+  expect(m.props().layerName).toEqual("layerName");
   expect(m.props().dark).toEqual(true);
   expect(m.props().hideChartGenerator).toEqual(true);
   expect(m.props().hideCharts).toEqual(true);
