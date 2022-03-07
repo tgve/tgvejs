@@ -50,7 +50,7 @@
   "scripts": {
     "test": "yarn install --check-files && react-scripts test --updateSnapshot",
     "eject": "react-scripts eject",
-    "coverage": "react-scripts test --env=jsdom --coverage",
+    "coverage": "react-scripts test --coverage .",
     "dist": "node_modules/.bin/babel src/ --out-dir dist --copy-files --no-copy-ignored",
     "bundle": "npx rollup -c 'rollup.config.js'",
     "watch": "watch --wait=1 'yarn run dist' ./src",
