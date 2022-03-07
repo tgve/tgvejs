@@ -1,6 +1,6 @@
 // importing it other ways would cause minification issue.
 import qs from 'qs';
-
+import {strict as assert} from 'assert'
 // const TGVE_API = [
 //   {column: 'string'},
 //   {dark: 'boolean'},
@@ -43,6 +43,7 @@ const params = function (props, search = "") {
     || {};
 
   const apiValue = function (param, paramName, ENV_NAME, bool = false) {
+    assert(param == props[paramName]);
     if (qsr.hasOwnProperty(paramName)) {
       return bool ? boolStr(qsr[paramName]) : qsr[paramName]
     } else if (bool && typeof param === 'boolean') {

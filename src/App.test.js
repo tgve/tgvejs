@@ -44,30 +44,6 @@ test('App - API params set', () => {
 
 })
 
-/*
-  defaultURL: apiValue(defaultURL, "defaultURL", "REACT_APP_DEFAULT_URL"),
-  geographyURL: apiValue(geographyURL, "geographyURL",
-    "REACT_APP_GEOGRAPHY_URL"),
-    geographyColumn: apiValue(geographyColumn, "geographyColumn",
-    "REACT_APP_GEOGRAPHY_COLUMN"),
-    column: apiValue(column, "column", "REACT_APP_COLUMN"),
-    tooltipColumns: apiValue(tooltipColumns, "tooltipColumns",
-    "REACT_APP_TOOLTIP_COLUMNS"),
-    layerStyle: apiValue(layerName, "layerName", "REACT_APP_LAYER_STYLE"),
-    // if no boolean found set a default value
-    dark: expected(apiValue(dark, "dark", "REACT_APP_DARK", true),
-      "boolean", true),
-    hideChartGenerator: apiValue(hideChartGenerator, "hideChartGenerator",
-      "REACT_APP_HIDE_CHART_GENERATOR", true),
-    hideCharts: apiValue(hideCharts, "hideCharts",
-      "REACT_APP_HIDE_CHARTS", true),
-    hideSidebar: apiValue(hideSidebar, "hideSidebar",
-      "REACT_APP_HIDE_SIDEBAR", true), 
-    viewport: jsonStr(qsr.viewport) || viewport || settings.viewport,
-    data: jsonStr(qsr.data) || data || staticData,
-    // react component
-    leftSidebarContent,
-  */
 
 test('App - API params ENV',() => {
   process.env.REACT_APP_DEFAULT_URL = "https://react.com"
