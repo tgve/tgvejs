@@ -42,8 +42,8 @@ const params = function (props, search = "") {
     && jsonStr(document.getElementById('tgve-settings').textContent))
     || {};
 
-  const apiValue = function (param, paramName, ENV_NAME, bool = false) {
-    assert(param == props[paramName]);
+  const apiValue = function (param2, paramName, ENV_NAME, bool = false) {
+    const param = props[paramName]
     if (qsr.hasOwnProperty(paramName)) {
       return bool ? boolStr(qsr[paramName]) : qsr[paramName]
     } else if (bool && typeof param === 'boolean') {
