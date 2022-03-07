@@ -11,7 +11,7 @@
 ## Building and automated testing with tgvejs
 
 1. `yarn dist` (`yarn watch`) will publish (automatically publish) changes to `dist`.
-2. `yarn test` will start continuous testing. First, it will reinstall any missing `node_modules` (in particular .`react` and `react-dom`, if they have been deleted by `yarn start` in `app`; see below).
+2. `yarn test` will start continuous testing. First, it will reinstall any missing `node_modules` (in particular `react` and `react-dom`, if they have been deleted by `yarn start` in `app`; see below).
 
 ## Running via the app
 
