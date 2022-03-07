@@ -6,7 +6,7 @@ import { isURL } from '../utils/utils';
 
 export default function URL(props) {
   const { urlCallback } = props;
-  const [url, setUrl] = useState("https://domain.com/api/stats19")
+  const [url, setUrl] = useState()
 
   return (
     <form className="search-form"
@@ -18,7 +18,7 @@ export default function URL(props) {
       <FormControl >
         <Input
           id="search-nominatum"
-          placeholder={url}
+          placeholder={"https://domain.com/api/file.csv"}
           value={url}
           onChange={({ target: { value } }) => setUrl(value)}
           endEnhancer="🔗"
