@@ -28,11 +28,6 @@ const params = function (props, search = "") {
   const qsr = typeof search === 'string' &&
     qs.parse(search.replace("?", ""))
 
-  const { defaultURL, tooltipColumns, geographyURL,
-    geographyColumn, column, data, layerName, dark,
-    leftSidebarContent, viewport, hideChartGenerator,
-    hideCharts, hideSidebar } = props;
-
   const staticData = document.getElementById('tgve-data')
     && document.getElementById('tgve-data').textContent
     && jsonStr(document.getElementById('tgve-data').textContent);
@@ -61,6 +56,8 @@ const params = function (props, search = "") {
   const expected = function (found, expected, def) {
     return typeof found === expected ? found : def
   }
+
+  const {data, leftSidebarContent, viewport} = props;
 
   return ({
     defaultURL: apiValue("defaultURL", "REACT_APP_DEFAULT_URL"),
