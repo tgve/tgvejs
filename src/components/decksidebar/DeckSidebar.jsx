@@ -202,7 +202,7 @@ export default class DeckSidebar extends React.Component {
                 <Boxplot data={columnDomain} />}
 
               <StatefulTabs initialState={{activeKey: "0"}} id="main-tabs">
-                <Tab eventKey="0" title={
+                <Tab title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
                 } overrides={TabOverrides}>
@@ -267,7 +267,7 @@ export default class DeckSidebar extends React.Component {
                   {!hideCharts
                     && popPyramidPlot({ data, dark: dark })}
                 </Tab>
-                <Tab eventKey="1" title={
+                <Tab title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-sliders" />
                 } overrides={TabOverrides}>
@@ -346,7 +346,7 @@ export default class DeckSidebar extends React.Component {
                   }
                 </Tab>
                 {unfilteredData && unfilteredData.length > 0 &&
-                  <Tab eventKey="2" title={
+                  <Tab title={
                     <i style={{ fontSize: '2rem' }}
                       className="fa fa-filter" >{
                         multiVarSelect && Object.keys(multiVarSelect).length ?
