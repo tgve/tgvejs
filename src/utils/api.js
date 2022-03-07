@@ -57,8 +57,6 @@ const params = function (props, search = "") {
     return typeof found === expected ? found : def
   }
 
-  const {data, leftSidebarContent, viewport} = props;
-
   return ({
     defaultURL: apiValue("defaultURL", "REACT_APP_DEFAULT_URL"),
     geographyURL: apiValue("geographyURL", "REACT_APP_GEOGRAPHY_URL"),
@@ -75,10 +73,10 @@ const params = function (props, search = "") {
       "REACT_APP_HIDE_CHARTS", true),
     hideSidebar: apiValue("hideSidebar",
       "REACT_APP_HIDE_SIDEBAR", true),
-    viewport: jsonStr(qsr.viewport) || viewport || settings.viewport,
-    data: jsonStr(qsr.data) || data || staticData,
+    viewport: jsonStr(qsr.viewport) || props.viewport || settings.viewport,
+    data: jsonStr(qsr.data) || props.data || staticData,
     // react component
-    leftSidebarContent,
+    leftSidebarContent: props.leftSidebarContent
   })
 }
 
