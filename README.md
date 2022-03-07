@@ -38,12 +38,13 @@ function App() {
 
 TGVE supports separately-provided geography (in GeoJSON) and point data sources (in CSV). Other formats are not supported.
 
-The following parameters can be passed to the TGVE app, each (except
-objects) can be passed as an environment variable like
-`REACT_APP_LAYER_STYLE` or when using TGVE as a component
-`<Tgve layerName="geojson">`. The mapping between parameters names and the corresponding REACT_APP environment variables is not entirely consistent; see [here](https://github.com/tgve/tgvejs/blob/release/src/utils/api.js) for the mapping, and note that `leftSidebarContent` cannot be passed as an
-environment variable. For more on passing variables to a React app and
-the `REACT_APP_` prefix please see [React docs](https://create-react-app.dev/docs/adding-custom-environment-variables).
+The following parameters can be passed to the TGVE app. Each parameter can be passed as an environment variable, with the exception of:
+- leftSidebarContent
+- data
+- viewport
+For example: `REACT_APP_GEOGRAPHY_URL` or when using TGVE as a component
+`<Tgve geographyURL="https://geo.com">`. For more on passing variables to a React app and
+the `REACT_APP_` prefix please see [React docs](https://create-react-app.dev/docs/adding-custom-environment-variables). 
 
 They can also be passed to the TGVE as URL query parameters. For instance
 `localhost:3000?dark=false`.

@@ -62,7 +62,7 @@ test('App - API params set', () => {
     hideCharts: apiValue(hideCharts, "hideCharts",
       "REACT_APP_HIDE_CHARTS", true),
     hideSidebar: apiValue(hideSidebar, "hideSidebar",
-      "REACT_APP_HIDE_SIDEBAR", true),
+      "REACT_APP_HIDE_SIDEBAR", true), 
     viewport: jsonStr(qsr.viewport) || viewport || settings.viewport,
     data: jsonStr(qsr.data) || data || staticData,
     // react component
