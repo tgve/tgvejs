@@ -1,20 +1,7 @@
 // importing it other ways would cause minification issue.
 import qs from 'qs';
 import {strict as assert} from 'assert'
-// const TGVE_API = [
-//   {column: 'string'},
-//   {dark: 'boolean'},
-//   {data: 'object'},
-//   {defaultURL: 'string'},
-//   {geographyColumn: 'string'},
-//   {geographyURL: 'string'},
-//   {hideChartGenerator: 'boolean'},
-//   {hideCharts: 'boolean'},
-//   {layerName: 'string'},
-//   {leftSidebarContent: 'react'},
-//   {tooltipColumns: 'object'},
-//   {viewport: 'object'}
-// ]
+
 
 /**
  * Search parameters should take priority. Then comes
@@ -57,26 +44,27 @@ const params = function (props, search = "") {
     return typeof found === expected ? found : def
   }
 
+
   return ({
-    defaultURL: apiValue("defaultURL", "REACT_APP_DEFAULT_URL"),
-    geographyURL: apiValue("geographyURL", "REACT_APP_GEOGRAPHY_URL"),
-    geographyColumn: apiValue("geographyColumn", "REACT_APP_GEOGRAPHY_COLUMN"),
-    column: apiValue("column", "REACT_APP_COLUMN"),
-    tooltipColumns: apiValue("tooltipColumns", "REACT_APP_TOOLTIP_COLUMNS"),
-    layerStyle: apiValue("layerName", "REACT_APP_LAYER_STYLE"),
+    defaultURL: apiValue("defaultURL", "REACT_APP_DEFAULT_URL"),                  // String        
+    geographyURL: apiValue("geographyURL", "REACT_APP_GEOGRAPHY_URL"),            // String 
+    geographyColumn: apiValue("geographyColumn", "REACT_APP_GEOGRAPHY_COLUMN"),   // String 
+    column: apiValue("column", "REACT_APP_COLUMN"),                               // String 
+    tooltipColumns: apiValue("tooltipColumns", "REACT_APP_TOOLTIP_COLUMNS"),      // Object
+    layerStyle: apiValue("layerName", "REACT_APP_LAYER_STYLE"),                   // String 
     // if no boolean found set a default value
-    dark: expected(apiValue("dark", "REACT_APP_DARK", true),
+    dark: expected(apiValue("dark", "REACT_APP_DARK", true),                      // Boolean 
       "boolean", true),
-    hideChartGenerator: apiValue("hideChartGenerator",
-      "REACT_APP_HIDE_CHART_GENERATOR", true),
-    hideCharts: apiValue("hideCharts",
+    hideChartGenerator: apiValue("hideChartGenerator",                            // Boolean 
+      "REACT_APP_HIDE_CHART_GENERATOR", true),  
+    hideCharts: apiValue("hideCharts",                                            // Boolean
       "REACT_APP_HIDE_CHARTS", true),
-    hideSidebar: apiValue("hideSidebar",
+    hideSidebar: apiValue("hideSidebar",                                          // Boolean
       "REACT_APP_HIDE_SIDEBAR", true),
-    viewport: jsonStr(qsr.viewport) || props.viewport || settings.viewport,
-    data: jsonStr(qsr.data) || props.data || staticData,
+    viewport: jsonStr(qsr.viewport) || props.viewport || settings.viewport,       // Object
+    data: jsonStr(qsr.data) || props.data || staticData,                          // Object
     // react component
-    leftSidebarContent: props.leftSidebarContent
+    leftSidebarContent: props.leftSidebarContent                                  // React object
   })
 }
 
@@ -95,7 +83,6 @@ const jsonStr = function (str) {
 }
 
 export {
-  // TGVE_API,
   jsonStr,
   params
 }
