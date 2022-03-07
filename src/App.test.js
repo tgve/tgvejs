@@ -31,7 +31,6 @@ test('App - dark/light themes set', () => {
   expect(tree).toMatchSnapshot();
   const n = shallow(<App dark={false}/>);
   expect(n.find(BaseProvider).prop('theme')).toEqual(LightTheme);
-
 })
 
 test('App - API params set', () => {
