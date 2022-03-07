@@ -49,7 +49,7 @@ export default class DeckSidebar extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { data, alert, loading, layerStyle, column } = this.props;
+    const { data, alert, loading, layerName, column } = this.props;
     const { reset, year, barChartVariable } = this.state;
     // avoid rerender as directly operating on document.get*
     // does not look neat. Keeping it React way.
@@ -58,7 +58,7 @@ export default class DeckSidebar extends React.Component {
       column !== nextProps.column ||
       alert !== nextProps.alert ||
       loading !== nextProps.loading ||
-      layerStyle !== nextProps.layerStyle ||
+      layerName !== nextProps.layerName ||
       barChartVariable !== nextState.barChartVariable) return true;
     //TODO:  a more functional way is needed
     // e.g JSON.stringify like in Welcome.js etc
@@ -80,7 +80,7 @@ export default class DeckSidebar extends React.Component {
       barChartVariable, datasetName } = this.state;
     const { onLayerOptionsCallback,
       onSelectCallback, data, colourCallback, unfilteredData,
-      toggleSubsetBoundsChange, urlCallback, alert, layerStyle,
+      toggleSubsetBoundsChange, urlCallback, alert, layerName,
       onlocationChange, column, dark, toggleOpen, toggleHexPlot,
       hideChartGenerator, hideCharts
     } = this.props;
@@ -89,8 +89,8 @@ export default class DeckSidebar extends React.Component {
 
     // TODO: more comprehensive method needed
     // last reg is "" string which is undefined
-    const withRadius = !layerStyle ||
-      new RegExp("grid|sgrid|hex|scatter", "i").test(layerStyle);
+    const withRadius = !layerName ||
+      new RegExp("grid|sgrid|hex|scatter", "i").test(layerName);
 
     const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
@@ -206,7 +206,7 @@ export default class DeckSidebar extends React.Component {
                     "age_of_casualty", dark, undefined, true)}
                   {plotByPropertyByDate(data, "sex_of_casualty", dark)}
                   {notEmpty && columnNames.length > 0 &&
-                    layerStyle !== "grid" &&
+                    layerName !== "grid" &&
                     <>
                       <h6>Column for layer:</h6>
                       <MultiSelect
@@ -284,17 +284,17 @@ export default class DeckSidebar extends React.Component {
                             // array of seingle {id: , value: } object
                             if (selected && selected[0]) {
                               const ls = selected[0].value;
-                              this.setState({ layerStyle: ls });
+                              this.setState({ layerName: ls });
                               typeof onSelectCallback === 'function' &&
                                 onSelectCallback({
-                                  what: 'layerStyle', selected: ls
+                                  what: 'layerName', selected: ls
                                 });
                             }
                           }}
                         />
                         <LayerSettings
                           dark={dark}
-                          layerName={layerStyle}
+                          layerName={layerName}
                           columnNames={columnNames}
                           onLayerOptionsCallback={(layerOptions) => {
                             typeof (onLayerOptionsCallback) === 'function' &&
@@ -364,7 +364,7 @@ export default class DeckSidebar extends React.Component {
             {this.props.leftSidebarContent}
             {/* TODO: find the right place for above */}
             <div className="space"></div>
-            {notEmpty && this._headerComponent(dark, "Vis: " + (layerStyle || "None"))}
+            {notEmpty && this._headerComponent(dark, "Vis: " + (layerName || "None"))}
             <form className="search-form" onSubmit={(e) => {
               e.preventDefault();
               searchNominatom(this.state.search, (json) => {

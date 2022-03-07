@@ -94,7 +94,7 @@ export default class Welcome extends React.Component {
       geographyURL: props.geographyURL,
       geographyColumn: props.geographyColumn,
       column: props.column,
-      layerStyle: props.layerStyle,
+      layerName: props.layerName,
       bottomPanel: false,
     }
 
@@ -387,12 +387,12 @@ export default class Welcome extends React.Component {
       data = data.features || data;
     }
     let layerName = (filter && filter.what ===
-      'layerName' && filter.selected) || this.state.layerStyle ||
+      'layerName' && filter.selected) || this.state.layerName ||
       suggestDeckLayer(geography ? geography.features : data);
     // TODO: incorporate this into suggestDeckLayer
     // if (!new RegExp("point", "i").test(geomType)) layerName = "geojson"
     const switchToIcon = data.length < iconLimit && !layerName &&
-    (!filter || filter.what !== 'layerStyle') && geomType === "point";
+    (!filter || filter.what !== 'layerName') && geomType === "point";
     if (switchToIcon) layerName = 'icon';
 
     const options = Object.assign({
@@ -610,9 +610,9 @@ export default class Welcome extends React.Component {
       leftSidebarContent, hideSidebar } = this.props;
     const { tooltip, viewport, initialViewState,
       loading, mapStyle, alert, data, filtered, bottomPanel,
-      layerStyle, geomType, legend, coords } = this.state;
+      layerName, geomType, legend, coords } = this.state;
     const showLegend = legend && (geomType === 'polygon'
-      || geomType === 'multipolygon' || layerStyle === "pointcloud")
+      || geomType === 'multipolygon' || layerName === "pointcloud")
 
     return (
       <div>
@@ -678,7 +678,7 @@ export default class Welcome extends React.Component {
           hideChartGenerator={hideChartGenerator}
           leftSidebarContent={leftSidebarContent}
           dark={dark}
-          layerStyle={layerStyle}
+          layerName={layerName}
           isMobile={isMobile()}
           key="decksidebar"
           alert={alert}

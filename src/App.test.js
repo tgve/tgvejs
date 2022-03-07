@@ -61,7 +61,7 @@ test('App - API params ENV',() => {
   expect(m.props().geographyColumn).toEqual("geographyColumn");
   expect(m.props().column).toEqual("column");
   expect(m.props().tooltipColumns).toEqual("tooltipColumns");
-  expect(m.props().layerStyle).toEqual("layerName");
+  expect(m.props().layerName).toEqual("layerName");
   expect(m.props().dark).toEqual(true);
   expect(m.props().hideChartGenerator).toEqual(true);
   expect(m.props().hideCharts).toEqual(true);
