@@ -13,21 +13,20 @@ it('renders without crashing', () => {
   ReactDOM.unmountComponentAtNode(div);
 });
 
-test('App - should create snapshot', () => {
-  const component = renderer.create(
-    <BrowserRouter><App /></BrowserRouter>
-  );
-  const tree = component.toJSON();
-  expect(tree).toMatchSnapshot();
-})
-
 test('App - dark/light themes set', () => {
   const m = shallow(<App />);
   expect(m.find(BaseProvider).prop('theme')).toEqual(DarkTheme);
+  const appDark = renderer.create(
+    <BrowserRouter><App /></BrowserRouter>
+  );
+  expect(appDark.toJSON()).toMatchSnapshot();
 
   const n = shallow(<App dark={false}/>);
   expect(n.find(BaseProvider).prop('theme')).toEqual(LightTheme);
-
+  const appLight = renderer.create(
+    <BrowserRouter><App dark={false}/></BrowserRouter>
+  );
+  expect(appLight.toJSON()).toMatchSnapshot();
 })
 
 test('App - API params set', () => {
@@ -62,7 +61,7 @@ test('App - API params ENV',() => {
   expect(m.props().geographyColumn).toEqual("geographyColumn");
   expect(m.props().column).toEqual("column");
   expect(m.props().tooltipColumns).toEqual("tooltipColumns");
-  expect(m.props().layerStyle).toEqual("layerName");
+  expect(m.props().layerName).toEqual("layerName");
   expect(m.props().dark).toEqual(true);
   expect(m.props().hideChartGenerator).toEqual(true);
   expect(m.props().hideCharts).toEqual(true);
