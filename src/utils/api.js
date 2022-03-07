@@ -42,7 +42,7 @@ const params = function (props, search = "") {
     && jsonStr(document.getElementById('tgve-settings').textContent))
     || {};
 
-  const apiValue = function (param2, paramName, ENV_NAME, bool = false) {
+  const apiValue = function (paramName, ENV_NAME, bool = false) {
     const param = props[paramName]
     if (qsr.hasOwnProperty(paramName)) {
       return bool ? boolStr(qsr[paramName]) : qsr[paramName]
@@ -63,23 +63,20 @@ const params = function (props, search = "") {
   }
 
   return ({
-    defaultURL: apiValue(defaultURL, "defaultURL", "REACT_APP_DEFAULT_URL"),
-    geographyURL: apiValue(geographyURL, "geographyURL",
-    "REACT_APP_GEOGRAPHY_URL"),
-    geographyColumn: apiValue(geographyColumn, "geographyColumn",
-    "REACT_APP_GEOGRAPHY_COLUMN"),
-    column: apiValue(column, "column", "REACT_APP_COLUMN"),
-    tooltipColumns: apiValue(tooltipColumns, "tooltipColumns",
-    "REACT_APP_TOOLTIP_COLUMNS"),
-    layerStyle: apiValue(layerName, "layerName", "REACT_APP_LAYER_STYLE"),
+    defaultURL: apiValue("defaultURL", "REACT_APP_DEFAULT_URL"),
+    geographyURL: apiValue("geographyURL", "REACT_APP_GEOGRAPHY_URL"),
+    geographyColumn: apiValue("geographyColumn", "REACT_APP_GEOGRAPHY_COLUMN"),
+    column: apiValue("column", "REACT_APP_COLUMN"),
+    tooltipColumns: apiValue("tooltipColumns", "REACT_APP_TOOLTIP_COLUMNS"),
+    layerStyle: apiValue("layerName", "REACT_APP_LAYER_STYLE"),
     // if no boolean found set a default value
-    dark: expected(apiValue(dark, "dark", "REACT_APP_DARK", true),
+    dark: expected(apiValue("dark", "REACT_APP_DARK", true),
       "boolean", true),
-    hideChartGenerator: apiValue(hideChartGenerator, "hideChartGenerator",
+    hideChartGenerator: apiValue("hideChartGenerator",
       "REACT_APP_HIDE_CHART_GENERATOR", true),
-    hideCharts: apiValue(hideCharts, "hideCharts",
+    hideCharts: apiValue("hideCharts",
       "REACT_APP_HIDE_CHARTS", true),
-    hideSidebar: apiValue(hideSidebar, "hideSidebar",
+    hideSidebar: apiValue("hideSidebar",
       "REACT_APP_HIDE_SIDEBAR", true),
     viewport: jsonStr(qsr.viewport) || viewport || settings.viewport,
     data: jsonStr(qsr.data) || data || staticData,
