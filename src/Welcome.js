@@ -386,14 +386,14 @@ export default class Welcome extends React.Component {
       // it was data.features when this function started
       data = data.features || data;
     }
-    let layerStyle = (filter && filter.what ===
-      'layerStyle' && filter.selected) || this.state.layerStyle ||
+    let layerName = (filter && filter.what ===
+      'layerName' && filter.selected) || this.state.layerStyle ||
       suggestDeckLayer(geography ? geography.features : data);
     // TODO: incorporate this into suggestDeckLayer
-    // if (!new RegExp("point", "i").test(geomType)) layerStyle = "geojson"
-    const switchToIcon = data.length < iconLimit && !layerStyle &&
+    // if (!new RegExp("point", "i").test(geomType)) layerName = "geojson"
+    const switchToIcon = data.length < iconLimit && !layerName &&
     (!filter || filter.what !== 'layerStyle') && geomType === "point";
-    if (switchToIcon) layerStyle = 'icon';
+    if (switchToIcon) layerName = 'icon';
 
     const options = Object.assign({
       ...this.state.layerOptions,
@@ -408,7 +408,7 @@ export default class Welcome extends React.Component {
       // TODO better check than just data[0]
       Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex);
 
-    if (layerStyle === 'heatmap') {
+    if (layerName === 'heatmap') {
       options.getPosition = d => d.geometry.coordinates
       // options.getWeight = d => d.properties[columnNameOrIndex]
       options.updateTriggers = {
@@ -418,13 +418,13 @@ export default class Welcome extends React.Component {
       }
     }
     if (geomType === 'linestring') {
-      // layerStyle = "line"
+      // layerName = "line"
       // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
       options.getColor = [235, 170, 20]
       options.getPath = d => d.geometry.coordinates
       options.onClick = (info) => {
         if (info && info.hasOwnProperty('coordinate')) {
-          if (['path', 'arc', 'line'].includes(layerStyle) &&
+          if (['path', 'arc', 'line'].includes(layerName) &&
             info.object.geometry.coordinates) {
             this._generateLayer({
               filter: {
@@ -444,7 +444,7 @@ export default class Welcome extends React.Component {
       }
     }
     // TODO
-    if (layerStyle === 'scatter') {
+    if (layerName === 'scatter') {
       if (+(data[0] && data[0].properties &&
         data[0].properties[columnNameOrIndex])) {
         options.getRadius = d => {
@@ -472,7 +472,7 @@ export default class Welcome extends React.Component {
     )
 
     if (geomType === "polygon" || geomType === "multipolygon" ||
-      layerStyle === 'geojson') {
+    layerName === 'geojson') {
 
       options.getFillColor = fill;
 
@@ -481,7 +481,7 @@ export default class Welcome extends React.Component {
       }
     }
 
-    if (layerStyle === 'pointcloud' || layerStyle === 'barvis') {
+    if (layerName === 'pointcloud' || layerName === 'barvis') {
       options.getColor = fill;
       options.updateTriggers = {
         getColor: data.map((d) => fill(d)),
@@ -503,14 +503,14 @@ export default class Welcome extends React.Component {
     )
 
     const alayer = generateDeckLayer(
-      layerStyle, data, this._renderTooltip, options
+      layerName, data, this._renderTooltip, options
     )
 
     this.setState({
       alert: switchToIcon ?
         { content: 'Switched to icon mode. ' } : customError || null,
       loading: false,
-      layerStyle,
+      layerName,
       geomType,
       tooltip: "",
       filtered: data,
