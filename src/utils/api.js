@@ -71,6 +71,7 @@ const params = function (props, search = "") {
 const boolStr = function (str) {
   if (str === 'true') return true
   if (str === 'false') return false
+  return undefined
 }
 
 const jsonStr = function (str) {
