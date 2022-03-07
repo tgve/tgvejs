@@ -17,7 +17,7 @@ export default function URL(props) {
       }}>
       <FormControl >
         <Input
-          id="search-nominatum"
+          id="url-input"
           placeholder={"https://domain.com/api/file.csv"}
           value={url}
           onChange={({ target: { value } }) => setUrl(value)}
