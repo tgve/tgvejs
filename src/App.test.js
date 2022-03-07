@@ -24,7 +24,11 @@ test('App - should create snapshot', () => {
 test('App - dark/light themes set', () => {
   const m = shallow(<App />);
   expect(m.find(BaseProvider).prop('theme')).toEqual(DarkTheme);
-
+  const component = renderer.create(
+    <BrowserRouter><App /></BrowserRouter>
+  );
+  const tree = component.toJSON();
+  expect(tree).toMatchSnapshot();
   const n = shallow(<App dark={false}/>);
   expect(n.find(BaseProvider).prop('theme')).toEqual(LightTheme);
 
