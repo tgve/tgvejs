@@ -4,7 +4,7 @@ import { Button, KIND, SIZE } from 'baseui/button';
 import { Input } from 'baseui/input';
 import { FormControl } from 'baseui/form-control';
 import { StatefulCheckbox } from 'baseui/checkbox';
-import { StatefulTabs, Tab } from "baseui/tabs";
+import { StatefulTabs, Tab, StyledTabPanel } from "baseui/tabs-motion";
 
 import './DeckSidebar.css';
 import DataInput from '../DataInput';
@@ -114,6 +114,15 @@ export default class DeckSidebar extends React.Component {
         datasetName: urlOrName || this.props.datasetName
       })
     }
+
+    const TabOverrides = {
+      TabPanel: {
+        component: function TabPanelOverride(props) {
+          return <StyledTabPanel {...props} $pad={false} />;
+        }
+      }
+    };
+
     return (
       <>
         <div
@@ -196,7 +205,7 @@ export default class DeckSidebar extends React.Component {
                 <Tab eventKey="0" title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
-                }>
+                } overrides={TabOverrides}>
                   {/* pick a column and vis type */}
                   {!hideChartGenerator && this._panel(dark,
                     <AddVIS data={data} dark={dark} plotStyle={{ width: 270, margin: 10 }} />
@@ -261,7 +270,7 @@ export default class DeckSidebar extends React.Component {
                 <Tab eventKey="1" title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-sliders" />
-                }>
+                } overrides={TabOverrides}>
                   {notEmpty &&
                     this._headerComponent(dark,
                       <ColorPicker colourCallback={(color) =>
@@ -343,7 +352,7 @@ export default class DeckSidebar extends React.Component {
                         multiVarSelect && Object.keys(multiVarSelect).length ?
                           Object.keys(multiVarSelect).length : ""
                       }</i>
-                  }>
+                  } overrides={TabOverrides}>
                     {
                       this._headerComponent(dark, <Variables
                         dark={dark}
