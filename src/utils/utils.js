@@ -928,7 +928,9 @@ const updateHistory = (urlVars) => {
   if (!urlVars) return;
   // construct the search string
   let search = "?";
-  Object.keys(urlVars).map(k => {
+  let searchStringVars = ["latitude","longitude","zoom","bearing","pitch","altitude",
+                          "defaultURL","geographyURL","geographyColumn"]
+  Object.keys(urlVars).filter(k=>searchStringVars.includes(k)).map(k => {
     if ( k==="latitude" ) {
       search += `lat=${urlVars[k].toFixed(3)}&`
     } else if ( k==="longitude" ) {
@@ -937,7 +939,7 @@ const updateHistory = (urlVars) => {
       search += `${k}=${urlVars[k].toFixed(2)}&`
     } else if ( (k==="bearing" ) || (k === "pitch") || (k === "altitude") ) {
       search += `${k.substring(0,3)}=${urlVars[k]}&`
-    } else {
+    } else if ( (isString(urlVars[k]) )  && (urlVars[k] !== "undefined") ) {
       search += `${k}=${urlVars[k]}&`
     }
   })
