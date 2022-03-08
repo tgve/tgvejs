@@ -1,320 +1,220 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`App - dark/light themes set 1`] = `
-<main>
-  <div
-    className=""
-  >
-    <div>
-      <div
-        className="loader"
-        style={
-          Object {
-            "visibility": "visible",
-            "zIndex": 999,
-          }
-        }
-      />
-      <div
-        style={
-          Object {
-            "cursor": "grab",
-            "height": "768px",
-            "position": "relative",
-            "width": "1024px",
-          }
-        }
-      >
+<DocumentFragment>
+  <main>
+    <div
+      class=""
+    >
+      <div>
         <div
-          style={
-            Object {
-              "height": "100%",
-              "position": "relative",
-              "width": "100%",
-            }
-          }
+          class="loader"
+          style="z-index: 999; visibility: visible;"
+        />
+        <div
+          style="position: relative; width: 1024px; height: 768px; cursor: grab; outline: none;"
+          tabindex="0"
         >
           <div
-            className=""
-            style={
-              Object {
-                "height": "100%",
-                "overflow": "hidden",
-                "position": "absolute",
-                "visibility": "inherit",
-                "width": "100%",
-              }
-            }
-          />
-          <div
-            style={
-              Object {
-                "height": 0,
-                "overflow": "visible",
-                "width": 0,
-              }
-            }
-          />
-        </div>
-      </div>
-      <div
-        className="side-panel-container"
-        style={
-          Object {
-            "marginLeft": 0,
-          }
-        }
-      >
-        <div
-          className="side-panel"
-          style={
-            Object {
-              "background": "#242730",
-              "color": "white",
-            }
-          }
-        >
-          <div
-            className="side-pane-header"
-            style={
-              Object {
-                "background": "#29323C",
-                "marginTop": 2,
-              }
-            }
-          >
-            <h2>
-              Nothing to show
-            </h2>
-          </div>
-          <div>
-            <button
-              className="ae af ag ah ai aj ak al am an ao ap aq ar as at au av aw ax ay az b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 ba bb bc bd be bf bg bh bi bj bk"
-              data-baseweb="button"
-              disabled={false}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-            >
-              Add data
-            </button>
-            <i
-              className="fa fa-save"
-              onClick={[Function]}
-              style={
-                Object {
-                  "cursor": "pointer",
-                  "fontSize": "1.5em",
-                  "margin": 5,
-                }
-              }
-            />
-          </div>
-          <div
-            className="side-panel-body"
+            style="position: relative; width: 100%; height: 100%;"
           >
             <div
-              className="side-panel-body-content"
+              class=""
+              style="position: absolute; width: 100%; height: 100%; overflow: hidden; visibility: inherit;"
+            />
+            <div
+              style="overflow: visible; height: 0px; width: 0px;"
+            />
+            <div
+              class="resize-triggers"
             >
-              <br />
-              <hr
-                style={
-                  Object {
-                    "clear": "both",
-                  }
-                }
-              />
               <div
-                className="bl"
+                class="expand-trigger"
               >
                 <div
-                  aria-orientation="horizontal"
-                  className="bm bn bo af bp bq br bs bt bu"
-                  data-baseweb="tab-list"
-                  role="tablist"
-                >
-                  <button
-                    aria-controls="tabs-bui1-tabpanel-0"
-                    aria-selected={true}
-                    className="ax at b1 b3 b2 b4 bv ae ag bw bx by bz ai aj ak al am an ao ap bh c0 au av aw aq c1 ay c2 c3 c4 b5 b6 b7 b8 ah"
-                    data-baseweb="tab"
-                    disabled={false}
-                    id="tabs-bui1-tab-0"
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onKeyDown={[Function]}
-                    role="tab"
-                    tabIndex="0"
-                    type="button"
-                  >
-                    <i
-                      className="fa fa-info"
-                      style={
-                        Object {
-                          "fontSize": "2rem",
-                        }
-                      }
-                    />
-                  </button>
-                  <button
-                    aria-controls="tabs-bui1-tabpanel-1"
-                    aria-selected={false}
-                    className="ax at b1 b3 b2 b4 bv ae ag bw bx by bz ai aj ak al am an ao ap bh c0 au av aw aq c1 ay c2 c3 c4 b5 b6 b7 b8 ah"
-                    data-baseweb="tab"
-                    disabled={false}
-                    id="tabs-bui1-tab-1"
-                    onBlur={[Function]}
-                    onClick={[Function]}
-                    onFocus={[Function]}
-                    onKeyDown={[Function]}
-                    role="tab"
-                    tabIndex="-1"
-                    type="button"
-                  >
-                    <i
-                      className="fa fa-sliders"
-                      style={
-                        Object {
-                          "fontSize": "2rem",
-                        }
-                      }
-                    />
-                  </button>
-                  <div
-                    aria-hidden="true"
-                    className="c5 c6 c7 c8 c9 ca cb cc"
-                    data-baseweb="tab-highlight"
-                    role="presentation"
-                  />
-                </div>
-                <div
-                  aria-hidden="true"
-                  className="bi bm ca"
-                  data-baseweb="tab-border"
-                  role="presentation"
-                />
-                <div
-                  aria-labelledby="tabs-bui1-tab-0"
-                  className="cd aq"
-                  data-baseweb="tab-panel"
-                  hidden={false}
-                  id="tabs-bui1-tabpanel-0"
-                  role="tabpanel"
-                >
-                  <div
-                    className="side-panel-group"
-                    style={
-                      Object {
-                        "borderColor": "#29323C",
-                      }
-                    }
-                  />
-                </div>
-                <div
-                  aria-labelledby="tabs-bui1-tab-1"
-                  className="cd aq"
-                  data-baseweb="tab-panel"
-                  hidden={true}
-                  id="tabs-bui1-tabpanel-1"
-                  role="tabpanel"
+                  style="width: 1px; height: 1px;"
                 />
               </div>
+              <div
+                class="contract-trigger"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="side-panel-container"
+          style="margin-left: 0px;"
+        >
+          <div
+            class="side-panel"
+            style="color: white; background: rgb(36, 39, 48);"
+          >
+            <div
+              class="side-pane-header"
+              style="margin-top: 2px; background: rgb(41, 50, 60);"
+            >
+              <h2>
+                Nothing to show
+              </h2>
+            </div>
+            <div>
+              <button
+                class="ae af ag ah ai aj ak al am an ao ap aq ar as at au av aw ax ay az b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 ba bb bc bd be bf bg bh bi bj bk"
+                data-baseweb="button"
+              >
+                Add data
+              </button>
+              <i
+                class="fa fa-save"
+                style="margin: 5px; cursor: pointer; font-size: 1.5em;"
+              />
             </div>
             <div
-              className="space"
-            />
-            <form
-              className="search-form"
-              onSubmit={[Function]}
+              class="side-panel-body"
             >
               <div
-                className="ce cf"
-                data-baseweb="form-control-container"
+                class="side-panel-body-content"
               >
+                <br />
+                <hr
+                  style="clear: both;"
+                />
                 <div
-                  className="bv bn cg ce ch ci cj ck cl cm cn co cp av cq bb bc b9 ba b5 cr cs ct cu cv cw cx cy cz d0"
-                  data-baseweb="input"
+                  class="bl"
                 >
                   <div
-                    className="bn ce d1 av cq b5 cr cs ct bh cy"
-                    data-baseweb="base-input"
+                    aria-orientation="horizontal"
+                    class="bm bn bo af bp bq br bs bt bu"
+                    data-baseweb="tab-list"
+                    role="tablist"
                   >
-                    <input
-                      aria-activedescendant={null}
-                      aria-autocomplete={null}
-                      aria-controls={null}
-                      aria-describedby={null}
-                      aria-errormessage={null}
-                      aria-haspopup={null}
-                      aria-invalid={false}
-                      aria-label={null}
-                      aria-labelledby={null}
-                      aria-required={false}
-                      autoComplete="on"
-                      className="bv d2 ai ak aj al am ao an ap aq ce d3 d4 d5 d6 bd be d7 d0 b5 cr cs ct bh d8 d9"
-                      disabled={false}
-                      id="search-nominatum"
-                      inputMode="text"
-                      name=""
-                      onBlur={[Function]}
-                      onChange={[Function]}
-                      onFocus={[Function]}
-                      onKeyDown={[Function]}
-                      onKeyPress={[Function]}
-                      onKeyUp={[Function]}
-                      pattern={null}
-                      placeholder="fly to ..."
-                      required={false}
-                      role={null}
-                      rows={null}
-                      type="text"
+                    <button
+                      aria-controls="tabs-bui1-tabpanel-0"
+                      aria-selected="true"
+                      class="ax at b1 b3 b2 b4 bv ae ag bw bx by bz ai aj ak al am an ao ap bh c0 au av aw aq c1 ay c2 c3 c4 b5 b6 b7 b8 ah"
+                      data-baseweb="tab"
+                      id="tabs-bui1-tab-0"
+                      role="tab"
+                      tabindex="0"
+                      type="button"
+                    >
+                      <i
+                        class="fa fa-info"
+                        style="font-size: 2rem;"
+                      />
+                    </button>
+                    <button
+                      aria-controls="tabs-bui1-tabpanel-1"
+                      aria-selected="false"
+                      class="ax at b1 b3 b2 b4 bv ae ag bw bx by bz ai aj ak al am an ao ap bh c0 au av aw aq c1 ay c2 c3 c4 b5 b6 b7 b8 ah"
+                      data-baseweb="tab"
+                      id="tabs-bui1-tab-1"
+                      role="tab"
+                      tabindex="-1"
+                      type="button"
+                    >
+                      <i
+                        class="fa fa-sliders"
+                        style="font-size: 2rem;"
+                      />
+                    </button>
+                    <div
+                      aria-hidden="true"
+                      class="c5 c6 c7 c8 c9 ca cb cc"
+                      data-baseweb="tab-highlight"
+                      role="presentation"
                     />
                   </div>
                   <div
-                    className="bn ag ah da av cq b5 cr cs ct db dc bh cy"
+                    aria-hidden="true"
+                    class="bi bm ca"
+                    data-baseweb="tab-border"
+                    role="presentation"
+                  />
+                  <div
+                    aria-labelledby="tabs-bui1-tab-0"
+                    class="cd aq"
+                    data-baseweb="tab-panel"
+                    id="tabs-bui1-tabpanel-0"
+                    role="tabpanel"
                   >
-                    🌐
+                    <div
+                      class="side-panel-group"
+                      style="border-color: #29323c;"
+                    />
                   </div>
+                  <div
+                    aria-labelledby="tabs-bui1-tab-1"
+                    class="cd aq"
+                    data-baseweb="tab-panel"
+                    hidden=""
+                    id="tabs-bui1-tabpanel-1"
+                    role="tabpanel"
+                  />
                 </div>
               </div>
-            </form>
+              <div
+                class="space"
+              />
+              <form
+                class="search-form"
+              >
+                <div
+                  class="ce cf"
+                  data-baseweb="form-control-container"
+                >
+                  <div
+                    class="bv bn cg ce ch ci cj ck cl cm cn co cp av cq bb bc b9 ba b5 cr cs ct cu cv cw cx cy cz d0"
+                    data-baseweb="input"
+                  >
+                    <div
+                      class="bn ce d1 av cq b5 cr cs ct bh cy"
+                      data-baseweb="base-input"
+                    >
+                      <input
+                        aria-invalid="false"
+                        aria-required="false"
+                        autocomplete="on"
+                        class="bv d2 ai ak aj al am ao an ap aq ce d3 d4 d5 d6 bd be d7 d0 b5 cr cs ct bh d8 d9"
+                        id="search-nominatum"
+                        inputmode="text"
+                        name=""
+                        placeholder="fly to ..."
+                        type="text"
+                        value=""
+                      />
+                    </div>
+                    <div
+                      class="bn ag ah da av cq b5 cr cs ct db dc bh cy"
+                    >
+                      🌐
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-        <div
-          className="close-button"
-          onClick={[Function]}
-          style={
-            Object {
-              "color": "white",
-            }
-          }
-        >
           <div
-            style={
-              Object {
-                "backgroundColor": "#242730",
-              }
-            }
+            class="close-button"
+            style="color: white;"
           >
-            <i
-              className="fa fa-arrow-circle-left"
-              style={
-                Object {
-                  "color": "white !important",
-                  "fontSize": "2rem",
-                }
-              }
-            />
+            <div
+              style="background-color: rgb(36, 39, 48);"
+            >
+              <i
+                class="fa fa-arrow-circle-left"
+                style="font-size: 2rem;"
+              />
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div
-    className=""
-  />
-</main>
+    <div
+      class=""
+    />
+  </main>
+</DocumentFragment>
 `;
 
 exports[`App - dark/light themes set 2`] = `
