@@ -1,7 +1,8 @@
 import {firstLastNCharacters, humanize,
   colorScale, generateDomain, xyObjectByProperty,
   suggestDeckLayer, isURL,
-  uniqueValuePercentage
+  uniqueValuePercentage,
+  updateHistory
 } from '../utils/utils';
 import { LAYERSTYLES } from '../Constants';
 
@@ -107,4 +108,11 @@ test("isURL", () => {
   lh+":5000", lh+":3000"]).flat()
   expect(isURL(ll[0])).toBe(true)
   devURLS.slice(-4).forEach(e => expect(isURL(e)).toBe(true))
+})
+
+test("discoveringHistory", () => {
+  history = []
+  //expect(history.location).toBeUndefined()
+  updateHistory({defaultURL: "blah"})
+  console.log("Here is the history:",history)
 })
