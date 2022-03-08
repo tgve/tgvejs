@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
+import { screen, waitFor } from '@testing-library/react';
 import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
 import { BaseProvider, DarkTheme, LightTheme } from 'baseui';
@@ -13,12 +14,16 @@ it('renders without crashing', () => {
   ReactDOM.unmountComponentAtNode(div);
 });
 
-test('App - dark/light themes set', () => {
+test('App - dark/light themes set', async () => {
   const m = shallow(<App />);
   expect(m.find(BaseProvider).prop('theme')).toEqual(DarkTheme);
+  process.env.REACT_APP_DEFAULT_URL = "https://raw.githubusercontent.com/tgve/example-data/main/casualties_100.geojson"
   const appDark = renderer.create(
     <BrowserRouter><App /></BrowserRouter>
   );
+//  await waitFor(() => {
+//    expect(screen.getByText('Nothing to show')).toBeInTheDocument();
+//  });
   expect(appDark.toJSON()).toMatchSnapshot();
 
   const n = shallow(<App dark={false}/>);
@@ -30,19 +35,15 @@ test('App - dark/light themes set', () => {
 })
 
 test('App - API params set', () => {
-  const m = shallow(<App />).find('Welcome');
-  // console.log(m.find('Welcome').props());
-  // console.log(m.debug());
+  const m = shallow(<App/>).find('Welcome');
   expect(m.props().hideCharts).toEqual(undefined);
   expect(m.props().hideChartGenerator).toEqual(undefined);
-  expect(m.props().defaultURL).toEqual(undefined);
 
   const n = shallow(<App hideCharts={true}/>)
     .find('Welcome');
   expect(n.props().hideCharts).toEqual(true);
 
 })
-
 
 test('App - API params ENV',() => {
   process.env.REACT_APP_DEFAULT_URL = "https://react.com"
@@ -67,3 +68,4 @@ test('App - API params ENV',() => {
   expect(m.props().hideCharts).toEqual(true);
   expect(m.props().hideSidebar).toEqual(true);
 })
+

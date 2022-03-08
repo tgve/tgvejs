@@ -11,7 +11,7 @@ exports[`App - dark/light themes set 1`] = `
         style={
           Object {
             "visibility": "visible",
-            "zIndex": -1,
+            "zIndex": 999,
           }
         }
       />
@@ -328,7 +328,7 @@ exports[`App - dark/light themes set 2`] = `
         style={
           Object {
             "visibility": "visible",
-            "zIndex": -1,
+            "zIndex": 999,
           }
         }
       />
