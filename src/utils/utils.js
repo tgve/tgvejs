@@ -818,10 +818,17 @@ const getOSMTiles = (name) => {
 const setGeojsonProps = (geojson, data, geoColumn) => {
   // const r = randomToNumber(data && data.length);
   // either split or same values
-  const dataColumn = geoColumn.split(":")[0];
-  const geojsonColumn = geoColumn.split(":")[1] || geoColumn
+  let dataColumn = isString(geoColumn) && geoColumn.split(":")[0];
+  let geojsonColumn = isString(geoColumn)
+    && geoColumn.split(":")[1] || geoColumn
+  // TODO: find matching columns
+  // first matching column
+  // const firstMatching = Object.keys(geojson.features[0].properties).map(e =>
+  // Object.keys(data[0].properties.includes(e)))[0]
+  if(!isString(geoColumn)) return geojson
   const r = 0;
   const result = Object.assign({}, geojson)
+  // if no matching or mapped columns
   result.features = []
   if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
     !geojson.features || !geojson.features[r] ||
