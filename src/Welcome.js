@@ -88,7 +88,7 @@ export default class Welcome extends React.Component {
       colorName: 'default',
       iconLimit: ICONLIMIT,
       legend: false,
-      multiVarSelect: {},
+      multiVarSelect: props.filter || {},
       width: window.innerWidth, height: window.innerHeight,
       tooltipColumns: {column1: "accident_severity" , column2: "date"},
       geographyURL: props.geographyURL,

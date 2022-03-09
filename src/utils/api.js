@@ -1,6 +1,6 @@
 // importing it other ways would cause minification issue.
 import qs from 'qs';
-import {strict as assert} from 'assert'
+import { isArray, isObject } from './JSUtils';
 
 
 /**
@@ -46,23 +46,24 @@ const params = function (props, search = "") {
 
 
   return ({
-    defaultURL: apiValue("defaultURL", "REACT_APP_DEFAULT_URL"),                  // String        
-    geographyURL: apiValue("geographyURL", "REACT_APP_GEOGRAPHY_URL"),            // String 
-    geographyColumn: apiValue("geographyColumn", "REACT_APP_GEOGRAPHY_COLUMN"),   // String 
-    column: apiValue("column", "REACT_APP_COLUMN"),                               // String 
+    defaultURL: apiValue("defaultURL", "REACT_APP_DEFAULT_URL"),                  // String
+    geographyURL: apiValue("geographyURL", "REACT_APP_GEOGRAPHY_URL"),            // String
+    geographyColumn: apiValue("geographyColumn", "REACT_APP_GEOGRAPHY_COLUMN"),   // String
+    column: apiValue("column", "REACT_APP_COLUMN"),                               // String
     tooltipColumns: apiValue("tooltipColumns", "REACT_APP_TOOLTIP_COLUMNS"),      // Object
-    layerName: apiValue("layerName", "REACT_APP_LAYER_NAME"),                     // String 
+    layerName: apiValue("layerName", "REACT_APP_LAYER_NAME"),                     // String
     // if no boolean found set a default value
-    dark: expected(apiValue("dark", "REACT_APP_DARK", true),                      // Boolean 
+    dark: expected(apiValue("dark", "REACT_APP_DARK", true),                      // Boolean
       "boolean", true),
-    hideChartGenerator: apiValue("hideChartGenerator",                            // Boolean 
-      "REACT_APP_HIDE_CHART_GENERATOR", true),  
+    hideChartGenerator: apiValue("hideChartGenerator",                            // Boolean
+      "REACT_APP_HIDE_CHART_GENERATOR", true),
     hideCharts: apiValue("hideCharts",                                            // Boolean
       "REACT_APP_HIDE_CHARTS", true),
     hideSidebar: apiValue("hideSidebar",                                          // Boolean
       "REACT_APP_HIDE_SIDEBAR", true),
     viewport: jsonStr(qsr.viewport) || props.viewport || settings.viewport,       // Object
     data: jsonStr(qsr.data) || props.data || staticData,                          // Object
+    filter: keySetObject(jsonStr(qsr.filter)) || props.filter,                    // Object
     // react component
     leftSidebarContent: props.leftSidebarContent                                  // React object
   })
@@ -81,6 +82,26 @@ const jsonStr = function (str) {
   } catch (e) {
     return false;
   }
+}
+
+/**
+ * The subset object in tgvejs `multiVarSelect`
+ * is composed of {key: Set()} with the set including
+ * values for which the key is subset by.
+ *
+ * @param {Object} json
+ * @returns {Object}
+ */
+const keySetObject = function (json) {
+  if (!isObject(json)) return null;
+  const result = {}
+  // sanity check on json object
+  Object.keys(json).forEach(key => {
+    if (isArray(json[key])) {
+      result[key] = new Set(json[key])
+    }
+  })
+  return result
 }
 
 export {
