@@ -88,7 +88,7 @@ export default class Welcome extends React.Component {
       colorName: 'default',
       iconLimit: ICONLIMIT,
       legend: false,
-      multiVarSelect: props.filter || {},
+      multiVarSelect: props.select || {},
       width: window.innerWidth, height: window.innerHeight,
       tooltipColumns: {column1: "accident_severity" , column2: "date"},
       geographyURL: props.geographyURL,
@@ -768,6 +768,9 @@ export default class Welcome extends React.Component {
           // TODO: generalise datasetName
           datasetName={defaultURL}
           bottomPanel={bottomPanel}
+          // only during first load
+          // DeckSidebar ignores this prop later
+          multiVarSelect={this.state.multiVarSelect}
         />}
         {
           showLegend &&

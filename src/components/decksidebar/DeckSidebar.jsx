@@ -43,7 +43,7 @@ export default class DeckSidebar extends React.Component {
       radius: 100,
       year: "", // required to reset state
       reset: false,
-      multiVarSelect: {},
+      multiVarSelect: props.multiVarSelect || {},
       barChartVariable: "road_type",
       datasetName: props.datasetName
     }

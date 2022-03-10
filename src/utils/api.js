@@ -63,6 +63,8 @@ const params = function (props, search = "") {
       "REACT_APP_HIDE_SIDEBAR", true),
     viewport: jsonStr(qsr.viewport) || props.viewport || settings.viewport,       // Object
     data: jsonStr(qsr.data) || props.data || staticData,                          // Object
+    // TOTO: strict checks on props.select to be
+    // either like qsr or exactly like multiVarSelect
     select: keySetObject(qsr.select) || props.select,                             // Object | String
     // react component
     leftSidebarContent: props.leftSidebarContent                                  // React object
