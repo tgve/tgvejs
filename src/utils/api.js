@@ -1,6 +1,6 @@
 // importing it other ways would cause minification issue.
 import qs from 'qs';
-import { isArray, isObject } from './JSUtils';
+import { isArray, isObject, isString } from './JSUtils';
 
 
 /**
@@ -63,7 +63,7 @@ const params = function (props, search = "") {
       "REACT_APP_HIDE_SIDEBAR", true),
     viewport: jsonStr(qsr.viewport) || props.viewport || settings.viewport,       // Object
     data: jsonStr(qsr.data) || props.data || staticData,                          // Object
-    filter: keySetObject(jsonStr(qsr.filter)) || props.filter,                    // Object
+    select: keySetObject(qsr.select) || props.select,                             // Object | String
     // react component
     leftSidebarContent: props.leftSidebarContent                                  // React object
   })
@@ -89,22 +89,42 @@ const jsonStr = function (str) {
  * is composed of {key: Set()} with the set including
  * values for which the key is subset by.
  *
- * @param {Object} json
+ * @param {Object|String} filterStr
  * @returns {Object}
  */
-const keySetObject = function (json) {
-  if (!isObject(json)) return null;
+const keySetObject = function (filterStr) {
+  // is it json with array?
+  const json = jsonStr(filterStr);
   const result = {}
-  // sanity check on json object
-  Object.keys(json).forEach(key => {
-    if (isArray(json[key])) {
-      result[key] = new Set(json[key])
+  if (isObject(json)) {
+    // sanity check on json object
+    Object.keys(json).forEach(key => {
+      if (isArray(json[key])) {
+        result[key] = new Set(json[key])
+      }
+    })
+    return result
+  } else if (isString(filterStr)) {
+    // validate format
+    // select=key:val1,val2,val3
+    const regex = new RegExp(/^[\w+._-\s\\(\\)]+:[\w+._-\s\\(\\)]+/);
+    if(!regex.test(filterStr)) return null
+    const array = filterStr.split(":")
+    if (array.length < 1) return null
+    for (let i = 0; i < array.length; i += 2) {
+      // ["key", "val1,val2,val3", "key" ..]
+      const values = array[i + 1] && array[i + 1].split(",")
+      if (isArray(values)) {
+        result[array[i]] = new Set(values)
+      }
     }
-  })
-  return result
+    return result
+  }
+  return null
 }
 
 export {
+  keySetObject,
   jsonStr,
   params
 }
