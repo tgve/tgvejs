@@ -1,19 +1,60 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { render, screen, waitFor } from '@testing-library/react';
+import { waitFor, cleanup } from '@testing-library/react';
 import renderer from 'react-test-renderer';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import { BaseProvider, DarkTheme, LightTheme } from 'baseui';
 
 import App from './App';
 
-it('renders without crashing', () => {
+test('renders without crashing', () => {
   const div = document.createElement('div');
   ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, div);
   ReactDOM.unmountComponentAtNode(div);
 });
 
+test('App defaults to dark theme when given no prop', () => {
+  const m = shallow(<App />);
+  expect(m.find(BaseProvider).prop('theme')).toEqual(DarkTheme);
+});
+
+test('App can be set to light theme via props', () => {
+  const n = shallow(<App dark={false}/>);
+  expect(n.find(BaseProvider).prop('theme')).toEqual(LightTheme);
+});
+
+test('App snapshot dark theme', () => {
+  const appDark = renderer.create(
+    <BrowserRouter><App /></BrowserRouter>
+  );
+  expect(appDark.toJSON()).toMatchSnapshot();
+});
+
+test('App snapshot light theme', () => {
+  const appLight = renderer.create(
+    <BrowserRouter><App dark={false}/></BrowserRouter>
+  );
+  expect(appLight.toJSON()).toMatchSnapshot();
+});
+
+test('Test empty state', () => {
+  const wrapper = mount(
+    <BrowserRouter><App /></BrowserRouter>
+  );
+  // From this: https://stackoverflow.com/questions/56228092/how-to-find-an-element-by-its-text-in-enzyme
+  const emptyDataComponent = wrapper.findWhere(node => (
+    node.type() &&
+    node.name() &&
+    node.text() === "Nothing to show"
+  ));
+
+  expect(emptyDataComponent).not.toBe({});
+
+  wrapper.unmount();
+});
+
+/*
 test('App - dark/light themes set', async () => {
   const m = shallow(<App />);
   expect(m.find(BaseProvider).prop('theme')).toEqual(DarkTheme);
@@ -45,6 +86,7 @@ test('App - dark/light themes set', async () => {
   );
   expect(appLight.toJSON()).toMatchSnapshot();
 })
+*/
 
 test('App - API params set', () => {
   const m = shallow(<App/>).find('Welcome');

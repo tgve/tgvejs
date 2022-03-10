@@ -61,7 +61,7 @@ const fetchData = (url, callback) => {
   fetch(url) //
     .then((response) => response.text())
     .then((body) => {
-      console.log(`Body:\n${body}`)
+      //console.log(`Body:\n${body}`)
       if(url.endsWith("csv")) {
         csv2geojson.csv2geojson(body, (err, data) => {
           if (!err) {
@@ -79,7 +79,7 @@ const fetchData = (url, callback) => {
           console.log(`JSON found:\n${json}`)
           callback(json)
         } catch (error) {
-          console.log(`JSON error:\n${error}`)
+          // console.log(`JSON error:\n${error}`)
           callback(undefined, error)
         }
       }
