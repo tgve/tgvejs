@@ -44,7 +44,7 @@ The following parameters can be passed to the TGVE app. Each parameter can be pa
 - viewport
 For example: `REACT_APP_GEOGRAPHY_URL` or when using TGVE as a component
 `<Tgve geographyURL="https://geo.com">`. For more on passing variables to a React app and
-the `REACT_APP_` prefix please see [React docs](https://create-react-app.dev/docs/adding-custom-environment-variables). 
+the `REACT_APP_` prefix please see [React docs](https://create-react-app.dev/docs/adding-custom-environment-variables).
 
 They can also be passed to the TGVE as URL query parameters. For instance
 `localhost:3000?dark=false`.
@@ -100,6 +100,9 @@ They can also be passed to the TGVE as URL query parameters. For instance
 -   `hideSidebar` boolean value which would hide the left sidebar.
 
 None of the above is necessary and in the current release “Add data” button will allow loading data into eAtlas.
+
+### Shapefiles
+For more about shapefiles please refer to this Wikipedia entry. The TGVE can read shapefiles if provided as a zip file using [`shapefile.js`](https://github.com/calvinmetcalf/shapefile-js). The package is used as external dependency, therefore, if you do use it make sure you have `<script src="https://unpkg.com/shpjs@latest/dist/shp.js"></script>` in your React app's `index.html` file. Then, just add the source as `defaultURL=www.domain/shape.zip`.
 
 ### Data and settings
 

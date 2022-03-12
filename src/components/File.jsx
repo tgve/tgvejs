@@ -14,6 +14,7 @@ export default class Uploader extends React.Component {
 
   handleDrop (acceptedFiles, rejectedFiles) {
     const { contentCallback } = this.props;
+    // TODO: accept shape files
     const textType = /text.*/;
     const file = acceptedFiles[0]
 

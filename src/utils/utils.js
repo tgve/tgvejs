@@ -61,8 +61,20 @@ const fetchData = (url, callback) => {
   fetch(url) //
     .then((response) => response.text())
     .then((response) => {
-      // TODO: better check?
-      if(url.endsWith("csv")) {
+      // TODO: better checks for both
+      // zip and csv
+      if(url.endsWith("zip")) {
+        if (typeof shp === 'function') {
+          shp(url).then(geojson => {
+            typeof callback === "function"
+              && callback(geojson)
+          });
+        } else {
+          callback(undefined, new Error(
+            url + " ends with zip but 'shp' function is not in context."
+          ))
+        }
+      } else if(url.endsWith("csv")) {
         csv2geojson.csv2geojson(response, (err, data) => {
           if (!err) {
             typeof (callback) === 'function'
