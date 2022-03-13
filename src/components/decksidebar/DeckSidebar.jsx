@@ -60,12 +60,14 @@ export default class DeckSidebar extends React.Component {
       loading !== nextProps.loading ||
       layerStyle !== nextProps.layerStyle ||
       barChartVariable !== nextState.barChartVariable) return true;
-    //TODO:  a more functional way is needed
+    //TODO: a bit better now but more is needed.
+    // this solves a lag in large datasets
+    // a more functional way is needed
     // e.g JSON.stringify like in Welcome.js etc
     // consider change in unfilteredData too
     if (!data && !nextProps.data) return false
-    if (data && nextProps && nextProps.data &&
-      JSON.stringify(data) === JSON.stringify(nextProps.data)) {
+    const r = data[Math.floor(Math.random()*data.length)]
+    if (JSON.stringify(data[r]) === JSON.stringify(nextProps.data[r])) {
       return false
     }
     return true;
