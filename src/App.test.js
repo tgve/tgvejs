@@ -70,15 +70,13 @@ test('App - dark/light themes set', async () => {
 })
 */
 
-test('App - API params set', () => {
+test('App - set props', () => {
   const m = shallow(<App/>).find('Welcome');
   expect(m.props().hideCharts).toEqual(undefined);
   expect(m.props().hideChartGenerator).toEqual(undefined);
 
-  const n = shallow(<App hideCharts={true}/>)
-    .find('Welcome');
+  const n = shallow(<App hideCharts={true}/>).find('Welcome');
   expect(n.props().hideCharts).toEqual(true);
-
 })
 
 test('App - API params ENV',() => {
