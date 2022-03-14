@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 // import { waitFor, cleanup } from '@testing-library/react';
-import renderer from 'react-test-renderer';
+import { create } from 'react-test-renderer';
 import { shallow, mount } from 'enzyme';
 import { BaseProvider, DarkTheme, LightTheme } from 'baseui';
 
@@ -24,12 +24,12 @@ test('App can be set to light theme via props', () => {
 });
 
 test('App snapshot dark theme', () => {
-  const appDark = renderer.create(<App />);
+  const appDark = create(<App />);
   expect(appDark.toJSON()).toMatchSnapshot();
 });
 
 test('App snapshot light theme', () => {
-  const appLight = renderer.create(<App dark={false}/>);
+  const appLight = create(<App dark={false}/>);
   expect(appLight.toJSON()).toMatchSnapshot();
 });
 
@@ -72,7 +72,7 @@ test('App - dark/light themes set', async () => {
 
   const n = shallow(<App dark={false}/>);
   expect(n.find(BaseProvider).prop('theme')).toEqual(LightTheme);
-  const appLight = renderer.create(<App dark={false}/>);
+  const appLight = create(<App dark={false}/>);
   expect(appLight.toJSON()).toMatchSnapshot();
 })
 */
