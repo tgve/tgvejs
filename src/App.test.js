@@ -31,18 +31,10 @@ test('App snapshot light theme', () => {
   expect(asFragment()).toMatchSnapshot();
 });
 
-test('Test empty state', () => {
-  const wrapper = mount(<App />);
-  // From this: https://stackoverflow.com/questions/56228092/how-to-find-an-element-by-its-text-in-enzyme
-  const emptyDataComponent = wrapper.findWhere(node => (
-    node.type() &&
-    node.name() &&
-    node.text() === "Nothing to show"
-  ));
+test("Test empty state", () => {
+  render(<BrowserRouter><App dark={false}/></BrowserRouter>);
+  expect(screen.getByText('Nothing to show')).toBeInTheDocument();
 
-  expect(emptyDataComponent).not.toBe({});
-
-  wrapper.unmount();
 });
 
 /*
