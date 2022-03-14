@@ -37,32 +37,8 @@ test("Test empty state", () => {
 
 });
 
-test('Add default data ENZYME', () => {
-  global.fetch = jest.fn((url) =>
-    Promise.resolve({
-      text: () => Promise.resolve(`{
-"type": "FeatureCollection",
-"name": "casualties_100",
-"features": [
-{ "type": "Feature", "properties": { "accident_index": "201301EK40214", "police_force": "Metropolitan Police", "accident_severity": "Slight", "number_of_casualties": 1, "date": "2013-04-11", "day_of_week": "Thursday", "local_authority_district": "Camden", "local_authority_highway": "Camden", "first_road_class": "A", "road_type": "Single carriageway", "speed_limit": 30, "junction_detail": "Not at junction or within 20 metres", "second_road_class": "", "urban_or_rural_area": "Urban", "lsoa_of_accident_location": "E01000863", "datetime": "2013-04-11T11:40:00Z", "sex_of_casualty": "Female", "casualty_type": "Pedestrian", "age_of_casualty": null, "vehicle_type": "", "towing_and_articulation": "", "sex_of_driver": "" }, "geometry": { "type": "Point", "coordinates": [ -0.141282, 51.539844 ] } }
-]}`),
-    })
-  );
-  process.env.REACT_APP_DEFAULT_URL = "https://raw.githubusercontent.com/tgve/example-data/main/casualties_100.geojson"
 
-  const wrapper = mount(
-    <App />
-  );
 
-  const emptyDataComponent = wrapper.findWhere(node => (
-    node.type() &&
-    node.name() &&
-    node.text() === "Nothing to show"
-  ));
-  expect(emptyDataComponent).toEqual({});
-
- wrapper.unmount();
-});
 /*
 test('App - data load', async () => {
   process.env.REACT_APP_DEFAULT_URL = "https://raw.githubusercontent.com/tgve/example-data/main/casualties_100.geojson"
