@@ -24,8 +24,9 @@ import MultiSelect from './MultiSelect';
 export default function Variables(props) {
   const { onSelectCallback, multiVarSelect,
     unfilteredData } = props;
+  // format object to baseui style
   const [columns, setColumns] = useState(multiVarSelect &&
-    Object.keys(multiVarSelect))
+    Object.keys(multiVarSelect).map(e => ({id: e, value: e})))
 
   if (!unfilteredData || !unfilteredData[0]) return null;
 
@@ -36,7 +37,7 @@ export default function Variables(props) {
     )
   }
   // describe first feature
-  const description = describeFeatureVariables(unfilteredData[0]);
+  const description = describeFeatureVariables(unfilteredData[0].properties);
   const dataCols = Object.keys(unfilteredData[0].properties)
     .map(e => ({
       // Format: Column Name [String]
@@ -46,7 +47,7 @@ export default function Variables(props) {
 
   // unique set of keys
   let syncColumns = Array.from(new Set(columns.map(e => e.value).concat(
-    Object.keys(multiVarSelect) // hardcode
+    Object.keys(multiVarSelect)
   )));
   // populate baseweb objects using description
   syncColumns = syncColumns.map(e => ({
@@ -80,6 +81,7 @@ export default function Variables(props) {
             onSelectCallback(multiVarSelect)
           setColumns(value)
         }}
+        // TODO: do not show column type after selection
         value={syncColumns}
         options={dataCols}
       />

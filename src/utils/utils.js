@@ -359,7 +359,7 @@ const suggestUIforNumber = (number) => {
  * @param {*} str
  */
 const humanize = (str) => {
-  if (!str) return str
+  if (!isString(str)) return str
   let frags = str.split('_');
   for (let i = 0; i < frags.length; i++) {
     frags[i] = frags[i].charAt(0).toUpperCase() + frags[i].slice(1);

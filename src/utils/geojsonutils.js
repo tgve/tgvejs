@@ -66,13 +66,13 @@ const isONSCode = (array) => {
  * turn it into {some: type, another: type}
  * @param {Object} feature
  */
-const describeFeatureVariables = (feature) => {
-  if (!feature || feature.type !== 'Feature') return null;
+const describeFeatureVariables = (properties) => {
+  if (!properties || !isObject(properties)) return null;
   const description = {};
 
-  Object.keys(feature.properties).forEach(key => {
+  Object.keys(properties).forEach(key => {
     let v_type = String;
-    const value = feature.properties[key];
+    const value = properties[key];
 
     if (isStringDate(value)) {
       v_type = Date
