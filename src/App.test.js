@@ -49,8 +49,6 @@ test('Test empty state', () => {
 
 /*
 test('App - dark/light themes set', async () => {
-  const m = shallow(<App />);
-  expect(m.find(BaseProvider).prop('theme')).toEqual(DarkTheme);
   process.env.REACT_APP_DEFAULT_URL = "https://raw.githubusercontent.com/tgve/example-data/main/casualties_100.geojson"
   const { asFragment } = render(<App />);
 
@@ -69,11 +67,6 @@ test('App - dark/light themes set', async () => {
     expect(screen.getByText('Nothing to show')).toBeInTheDocument();
   });
   expect(asFragment()).toMatchSnapshot();
-
-  const n = shallow(<App dark={false}/>);
-  expect(n.find(BaseProvider).prop('theme')).toEqual(LightTheme);
-  const appLight = create(<App dark={false}/>);
-  expect(appLight.toJSON()).toMatchSnapshot();
 })
 */
 
