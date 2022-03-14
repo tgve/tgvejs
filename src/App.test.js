@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import { waitFor, cleanup } from '@testing-library/react';
+// import { waitFor, cleanup } from '@testing-library/react';
 import renderer from 'react-test-renderer';
 import { shallow, mount } from 'enzyme';
 import { BaseProvider, DarkTheme, LightTheme } from 'baseui';
@@ -10,7 +9,7 @@ import App from './App';
 
 test('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, div);
+  ReactDOM.render(<App />, div);
   ReactDOM.unmountComponentAtNode(div);
 });
 
@@ -25,23 +24,17 @@ test('App can be set to light theme via props', () => {
 });
 
 test('App snapshot dark theme', () => {
-  const appDark = renderer.create(
-    <BrowserRouter><App /></BrowserRouter>
-  );
+  const appDark = renderer.create(<App />);
   expect(appDark.toJSON()).toMatchSnapshot();
 });
 
 test('App snapshot light theme', () => {
-  const appLight = renderer.create(
-    <BrowserRouter><App dark={false}/></BrowserRouter>
-  );
+  const appLight = renderer.create(<App dark={false}/>);
   expect(appLight.toJSON()).toMatchSnapshot();
 });
 
 test('Test empty state', () => {
-  const wrapper = mount(
-    <BrowserRouter><App /></BrowserRouter>
-  );
+  const wrapper = mount(<App />);
   // From this: https://stackoverflow.com/questions/56228092/how-to-find-an-element-by-its-text-in-enzyme
   const emptyDataComponent = wrapper.findWhere(node => (
     node.type() &&
@@ -59,9 +52,7 @@ test('App - dark/light themes set', async () => {
   const m = shallow(<App />);
   expect(m.find(BaseProvider).prop('theme')).toEqual(DarkTheme);
   process.env.REACT_APP_DEFAULT_URL = "https://raw.githubusercontent.com/tgve/example-data/main/casualties_100.geojson"
-  const { asFragment } = render(
-    <BrowserRouter><App /></BrowserRouter>
-  );
+  const { asFragment } = render(<App />);
 
   global.fetch = jest.fn((url) =>
     Promise.resolve({
@@ -81,9 +72,7 @@ test('App - dark/light themes set', async () => {
 
   const n = shallow(<App dark={false}/>);
   expect(n.find(BaseProvider).prop('theme')).toEqual(LightTheme);
-  const appLight = renderer.create(
-    <BrowserRouter><App dark={false}/></BrowserRouter>
-  );
+  const appLight = renderer.create(<App dark={false}/>);
   expect(appLight.toJSON()).toMatchSnapshot();
 })
 */
