@@ -37,8 +37,6 @@ test("Test empty state", () => {
 
 });
 
-
-
 /*
 test('App - data load', async () => {
   process.env.REACT_APP_DEFAULT_URL = "https://raw.githubusercontent.com/tgve/example-data/main/casualties_100.geojson"
@@ -94,4 +92,3 @@ test('App - API params ENV',() => {
   expect(m.props().hideCharts).toEqual(true);
   expect(m.props().hideSidebar).toEqual(true);
 })
-
