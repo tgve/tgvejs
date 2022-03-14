@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { shallow, mount } from 'enzyme';
 import { BaseProvider, DarkTheme, LightTheme } from 'baseui';
 
@@ -32,10 +32,12 @@ test('App snapshot light theme', () => {
 });
 
 test("Test empty state", () => {
-  render(<BrowserRouter><App dark={false}/></BrowserRouter>);
+  render(<App dark={false}/>);
   expect(screen.getByText('Nothing to show')).toBeInTheDocument();
 
 });
+
+
 
 /*
 test('App - data load', async () => {
