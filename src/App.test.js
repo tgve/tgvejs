@@ -1,6 +1,5 @@
 import React from 'react';
-// import { waitFor, cleanup } from '@testing-library/react';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { create } from 'react-test-renderer';
 import { shallow, mount } from 'enzyme';
 import { BaseProvider, DarkTheme, LightTheme } from 'baseui';
@@ -48,7 +47,7 @@ test('Test empty state', () => {
 });
 
 /*
-test('App - dark/light themes set', async () => {
+test('App - data load', async () => {
   process.env.REACT_APP_DEFAULT_URL = "https://raw.githubusercontent.com/tgve/example-data/main/casualties_100.geojson"
   const { asFragment } = render(<App />);
 
