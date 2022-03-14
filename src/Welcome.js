@@ -417,32 +417,6 @@ export default class Welcome extends React.Component {
         data.map(d => options.getWeight(d))
       }
     }
-    if (geomType === 'linestring') {
-      // layerName = "line"
-      // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
-      options.getColor = [235, 170, 20]
-      options.getPath = d => d.geometry.coordinates
-      options.onClick = (info) => {
-        if (info && info.hasOwnProperty('coordinate')) {
-          if (['path', 'arc', 'line'].includes(layerName) &&
-            info.object.geometry.coordinates) {
-            this._generateLayer({
-              filter: {
-                what: 'coords',
-                selected: info.object.geometry.coordinates[0]
-              }
-            })
-          }
-        }
-      }
-      if (+(data[0] && data[0].properties &&
-        data[0].properties[columnNameOrIndex])) {
-        options.getWidth = d => {
-          return this._newRange(data, d, columnNameOrIndex,
-            getMin(domain), getMax(domain));
-        }; // avoid id
-      }
-    }
     // TODO
     if (layerName === 'scatter') {
       if (+(data[0] && data[0].properties &&
@@ -470,6 +444,35 @@ export default class Welcome extends React.Component {
       +getValue(d) ? +getValue(d) : getValue(d),
       domain, 180, cn || this.state.colorName
     )
+
+    if (geomType === 'linestring') {
+      // layerStyle = "line"
+      options.getColor = fill;
+      options.getPath = d => d.geometry.coordinates
+      options.onClick = (info) => {
+        if (info && info.hasOwnProperty('coordinate')) {
+          if (['path', 'arc', 'line'].includes(layerStyle) &&
+            info.object.geometry.coordinates) {
+            this._generateLayer({
+              filter: {
+                what: 'coords',
+                selected: info.object.geometry.coordinates[0]
+              }
+            })
+          }
+        }
+      }
+      if (+(data[0] && data[0].properties &&
+        data[0].properties[columnNameOrIndex])) {
+        options.getWidth = d => {
+          return this._newRange(data, d, columnNameOrIndex,
+            getMin(domain), getMax(domain));
+        }; // avoid id
+      }
+      options.updateTriggers = {
+        getColor: data.map((d) => fill(d)),
+      }
+    }
 
     if (geomType === "polygon" || geomType === "multipolygon" ||
     layerName === 'geojson') {
