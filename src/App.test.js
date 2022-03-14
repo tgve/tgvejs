@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
-import { create } from 'react-test-renderer';
 import { shallow, mount } from 'enzyme';
 import { BaseProvider, DarkTheme, LightTheme } from 'baseui';
 
@@ -23,13 +22,13 @@ test('App can be set to light theme via props', () => {
 });
 
 test('App snapshot dark theme', () => {
-  const appDark = create(<App />);
-  expect(appDark.toJSON()).toMatchSnapshot();
+  const { asFragment } = render(<App />);
+  expect(asFragment()).toMatchSnapshot();
 });
 
 test('App snapshot light theme', () => {
-  const appLight = create(<App dark={false}/>);
-  expect(appLight.toJSON()).toMatchSnapshot();
+  const { asFragment } = render(<App dark={false}/>);
+  expect(asFragment()).toMatchSnapshot();
 });
 
 test('Test empty state', () => {
