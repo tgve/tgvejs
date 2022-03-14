@@ -1,6 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 // import { waitFor, cleanup } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { create } from 'react-test-renderer';
 import { shallow, mount } from 'enzyme';
 import { BaseProvider, DarkTheme, LightTheme } from 'baseui';
@@ -9,8 +9,8 @@ import App from './App';
 
 test('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
-  ReactDOM.unmountComponentAtNode(div);
+  const { unmount } = render(<App />, div);
+  unmount();
 });
 
 test('App defaults to dark theme when given no prop', () => {
