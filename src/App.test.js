@@ -34,7 +34,6 @@ test('App snapshot light theme', () => {
 test("Test empty state", () => {
   render(<App dark={false}/>);
   expect(screen.getByText('Nothing to show')).toBeInTheDocument();
-
 });
 
 test('App - set props', () => {
