@@ -585,7 +585,13 @@ export default class Welcome extends React.Component {
     //if we do history.replace/push 100 times in less than 30 secs
     // browser will crash
     if (new Date() - lastViewPortChange > 1000) {
-      updateHistory(viewport);
+      updateHistory({...viewport,
+        ...{
+          defaultURL: this.props.defaultURL,
+          geographyURL: this.props.geographyURL,
+          geographyColumn: this.props.geographyColumn
+        }
+      });
       this.setState({ lastViewPortChange: new Date() })
     }
     const bounds = this.map && this.map.getBounds()
