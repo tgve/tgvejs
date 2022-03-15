@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import { BaseProvider, DarkTheme, LightTheme } from 'baseui';
 
 import App from './App';
