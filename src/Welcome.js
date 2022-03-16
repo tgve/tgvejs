@@ -42,6 +42,7 @@ import DeckSidebarContainer from
 
 import './App.css';
 import Tooltip from './components/Tooltip';
+import Popup from './components/Popup';
 import { getPropertyValues, sfType } from './utils/geojsonutils';
 import { throttle } from 'lodash';
 import { isObject } from './utils/JSUtils';
@@ -100,6 +101,7 @@ export default class Welcome extends React.Component {
 
     this._generateLayer = this._generateLayer.bind(this)
     this._renderTooltip = this._renderTooltip.bind(this);
+    this._renderPopup = this._renderPopup.bind(this);
     this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
     this._fitViewport = this._fitViewport.bind(this);
     this._initWithGeojson = this._initWithGeojson.bind(this);
@@ -516,6 +518,7 @@ export default class Welcome extends React.Component {
       layerName,
       geomType,
       tooltip: "",
+      popup: "",
       filtered: data,
       layers: [alayer],
       layerOptions: options,
@@ -579,6 +582,29 @@ export default class Welcome extends React.Component {
     })
   }
 
+  /**
+   * Currently the tooltip focuses on aggregated layer (grid).
+   *
+   * @param {Object} params passed from DeckGL layer.
+   */
+   _renderPopup(object) {
+    //const { x, y, object } = params;
+    const clickedObject = object;
+    // return
+    if (!clickedObject) {
+      this.setState({ popup: "" })
+      return;
+    }
+    console.log("in _renderPopup")
+    this.setState({
+      popup:
+        // react did not like x and y props.
+        <Popup
+          clickedObject={clickedObject} 
+        />
+    })
+  }
+
   _updateURL(viewport) {
     const { subsetBoundsChange, lastViewPortChange } = this.state;
 
@@ -617,7 +643,7 @@ export default class Welcome extends React.Component {
   render() {
     const { hideCharts, hideChartGenerator, dark, defaultURL,
       leftSidebarContent, hideSidebar } = this.props;
-    const { tooltip, viewport, initialViewState,
+    const { tooltip, popup, viewport, initialViewState,
       loading, mapStyle, alert, data, filtered, bottomPanel,
       layerName, geomType, legend, coords } = this.state;
     const showLegend = legend && (geomType === 'polygon'
@@ -674,9 +700,10 @@ export default class Welcome extends React.Component {
                 this.setState({ coords: null })
                 this._generateLayer()
               }
+              console.log("in Welcome's onClick, e is ",e,"object is ",e.object);
+              this._renderPopup(e.object);
             }}
           >
-            {tooltip}
           </DeckGL>
         </MapGL>
         {!hideSidebar && <DeckSidebarContainer
@@ -792,6 +819,8 @@ export default class Welcome extends React.Component {
             {legend}
           </div>
         }
+        {tooltip}
+        {popup}
       </div>
     );
   }
