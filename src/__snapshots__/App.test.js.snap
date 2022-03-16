@@ -75,13 +75,7 @@ exports[`App - dark/light themes set 1`] = `
           }
         >
           <div
-            className="side-pane-header"
-            style={
-              Object {
-                "background": "#29323C",
-                "marginTop": 2,
-              }
-            }
+            className="ae af ag ah"
           >
             <h2>
               Nothing to show
@@ -89,7 +83,7 @@ exports[`App - dark/light themes set 1`] = `
           </div>
           <div>
             <button
-              className="ae af ag ah ai aj ak al am an ao ap aq ar as at au av aw ax ay az b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 ba bb bc bd be bf bg bh bi bj bk"
+              className="ai aj ak al am an ao ap aq ar as at au av aw ax ay az b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 ba bb bc bd be bf bg bh bi bj bk bl ae bm bn"
               data-baseweb="button"
               disabled={false}
               onBlur={[Function]}
@@ -125,18 +119,18 @@ exports[`App - dark/light themes set 1`] = `
                 }
               />
               <div
-                className="bl"
+                className="bo"
               >
                 <div
                   aria-orientation="horizontal"
-                  className="bm bn bo af bp bq br bs bt bu"
+                  className="bp bq br aj bs bt bu bv bw bx"
                   data-baseweb="tab-list"
                   role="tablist"
                 >
                   <button
                     aria-controls="tabs-bui1-tabpanel-0"
                     aria-selected={true}
-                    className="ax at b1 b3 b2 b4 bv ae ag bw bx by bz ai aj ak al am an ao ap bh c0 au av aw aq c1 ay c2 c3 c4 b5 b6 b7 b8 ah"
+                    className="b1 ax b5 b7 b6 b8 by ai ak bz c0 c1 c2 am an ao ap aq ar as at bl c3 ay az b0 au c4 b2 c5 c6 c7 b9 ba bb bc al"
                     data-baseweb="tab"
                     disabled={false}
                     id="tabs-bui1-tab-0"
@@ -160,7 +154,7 @@ exports[`App - dark/light themes set 1`] = `
                   <button
                     aria-controls="tabs-bui1-tabpanel-1"
                     aria-selected={false}
-                    className="ax at b1 b3 b2 b4 bv ae ag bw bx by bz ai aj ak al am an ao ap bh c0 au av aw aq c1 ay c2 c3 c4 b5 b6 b7 b8 ah"
+                    className="b1 ax b5 b7 b6 b8 by ai ak bz c0 c1 c2 am an ao ap aq ar as at bl c3 ay az b0 au c4 b2 c5 c6 c7 b9 ba bb bc al"
                     data-baseweb="tab"
                     disabled={false}
                     id="tabs-bui1-tab-1"
@@ -183,37 +177,28 @@ exports[`App - dark/light themes set 1`] = `
                   </button>
                   <div
                     aria-hidden="true"
-                    className="c5 c6 c7 c8 c9 ca cb cc"
+                    className="c8 c9 ca cb cc cd ce cf"
                     data-baseweb="tab-highlight"
                     role="presentation"
                   />
                 </div>
                 <div
                   aria-hidden="true"
-                  className="bi bm ca"
+                  className="ae bp cd"
                   data-baseweb="tab-border"
                   role="presentation"
                 />
                 <div
                   aria-labelledby="tabs-bui1-tab-0"
-                  className="cd aq"
+                  className="cg au"
                   data-baseweb="tab-panel"
                   hidden={false}
                   id="tabs-bui1-tabpanel-0"
                   role="tabpanel"
-                >
-                  <div
-                    className="side-panel-group"
-                    style={
-                      Object {
-                        "borderColor": "#29323C",
-                      }
-                    }
-                  />
-                </div>
+                />
                 <div
                   aria-labelledby="tabs-bui1-tab-1"
-                  className="cd aq"
+                  className="cg au"
                   data-baseweb="tab-panel"
                   hidden={true}
                   id="tabs-bui1-tabpanel-1"
@@ -229,15 +214,15 @@ exports[`App - dark/light themes set 1`] = `
               onSubmit={[Function]}
             >
               <div
-                className="ce cf"
+                className="ch ci"
                 data-baseweb="form-control-container"
               >
                 <div
-                  className="bv bn cg ce ch ci cj ck cl cm cn co cp av cq bb bc b9 ba b5 cr cs ct cu cv cw cx cy cz d0"
+                  className="by bq cj ch ck cl cm cn co cp cq cr cs az ct bf bg bd be b9 cu cv cw cx cy cz d0 d1 d2 d3"
                   data-baseweb="input"
                 >
                   <div
-                    className="bn ce d1 av cq b5 cr cs ct bh cy"
+                    className="bq ch d4 az ct b9 cu cv cw bl d1"
                     data-baseweb="base-input"
                   >
                     <input
@@ -252,7 +237,7 @@ exports[`App - dark/light themes set 1`] = `
                       aria-labelledby={null}
                       aria-required={false}
                       autoComplete="on"
-                      className="bv d2 ai ak aj al am ao an ap aq ce d3 d4 d5 d6 bd be d7 d0 b5 cr cs ct bh d8 d9"
+                      className="by d5 am ao an ap aq as ar at au ch d6 d7 d8 d9 bh bi da d3 b9 cu cv cw bl db dc"
                       disabled={false}
                       id="search-nominatum"
                       inputMode="text"
@@ -272,7 +257,7 @@ exports[`App - dark/light themes set 1`] = `
                     />
                   </div>
                   <div
-                    className="bn ag ah da av cq b5 cr cs ct db dc bh cy"
+                    className="bq ak al dd az ct b9 cu cv cw de df bl d1"
                   >
                     🌐
                   </div>
@@ -392,13 +377,7 @@ exports[`App - dark/light themes set 2`] = `
           }
         >
           <div
-            className="side-pane-header"
-            style={
-              Object {
-                "background": "#eee",
-                "marginTop": 2,
-              }
-            }
+            className="dg af ag ah"
           >
             <h2>
               Nothing to show
@@ -406,7 +385,7 @@ exports[`App - dark/light themes set 2`] = `
           </div>
           <div>
             <button
-              className="ae af ag ah ai aj ak al am an ao ap aq ar as at au av aw ax ay dd de b1 b2 b3 b4 b5 b6 b7 b8 b9 ba bb bc bd be bf bg df dg dh di"
+              className="ai aj ak al am an ao ap aq ar as at au av aw ax ay az b0 b1 b2 dh di b5 b6 b7 b8 b9 ba bb bc bd be bf bg bh bi bj bk dj dg dk dl"
               data-baseweb="button"
               disabled={false}
               onBlur={[Function]}
@@ -442,18 +421,18 @@ exports[`App - dark/light themes set 2`] = `
                 }
               />
               <div
-                className="bl"
+                className="bo"
               >
                 <div
                   aria-orientation="horizontal"
-                  className="bm bn bo af bp bq br bs bt bu"
+                  className="bp bq br aj bs bt bu bv bw bx"
                   data-baseweb="tab-list"
                   role="tablist"
                 >
                   <button
                     aria-controls="tabs-bui1-tabpanel-0"
                     aria-selected={true}
-                    className="ax at b1 b3 b2 b4 bv ae ag bw bx by bz ai aj ak al am an ao ap df dj au av aw aq c1 ay de dk c4 b5 b6 b7 b8 ah"
+                    className="b1 ax b5 b7 b6 b8 by ai ak bz c0 c1 c2 am an ao ap aq ar as at dj dm ay az b0 au c4 b2 di dn c7 b9 ba bb bc al"
                     data-baseweb="tab"
                     disabled={false}
                     id="tabs-bui1-tab-0"
@@ -477,7 +456,7 @@ exports[`App - dark/light themes set 2`] = `
                   <button
                     aria-controls="tabs-bui1-tabpanel-1"
                     aria-selected={false}
-                    className="ax at b1 b3 b2 b4 bv ae ag bw bx by bz ai aj ak al am an ao ap df dj au av aw aq c1 ay de dk c4 b5 b6 b7 b8 ah"
+                    className="b1 ax b5 b7 b6 b8 by ai ak bz c0 c1 c2 am an ao ap aq ar as at dj dm ay az b0 au c4 b2 di dn c7 b9 ba bb bc al"
                     data-baseweb="tab"
                     disabled={false}
                     id="tabs-bui1-tab-1"
@@ -500,37 +479,28 @@ exports[`App - dark/light themes set 2`] = `
                   </button>
                   <div
                     aria-hidden="true"
-                    className="dl c6 c7 c8 c9 ca cb cc"
+                    className="do c9 ca cb cc cd ce cf"
                     data-baseweb="tab-highlight"
                     role="presentation"
                   />
                 </div>
                 <div
                   aria-hidden="true"
-                  className="c5 bm ca"
+                  className="c8 bp cd"
                   data-baseweb="tab-border"
                   role="presentation"
                 />
                 <div
                   aria-labelledby="tabs-bui1-tab-0"
-                  className="cd aq"
+                  className="cg au"
                   data-baseweb="tab-panel"
                   hidden={false}
                   id="tabs-bui1-tabpanel-0"
                   role="tabpanel"
-                >
-                  <div
-                    className="side-panel-group"
-                    style={
-                      Object {
-                        "borderColor": "#eee",
-                      }
-                    }
-                  />
-                </div>
+                />
                 <div
                   aria-labelledby="tabs-bui1-tab-1"
-                  className="cd aq"
+                  className="cg au"
                   data-baseweb="tab-panel"
                   hidden={true}
                   id="tabs-bui1-tabpanel-1"
@@ -546,15 +516,15 @@ exports[`App - dark/light themes set 2`] = `
               onSubmit={[Function]}
             >
               <div
-                className="ce cf"
+                className="ch ci"
                 data-baseweb="form-control-container"
               >
                 <div
-                  className="bv bn cg ce ch ci cj ck cl cm cn co cp av cq bb bc b9 ba b5 cr cs ct dm dn do dp dg cz d0"
+                  className="by bq cj ch ck cl cm cn co cp cq cr cs az ct bf bg bd be b9 cu cv cw dp dq dr ds dg d2 d3"
                   data-baseweb="input"
                 >
                   <div
-                    className="bn ce d1 av cq b5 cr cs ct df dg"
+                    className="bq ch d4 az ct b9 cu cv cw dj dg"
                     data-baseweb="base-input"
                   >
                     <input
@@ -569,7 +539,7 @@ exports[`App - dark/light themes set 2`] = `
                       aria-labelledby={null}
                       aria-required={false}
                       autoComplete="on"
-                      className="bv d2 ai ak aj al am ao an ap aq ce d3 d4 d5 d6 bd be d7 d0 b5 cr cs ct df dq d9"
+                      className="by d5 am ao an ap aq as ar at au ch d6 d7 d8 d9 bh bi da d3 b9 cu cv cw dj dt dc"
                       disabled={false}
                       id="search-nominatum"
                       inputMode="text"
@@ -589,7 +559,7 @@ exports[`App - dark/light themes set 2`] = `
                     />
                   </div>
                   <div
-                    className="bn ag ah da av cq b5 cr cs ct db dc df dg"
+                    className="bq ak al dd az ct b9 cu cv cw de df dj dg"
                   >
                     🌐
                   </div>
