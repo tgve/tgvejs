@@ -446,12 +446,11 @@ export default class Welcome extends React.Component {
     )
 
     if (geomType === 'linestring') {
-      // layerStyle = "line"
       options.getColor = fill;
       options.getPath = d => d.geometry.coordinates
       options.onClick = (info) => {
         if (info && info.hasOwnProperty('coordinate')) {
-          if (['path', 'arc', 'line'].includes(layerStyle) &&
+          if (['path', 'arc', 'line'].includes(layerName) &&
             info.object.geometry.coordinates) {
             this._generateLayer({
               filter: {
