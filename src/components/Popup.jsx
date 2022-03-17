@@ -1,18 +1,18 @@
 import React from 'react';
-import { Table } from 'baseui/table';
-import { humanize } from '../utils/utils';
-import { getPropertyValues, propertyCountByProperty } from '../utils/geojsonutils';
-import Plot from './showcases/GenericPlotly';
-import { scaleSequential } from 'd3-scale';
-import { TURQUOISE_RANGE } from '../Constants';
+import { Button } from 'baseui/button';
+import { generateTooltip } from '../utils/utils';
 
-const WIDTH = 220;
-const BAR_HEIGHT = 80;
+const BOTTOM_OFFSET= 50;
+const RIGHT_OFFSET = 50;
+const HEIGHT = 400;
+const WIDTH = 300;
 
 export default class Popup extends React.Component {
   constructor(props) {
     super();
-    this._listPropsAndValues = this._listPropsAndValues.bind(this);
+    this.state = {
+      isMobile: props.isMobile,
+    };
   }
 
   componentDidMount() {
@@ -29,62 +29,26 @@ export default class Popup extends React.Component {
     this.forceUpdate()
   };
 
-  /**
-   * clickedObject can be of two types so far:
-   * 1. collections of points with `.points` property
-   * 2. properties of `.type === 'Feature'`.
-   */
   render() {
     console.log("in popup's render()")
+    const { onCloseCallback } = this.props;
     const popup =
       <div
-        className="xyz" style={{
-          top: (WIDTH + BAR_HEIGHT),
-          left: WIDTH 
+        className="side-panel" style={{
+          bottom: BOTTOM_OFFSET,
+          right: RIGHT_OFFSET,
+          height: HEIGHT,
+          width: WIDTH,
+          position: "absolute",
+          backgroundColor: "#000",
+          color: "#fff"
         }}>
         <div>
-          <h3>Hello world</h3>
+          {generateTooltip(this.props, this.state)}
         </div>
-      
+        <Button onClick={() => typeof(onCloseCallback) === 'function' 
+          && onCloseCallback()} >X</Button>
       </div >
     return (popup)
-  }
-
-  _listPropsAndValues(clickedObject, all = false, n = 6) {
-    if(!clickedObject.properties ||
-      (clickedObject.points && (!clickedObject.points ||
-       !clickedObject.points[0].properties))) return null
-
-    let DATA = []
-    const props = clickedObject.properties;
-    if (props) {
-      const keys = Object.keys(props)
-      DATA = keys
-        .slice(0, all ? keys.length : n)
-        .map(p => {
-          return ([humanize(p), props[p]])
-        })
-    } else { // two points passed go through first one
-      const keys = Object.keys(clickedObject.points[0].properties);
-      DATA = keys
-        .slice(0, all ? keys.length : n) // miss accident_index
-        .map(p => {
-          let points = [
-            humanize(p),
-            clickedObject.points[0].properties[p],
-          ]
-          if (clickedObject.points[1]) {
-            points.push(clickedObject.points[1].properties[p])
-          }
-          return (points)
-        })
-    }
-    return <Table style={{ maxWidth: '320px' }}
-      columns={
-        clickedObject.points &&
-          clickedObject.points.length === 2 ?
-          ['Property', 'Value p1', 'Value p2'] : ['Property', 'Value']
-      } data={DATA} />
-
   }
 }
