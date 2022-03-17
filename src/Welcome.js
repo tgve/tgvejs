@@ -448,12 +448,11 @@ export default class Welcome extends React.Component {
     )
 
     if (geomType === 'linestring') {
-      // layerStyle = "line"
       options.getColor = fill;
       options.getPath = d => d.geometry.coordinates
       options.onClick = (info) => {
         if (info && info.hasOwnProperty('coordinate')) {
-          if (['path', 'arc', 'line'].includes(layerStyle) &&
+          if (['path', 'arc', 'line'].includes(layerName) &&
             info.object.geometry.coordinates) {
             this._generateLayer({
               filter: {
@@ -578,7 +577,8 @@ export default class Welcome extends React.Component {
         <Tooltip
           {...this.state.tooltipColumns}
           isMobile={isMobile()}
-          topx={x} topy={y} hoveredObject={hoveredObject} />
+          topx={x} topy={y}
+          selectedObject={hoveredObject} />
     })
   }
 
@@ -588,19 +588,20 @@ export default class Welcome extends React.Component {
    * @param {Object} params passed from DeckGL layer.
    */
    _renderPopup(object) {
-    //const { x, y, object } = params;
     const clickedObject = object;
     // return
     if (!clickedObject) {
-      this.setState({ popup: "" })
+      this.setState({ popup: null })
       return;
     }
     console.log("in _renderPopup")
     this.setState({
       popup:
-        // react did not like x and y props.
         <Popup
-          clickedObject={clickedObject} 
+          onCloseCallback={()=> this.setState({popup: null})}
+          {...this.state.tooltipColumns}
+          isMobile={isMobile()}
+          selectedObject={clickedObject}
         />
     })
   }
