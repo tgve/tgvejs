@@ -60,26 +60,21 @@ const getResultsFromGoogleMaps = (string, callback) => {
 const fetchData = (url, callback) => {
   fetch(url) //
     .then((response) => response.text())
-    .then((body) => {
-      console.log(`Body:\n${body}`)
-      if(url.endsWith("csv")) {
-        csv2geojson.csv2geojson(body, (err, data) => {
+    .then((response) => {
+      // TODO: better check?
+      if (url.endsWith("csv")) {
+        csv2geojson.csv2geojson(response, (err, data) => {
           if (!err) {
             typeof (callback) === 'function'
               && callback(data)
-          } else {
-            console.log("csv2geojson failed")
-            // do nothing if csv2geojson fails?
           }
         })
       } else {
-        // assume json
+        //assume json
         try {
-          const json = JSON.parse(body);
-          console.log(`JSON found:\n${json}`)
+          const json = JSON.parse(response);
           callback(json)
         } catch (error) {
-          console.log(`JSON error:\n${error}`)
           callback(undefined, error)
         }
       }
