@@ -35,6 +35,7 @@ import Boxplot from '../boxplot/Boxplot';
 import LayerSettings from '../settings/LayerSettings';
 import { LAYERS } from '../settings/settingsUtils'
 import Export from '../export/Export';
+import { styled } from 'baseui';
 
 export default class DeckSidebar extends React.Component {
   constructor(props) {
@@ -43,7 +44,7 @@ export default class DeckSidebar extends React.Component {
       radius: 100,
       year: "", // required to reset state
       reset: false,
-      multiVarSelect: {},
+      multiVarSelect: props.multiVarSelect || {},
       barChartVariable: "road_type",
       datasetName: props.datasetName
     }
@@ -61,12 +62,14 @@ export default class DeckSidebar extends React.Component {
       loading !== nextProps.loading ||
       layerName !== nextProps.layerName ||
       barChartVariable !== nextState.barChartVariable) return true;
-    //TODO:  a more functional way is needed
+    //TODO: a bit better now but more is needed.
+    // this solves a lag in large datasets
+    // a more functional way is needed
     // e.g JSON.stringify like in Welcome.js etc
     // consider change in unfilteredData too
     if (!data && !nextProps.data) return false
-    if (data && nextProps && nextProps.data &&
-      JSON.stringify(data) === JSON.stringify(nextProps.data)) {
+    const r = Math.floor(Math.random() * data.length)
+    if (JSON.stringify(data[r]) === JSON.stringify(nextProps.data[r])) {
       return false
     }
     return true;
@@ -131,7 +134,7 @@ export default class DeckSidebar extends React.Component {
           }}
           className="side-panel">
           <RBAlert alert={alert} />
-          {this._headerComponent(dark,
+          {this._headerComponent(
             <><h2>{getMainMessage(data, unfilteredData)}</h2>
               {notEmpty &&
                 <h6 className="truncate">
@@ -169,7 +172,7 @@ export default class DeckSidebar extends React.Component {
                 toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
                 component={<DataTable data={data} />} />}
             <Export data={data} notEmpty={notEmpty}
-            screenshot={this.props.screenshot}/>
+              screenshot={this.props.screenshot} />
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
@@ -207,9 +210,9 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-info" />
                 } overrides={TabOverrides}>
                   {/* pick a column and vis type */}
-                  {!hideChartGenerator && this._panel(dark,
+                  {!hideChartGenerator &&
                     <AddVIS data={data} dark={dark} plotStyle={{ width: 270, margin: 10 }} />
-                  )}
+                  }
                   {/* distribution example */}
                   {notEmpty && plotByProperty(
                     data.filter(d => Boolean(d.properties["age_of_casualty"])),
@@ -272,48 +275,46 @@ export default class DeckSidebar extends React.Component {
                     className="fa fa-sliders" />
                 } overrides={TabOverrides}>
                   {notEmpty &&
-                    this._headerComponent(dark,
+                    this._headerComponent(
                       <ColorPicker colourCallback={(color) =>
                         typeof colourCallback === 'function' &&
                         colourCallback(color)} />
                     )
                   }
                   {notEmpty &&
-                    this._panel(dark,
-                      <>
-                        <h6>Deck Layer:</h6>
-                        <MultiSelect
-                          title="Choose Layer"
-                          single={true}
-                          values={
-                            // TODO:filter based on data
-                            LAYERS.map(e =>
-                              ({ id: humanize(e), value: e }))
+                    <>
+                      <h6>Deck Layer:</h6>
+                      <MultiSelect
+                        title="Choose Layer"
+                        single={true}
+                        values={
+                          // TODO:filter based on data
+                          LAYERS.map(e =>
+                            ({ id: humanize(e), value: e }))
+                        }
+                        onSelectCallback={(selected) => {
+                          // array of seingle {id: , value: } object
+                          if (selected && selected[0]) {
+                            const ls = selected[0].value;
+                            this.setState({ layerName: ls });
+                            typeof onSelectCallback === 'function' &&
+                              onSelectCallback({
+                                what: 'layerName', selected: ls
+                              });
                           }
-                          onSelectCallback={(selected) => {
-                            // array of seingle {id: , value: } object
-                            if (selected && selected[0]) {
-                              const ls = selected[0].value;
-                              this.setState({ layerName: ls });
-                              typeof onSelectCallback === 'function' &&
-                                onSelectCallback({
-                                  what: 'layerName', selected: ls
-                                });
-                            }
-                          }}
-                        />
-                        <LayerSettings
-                          dark={dark}
-                          layerName={layerName}
-                          columnNames={columnNames}
-                          onLayerOptionsCallback={(layerOptions) => {
-                            typeof (onLayerOptionsCallback) === 'function' &&
-                              onLayerOptionsCallback({ ...layerOptions })
-                          }} />
-                      </>)
+                        }}
+                      />
+                      <LayerSettings
+                        layerName={layerName}
+                        columnNames={columnNames}
+                        onLayerOptionsCallback={(layerOptions) => {
+                          typeof (onLayerOptionsCallback) === 'function' &&
+                            onLayerOptionsCallback({ ...layerOptions })
+                        }} />
+                    </>
                   }
                   {
-                    this._headerComponent(dark,
+                    this._headerComponent(
                       <>
                         Map Styles
                         <br />
@@ -354,8 +355,8 @@ export default class DeckSidebar extends React.Component {
                       }</i>
                   } overrides={TabOverrides}>
                     {
-                      this._headerComponent(dark, <Variables
-                        dark={dark}
+                      this._headerComponent(
+                      <Variables
                         multiVarSelect={multiVarSelect}
                         onSelectCallback={(mvs) => {
                           typeof (onSelectCallback) === 'function' &&
@@ -374,7 +375,7 @@ export default class DeckSidebar extends React.Component {
             {this.props.leftSidebarContent}
             {/* TODO: find the right place for above */}
             <div className="space"></div>
-            {notEmpty && this._headerComponent(dark, "Vis: " + (layerName || "None"))}
+            {notEmpty && this._headerComponent("Vis: " + (layerName || "None"))}
             <form className="search-form" onSubmit={(e) => {
               e.preventDefault();
               searchNominatom(this.state.search, (json) => {
@@ -403,26 +404,15 @@ export default class DeckSidebar extends React.Component {
     )
   }
 
-  _headerComponent(dark, content) {
+  _headerComponent(content) {
+    const HDiv = styled("div", ({$theme}) => ({
+      backgroundColor: $theme.colors.backgroundTertiary,
+      padding: '10px', borderRadius: '5px',
+      marginBottom: '20px'
+    }))
     return (
-      <div
-        style={{
-          marginTop: 2,
-          background: dark ? '#29323C' : '#eee'
-        }}
-        className="side-pane-header">
+      <HDiv>
         {content}
-      </div>)
-  }
-
-  _panel(dark, content) {
-    return (
-      <div
-        style={{
-          borderColor: dark ? '#29323C' : '#eee'
-        }}
-        className="side-panel-group">
-        {content}
-      </div>)
+      </HDiv>)
   }
 }

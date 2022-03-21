@@ -88,7 +88,7 @@ export default class Welcome extends React.Component {
       colorName: 'default',
       iconLimit: ICONLIMIT,
       legend: false,
-      multiVarSelect: {},
+      multiVarSelect: props.select || {},
       width: window.innerWidth, height: window.innerHeight,
       tooltipColumns: {column1: "accident_severity" , column2: "date"},
       geographyURL: props.geographyURL,
@@ -417,32 +417,6 @@ export default class Welcome extends React.Component {
         data.map(d => options.getWeight(d))
       }
     }
-    if (geomType === 'linestring') {
-      // layerName = "line"
-      // https://github.com/uber/deck.gl/blob/master/docs/layers/line-layer.md
-      options.getColor = [235, 170, 20]
-      options.getPath = d => d.geometry.coordinates
-      options.onClick = (info) => {
-        if (info && info.hasOwnProperty('coordinate')) {
-          if (['path', 'arc', 'line'].includes(layerName) &&
-            info.object.geometry.coordinates) {
-            this._generateLayer({
-              filter: {
-                what: 'coords',
-                selected: info.object.geometry.coordinates[0]
-              }
-            })
-          }
-        }
-      }
-      if (+(data[0] && data[0].properties &&
-        data[0].properties[columnNameOrIndex])) {
-        options.getWidth = d => {
-          return this._newRange(data, d, columnNameOrIndex,
-            getMin(domain), getMax(domain));
-        }; // avoid id
-      }
-    }
     // TODO
     if (layerName === 'scatter') {
       if (+(data[0] && data[0].properties &&
@@ -470,6 +444,34 @@ export default class Welcome extends React.Component {
       +getValue(d) ? +getValue(d) : getValue(d),
       domain, 180, cn || this.state.colorName
     )
+
+    if (geomType === 'linestring') {
+      options.getColor = fill;
+      options.getPath = d => d.geometry.coordinates
+      options.onClick = (info) => {
+        if (info && info.hasOwnProperty('coordinate')) {
+          if (['path', 'arc', 'line'].includes(layerName) &&
+            info.object.geometry.coordinates) {
+            this._generateLayer({
+              filter: {
+                what: 'coords',
+                selected: info.object.geometry.coordinates[0]
+              }
+            })
+          }
+        }
+      }
+      if (+(data[0] && data[0].properties &&
+        data[0].properties[columnNameOrIndex])) {
+        options.getWidth = d => {
+          return this._newRange(data, d, columnNameOrIndex,
+            getMin(domain), getMax(domain));
+        }; // avoid id
+      }
+      options.updateTriggers = {
+        getColor: data.map((d) => fill(d)),
+      }
+    }
 
     if (geomType === "polygon" || geomType === "multipolygon" ||
     layerName === 'geojson') {
@@ -582,7 +584,13 @@ export default class Welcome extends React.Component {
     //if we do history.replace/push 100 times in less than 30 secs
     // browser will crash
     if (new Date() - lastViewPortChange > 1000) {
-      updateHistory(viewport);
+      updateHistory({...viewport,
+        ...{
+          defaultURL: this.props.defaultURL,
+          geographyURL: this.props.geographyURL,
+          geographyColumn: this.props.geographyColumn
+        }
+      });
       this.setState({ lastViewPortChange: new Date() })
     }
     const bounds = this.map && this.map.getBounds()
@@ -768,6 +776,9 @@ export default class Welcome extends React.Component {
           // TODO: generalise datasetName
           datasetName={defaultURL}
           bottomPanel={bottomPanel}
+          // only during first load
+          // DeckSidebar ignores this prop later
+          multiVarSelect={this.state.multiVarSelect}
         />}
         {
           showLegend &&

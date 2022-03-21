@@ -50,8 +50,7 @@ exports[`App snapshot dark theme 1`] = `
             style="color: white; background: rgb(36, 39, 48);"
           >
             <div
-              class="side-pane-header"
-              style="margin-top: 2px; background: rgb(41, 50, 60);"
+              class="ae af ag ah"
             >
               <h2>
                 Nothing to show
@@ -59,7 +58,7 @@ exports[`App snapshot dark theme 1`] = `
             </div>
             <div>
               <button
-                class="ae af ag ah ai aj ak al am an ao ap aq ar as at au av aw ax ay az b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 ba bb bc bd be bf bg bh bi bj bk"
+                class="ai aj ak al am an ao ap aq ar as at au av aw ax ay az b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 ba bb bc bd be bf bg bh bi bj bk bl ae bm bn"
                 data-baseweb="button"
               >
                 Add data
@@ -80,18 +79,18 @@ exports[`App snapshot dark theme 1`] = `
                   style="clear: both;"
                 />
                 <div
-                  class="bl"
+                  class="bo"
                 >
                   <div
                     aria-orientation="horizontal"
-                    class="bm bn bo af bp bq br bs bt bu"
+                    class="bp bq br aj bs bt bu bv bw bx"
                     data-baseweb="tab-list"
                     role="tablist"
                   >
                     <button
                       aria-controls="tabs-bui1-tabpanel-0"
                       aria-selected="true"
-                      class="ax at b1 b3 b2 b4 bv ae ag bw bx by bz ai aj ak al am an ao ap bh c0 au av aw aq c1 ay c2 c3 c4 b5 b6 b7 b8 ah"
+                      class="b1 ax b5 b7 b6 b8 by ai ak bz c0 c1 c2 am an ao ap aq ar as at bl c3 ay az b0 au c4 b2 c5 c6 c7 b9 ba bb bc al"
                       data-baseweb="tab"
                       id="tabs-bui1-tab-0"
                       role="tab"
@@ -106,7 +105,7 @@ exports[`App snapshot dark theme 1`] = `
                     <button
                       aria-controls="tabs-bui1-tabpanel-1"
                       aria-selected="false"
-                      class="ax at b1 b3 b2 b4 bv ae ag bw bx by bz ai aj ak al am an ao ap bh c0 au av aw aq c1 ay c2 c3 c4 b5 b6 b7 b8 ah"
+                      class="b1 ax b5 b7 b6 b8 by ai ak bz c0 c1 c2 am an ao ap aq ar as at bl c3 ay az b0 au c4 b2 c5 c6 c7 b9 ba bb bc al"
                       data-baseweb="tab"
                       id="tabs-bui1-tab-1"
                       role="tab"
@@ -120,32 +119,27 @@ exports[`App snapshot dark theme 1`] = `
                     </button>
                     <div
                       aria-hidden="true"
-                      class="c5 c6 c7 c8 c9 ca cb cc"
+                      class="c8 c9 ca cb cc cd ce cf"
                       data-baseweb="tab-highlight"
                       role="presentation"
                     />
                   </div>
                   <div
                     aria-hidden="true"
-                    class="bi bm ca"
+                    class="ae bp cd"
                     data-baseweb="tab-border"
                     role="presentation"
                   />
                   <div
                     aria-labelledby="tabs-bui1-tab-0"
-                    class="cd aq"
+                    class="cg au"
                     data-baseweb="tab-panel"
                     id="tabs-bui1-tabpanel-0"
                     role="tabpanel"
-                  >
-                    <div
-                      class="side-panel-group"
-                      style="border-color: #29323c;"
-                    />
-                  </div>
+                  />
                   <div
                     aria-labelledby="tabs-bui1-tab-1"
-                    class="cd aq"
+                    class="cg au"
                     data-baseweb="tab-panel"
                     hidden=""
                     id="tabs-bui1-tabpanel-1"
@@ -160,22 +154,22 @@ exports[`App snapshot dark theme 1`] = `
                 class="search-form"
               >
                 <div
-                  class="ce cf"
+                  class="ch ci"
                   data-baseweb="form-control-container"
                 >
                   <div
-                    class="bv bn cg ce ch ci cj ck cl cm cn co cp av cq bb bc b9 ba b5 cr cs ct cu cv cw cx cy cz d0"
+                    class="by bq cj ch ck cl cm cn co cp cq cr cs az ct bf bg bd be b9 cu cv cw cx cy cz d0 d1 d2 d3"
                     data-baseweb="input"
                   >
                     <div
-                      class="bn ce d1 av cq b5 cr cs ct bh cy"
+                      class="bq ch d4 az ct b9 cu cv cw bl d1"
                       data-baseweb="base-input"
                     >
                       <input
                         aria-invalid="false"
                         aria-required="false"
                         autocomplete="on"
-                        class="bv d2 ai ak aj al am ao an ap aq ce d3 d4 d5 d6 bd be d7 d0 b5 cr cs ct bh d8 d9"
+                        class="by d5 am ao an ap aq as ar at au ch d6 d7 d8 d9 bh bi da d3 b9 cu cv cw bl db dc"
                         id="search-nominatum"
                         inputmode="text"
                         name=""
@@ -185,7 +179,7 @@ exports[`App snapshot dark theme 1`] = `
                       />
                     </div>
                     <div
-                      class="bn ag ah da av cq b5 cr cs ct db dc bh cy"
+                      class="bq ak al dd az ct b9 cu cv cw de df bl d1"
                     >
                       🌐
                     </div>
@@ -267,8 +261,7 @@ exports[`App snapshot light theme 1`] = `
             style="color: black; background: white;"
           >
             <div
-              class="side-pane-header"
-              style="margin-top: 2px; background: rgb(238, 238, 238);"
+              class="dg af ag ah"
             >
               <h2>
                 Nothing to show
@@ -276,7 +269,7 @@ exports[`App snapshot light theme 1`] = `
             </div>
             <div>
               <button
-                class="ae af ag ah ai aj ak al am an ao ap aq ar as at au av aw ax ay dd de b1 b2 b3 b4 b5 b6 b7 b8 b9 ba bb bc bd be bf bg df dg dh di"
+                class="ai aj ak al am an ao ap aq ar as at au av aw ax ay az b0 b1 b2 dh di b5 b6 b7 b8 b9 ba bb bc bd be bf bg bh bi bj bk dj dg dk dl"
                 data-baseweb="button"
               >
                 Add data
@@ -297,18 +290,18 @@ exports[`App snapshot light theme 1`] = `
                   style="clear: both;"
                 />
                 <div
-                  class="bl"
+                  class="bo"
                 >
                   <div
                     aria-orientation="horizontal"
-                    class="bm bn bo af bp bq br bs bt bu"
+                    class="bp bq br aj bs bt bu bv bw bx"
                     data-baseweb="tab-list"
                     role="tablist"
                   >
                     <button
                       aria-controls="tabs-bui1-tabpanel-0"
                       aria-selected="true"
-                      class="ax at b1 b3 b2 b4 bv ae ag bw bx by bz ai aj ak al am an ao ap df dj au av aw aq c1 ay de dk c4 b5 b6 b7 b8 ah"
+                      class="b1 ax b5 b7 b6 b8 by ai ak bz c0 c1 c2 am an ao ap aq ar as at dj dm ay az b0 au c4 b2 di dn c7 b9 ba bb bc al"
                       data-baseweb="tab"
                       id="tabs-bui1-tab-0"
                       role="tab"
@@ -323,7 +316,7 @@ exports[`App snapshot light theme 1`] = `
                     <button
                       aria-controls="tabs-bui1-tabpanel-1"
                       aria-selected="false"
-                      class="ax at b1 b3 b2 b4 bv ae ag bw bx by bz ai aj ak al am an ao ap df dj au av aw aq c1 ay de dk c4 b5 b6 b7 b8 ah"
+                      class="b1 ax b5 b7 b6 b8 by ai ak bz c0 c1 c2 am an ao ap aq ar as at dj dm ay az b0 au c4 b2 di dn c7 b9 ba bb bc al"
                       data-baseweb="tab"
                       id="tabs-bui1-tab-1"
                       role="tab"
@@ -337,32 +330,27 @@ exports[`App snapshot light theme 1`] = `
                     </button>
                     <div
                       aria-hidden="true"
-                      class="dl c6 c7 c8 c9 ca cb cc"
+                      class="do c9 ca cb cc cd ce cf"
                       data-baseweb="tab-highlight"
                       role="presentation"
                     />
                   </div>
                   <div
                     aria-hidden="true"
-                    class="c5 bm ca"
+                    class="c8 bp cd"
                     data-baseweb="tab-border"
                     role="presentation"
                   />
                   <div
                     aria-labelledby="tabs-bui1-tab-0"
-                    class="cd aq"
+                    class="cg au"
                     data-baseweb="tab-panel"
                     id="tabs-bui1-tabpanel-0"
                     role="tabpanel"
-                  >
-                    <div
-                      class="side-panel-group"
-                      style="border-color: #eee;"
-                    />
-                  </div>
+                  />
                   <div
                     aria-labelledby="tabs-bui1-tab-1"
-                    class="cd aq"
+                    class="cg au"
                     data-baseweb="tab-panel"
                     hidden=""
                     id="tabs-bui1-tabpanel-1"
@@ -377,22 +365,22 @@ exports[`App snapshot light theme 1`] = `
                 class="search-form"
               >
                 <div
-                  class="ce cf"
+                  class="ch ci"
                   data-baseweb="form-control-container"
                 >
                   <div
-                    class="bv bn cg ce ch ci cj ck cl cm cn co cp av cq bb bc b9 ba b5 cr cs ct dm dn do dp dg cz d0"
+                    class="by bq cj ch ck cl cm cn co cp cq cr cs az ct bf bg bd be b9 cu cv cw dp dq dr ds dg d2 d3"
                     data-baseweb="input"
                   >
                     <div
-                      class="bn ce d1 av cq b5 cr cs ct df dg"
+                      class="bq ch d4 az ct b9 cu cv cw dj dg"
                       data-baseweb="base-input"
                     >
                       <input
                         aria-invalid="false"
                         aria-required="false"
                         autocomplete="on"
-                        class="bv d2 ai ak aj al am ao an ap aq ce d3 d4 d5 d6 bd be d7 d0 b5 cr cs ct df dq d9"
+                        class="by d5 am ao an ap aq as ar at au ch d6 d7 d8 d9 bh bi da d3 b9 cu cv cw dj dt dc"
                         id="search-nominatum"
                         inputmode="text"
                         name=""
@@ -402,7 +390,7 @@ exports[`App snapshot light theme 1`] = `
                       />
                     </div>
                     <div
-                      class="bn ag ah da av cq b5 cr cs ct db dc df dg"
+                      class="bq ak al dd az ct b9 cu cv cw de df dj dg"
                     >
                       🌐
                     </div>

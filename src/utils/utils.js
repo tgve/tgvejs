@@ -818,10 +818,17 @@ const getOSMTiles = (name) => {
 const setGeojsonProps = (geojson, data, geoColumn) => {
   // const r = randomToNumber(data && data.length);
   // either split or same values
-  const dataColumn = geoColumn.split(":")[0];
-  const geojsonColumn = geoColumn.split(":")[1] || geoColumn
+  let dataColumn = isString(geoColumn) && geoColumn.split(":")[0];
+  let geojsonColumn = isString(geoColumn)
+    && geoColumn.split(":")[1] || geoColumn
+  // TODO: find matching columns
+  // first matching column
+  // const firstMatching = Object.keys(geojson.features[0].properties).map(e =>
+  // Object.keys(data[0].properties.includes(e)))[0]
+  if(!isString(geoColumn)) return geojson
   const r = 0;
   const result = Object.assign({}, geojson)
+  // if no matching or mapped columns
   result.features = []
   if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
     !geojson.features || !geojson.features[r] ||
@@ -919,21 +926,33 @@ const uniqueValuePercentage = (array, test = 60) => {
 
 /**
  * Gently update browser history using a DeckGL/mapbox
- * viewport object.
+ * viewport object and an api object (both spread and merged).
  *
- * @param {*} viewport
+ * @param {*} urlVars
  * @returns
  */
-const updateHistory = (viewport) => {
-  if(!viewport) return;
-  const { latitude, longitude, zoom, bearing, pitch, altitude } = viewport;
-  // TODO only update those that are given
-  const search = `?lat=${latitude.toFixed(3)}` +
-    `&lng=${longitude.toFixed(3)}` +
-    `&zoom=${zoom.toFixed(2)}` +
-    `&bea=${bearing}` +
-    `&pit=${pitch}` +
-    `&alt=${altitude}`;
+const updateHistory = (urlVars) => {
+  if (!urlVars) return;
+  // construct the search string
+  let search = "?";
+  // TODO: could be exported from const etc
+  let apis = ["defaultURL", "geographyURL", "geographyColumn"]
+  Object.keys(urlVars).forEach(k => {
+    if (k === "latitude") {
+      search += `lat=${urlVars[k].toFixed(3)}&`
+    } else if (k === "longitude") {
+      search += `lng=${urlVars[k].toFixed(3)}&`
+    } else if (k === "zoom") {
+      search += `${k}=${urlVars[k].toFixed(2)}&`
+    } else if ((k === "bearing") || (k === "pitch") || (k === "altitude")) {
+      search += `${k.substring(0, 3)}=${urlVars[k]}&`
+    } else if (apis.includes(k) && isString(urlVars[k])) {
+      search += `${k}=${urlVars[k]}&`
+    }
+  })
+  // remove the trailing '&'
+  search = search.slice(0,-1);
+  // construct the entry for the history
   const entry = {
     pathname: history.location.pathname,
     search

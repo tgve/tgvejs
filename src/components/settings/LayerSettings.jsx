@@ -43,12 +43,20 @@ export default function LayerSettings(props) {
     <Accordion>
       <Panel
         title={"Settings: " + layerName}>
-        {
-          Object.keys(options).map(key => {
-            const v = options[key].type;
-            return isString(v) && getUIForKey(v, key);
-          })
-        }
+          {/* The div below is a solution as currently,
+          overriding panel seems to be not working
+          using Block in baseweb will be the same.
+          At least when sidebar needs to resize, we
+          could change the 220 below.
+          See DeckSidebar.css for the calcs  */}
+          <div style={{minWidth:220}}>
+          {
+            Object.keys(options).map(key => {
+              const v = options[key].type;
+              return isString(v) && getUIForKey(v, key);
+            })
+          }
+          </div>
       </Panel>
     </Accordion>
   )
