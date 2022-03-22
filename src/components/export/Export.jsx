@@ -73,15 +73,20 @@ export default function Export(props) {
  * @returns
  */
 const downloadButton = (data, name) => {
-  return (<StyledLink
-    download={name || "tgve-data.geojson"}
-    href={
-      "data:text/json;charset=utf-8," +
+  const anchorID = 'tgve-span-download'
+  return (<span
+    onClick={ () => {
+      const dataStr = "data:text/json;charset=utf-8," +
       encodeURIComponent(JSON.stringify({
         type: 'FeatureCollection',
         features: data
       }))
-    }>
+      const e = document.getElementById(anchorID);
+      e.setAttribute("href", dataStr);
+      e.setAttribute("download", name || "tgve-data.geojson");
+      e.click();
+    }}>
+      <a id={anchorID} style={{display:"none"}}></a>
     {<i
       style={{
         margin: 5,
@@ -89,7 +94,7 @@ const downloadButton = (data, name) => {
         fontSize: '1.5em',
       }}
       className={"fa fa-download"}></i>}
-  </StyledLink>)
+  </span>)
 }
 
 /**
