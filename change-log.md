@@ -2,6 +2,7 @@
 - `1.4.6`
   - Mainly tests. Snapshot testing both using React and adding puppeteer as the UI testing suite.
   - New API added `select`.
+  - Removed react-bootstrap dependency and use baseui
   - API variables related to data source are now preserved in the URL updates.
   - API variable names consistency.
   - Other improvements and bug fixes.
