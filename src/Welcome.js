@@ -31,7 +31,7 @@ import {
   colorRanges, generateDomain, setGeojsonProps,
   convertRange, getMin, getMax, isURL,
   generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
-  theme, updateHistory, screenshot
+  theme, updateHistory
 } from './utils/utils';
 import {
   LIGHT_SETTINGS, DECKGL_INIT, ICONLIMIT,
@@ -709,9 +709,7 @@ export default class Welcome extends React.Component {
         </MapGL>
         {!hideSidebar && <DeckSidebarContainer
           hideCharts={hideCharts}
-          screenshot={(options, callback) =>
-            screenshot(this.map, this.deck, options, callback)
-          }
+          map={this.map} deck={this.deck}
           hideChartGenerator={hideChartGenerator}
           leftSidebarContent={leftSidebarContent}
           dark={dark}
