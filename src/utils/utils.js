@@ -67,7 +67,7 @@ const fetchData = (url, callback) => {
     .then((response) => response.text())
     .then((response) => {
       // TODO: better check?
-      if(url.endsWith("csv")) {
+      if (url.endsWith("csv")) {
         csv2geojson.csv2geojson(response, (err, data) => {
           if (!err) {
             typeof (callback) === 'function'

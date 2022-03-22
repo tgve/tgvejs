@@ -2,7 +2,7 @@
 
 ## Preliminaries
 
-1. Clone the `tgvejs` and `app` repositories to your local machine.
+1. Clone the `tgvejs` and `app` repositories to your local machine. Install dependencies in both using `yarn`.
 2. In `tgvejs`:
  1. run `yarn link` to register local copy of `@tgve/tgvejs`. If you get a warning "There's already a package called '@tgve/tgvejs' registered", [you can probably ignore it](https://www.xolv.io/blog/dev-notes/dreaded-yarn-link-theres-already-a-package-called-x-registered/).
  2. Run at least one build to populate `dist` (see below).

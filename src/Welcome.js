@@ -545,7 +545,7 @@ export default class Welcome extends React.Component {
     const center = bboxLonLat ?
     [bboxLonLat.lon, bboxLonLat.lat] : centroid(data).geometry.coordinates;
 
-    this.map.fitBounds(bounds, {padding:'100px'})
+    !this.map || this.map.fitBounds(bounds, {padding:'100px'})
 
     const viewport = {
       ...this.state.viewport,
