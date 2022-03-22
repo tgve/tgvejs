@@ -10,7 +10,7 @@ import { isString } from '../../utils/JSUtils';
 
 export default function Export(props) {
   const [notification, setNotification] = useState(false)
-  const { notEmpty, screenshot } = props;
+  const { notEmpty, map, deck } = props;
 
   return (
     notEmpty ?
@@ -23,7 +23,7 @@ export default function Export(props) {
           <Block padding="5px"
             data-html2canvas-ignore="true">
             {iWithFaName("fa fa-times", close)}
-            <Preview screenshot={screenshot} />
+            <Preview map={map} deck={deck} />
             {notEmpty && downloadButton(props.data)}
             {iWithFaName("fa fa-copy", () => {
               window.location &&
@@ -59,7 +59,7 @@ export default function Export(props) {
             </Notification>
           }
         </i>
-      </StatefulPopover> : <Preview screenshot={screenshot} />
+      </StatefulPopover> : <Preview map={map} deck={deck} />
   )
 }
 

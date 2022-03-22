@@ -10,7 +10,8 @@ import {
   ModalFooter,
   ModalButton,
 } from 'baseui/modal';
-import { iWithFaName } from '../../utils/utils';
+
+import { iWithFaName, screenshot } from '../../utils/utils';
 
 export default function Preview(props) {
   const [isOpen, setOpen] = React.useState(false);
@@ -18,19 +19,18 @@ export default function Preview(props) {
   const [loading, setLoading] = React.useState(false);
   const [noSidebar, setNoSidebar] = React.useState(false);
 
-  const { screenshot } = props;
+  const { map, deck } = props;
 
   React.useEffect(() => {
     if (!isOpen) return
     setLoading(o => !o)
-    typeof screenshot === 'function'
-      && screenshot(!noSidebar, (canvas) => {
-        const url = canvas
-          .toDataURL("image/png")
-          .replace("image/png", "image/octet-stream");
-        setImage(url);
-        setLoading(o => !o)
-      })
+    screenshot(map, deck, !noSidebar, (canvas) => {
+      const url = canvas
+        .toDataURL("image/png")
+        .replace("image/png", "image/octet-stream");
+      setImage(url);
+      setLoading(o => !o)
+    })
   }, [isOpen, noSidebar])
 
   return (
