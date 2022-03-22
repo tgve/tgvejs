@@ -172,7 +172,7 @@ export default class DeckSidebar extends React.Component {
                 toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
                 component={<DataTable data={data} />} />}
             <Export data={data} notEmpty={notEmpty}
-              screenshot={this.props.screenshot} />
+              map={this.props.map} deck={this.props.deck} />
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
