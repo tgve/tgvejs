@@ -1,4 +1,18 @@
 ## Change log
+- `1.4.6`
+  - Mainly tests. Snapshot testing both using React and adding puppeteer as the UI testing suite.
+  - New API added `select`.
+  - Removed react-bootstrap dependency and use baseui
+  - API variables related to data source are now preserved in the URL updates.
+  - API variable names consistency.
+  - Other improvements and bug fixes.
+
+- `1.4.5`
+  - Data sources can now be `script` with `type="application/json`.
+  - Various fixes and improvements.
+  - Coloring for `linestring` geojson types.
+- `1.4.0`
+  - Stable release
 - `1.3.5-beta.0`
   - The TGVE now accepts the API variables as URL query parameters.
 - `1.3.4.beta.4`
