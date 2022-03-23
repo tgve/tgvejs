@@ -32,20 +32,20 @@ import {
   convertRange, getMin, getMax, isURL,
   generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
   theme, updateHistory, screenshot
-} from './utils/utils';
+} from '../utils/utils';
 import {
   LIGHT_SETTINGS, DECKGL_INIT, ICONLIMIT,
   BLANKSTYLE
-} from './Constants';
+} from '../Constants';
 import DeckSidebarContainer from
-  './components/decksidebar/DeckSidebarContainer';
+  '../components/decksidebar/DeckSidebarContainer';
 
-import './App.css';
-import Tooltip from './components/Tooltip';
-import { getPropertyValues, sfType } from './utils/geojsonutils';
+import '../App.css';
+import Tooltip from '../components/Tooltip';
+import { getPropertyValues, sfType } from '../utils/geojsonutils';
 import { throttle } from 'lodash';
-import { isObject } from './utils/JSUtils';
-import { CustomSlider } from './components/showcases/Widgets';
+import { isObject } from '../utils/JSUtils';
+import { CustomSlider } from '../components/showcases/Widgets';
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
