@@ -52,12 +52,6 @@
   justify-content: space-between;
 }
 
-.side-pane-header {
-  padding: 10px;
-  margin-bottom: 20px;
-  /* background-color: #29323C; */
-}
-
 .side-panel-body {
   flex: 1 1;
   display: flex;

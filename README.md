@@ -44,7 +44,7 @@ The following parameters can be passed to the TGVE app. Each parameter can be pa
 - viewport
 For example: `REACT_APP_GEOGRAPHY_URL` or when using TGVE as a component
 `<Tgve geographyURL="https://geo.com">`. For more on passing variables to a React app and
-the `REACT_APP_` prefix please see [React docs](https://create-react-app.dev/docs/adding-custom-environment-variables). 
+the `REACT_APP_` prefix please see [React docs](https://create-react-app.dev/docs/adding-custom-environment-variables).
 
 They can also be passed to the TGVE as URL query parameters. For instance
 `localhost:3000?dark=false`.
@@ -71,6 +71,8 @@ They can also be passed to the TGVE as URL query parameters. For instance
 -   `column`: if provided, and if the geometry is of particular type
     which would need a column, it would be used. Defaults on to the
     second column as often first column is an ID of sort.
+
+-   `select`: if provided, either as a string or a JSON object, it will be passed to the `tgvejs` subsetting workflow. For now, only when the application is started. The format could be one of `select={"key1": ["val1", "val2"]}` or `select=key1:val1,val2:key2:val3,val4`. For example: `https://tgve.github.io/app/?select=ranking:45` in a dataset with a column named `ranking` and its value being `45`.
 
 -   `layerName`: if provided, and if the given name is in the list of
     DeckGL layers supported by TGVE, will be passed to generate the

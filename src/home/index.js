@@ -88,7 +88,7 @@ export default class Welcome extends React.Component {
       colorName: 'default',
       iconLimit: ICONLIMIT,
       legend: false,
-      multiVarSelect: {},
+      multiVarSelect: props.select || {},
       width: window.innerWidth, height: window.innerHeight,
       tooltipColumns: {column1: "accident_severity" , column2: "date"},
       geographyURL: props.geographyURL,
@@ -446,12 +446,11 @@ export default class Welcome extends React.Component {
     )
 
     if (geomType === 'linestring') {
-      // layerStyle = "line"
       options.getColor = fill;
       options.getPath = d => d.geometry.coordinates
       options.onClick = (info) => {
         if (info && info.hasOwnProperty('coordinate')) {
-          if (['path', 'arc', 'line'].includes(layerStyle) &&
+          if (['path', 'arc', 'line'].includes(layerName) &&
             info.object.geometry.coordinates) {
             this._generateLayer({
               filter: {
@@ -543,7 +542,7 @@ export default class Welcome extends React.Component {
     const center = bboxLonLat ?
     [bboxLonLat.lon, bboxLonLat.lat] : centroid(data).geometry.coordinates;
 
-    this.map.fitBounds(bounds, {padding:'100px'})
+    !this.map || this.map.fitBounds(bounds, {padding:'100px'})
 
     const viewport = {
       ...this.state.viewport,
@@ -585,7 +584,13 @@ export default class Welcome extends React.Component {
     //if we do history.replace/push 100 times in less than 30 secs
     // browser will crash
     if (new Date() - lastViewPortChange > 1000) {
-      updateHistory(viewport);
+      updateHistory({...viewport,
+        ...{
+          defaultURL: this.props.defaultURL,
+          geographyURL: this.props.geographyURL,
+          geographyColumn: this.props.geographyColumn
+        }
+      });
       this.setState({ lastViewPortChange: new Date() })
     }
     const bounds = this.map && this.map.getBounds()
@@ -675,9 +680,7 @@ export default class Welcome extends React.Component {
         </MapGL>
         {!hideSidebar && <DeckSidebarContainer
           hideCharts={hideCharts}
-          screenshot={(options, callback) =>
-            screenshot(this.map, this.deck, options, callback)
-          }
+          map={this.map} deck={this.deck}
           hideChartGenerator={hideChartGenerator}
           leftSidebarContent={leftSidebarContent}
           dark={dark}
@@ -771,6 +774,9 @@ export default class Welcome extends React.Component {
           // TODO: generalise datasetName
           datasetName={defaultURL}
           bottomPanel={bottomPanel}
+          // only during first load
+          // DeckSidebar ignores this prop later
+          multiVarSelect={this.state.multiVarSelect}
         />}
         {
           showLegend &&
