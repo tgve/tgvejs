@@ -3,6 +3,7 @@ import { scaleSequential } from 'd3-scale';
 import { Table } from 'baseui/table';
 
 import { getPropertyValues, propertyCountByProperty } from '../../utils/geojsonutils';
+import { humanize } from '../../utils/utils';
 import { TURQUOISE_RANGE } from '../../Constants';
 import { isObject } from '../../utils/JSUtils';
 import Plot from '../showcases/GenericPlotly';
