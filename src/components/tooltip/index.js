@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'baseui/button';
 
-import { generateTooltip } from '../utils/utils';
+import generateTooltip from './utils';
 
 const BOTTOM_OFFSET= 50;
 const RIGHT_OFFSET = 50;

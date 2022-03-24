@@ -41,7 +41,7 @@ import DeckSidebarContainer from
   './components/decksidebar/DeckSidebarContainer';
 
 import './App.css';
-import Tooltip from './components/Tooltip';
+import Tooltip from './components/tooltip';
 import { getPropertyValues, sfType } from './utils/geojsonutils';
 import { throttle } from 'lodash';
 import { isObject } from './utils/JSUtils';
