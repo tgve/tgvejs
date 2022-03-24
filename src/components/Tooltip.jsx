@@ -1,5 +1,12 @@
 import React from 'react';
+import { Button } from 'baseui/button';
+
 import { generateTooltip } from '../utils/utils';
+
+const BOTTOM_OFFSET= 50;
+const RIGHT_OFFSET = 50;
+const HEIGHT = 400;
+const WIDTH = 300;
 
 export default class Tooltip extends React.Component {
 
@@ -18,6 +25,27 @@ export default class Tooltip extends React.Component {
   };
 
   render() {
+    const { onCloseCallback } = this.props;
+    if(this.props.popup) {
+      return(
+        <div
+        className="side-panel" style={{
+          bottom: BOTTOM_OFFSET,
+          right: RIGHT_OFFSET,
+          height: HEIGHT,
+          width: WIDTH,
+          position: "absolute",
+          backgroundColor: "#000",
+          color: "#fff"
+        }}>
+        <div>
+          {generateTooltip(this.props)}
+        </div>
+        <Button onClick={() => typeof(onCloseCallback) === 'function'
+          && onCloseCallback()} >X</Button>
+      </div >
+      )
+    }
     return generateTooltip(this.props);
   }
 }

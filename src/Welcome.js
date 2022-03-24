@@ -42,7 +42,6 @@ import DeckSidebarContainer from
 
 import './App.css';
 import Tooltip from './components/Tooltip';
-import Popup from './components/Popup';
 import { getPropertyValues, sfType } from './utils/geojsonutils';
 import { throttle } from 'lodash';
 import { isObject } from './utils/JSUtils';
@@ -594,10 +593,10 @@ export default class Welcome extends React.Component {
       this.setState({ popup: null })
       return;
     }
-    console.log("in _renderPopup")
     this.setState({
       popup:
-        <Popup
+        <Tooltip
+          popup={true}
           onCloseCallback={()=> this.setState({popup: null})}
           {...this.state.tooltipColumns}
           isMobile={isMobile()}
@@ -701,7 +700,6 @@ export default class Welcome extends React.Component {
                 this.setState({ coords: null })
                 this._generateLayer()
               }
-              console.log("in Welcome's onClick, e is ",e,"object is ",e.object);
               this._renderPopup(e.object);
             }}
           >
