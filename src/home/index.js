@@ -12,9 +12,6 @@
  * and
  * DeckSidebarContainer which holds DeckSidebar object itself.
  *
- * Main functions:
- * _generateLayer which is the main/factory of filtering state
- * of the map area of the application.
  *
  */
 import React from 'react';
@@ -23,29 +20,23 @@ import MapGL, { NavigationControl, FlyToInterpolator,
   ScaleControl } from 'react-map-gl';
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
-import { difference } from 'underscore';
 
 import {
-  fetchData, generateDeckLayer, suggestDeckLayer,
-  getViewportParams, getBbx, isMobile, colorScale, getOSMTiles,
-  colorRanges, generateDomain, setGeojsonProps,
-  convertRange, getMin, getMax, isURL,
-  generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
-  theme, updateHistory
-} from './utils/utils';
+  fetchData,
+  getViewportParams, getBbx, isMobile, getOSMTiles,
+  isURL, theme, updateHistory,
+} from '../utils/utils';
 import {
-  LIGHT_SETTINGS, DECKGL_INIT, ICONLIMIT,
-  BLANKSTYLE
-} from './Constants';
+  DECKGL_INIT, ICONLIMIT,
+} from '../Constants';
 import DeckSidebarContainer from
-  './components/decksidebar/DeckSidebarContainer';
+  '../components/decksidebar/DeckSidebarContainer';
 
-import './App.css';
-import Tooltip from './components/Tooltip';
-import { getPropertyValues, sfType } from './utils/geojsonutils';
+import '../App.css';
+import Tooltip from '../components/Tooltip';
 import { throttle } from 'lodash';
-import { isObject } from './utils/JSUtils';
-import { CustomSlider } from './components/showcases/Widgets';
+import { isObject } from '../utils/JSUtils';
+import { generateLayer } from './util';
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -97,8 +88,7 @@ export default class Welcome extends React.Component {
       layerName: props.layerName,
       bottomPanel: false,
     }
-
-    this._generateLayer = this._generateLayer.bind(this)
+    this._callGenerateLayer = this._callGenerateLayer.bind(this);
     this._renderTooltip = this._renderTooltip.bind(this);
     this._fetchAndUpdateState = this._fetchAndUpdateState.bind(this);
     this._fitViewport = this._fitViewport.bind(this);
@@ -146,14 +136,13 @@ export default class Welcome extends React.Component {
         data: data,
       }, () => {
         this._fitViewport();
-        this._generateLayer();
+        this._callGenerateLayer()
       });
 
     } else {
       if (defaultURL) {
         this._fetchAndUpdateState(defaultURL);
       } else {
-        // this._generateLayer();
         this.setState({ loading: false });
       }
     }
@@ -225,7 +214,7 @@ export default class Welcome extends React.Component {
         alert: customError || null
       }, () => {
         this._fitViewport(geojson);
-        this._generateLayer();
+        this._callGenerateLayer()
       });
     } else {
       this.setState({
@@ -252,7 +241,7 @@ export default class Welcome extends React.Component {
         data: data
       });
       this._fitViewport(data);
-      this._generateLayer({customError: customError || null});
+      this._callGenerateLayer({customError: customError || null})
     } else {
       this.setState({
         loading: false,
@@ -262,276 +251,11 @@ export default class Welcome extends React.Component {
     }
   }
 
-  /**
-   * The main function generating DeckGL layer and customizing mapbox styles.
-   * The reason why state is not updated in <DeckSidebarContainer />
-   * is to optimise the number of setState or equivalent React hooks.
-   *
-   * @param {*} values includes:
-   * {Object} filter multivariate filter of properties
-   * {String} cn short for colorName passed from callbacks
-   * {Object} layerOptions to override layer properties
-   * {Object} customError useful to show an alert when layer
-   * is generated
-   */
-  _generateLayer(values = {}) {
-    const { layerOptions = {}, filter, cn, customError } = values;
-
-    if (filter && filter.what === 'mapstyle') {
-      const newStyle = "mapbox://styles/mapbox/" + filter.selected + "-v9";
-      this.setState({
-        mapStyle: filter.what === 'mapstyle' ? filter.selected === "No map" ?
-          BLANKSTYLE : !MAPBOX_ACCESS_TOKEN ? getOSMTiles(filter.selected) :
-          newStyle : this.state.mapStyle,
-      })
-      return;
-    }
-    const { colorName, iconLimit, geography, geographyColumn,
-      multiVarSelect } = this.state;
-
-    let data = (this.props.data && this.props.data.features)
-    || (this.state.data && this.state.data.features)
-    // data or geography and add column data
-    if (!data) return;
-
-    let column = (filter && filter.what === 'column' && filter.selected) ||
-      this.state.column;
-    // in case there is no or one column
-    const columnNameOrIndex = column || 0;
-
-    if (filter && filter.what === "%") {
-      data = data.slice(0, filter.selected / 100 * data.length)
-    }
-    // to optimize the search keep state as the source of truth
-    if (this.state.coords || (filter && filter.what === 'column')) {
-      data = this.state.filtered;
-    }
-
-    //if resetting a value
-    const filterValues = (filter && filter.what === 'multi') ||
-      Object.keys(multiVarSelect).length;
-    const filterCoords = filter && filter.what === 'coords';
-    const selected = (filter && filter.what === 'multi' && filter.selected)
-      || multiVarSelect;
-    if (filterValues || filterCoords) {
-      /**
-       * The algorithm is as follows
-       *
-       * 1. Loop through the geojson featuers only once
-       * 2. Loop through the selected column values only once
-       * 3. Does the set in (2) include property valu from (1)
-       *
-       * e.g:
-       * 1. {features:[{properties:{a:1, b:2}}]}
-       * 2. selected: {a: Set([1])}
-       * 3. selected.a.includes(features[0].properties.a)?
-       *
-       * That means the maximum number of loops will be
-       * n columns
-       */
-      data = data.filter(
-        d => {
-          if (filterValues) {
-            // go through each selection
-            // selected.var > Set()
-            for (let each of Object.keys(selected)) {
-              const nextValue = d.properties[each] + ""
-              // each from selected must be in d.properties
-              // *****************************
-              // compare string to string
-              // *****************************
-              if (!selected[each].has(nextValue)) {
-                return false
-              }
-            }
-          }
-          if (filterCoords) {
-            // coords in
-            if (difference(filter.selected || this.state.coords,
-              d.geometry.coordinates.flat()).length !== 0) {
-              return false;
-            }
-          }
-          return (true)
-        }
-      )
-      // critical check
-      if (!data || !data.length) {
-        this.setState({
-          alert: { content: 'Filtering returns no results' }
-        })
-        return
-      };
-    }
-    const geomType = sfType(
-      geography ? geography.features[0] : data[0]
-    ).toLowerCase();
-    // needs to happen as soon as filtering is done
-    // assemble geometry from this.state.geometry if so
-    // is there a geometry provided?
-    if (geography) {
-      // is geometry equal to or bigger than data provided?
-      if (data.length > geography.features.length) {
-        // for now just be aware
-        //TODO: alert or just stop it?
-      }
-      data = setGeojsonProps(geography, data, geographyColumn)
-      // critical check
-      if (!data || !data.features) {
-        this.setState({
-          alert: { content: 'Is there a matching geography column?' }
-        })
-        return
-      };
-      // it was data.features when this function started
-      data = data.features || data;
-    }
-    let layerName = (filter && filter.what ===
-      'layerName' && filter.selected) || this.state.layerName ||
-      suggestDeckLayer(geography ? geography.features : data);
-    // TODO: incorporate this into suggestDeckLayer
-    // if (!new RegExp("point", "i").test(geomType)) layerName = "geojson"
-    const switchToIcon = data.length < iconLimit && !layerName &&
-    (!filter || filter.what !== 'layerName') && geomType === "point";
-    if (switchToIcon) layerName = 'icon';
-
-    const options = Object.assign({
-      ...this.state.layerOptions,
-      lightSettings: LIGHT_SETTINGS,
-      colorRange: colorRanges(cn || colorName),
-      getColor: getColorArray(cn || colorName)
-    }, layerOptions);
-    // generate a domain
-    const domain = generateDomain(
-      data,
-      columnNameOrIndex === 0 ?
-      // TODO better check than just data[0]
-      Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex);
-
-    if (layerName === 'heatmap') {
-      options.getPosition = d => d.geometry.coordinates
-      // options.getWeight = d => d.properties[columnNameOrIndex]
-      options.updateTriggers = {
-        // even if nulls
-        getWeight: typeof(options.getWeight) === 'function' &&
-        data.map(d => options.getWeight(d))
-      }
-    }
-    // TODO
-    if (layerName === 'scatter') {
-      if (+(data[0] && data[0].properties &&
-        data[0].properties[columnNameOrIndex])) {
-        options.getRadius = d => {
-          return this._newRange(data, d, columnNameOrIndex,
-            getMin(domain), getMax(domain));
-        }
-      }
-    }
-    let newLegend = this.state.legend;
-
-    const getValue = (d) => {
-      // columnNameOrIndex must be init with 0
-      // TODO write tests for no props at all
-      if(+columnNameOrIndex || +columnNameOrIndex === 0) {
-        // if not checking against 0 then, we will have 0 passed to properties
-        // which could return undefined like obj = {foo:'bar', baz: 'boo'}; obj[0]
-        return(d.properties[Object.keys(d.properties)[columnNameOrIndex]])
-      } else {
-        return(d.properties[columnNameOrIndex])
-      }
-    }
-    const fill =  (d) => colorScale(
-      +getValue(d) ? +getValue(d) : getValue(d),
-      domain, 180, cn || this.state.colorName
+  _callGenerateLayer(values = {}) {
+    const updateState = generateLayer(
+      values, this.props, this.state, this._renderTooltip
     )
-
-    if (geomType === 'linestring') {
-      options.getColor = fill;
-      options.getPath = d => d.geometry.coordinates
-      options.onClick = (info) => {
-        if (info && info.hasOwnProperty('coordinate')) {
-          if (['path', 'arc', 'line'].includes(layerName) &&
-            info.object.geometry.coordinates) {
-            this._generateLayer({
-              filter: {
-                what: 'coords',
-                selected: info.object.geometry.coordinates[0]
-              }
-            })
-          }
-        }
-      }
-      if (+(data[0] && data[0].properties &&
-        data[0].properties[columnNameOrIndex])) {
-        options.getWidth = d => {
-          return this._newRange(data, d, columnNameOrIndex,
-            getMin(domain), getMax(domain));
-        }; // avoid id
-      }
-      options.updateTriggers = {
-        getColor: data.map((d) => fill(d)),
-      }
-    }
-
-    if (geomType === "polygon" || geomType === "multipolygon" ||
-    layerName === 'geojson') {
-
-      options.getFillColor = fill;
-
-      options.updateTriggers = {
-        getFillColor: data.map((d) => fill(d))
-      }
-    }
-
-    if (layerName === 'pointcloud' || layerName === 'barvis') {
-      options.getColor = fill;
-      options.updateTriggers = {
-        getColor: data.map((d) => fill(d)),
-        getPosition: [data.length]
-      }
-    }
-
-    // attempt legend
-    const columnName = +columnNameOrIndex || +columnNameOrIndex === 0 ?
-      Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex
-    newLegend = generateLegend(
-      {
-        domain,
-        title: humanize(columnName),
-        interpolate: colorRangeNamesToInterpolate(
-          cn || this.state.colorName
-        )
-      }
-    )
-
-    const alayer = generateDeckLayer(
-      layerName, data, this._renderTooltip, options
-    )
-
-    this.setState({
-      alert: switchToIcon ?
-        { content: 'Switched to icon mode. ' } : customError || null,
-      loading: false,
-      layerName,
-      geomType,
-      tooltip: "",
-      filtered: data,
-      layers: [alayer],
-      layerOptions: options,
-      // do not save if not given etc
-      multiVarSelect: filter && filter.what === "multi" ?
-        filter.selected : multiVarSelect,
-      road_type: filter && filter.what === 'road_type' ? filter.selected :
-        this.state.road_type,
-      colorName: cn || colorName,
-      column, // all checked
-      coords: filter && filter.what === 'coords' ? filter.selected :
-        this.state.coords,
-      legend: newLegend,
-      bottomPanel: <CustomSlider
-        data={this.state.data.features}
-        dates={getPropertyValues(this.state.data, "alt")}/>
-    })
+    updateState && this.setState({...updateState})
   }
 
   _fitViewport(newData, bboxLonLat) {
@@ -604,7 +328,7 @@ export default class Welcome extends React.Component {
             this.setState({
               data: data.features,
             })
-            this._generateLayer()
+            this._callGenerateLayer()
           } else {
             //network error?
           }
@@ -671,7 +395,7 @@ export default class Welcome extends React.Component {
             onClick={(e) => {
               if (!e.layer && coords) {
                 this.setState({ coords: null })
-                this._generateLayer()
+                this._callGenerateLayer()
               }
             }}
           >
@@ -690,9 +414,9 @@ export default class Welcome extends React.Component {
           alert={alert}
           unfilteredData={data && data.features}
           data={filtered}
-          colourCallback={(colorName) =>
-            this._generateLayer({ cn: colorName })
-          }
+          colourCallback={(colorName) => {
+            this._callGenerateLayer({ cn: colorName })
+          }}
           urlCallback={(url_returned, geojson_returned) => {
             this.setState({
               /**
@@ -701,7 +425,7 @@ export default class Welcome extends React.Component {
                * 1. if a geojson has been returned, then
                * update state fully and let
                * `this._fitViewport(geojson_returned)` &&
-               * `this._generateLayer` take care of it.
+               * `generateLayer` take care of it.
                *
                * 2. if a URL has been returned,
                *
@@ -728,7 +452,7 @@ export default class Welcome extends React.Component {
                   data: geojson_returned
                 })
                 this._fitViewport(geojson_returned)
-                this._generateLayer()
+                this._callGenerateLayer()
               } catch (error) {
                 // load up default
                 this._fetchAndUpdateState(undefined,
@@ -758,9 +482,9 @@ export default class Welcome extends React.Component {
           }}
           column={this.state.column}
           onSelectCallback={(selected) =>
-            this._generateLayer({ filter: selected })}
+            this._callGenerateLayer({ filter: selected })}
           onLayerOptionsCallback={(layerOptions) =>
-            this._generateLayer({ layerOptions })}
+            this._callGenerateLayer({ layerOptions })}
           toggleSubsetBoundsChange={(value) => {
             this.setState({
               loading: true,
@@ -798,16 +522,4 @@ export default class Welcome extends React.Component {
       height: window.innerHeight
     });
   };
-
-  _newRange (data, d, columnNameOrIndex, min, max) {
-    let newMax = 10, newMin = 0.1;
-    if (data.length > 100000) {
-      newMax = 0.5; newMin = 0.005;
-    }
-    const r = convertRange(
-      d.properties[columnNameOrIndex], {
-      oldMin: min, oldMax: max, newMax: newMax, newMin: newMin
-    });
-    return r;
-  }
 }
