@@ -8,13 +8,6 @@ const HEIGHT = 400;
 const WIDTH = 300;
 
 export default class Popup extends React.Component {
-  constructor(props) {
-    super();
-    this.state = {
-      isMobile: props.isMobile,
-    };
-  }
-
   componentDidMount() {
     window.addEventListener('resize', this._handleWindowSizeChange.bind(this));
   }
@@ -44,9 +37,9 @@ export default class Popup extends React.Component {
           color: "#fff"
         }}>
         <div>
-          {generateTooltip(this.props, this.state)}
+          {generateTooltip(this.props)}
         </div>
-        <Button onClick={() => typeof(onCloseCallback) === 'function' 
+        <Button onClick={() => typeof(onCloseCallback) === 'function'
           && onCloseCallback()} >X</Button>
       </div >
     return (popup)

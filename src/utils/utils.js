@@ -1075,12 +1075,12 @@ const listPropsAndValues = (selectedObject, all = false, n = 6) => {
     } data={DATA} />
 }
 
-const generateTooltip=(props, state) => {
+const generateTooltip=(props) => {
   const WIDTH = 220;
   const BAR_HEIGHT = 80;
   const { topx, topy, selectedObject,
     column1 = "accident_severity", column2 = "date" } = props;
-  const isMobile = isObject(state) && state.isMobile;
+  const isMobile = isObject(props) && props.isMobile;
   //const isMobile = false;
   if (!selectedObject) return null;
 

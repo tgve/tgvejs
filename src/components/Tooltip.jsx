@@ -2,12 +2,6 @@ import React from 'react';
 import { generateTooltip } from '../utils/utils';
 
 export default class Tooltip extends React.Component {
-  constructor(props) {
-    super();
-    this.state = {
-      isMobile: props.isMobile,
-    };
-  }
 
   componentDidMount() {
     window.addEventListener('resize', this._handleWindowSizeChange.bind(this));
@@ -24,6 +18,6 @@ export default class Tooltip extends React.Component {
   };
 
   render() {
-    return generateTooltip(this.props, this.state);
+    return generateTooltip(this.props);
   }
 }
