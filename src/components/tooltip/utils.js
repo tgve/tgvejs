@@ -80,7 +80,7 @@ const generateTooltip =(props) => {
       <div>
         {
           // Simple logic, if points and less two points or less,
-          // or not poingts, hard to expect React-vis generating plot.
+          // or not points, hard to expect React-vis generating plot.
           // so list the values of the non-point or list both points.
           !cluster && (type_feature || selectedObject.points.length <= 2) ?
           listPropsAndValues(selectedObject) :
@@ -104,11 +104,10 @@ const generateTooltip =(props) => {
    * 1. collections of points with `.points` property
    * 2. properties of `.type === 'Feature'`.
    */
-   const listPropsAndValues = (selectedObject, all = false, n = 6) => {
-    if(!selectedObject.properties ||
-      (selectedObject.points && (!selectedObject.points ||
-       !selectedObject.points[0].properties))) return null
-
+const listPropsAndValues = (selectedObject, all = false, n = 6) => {
+    if(!selectedObject.properties &&
+      (!selectedObject.points || (selectedObject.points &&
+       !selectedObject.points[0].source.properties))) return null
     let DATA = []
     const props = selectedObject.properties;
     if (props) {
@@ -119,16 +118,16 @@ const generateTooltip =(props) => {
           return ([humanize(p), props[p]])
         })
     } else { // two points passed go through first one
-      const keys = Object.keys(selectedObject.points[0].properties);
+      const keys = Object.keys(selectedObject.points[0].source.properties);
       DATA = keys
         .slice(0, all ? keys.length : n) // miss accident_index
         .map(p => {
           let points = [
             humanize(p),
-            selectedObject.points[0].properties[p],
+            selectedObject.points[0].source.properties[p],
           ]
           if (selectedObject.points[1]) {
-            points.push(selectedObject.points[1].properties[p])
+            points.push(selectedObject.points[1].source.properties[p])
           }
           return (points)
         })
