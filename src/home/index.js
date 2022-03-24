@@ -20,6 +20,7 @@ import MapGL, { NavigationControl, FlyToInterpolator,
   ScaleControl } from 'react-map-gl';
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
+import { throttle } from 'lodash';
 
 import {
   fetchData,
@@ -32,10 +33,8 @@ import {
 import DeckSidebarContainer from
   '../components/decksidebar/DeckSidebarContainer';
 
-import './App.css';
-import Tooltip from './components/tooltip';
-import { getPropertyValues, sfType } from './utils/geojsonutils';
-import { throttle } from 'lodash';
+import '../App.css';
+import Tooltip from '../components/tooltip';
 import { isObject } from '../utils/JSUtils';
 import { generateLayer } from './util';
 
