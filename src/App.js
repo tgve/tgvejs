@@ -7,7 +7,7 @@ import { Provider as StyletronProvider } from 'styletron-react';
 import { BaseProvider, DarkTheme, LightTheme } from 'baseui';
 import { Client as Styletron } from 'styletron-engine-atomic';
 
-import Welcome from './Welcome';
+import Home from './home';
 
 import './App.css';
 import { params } from './utils/api';
@@ -24,7 +24,7 @@ export default function (props) {
       <StyletronProvider value={engine}>
         <BaseProvider
           theme={apis.dark === false ? LightTheme : DarkTheme}>
-          <Welcome
+          <Home
             {...apis}
           />
         </BaseProvider>
