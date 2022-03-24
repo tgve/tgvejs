@@ -1,7 +1,7 @@
 {
   "name": "@tgve/tgvejs",
   "description": "Turing Geovisualization Engine (TGVE) front-end npm package.",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "main": "dist/index.js",
   "author": "Layik Hama (https://github.com/layik)",
   "contributors": [
@@ -55,8 +55,8 @@
     "dist": "node_modules/.bin/babel src/ --out-dir dist --copy-files --no-copy-ignored",
     "bundle": "npx rollup -c 'rollup.config.js'",
     "watch": "watch --wait=1 'yarn run dist' ./src",
-    "pub-dry": "yarn run dist && yarn --dry-run publish",
-    "pub": "yarn run dist && yarn publish"
+    "pub-dry": "rm -rf dist && yarn run dist && npm --dry-run publish",
+    "pub": "rm -rf dist && yarn run dist && yarn publish"
   },
   "eslintConfig": {
     "extends": "react-app"
