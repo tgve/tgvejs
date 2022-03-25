@@ -21,7 +21,6 @@ import IconClusterLayer from '../icon-cluster-layer';
 import atlas from '../img/location-icon-atlas.png';
 import { sfType } from './geojsonutils';
 import { getLayerProps } from '../components/settings/settingsUtils';
-import { Table } from 'baseui/table';
 import history from '../history';
 
 const { DateTime } = require("luxon");
