@@ -67,12 +67,16 @@ const generateTooltip =(props) => {
     topy + (WIDTH + BAR_HEIGHT) > y ? topy - WIDTH : topy;
   const n_left = isMobile ? 10 :
     topx + WIDTH > w ? topx - WIDTH : topx;
+  const style = {
+    top: topy + (WIDTH + BAR_HEIGHT) > y ? n_topy : topy,
+    left: topx + WIDTH > w ? n_left : topx
+  }
+  if(props.popup) {
+    style.position = 'inherit'
+  }
   const tooltip =
     <div
-      className="xyz" style={{
-        top: topy + (WIDTH + BAR_HEIGHT) > y ? n_topy : topy,
-        left: topx + WIDTH > w ? n_left : topx
-      }}>
+      className="xyz" style={style}>
       <div>
         <b>Total: {cluster ? selectedObject.point_count :
           type_feature ? 1 : selectedObject.points.length}</b>
