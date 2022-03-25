@@ -17,7 +17,7 @@ export default function Export(props) {
       <StatefulPopover
         placement="top"
         dismissOnEsc={false}
-        dismissOnClickOutside={false}
+        dismissOnClickOutside={true}
         accessibilityType={'tooltip'}
         content={({ close }) => (
           <Block padding="5px"
