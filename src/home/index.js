@@ -16,10 +16,13 @@
  */
 import React from 'react';
 import DeckGL from 'deck.gl';
-import MapGL, { NavigationControl, FlyToInterpolator,
-  ScaleControl } from 'react-map-gl';
+import MapGL, {
+  NavigationControl, FlyToInterpolator,
+  ScaleControl
+} from 'react-map-gl';
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
+import { throttle } from 'lodash';
 
 import {
   fetchData,
@@ -33,8 +36,7 @@ import DeckSidebarContainer from
   '../components/decksidebar/DeckSidebarContainer';
 
 import '../App.css';
-import Tooltip from '../components/Tooltip';
-import { throttle } from 'lodash';
+import Tooltip from '../components/tooltip';
 import { isObject } from '../utils/JSUtils';
 import { generateLayer } from './util';
 
@@ -81,7 +83,7 @@ export default class Welcome extends React.Component {
       legend: false,
       multiVarSelect: props.select || {},
       width: window.innerWidth, height: window.innerHeight,
-      tooltipColumns: {column1: "accident_severity" , column2: "date"},
+      tooltipColumns: { column1: "accident_severity", column2: "date" },
       geographyURL: props.geographyURL,
       geographyColumn: props.geographyColumn,
       column: props.column,
@@ -105,10 +107,10 @@ export default class Welcome extends React.Component {
     // props change
     const { data, defaultURL, geographyURL,
       geographyColumn } = nextProps;
-    if(JSON.stringify(data) !== JSON.stringify(this.props.data) ||
+    if (JSON.stringify(data) !== JSON.stringify(this.props.data) ||
       defaultURL !== this.props.defaultURL ||
       geographyURL !== this.props.geographyURL ||
-      geographyColumn !== this.props.geographyColumn ) {
+      geographyColumn !== this.props.geographyColumn) {
       this._initDataState()
       return true
     }
@@ -160,15 +162,15 @@ export default class Welcome extends React.Component {
    */
   _fetchAndUpdateState(aURL, customError) {
     if (aURL && !isURL(aURL)) {
-      if(this.state.loading) {
-        this.setState({loading: false})
+      if (this.state.loading) {
+        this.setState({ loading: false })
       }
       return
     };
     if (customError && typeof (customError) !== 'object') return;
     fetchData(aURL, (data, error) => {
       const { geographyURL } = this.props;
-      if(isURL(geographyURL)) {
+      if (isURL(geographyURL)) {
         // it will always show geojson empty as column is not set
         fetchData(geographyURL, (geojson, geoErr) => {
           this._updateStateAndLayers(geoErr, geojson, data, customError, geographyURL);
@@ -241,7 +243,7 @@ export default class Welcome extends React.Component {
         data: data
       });
       this._fitViewport(data);
-      this._callGenerateLayer({customError: customError || null})
+      this._callGenerateLayer({ customError: customError || null })
     } else {
       this.setState({
         loading: false,
@@ -255,7 +257,7 @@ export default class Welcome extends React.Component {
     const updateState = generateLayer(
       values, this.props, this.state, this._renderTooltip
     )
-    updateState && this.setState({...updateState})
+    updateState && this.setState({ ...updateState })
   }
 
   _fitViewport(newData, bboxLonLat) {
@@ -264,9 +266,9 @@ export default class Welcome extends React.Component {
     const bounds = bboxLonLat ?
       bboxLonLat.bbox : bbox(data)
     const center = bboxLonLat ?
-    [bboxLonLat.lon, bboxLonLat.lat] : centroid(data).geometry.coordinates;
+      [bboxLonLat.lon, bboxLonLat.lat] : centroid(data).geometry.coordinates;
 
-    !this.map || this.map.fitBounds(bounds, {padding:'100px'})
+    !this.map || this.map.fitBounds(bounds, { padding: '100px' })
 
     const viewport = {
       ...this.state.viewport,
@@ -282,24 +284,37 @@ export default class Welcome extends React.Component {
   /**
    * Currently the tooltip focuses on aggregated layer (grid).
    *
-   * @param {Object} params passed from DeckGL layer.
+   * @param {Object} info passed from DeckGL layer.
+   * @param {Object} event passed from DeckGL
+   * @param {Boolean} click boolean to check if call is onClick
    */
-  _renderTooltip(params) {
-    const { x, y, object } = params;
+  _renderTooltip(info, event, click) {
+    const { x, y, object } = info;
     const hoveredObject = object;
-    // return
+    // return yes more verbose code
+    // for efficiency
     if (!hoveredObject) {
-      this.setState({ tooltip: "" })
+      if (!click) {
+        this.setState({ tooltip: null })
+      } else {
+        this.setState({ popup: null })
+      }
       return;
     }
-    this.setState({
-      tooltip:
-        // react did not like x and y props.
-        <Tooltip
-          {...this.state.tooltipColumns}
-          isMobile={isMobile()}
-          topx={x} topy={y} hoveredObject={hoveredObject} />
-    })
+    const tooltip = <Tooltip
+      popup={click === true}
+      onCloseCallback={() => this.setState({ popup: null })}
+      {...this.state.tooltipColumns}
+      isMobile={isMobile()}
+      topx={x} topy={y}
+      selectedObject={hoveredObject} />
+    if (!click) {
+      this.setState({ tooltip })
+    } else {
+      this.setState({
+        tooltip: null,
+        popup: tooltip })
+    }
   }
 
   _updateURL(viewport) {
@@ -308,7 +323,8 @@ export default class Welcome extends React.Component {
     //if we do history.replace/push 100 times in less than 30 secs
     // browser will crash
     if (new Date() - lastViewPortChange > 1000) {
-      updateHistory({...viewport,
+      updateHistory({
+        ...viewport,
         ...{
           defaultURL: this.props.defaultURL,
           geographyURL: this.props.geographyURL,
@@ -340,7 +356,7 @@ export default class Welcome extends React.Component {
   render() {
     const { hideCharts, hideChartGenerator, dark, defaultURL,
       leftSidebarContent, hideSidebar } = this.props;
-    const { tooltip, viewport, initialViewState,
+    const { tooltip, popup, viewport, initialViewState,
       loading, mapStyle, alert, data, filtered, bottomPanel,
       layerName, geomType, legend, coords } = this.state;
     const showLegend = legend && (geomType === 'polygon'
@@ -392,14 +408,14 @@ export default class Welcome extends React.Component {
             // https://deck.gl/#/documentation/developer-guide/
             // adding-interactivity?
             // section=using-the-built-in-event-handling
-            onClick={(e) => {
-              if (!e.layer && coords) {
+            onClick={(o, e) => {
+              if (!o.layer && coords) {
                 this.setState({ coords: null })
                 this._callGenerateLayer()
               }
+              this._renderTooltip(o, e, true);
             }}
           >
-            {tooltip}
           </DeckGL>
         </MapGL>
         {!hideSidebar && <DeckSidebarContainer
@@ -459,9 +475,9 @@ export default class Welcome extends React.Component {
                   { content: error.message });
               }
             } else {
-              if(isURL(url_returned)) {
+              if (isURL(url_returned)) {
                 fetchData(url_returned, (data, error) => {
-                  if(!error) {
+                  if (!error) {
                     this._updateStateAndLayers(
                       // geoErr, geojson, data, customError, geographyURL
                       false, null, data
@@ -513,6 +529,8 @@ export default class Welcome extends React.Component {
             {legend}
           </div>
         }
+        {tooltip}
+        {popup}
       </div>
     );
   }
