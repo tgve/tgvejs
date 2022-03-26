@@ -1,9 +1,11 @@
 import React from 'react';
 import { difference } from 'underscore';
+import booleanContains from '@turf/boolean-contains';
+import { polygon } from '@turf/helpers';
 
 import {
   generateDeckLayer, suggestDeckLayer,
-  colorScale, getOSMTiles, colorRanges,
+  colorScale, getOSMTiles, colorRanges, getBbx,
   generateDomain, setGeojsonProps, convertRange, getMin, getMax,
   generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
 } from '../utils/utils';
@@ -87,8 +89,8 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
   if (geography) {
     // is geometry equal to or bigger than data provided?
     // if (data.length > geography.features.length) {
-      // for now just be aware
-      //TODO: alert or just stop it?
+    // for now just be aware
+    //TODO: alert or just stop it?
     // }
     data = setGeojsonProps(geography, data, geographyColumn)
     // critical check
@@ -278,8 +280,15 @@ const filterGeojson = (data, filter, state, multiVarSelect) => {
   const filterValues = (filter && filter.what === 'multi') ||
     Object.keys(multiVarSelect).length;
   const filterCoords = filter && filter.what === 'coords';
-  if (!filterValues && !filterCoords) return data
+  const bbox = filter && filter.what === 'boundsSubset'
+    && getBbx(filter.bounds)
+  const { xmin, ymin, xmax, ymax } = bbox || {};
+  const poly = bbox && polygon([[
+    [xmin, ymin], [xmin, ymax],
+    [xmax, ymax], [xmax, ymin],
+    [xmin, ymin]]])
 
+  if (!filterValues && !filterCoords && !bbox) return data
   // includes resetting a previously selected value
   const selected = (filter && filter.what === 'multi' && filter.selected)
     || multiVarSelect;
@@ -305,6 +314,9 @@ const filterGeojson = (data, filter, state, multiVarSelect) => {
           d.geometry.coordinates.flat()).length !== 0) {
           return false;
         }
+      }
+      if (bbox) {
+        if (!booleanContains(poly, d)) return false
       }
       return (true);
     }

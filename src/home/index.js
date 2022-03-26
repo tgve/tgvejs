@@ -333,22 +333,12 @@ export default class Welcome extends React.Component {
       });
       this.setState({ lastViewPortChange: new Date() })
     }
-    const bounds = this.map && this.map.getBounds()
-    if (bounds && subsetBoundsChange) {
-      const box = getBbx(bounds)
-      const { xmin, ymin, xmax, ymax } = box;
-      fetchData(this.props.defaultURL + xmin + "/" +
-        ymin + "/" + xmax + "/" + ymax,
-        (data, error) => {
-          if (!error) {
-            this.setState({
-              data: data.features,
-            })
-            this._callGenerateLayer()
-          } else {
-            //network error?
-          }
-        })
+
+    if (subsetBoundsChange) {
+      const bounds = this.map && this.map.getBounds()
+      this._callGenerateLayer({
+        filter: { what: 'boundsSubset', bounds }
+      })
     }
 
   }
@@ -501,12 +491,10 @@ export default class Welcome extends React.Component {
             this._callGenerateLayer({ filter: selected })}
           onLayerOptionsCallback={(layerOptions) =>
             this._callGenerateLayer({ layerOptions })}
-          toggleSubsetBoundsChange={(value) => {
+          toggleSubsetBoundsChange={() => {
             this.setState({
-              loading: true,
-              subsetBoundsChange: value
+              subsetBoundsChange: !this.state.subsetBoundsChange
             })
-            this._fetchAndUpdateState();
           }}
           onlocationChange={(bboxLonLat) => {
             this._fitViewport(undefined, bboxLonLat)

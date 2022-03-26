@@ -59,9 +59,10 @@ export default class DeckSidebar extends React.Component {
       year !== nextState.year ||
       column !== nextProps.column ||
       alert !== nextProps.alert ||
-      loading !== nextProps.loading ||
       layerName !== nextProps.layerName ||
-      barChartVariable !== nextState.barChartVariable) return true;
+      barChartVariable !== nextState.barChartVariable) {
+        return true
+      };
     //TODO: a bit better now but more is needed.
     // this solves a lag in large datasets
     // a more functional way is needed
@@ -80,7 +81,7 @@ export default class DeckSidebar extends React.Component {
    * Partly because we like to load from a URL.
    */
   render() {
-    const { year, subsetBoundsChange, multiVarSelect,
+    const { year, multiVarSelect,
       barChartVariable, datasetName } = this.state;
     const { onLayerOptionsCallback,
       onSelectCallback, data, colourCallback, unfilteredData,
@@ -337,12 +338,10 @@ export default class DeckSidebar extends React.Component {
                   }
                   {notEmpty &&
                     <StatefulCheckbox
-                      onChange={() => {
-                        this.setState({ subsetBoundsChange: !subsetBoundsChange })
-                        if (toggleSubsetBoundsChange && typeof (toggleSubsetBoundsChange) === 'function') {
-                          toggleSubsetBoundsChange(!subsetBoundsChange) //starts with false
-                        }
-                      }}
+                      onChange={() =>
+                        typeof (toggleSubsetBoundsChange) === 'function'
+                          && toggleSubsetBoundsChange()
+                      }
                     >Subset by map boundary</StatefulCheckbox>
                   }
                 </Tab>
