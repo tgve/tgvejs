@@ -74,7 +74,6 @@ exports[`App snapshot dark theme 1`] = `
               <div
                 class="side-panel-body-content"
               >
-                <br />
                 <hr
                   style="clear: both;"
                 />
@@ -285,7 +284,6 @@ exports[`App snapshot light theme 1`] = `
               <div
                 class="side-panel-body-content"
               >
-                <br />
                 <hr
                   style="clear: both;"
                 />

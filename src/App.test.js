@@ -37,11 +37,11 @@ test("Test empty state", () => {
 });
 
 test('App - set props', () => {
-  const m = shallow(<App/>).find('Welcome');
+  const m = shallow(<App/>).find('Home');
   expect(m.props().hideCharts).toEqual(undefined);
   expect(m.props().hideChartGenerator).toEqual(undefined);
 
-  const n = shallow(<App hideCharts={true}/>).find('Welcome');
+  const n = shallow(<App hideCharts={true}/>).find('Home');
   expect(n.props().hideCharts).toEqual(true);
 })
 
@@ -56,7 +56,7 @@ test('App - API params ENV',() => {
   process.env.REACT_APP_HIDE_CHART_GENERATOR = true
   process.env.REACT_APP_HIDE_CHARTS = true
   process.env.REACT_APP_HIDE_SIDEBAR = true
-  const m = shallow(<App />).find('Welcome');
+  const m = shallow(<App />).find('Home');
   expect(m.props().defaultURL).toEqual("https://react.com");
   expect(m.props().geographyURL).toEqual("geographyURL");
   expect(m.props().geographyColumn).toEqual("geographyColumn");
