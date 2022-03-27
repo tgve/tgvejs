@@ -75,15 +75,8 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
     data = state.filtered;
   }
 
-  data = filterGeojson(data, filter, state, multiVarSelect)
-  // critical check
-  if (!data || !data.length) {
-    return ({
-      alert: { content: 'Filtering returns no results' }
-    })
-  };
-
-  // needs to happen as soon as filtering is done
+  // when separate geography is provided
+  // data has no geography set yet
   // assemble geometry from state.geometry if so
   // is there a geometry provided?
   if (geography) {
@@ -101,7 +94,16 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
     };
     // it was data.features when this function started
     data = data.features || data;
+    data = filterGeojson(data, filter, state, multiVarSelect)
+  } else {
+    data = filterGeojson(data, filter, state, multiVarSelect)
   }
+  // critical check
+  if (!data || !data.length) {
+    return ({
+      alert: { content: 'Filtering returns no results' }
+    })
+  };
 
   let column = (filter && filter.what === 'column' && filter.selected) ||
     state.column;
@@ -315,8 +317,12 @@ const filterGeojson = (data, filter, state, multiVarSelect) => {
           return false;
         }
       }
+      // feature2 MultiPolygon geometry not supported
       if (bbox) {
-        if (!booleanContains(poly, d)) return false
+        if (poly && d && d.geometry
+          && sfType(d) !== 'MultiPolygon'
+          && d.geometry.coordinates
+          && !booleanContains(poly, d)) return false
       }
       return (true);
     }

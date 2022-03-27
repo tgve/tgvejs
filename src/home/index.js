@@ -26,7 +26,7 @@ import { throttle } from 'lodash';
 
 import {
   fetchData,
-  getViewportParams, getBbx, isMobile, getOSMTiles,
+  getViewportParams, isMobile, getOSMTiles,
   isURL, theme, updateHistory,
 } from '../utils/utils';
 import {
@@ -51,7 +51,7 @@ const gradient = {
   backgroundImage: 'linear-gradient(to top, red , yellow)'
 }
 
-export default class Welcome extends React.Component {
+export default class Home extends React.Component {
   constructor(props) {
     super(props)
     const init = props.viewport && Object.keys(props.viewport) ?
@@ -100,7 +100,8 @@ export default class Welcome extends React.Component {
     this._resize = this._resize.bind(this);
     this._updateURL = this._updateURL.bind(this);
     // TODO: can let user change the 300
-    this._throttleUR = throttle((v) => this._updateURL(v), 300)
+    this._throttleUR = throttle((v) => this._updateURL(v), 300);
+    this._urlCallback = this._urlCallback.bind(this);
   }
 
   componentDidUpdate(nextProps) {
@@ -423,69 +424,7 @@ export default class Welcome extends React.Component {
           colourCallback={(colorName) => {
             this._callGenerateLayer({ cn: colorName })
           }}
-          urlCallback={(url_returned, geojson_returned) => {
-            this.setState({
-              /**
-               * This set state can take care of all
-               * but one of the options forward:
-               * 1. if a geojson has been returned, then
-               * update state fully and let
-               * `this._fitViewport(geojson_returned)` &&
-               * `generateLayer` take care of it.
-               *
-               * 2. if a URL has been returned,
-               *
-               * 3. if we are resetting, that means start from
-               * fresh: this._initDataState
-               *
-               * 4. if (1) is the case but geojson
-               * is invalid or corrupt, then do not
-               * update data state and fail on the try
-               */
-              geography: null,
-              column: null,
-              tooltip: "",
-              loading: true,
-              coords: null,
-            })
-            if (geojson_returned) {
-              // confirm valid geojson
-              try {
-                // do not move this setState up
-                // as data returned could be
-                // corrupt
-                this.setState({
-                  data: geojson_returned
-                })
-                this._fitViewport(geojson_returned)
-                this._callGenerateLayer()
-              } catch (error) {
-                // load up default
-                this._fetchAndUpdateState(undefined,
-                  { content: error.message });
-              }
-            } else {
-              if (isURL(url_returned)) {
-                fetchData(url_returned, (data, error) => {
-                  if (!error) {
-                    this._updateStateAndLayers(
-                      // geoErr, geojson, data, customError, geographyURL
-                      false, null, data
-                    )
-                  } else {
-                    this.setState({
-                      loading: false,
-                      alert: { content: 'Could not reach: ' + url_returned }
-                    });
-                  }
-                })
-              } else {
-                // empty, so might be resetting
-                // current geography and defaulturl
-                this._initDataState()
-              }
-            }
-          }}
+          urlCallback={this._urlCallback}
           column={this.state.column}
           onSelectCallback={(selected) =>
             this._callGenerateLayer({ filter: selected })}
@@ -495,7 +434,9 @@ export default class Welcome extends React.Component {
             this.setState({
               subsetBoundsChange: !this.state.subsetBoundsChange
             })
+            this._callGenerateLayer()
           }}
+          subsetBoundsChange={this.state.subsetBoundsChange}
           onlocationChange={(bboxLonLat) => {
             this._fitViewport(undefined, bboxLonLat)
           }}
@@ -522,6 +463,71 @@ export default class Welcome extends React.Component {
       </div>
     );
   }
+
+  _urlCallback(url_returned, geojson_returned) {
+    this.setState({
+      /**
+       * This set state can take care of all
+       * but one of the options forward:
+       * 1. if a geojson has been returned, then
+       * update state fully and let
+       * `this._fitViewport(geojson_returned)` &&
+       * `generateLayer` take care of it.
+       *
+       * 2. if a URL has been returned,
+       *
+       * 3. if we are resetting, that means start from
+       * fresh: this._initDataState
+       *
+       * 4. if (1) is the case but geojson
+       * is invalid or corrupt, then do not
+       * update data state and fail on the try
+       */
+      geography: null,
+      column: null,
+      tooltip: "",
+      loading: true,
+      coords: null,
+    })
+    if (geojson_returned) {
+      // confirm valid geojson
+      try {
+        // do not move this setState up
+        // as data returned could be
+        // corrupt
+        this.setState({
+          data: geojson_returned
+        })
+        this._fitViewport(geojson_returned)
+        this._callGenerateLayer()
+      } catch (error) {
+        // load up default
+        this._fetchAndUpdateState(undefined,
+          { content: error.message });
+      }
+    } else {
+      if (isURL(url_returned)) {
+        fetchData(url_returned, (data, error) => {
+          if (!error) {
+            this._updateStateAndLayers(
+              // geoErr, geojson, data, customError, geographyURL
+              false, null, data
+            )
+          } else {
+            this.setState({
+              loading: false,
+              alert: { content: 'Could not reach: ' + url_returned }
+            });
+          }
+        })
+      } else {
+        // empty, so might be resetting
+        // current geography and defaulturl
+        this._initDataState()
+      }
+    }
+  }
+
   _resize() {
     this.setState({
       width: window.innerWidth,
