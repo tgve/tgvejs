@@ -101,6 +101,7 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
   // critical check
   if (!data || !data.length) {
     return ({
+      loading: false,
       alert: { content: 'Filtering returns no results' }
     })
   };
