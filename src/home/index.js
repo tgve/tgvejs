@@ -269,7 +269,7 @@ export default class Home extends React.Component {
     const center = bboxLonLat ?
       [bboxLonLat.lon, bboxLonLat.lat] : centroid(data).geometry.coordinates;
 
-    !this.map || this.map.fitBounds(bounds, { padding: '100px' })
+    !this.map || this.map.fitBounds(bounds, { padding: 100 })
 
     const viewport = {
       ...this.state.viewport,
@@ -349,9 +349,9 @@ export default class Home extends React.Component {
       leftSidebarContent, hideSidebar } = this.props;
     const { tooltip, popup, viewport, initialViewState,
       loading, mapStyle, alert, data, filtered, bottomPanel,
-      layerName, geomType, legend, coords } = this.state;
-    const showLegend = legend && (geomType === 'polygon'
-      || geomType === 'multipolygon' || layerName === "pointcloud")
+      layerName, legend, coords } = this.state;
+    const showLegend = legend
+      && !new RegExp("grid|sgrid|text|heatmap|icon", "i").test(layerName)
 
     return (
       <div>

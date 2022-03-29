@@ -1,5 +1,5 @@
 import React from 'react';
-import { difference } from 'underscore';
+import { difference, isString } from 'underscore';
 import booleanContains from '@turf/boolean-contains';
 import { polygon } from '@turf/helpers';
 
@@ -15,11 +15,12 @@ import {
 
 import { getPropertyValues, sfType } from '../utils/geojsonutils';
 import { CustomSlider } from '../components/showcases/Widgets';
+import { isArray, isNumber } from '../utils/JSUtils';
 
-const newRange = (data, d, columnNameOrIndex, min, max) => {
-  let newMax = 10, newMin = 0.1;
-  if (data.length > 100000) {
-    newMax = 0.5; newMin = 0.005;
+const newRange = (d, columnNameOrIndex, min, max) => {
+  let newMax = max, newMin = min;
+  if (min < 1 || max > 300) {
+    newMax = 10; newMin = 1;
   }
   const r = convertRange(
     d.properties[columnNameOrIndex], {
@@ -146,12 +147,11 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
     }
   }
   // TODO
-  if (layerName === 'scatter') {
-    if (+(data[0] && data[0].properties &&
-      data[0].properties[columnNameOrIndex])) {
+  if (layerName === 'scatterplot') {
+    if (isValueNumeric(data, columnNameOrIndex)) {
+      const min = getMin(domain), max = getMax(domain)
       options.getRadius = d => {
-        return newRange(data, d, columnNameOrIndex,
-          getMin(domain), getMax(domain));
+        return newRange(d, columnNameOrIndex, min, max);
       }
     }
   }
@@ -189,11 +189,10 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
         }
       }
     }
-    if (+(data[0] && data[0].properties &&
-      data[0].properties[columnNameOrIndex])) {
+    if (isValueNumeric(data, columnNameOrIndex)) {
+      const min = getMin(domain), max = getMax(domain)
       options.getWidth = d => {
-        return newRange(data, d, columnNameOrIndex,
-          getMin(domain), getMax(domain));
+        return newRange(d, columnNameOrIndex, min, max);
       }; // avoid id
     }
     options.updateTriggers = {
@@ -202,7 +201,7 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
   }
 
   if (geomType === "polygon" || geomType === "multipolygon" ||
-    layerName === 'geojson') {
+    layerName === 'geojson' || layerName === "scatterplot") {
 
     options.getFillColor = fill;
 
@@ -327,6 +326,15 @@ const filterGeojson = (data, filter, state, multiVarSelect) => {
       return (true);
     }
   );
+}
+
+const isValueNumeric = (data, columnNameOrIndex) => {
+  if (!isArray(data)) return null
+  if (!isString(columnNameOrIndex)
+    && !isNumber(columnNameOrIndex)) return null
+  const r = Math.floor(Math.random() * data.length)
+  return +(data[r] && data[r].properties &&
+    data[r].properties[columnNameOrIndex]);
 }
 
 export {
