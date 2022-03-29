@@ -8,6 +8,7 @@ import {
   colorScale, getOSMTiles, colorRanges, getBbx,
   generateDomain, setGeojsonProps, convertRange, getMin, getMax,
   generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
+  getViewportParams,
 } from '../utils/utils';
 import {
   LIGHT_SETTINGS, BLANKSTYLE
@@ -16,6 +17,7 @@ import {
 import { getPropertyValues, sfType } from '../utils/geojsonutils';
 import { CustomSlider } from '../components/showcases/Widgets';
 import { isArray, isNumber } from '../utils/JSUtils';
+import { DECKGL_INIT, LAYERS_2D_REGEX } from '../Constants'
 
 const newRange = (d, columnNameOrIndex, min, max) => {
   let newMax = max, newMin = min;
@@ -337,6 +339,30 @@ const isValueNumeric = (data, columnNameOrIndex) => {
     data[r].properties[columnNameOrIndex]);
 }
 
+const initViewState = (props) => {
+  const { viewport, layerName } = props;
+  const init = viewport && Object.keys(viewport) ?
+    Object.assign(DECK_INIT, viewport) : DECKGL_INIT;
+  const param = getViewportParams(props.location ?
+    props.location.search : window.location.search);
+  if (param) {
+    //lat=53.814&lng=-1.534&zoom=11.05&bea=0&pit=55&alt=1.5
+    Object.keys(param).forEach(key => {
+      Object.keys(init).forEach(iKey => {
+        if (iKey.startsWith(key)) {
+          init[key] = param[key];
+        }
+      });
+    });
+  }
+  if(layerName
+    && new RegExp(LAYERS_2D_REGEX, "i").test(layerName)) {
+    init["pitch"] = 0
+  }
+  return init;
+}
+
 export {
-  generateLayer
+  generateLayer,
+  initViewState
 }

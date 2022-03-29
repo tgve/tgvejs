@@ -28,6 +28,10 @@ define("LAYERSTYLES", [
   "barvis"
 ])
 
+define("LAYERS_2D_REGEX",
+  "sgrid|scatter|geojson|line|path"
+)
+
 define("DECKGL_INIT", {
   longitude: -1.6362,
   latitude: 53.8321,
