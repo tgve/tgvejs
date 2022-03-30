@@ -258,7 +258,7 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
       state.coords,
     legend: newLegend,
     bottomPanel: <CustomSlider
-      data={state.data.features}
+      data={state.date && state.data.features}
       dates={getPropertyValues(state.data, "alt")} />
   })
 }
