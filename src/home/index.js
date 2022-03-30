@@ -321,6 +321,7 @@ export default class Home extends React.Component {
 
     if (subsetBoundsChange) {
       const bounds = this.map && this.map.getBounds()
+      this.setState({loading: true})
       this._callGenerateLayer({
         filter: { what: 'boundsSubset', bounds }
       })

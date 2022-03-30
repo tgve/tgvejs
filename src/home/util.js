@@ -104,6 +104,7 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
   // critical check
   if (!data || !data.length) {
     return ({
+      loading: false,
       alert: { content: 'Filtering returns no results' }
     })
   };
@@ -258,7 +259,7 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
       state.coords,
     legend: newLegend,
     bottomPanel: <CustomSlider
-      data={state.data.features}
+      data={state.date && state.data.features}
       dates={getPropertyValues(state.data, "alt")} />
   })
 }
