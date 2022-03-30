@@ -72,6 +72,8 @@ They can also be passed to the TGVE as URL query parameters. For instance
     which would need a column, it would be used. Defaults on to the
     second column as often first column is an ID of sort.
 
+-   `select`: if provided, either as a string or a JSON object, it will be passed to the `tgvejs` subsetting workflow. For now, only when the application is started. The format could be one of `select={"key1": ["val1", "val2"]}` or `select=key1:val1,val2:key2:val3,val4`. For example: `https://tgve.github.io/app/?select=ranking:45` in a dataset with a column named `ranking` and its value being `45`.
+
 -   `layerName`: if provided, and if the given name is in the list of
     DeckGL layers supported by TGVE, will be passed to generate the
     layer with the name given.

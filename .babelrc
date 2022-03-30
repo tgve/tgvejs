@@ -10,7 +10,8 @@
   "ignore": [
     "**/__tests__",
     "**/*.test.js",
-    "**/__snapshots__"
+    "**/__snapshots__",
+    "README.html"
   ],
   "comments": false
 }

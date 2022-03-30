@@ -1,7 +1,7 @@
 import {firstLastNCharacters, humanize,
   colorScale, generateDomain, xyObjectByProperty,
   suggestDeckLayer, isURL,
-  uniqueValuePercentage
+  uniqueValuePercentage,
 } from '../utils/utils';
 import { LAYERSTYLES } from '../Constants';
 
@@ -108,3 +108,24 @@ test("isURL", () => {
   expect(isURL(ll[0])).toBe(true)
   devURLS.slice(-4).forEach(e => expect(isURL(e)).toBe(true))
 })
+
+test("updateHistory works", () => {
+  // TODO: either call updateHistory from
+  // react-test-renderer or via
+  // testing-library/react
+  const mockHistoryPush = jest.fn();
+
+  jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useHistory: () => ({
+      push: mockHistoryPush,
+    }),
+  }));
+  //expect(history.location).toBeUndefined()
+  // updateHistory({defaultURL: "blah"})
+  console.log("Here is the history:", mockHistoryPush)
+})
+
+export {
+  sampleGeojson
+}

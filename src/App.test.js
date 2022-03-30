@@ -1,48 +1,49 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import renderer from 'react-test-renderer';
+import { render, screen } from '@testing-library/react';
 import { shallow } from 'enzyme';
 import { BaseProvider, DarkTheme, LightTheme } from 'baseui';
 
 import App from './App';
 
-it('renders without crashing', () => {
+test('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, div);
-  ReactDOM.unmountComponentAtNode(div);
+  const { unmount } = render(<App />, div);
+  unmount();
 });
 
-test('App - dark/light themes set', () => {
+test('App defaults to dark theme when given no prop', () => {
   const m = shallow(<App />);
   expect(m.find(BaseProvider).prop('theme')).toEqual(DarkTheme);
-  const appDark = renderer.create(
-    <BrowserRouter><App /></BrowserRouter>
-  );
-  expect(appDark.toJSON()).toMatchSnapshot();
+});
 
+test('App can be set to light theme via props', () => {
   const n = shallow(<App dark={false}/>);
   expect(n.find(BaseProvider).prop('theme')).toEqual(LightTheme);
-  const appLight = renderer.create(
-    <BrowserRouter><App dark={false}/></BrowserRouter>
-  );
-  expect(appLight.toJSON()).toMatchSnapshot();
-})
+});
 
-test('App - API params set', () => {
-  const m = shallow(<App />).find('Welcome');
-  // console.log(m.find('Welcome').props());
-  // console.log(m.debug());
+test('App snapshot dark theme', () => {
+  const { asFragment } = render(<App />);
+  expect(asFragment()).toMatchSnapshot();
+});
+
+test('App snapshot light theme', () => {
+  const { asFragment } = render(<App dark={false}/>);
+  expect(asFragment()).toMatchSnapshot();
+});
+
+test("Test empty state", () => {
+  render(<App dark={false}/>);
+  expect(screen.getByText('Nothing to show')).toBeInTheDocument();
+});
+
+test('App - set props', () => {
+  const m = shallow(<App/>).find('Home');
   expect(m.props().hideCharts).toEqual(undefined);
   expect(m.props().hideChartGenerator).toEqual(undefined);
-  expect(m.props().defaultURL).toEqual(undefined);
 
-  const n = shallow(<App hideCharts={true}/>)
-    .find('Welcome');
+  const n = shallow(<App hideCharts={true}/>).find('Home');
   expect(n.props().hideCharts).toEqual(true);
-
 })
-
 
 test('App - API params ENV',() => {
   process.env.REACT_APP_DEFAULT_URL = "https://react.com"
@@ -55,7 +56,7 @@ test('App - API params ENV',() => {
   process.env.REACT_APP_HIDE_CHART_GENERATOR = true
   process.env.REACT_APP_HIDE_CHARTS = true
   process.env.REACT_APP_HIDE_SIDEBAR = true
-  const m = shallow(<App />).find('Welcome');
+  const m = shallow(<App />).find('Home');
   expect(m.props().defaultURL).toEqual("https://react.com");
   expect(m.props().geographyURL).toEqual("geographyURL");
   expect(m.props().geographyColumn).toEqual("geographyColumn");

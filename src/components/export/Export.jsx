@@ -10,20 +10,20 @@ import { isString } from '../../utils/JSUtils';
 
 export default function Export(props) {
   const [notification, setNotification] = useState(false)
-  const { notEmpty, screenshot } = props;
+  const { notEmpty, map, deck } = props;
 
   return (
     notEmpty ?
       <StatefulPopover
         placement="top"
         dismissOnEsc={false}
-        dismissOnClickOutside={false}
+        dismissOnClickOutside={true}
         accessibilityType={'tooltip'}
         content={({ close }) => (
           <Block padding="5px"
             data-html2canvas-ignore="true">
             {iWithFaName("fa fa-times", close)}
-            <Preview screenshot={screenshot} />
+            <Preview map={map} deck={deck} />
             {notEmpty && downloadButton(props.data)}
             {iWithFaName("fa fa-copy", () => {
               window.location &&
@@ -59,7 +59,7 @@ export default function Export(props) {
             </Notification>
           }
         </i>
-      </StatefulPopover> : <Preview screenshot={screenshot} />
+      </StatefulPopover> : <Preview map={map} deck={deck} />
   )
 }
 
@@ -73,15 +73,20 @@ export default function Export(props) {
  * @returns
  */
 const downloadButton = (data, name) => {
-  return (<StyledLink
-    download={name || "tgve-data.geojson"}
-    href={
-      "data:text/json;charset=utf-8," +
+  const anchorID = 'tgve-span-download'
+  return (<span
+    onClick={ () => {
+      const dataStr = "data:text/json;charset=utf-8," +
       encodeURIComponent(JSON.stringify({
         type: 'FeatureCollection',
         features: data
       }))
-    }>
+      const e = document.getElementById(anchorID);
+      e.setAttribute("href", dataStr);
+      e.setAttribute("download", name || "tgve-data.geojson");
+      e.click();
+    }}>
+      <a id={anchorID} style={{display:"none"}}></a>
     {<i
       style={{
         margin: 5,
@@ -89,7 +94,7 @@ const downloadButton = (data, name) => {
         fontSize: '1.5em',
       }}
       className={"fa fa-download"}></i>}
-  </StyledLink>)
+  </span>)
 }
 
 /**
