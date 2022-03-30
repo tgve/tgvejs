@@ -1,5 +1,5 @@
 import React from 'react';
-import { difference } from 'underscore';
+import { difference, isString } from 'underscore';
 import booleanContains from '@turf/boolean-contains';
 import { polygon } from '@turf/helpers';
 
@@ -8,6 +8,7 @@ import {
   colorScale, getOSMTiles, colorRanges, getBbx,
   generateDomain, setGeojsonProps, convertRange, getMin, getMax,
   generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
+  getViewportParams,
 } from '../utils/utils';
 import {
   LIGHT_SETTINGS, BLANKSTYLE
@@ -15,11 +16,13 @@ import {
 
 import { getPropertyValues, sfType } from '../utils/geojsonutils';
 import { CustomSlider } from '../components/showcases/Widgets';
+import { isArray, isNumber } from '../utils/JSUtils';
+import { DECKGL_INIT, LAYERS_2D_REGEX } from '../Constants'
 
-const newRange = (data, d, columnNameOrIndex, min, max) => {
-  let newMax = 10, newMin = 0.1;
-  if (data.length > 100000) {
-    newMax = 0.5; newMin = 0.005;
+const newRange = (d, columnNameOrIndex, min, max) => {
+  let newMax = max, newMin = min;
+  if (min < 1 || max > 300) {
+    newMax = 10; newMin = 1;
   }
   const r = convertRange(
     d.properties[columnNameOrIndex], {
@@ -147,12 +150,11 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
     }
   }
   // TODO
-  if (layerName === 'scatter') {
-    if (+(data[0] && data[0].properties &&
-      data[0].properties[columnNameOrIndex])) {
+  if (layerName === 'scatterplot') {
+    if (isValueNumeric(data, columnNameOrIndex)) {
+      const min = getMin(domain), max = getMax(domain)
       options.getRadius = d => {
-        return newRange(data, d, columnNameOrIndex,
-          getMin(domain), getMax(domain));
+        return newRange(d, columnNameOrIndex, min, max);
       }
     }
   }
@@ -190,11 +192,10 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
         }
       }
     }
-    if (+(data[0] && data[0].properties &&
-      data[0].properties[columnNameOrIndex])) {
+    if (isValueNumeric(data, columnNameOrIndex)) {
+      const min = getMin(domain), max = getMax(domain)
       options.getWidth = d => {
-        return newRange(data, d, columnNameOrIndex,
-          getMin(domain), getMax(domain));
+        return newRange(d, columnNameOrIndex, min, max);
       }; // avoid id
     }
     options.updateTriggers = {
@@ -203,7 +204,7 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
   }
 
   if (geomType === "polygon" || geomType === "multipolygon" ||
-    layerName === 'geojson') {
+    layerName === 'geojson' || layerName === "scatterplot") {
 
     options.getFillColor = fill;
 
@@ -330,6 +331,39 @@ const filterGeojson = (data, filter, state, multiVarSelect) => {
   );
 }
 
+const isValueNumeric = (data, columnNameOrIndex) => {
+  if (!isArray(data)) return null
+  if (!isString(columnNameOrIndex)
+    && !isNumber(columnNameOrIndex)) return null
+  const r = Math.floor(Math.random() * data.length)
+  return +(data[r] && data[r].properties &&
+    data[r].properties[columnNameOrIndex]);
+}
+
+const initViewState = (props) => {
+  const { viewport, layerName } = props;
+  const init = viewport && Object.keys(viewport) ?
+    Object.assign(DECK_INIT, viewport) : DECKGL_INIT;
+  const param = getViewportParams(props.location ?
+    props.location.search : window.location.search);
+  if (param) {
+    //lat=53.814&lng=-1.534&zoom=11.05&bea=0&pit=55&alt=1.5
+    Object.keys(param).forEach(key => {
+      Object.keys(init).forEach(iKey => {
+        if (iKey.startsWith(key)) {
+          init[key] = param[key];
+        }
+      });
+    });
+  }
+  if(layerName
+    && new RegExp(LAYERS_2D_REGEX, "i").test(layerName)) {
+    init["pitch"] = 0
+  }
+  return init;
+}
+
 export {
-  generateLayer
+  generateLayer,
+  initViewState
 }

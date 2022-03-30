@@ -25,20 +25,17 @@ import bbox from '@turf/bbox';
 import { throttle } from 'lodash';
 
 import {
-  fetchData,
-  getViewportParams, isMobile, getOSMTiles,
+  fetchData, isMobile, getOSMTiles,
   isURL, theme, updateHistory,
 } from '../utils/utils';
-import {
-  DECKGL_INIT, ICONLIMIT,
-} from '../Constants';
+import { ICONLIMIT } from '../Constants';
 import DeckSidebarContainer from
   '../components/decksidebar/DeckSidebarContainer';
 
 import '../App.css';
 import Tooltip from '../components/tooltip';
 import { isObject } from '../utils/JSUtils';
-import { generateLayer } from './util';
+import { generateLayer, initViewState } from './util';
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -54,20 +51,7 @@ const gradient = {
 export default class Home extends React.Component {
   constructor(props) {
     super(props)
-    const init = props.viewport && Object.keys(props.viewport) ?
-      Object.assign(DECKGL_INIT, props.viewport) : DECKGL_INIT;
-    const param = getViewportParams(props.location ?
-      props.location.search : window.location.search);
-    if (param) {
-      //lat=53.814&lng=-1.534&zoom=11.05&bea=0&pit=55&alt=1.5
-      Object.keys(param).forEach(key => {
-        Object.keys(init).forEach(iKey => {
-          if (iKey.startsWith(key)) {
-            init[key] = param[key]
-          }
-        })
-      })
-    }
+    const init = initViewState(props);
 
     this.state = {
       loading: true,
@@ -269,7 +253,7 @@ export default class Home extends React.Component {
     const center = bboxLonLat ?
       [bboxLonLat.lon, bboxLonLat.lat] : centroid(data).geometry.coordinates;
 
-    !this.map || this.map.fitBounds(bounds, { padding: '100px' })
+    !this.map || this.map.fitBounds(bounds, { padding: 100 })
 
     const viewport = {
       ...this.state.viewport,
@@ -350,9 +334,9 @@ export default class Home extends React.Component {
       leftSidebarContent, hideSidebar } = this.props;
     const { tooltip, popup, viewport, initialViewState,
       loading, mapStyle, alert, data, filtered, bottomPanel,
-      layerName, geomType, legend, coords } = this.state;
-    const showLegend = legend && (geomType === 'polygon'
-      || geomType === 'multipolygon' || layerName === "pointcloud")
+      layerName, legend, coords } = this.state;
+    const showLegend = legend
+      && !new RegExp("grid|sgrid|text|heatmap|icon", "i").test(layerName)
 
     return (
       <div>
