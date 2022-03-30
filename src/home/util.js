@@ -1,9 +1,11 @@
 import React from 'react';
 import { difference } from 'underscore';
+import booleanContains from '@turf/boolean-contains';
+import { polygon } from '@turf/helpers';
 
 import {
   generateDeckLayer, suggestDeckLayer,
-  colorScale, getOSMTiles, colorRanges,
+  colorScale, getOSMTiles, colorRanges, getBbx,
   generateDomain, setGeojsonProps, convertRange, getMin, getMax,
   generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
 } from '../utils/utils';
@@ -73,22 +75,15 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
     data = state.filtered;
   }
 
-  data = filterGeojson(data, filter, state, multiVarSelect)
-  // critical check
-  if (!data || !data.length) {
-    return ({
-      alert: { content: 'Filtering returns no results' }
-    })
-  };
-
-  // needs to happen as soon as filtering is done
+  // when separate geography is provided
+  // data has no geography set yet
   // assemble geometry from state.geometry if so
   // is there a geometry provided?
   if (geography) {
     // is geometry equal to or bigger than data provided?
     // if (data.length > geography.features.length) {
-      // for now just be aware
-      //TODO: alert or just stop it?
+    // for now just be aware
+    //TODO: alert or just stop it?
     // }
     data = setGeojsonProps(geography, data, geographyColumn)
     // critical check
@@ -99,7 +94,17 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
     };
     // it was data.features when this function started
     data = data.features || data;
+    data = filterGeojson(data, filter, state, multiVarSelect)
+  } else {
+    data = filterGeojson(data, filter, state, multiVarSelect)
   }
+  // critical check
+  if (!data || !data.length) {
+    return ({
+      loading: false,
+      alert: { content: 'Filtering returns no results' }
+    })
+  };
 
   let column = (filter && filter.what === 'column' && filter.selected) ||
     state.column;
@@ -253,7 +258,7 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
       state.coords,
     legend: newLegend,
     bottomPanel: <CustomSlider
-      data={state.data.features}
+      data={state.date && state.data.features}
       dates={getPropertyValues(state.data, "alt")} />
   })
 }
@@ -278,8 +283,15 @@ const filterGeojson = (data, filter, state, multiVarSelect) => {
   const filterValues = (filter && filter.what === 'multi') ||
     Object.keys(multiVarSelect).length;
   const filterCoords = filter && filter.what === 'coords';
-  if (!filterValues && !filterCoords) return data
+  const bbox = filter && filter.what === 'boundsSubset'
+    && getBbx(filter.bounds)
+  const { xmin, ymin, xmax, ymax } = bbox || {};
+  const poly = bbox && polygon([[
+    [xmin, ymin], [xmin, ymax],
+    [xmax, ymax], [xmax, ymin],
+    [xmin, ymin]]])
 
+  if (!filterValues && !filterCoords && !bbox) return data
   // includes resetting a previously selected value
   const selected = (filter && filter.what === 'multi' && filter.selected)
     || multiVarSelect;
@@ -305,6 +317,13 @@ const filterGeojson = (data, filter, state, multiVarSelect) => {
           d.geometry.coordinates.flat()).length !== 0) {
           return false;
         }
+      }
+      // feature2 MultiPolygon geometry not supported
+      if (bbox) {
+        if (poly && d && d.geometry
+          && sfType(d) !== 'MultiPolygon'
+          && d.geometry.coordinates
+          && !booleanContains(poly, d)) return false
       }
       return (true);
     }

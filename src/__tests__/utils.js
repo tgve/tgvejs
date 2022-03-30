@@ -2,7 +2,6 @@ import {firstLastNCharacters, humanize,
   colorScale, generateDomain, xyObjectByProperty,
   suggestDeckLayer, isURL,
   uniqueValuePercentage,
-  updateHistory
 } from '../utils/utils';
 import { LAYERSTYLES } from '../Constants';
 
@@ -126,3 +125,7 @@ test("updateHistory works", () => {
   // updateHistory({defaultURL: "blah"})
   console.log("Here is the history:", mockHistoryPush)
 })
+
+export {
+  sampleGeojson
+}
