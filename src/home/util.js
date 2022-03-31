@@ -158,6 +158,12 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
       }
     }
   }
+
+  if (layerName === 'arc') {
+    options.getSourceColor = getColorArray(cn || colorName);
+    options.getTargetColor = getColorArray(cn || colorName);
+  }
+
   let newLegend = state.legend;
 
   const getValue = (d) => {
