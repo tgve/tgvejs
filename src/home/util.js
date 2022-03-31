@@ -160,8 +160,8 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
   }
 
   if (layerName === 'arc') {
-    options.getSourceColor = getColorArray(cn || colorName);
-    options.getTargetColor = getColorArray(cn || colorName);
+    options.getSourceColor = colorScale(getMin(domain), domain, 180, cn || state.colorName);
+    options.getTargetColor = colorScale(getMax(domain), domain, 180, cn || state.colorName);
   }
 
   let newLegend = state.legend;
