@@ -19,6 +19,8 @@ import { CustomSlider } from '../components/showcases/Widgets';
 import { isArray, isNumber } from '../utils/JSUtils';
 import { DECKGL_INIT, LAYERS_2D_REGEX } from '../Constants'
 
+const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
+
 const newRange = (d, columnNameOrIndex, min, max) => {
   let newMax = max, newMin = min;
   if (min < 1 || max > 300) {
@@ -160,8 +162,9 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
   }
 
   if (layerName === 'arc') {
-    options.getSourceColor = colorScale(getMin(domain), domain, 180, cn || state.colorName);
-    options.getTargetColor = colorScale(getMax(domain), domain, 180, cn || state.colorName);
+    const min = getMin(domain), max = getMax(domain)
+    options.getSourceColor = colorScale(min, domain, 180, cn || state.colorName);
+    options.getTargetColor = colorScale(max, domain, 180, cn || state.colorName);
   }
 
   let newLegend = state.legend;
