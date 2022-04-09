@@ -1,9 +1,10 @@
 name: Node CI
 
-on: 
+on:
   push:
-    paths-ignore: 
+    paths-ignore:
       - '**/README.*md'
+      - '**/change*.md'
       - 'notes/**'
 
 jobs:
