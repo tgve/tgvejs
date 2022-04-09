@@ -34,6 +34,7 @@ export default class Charts extends React.Component {
     }
     return true
   }
+
   render() {
     const { data, column, dark,
       onSelectCallback } = this.props;
