@@ -35,12 +35,12 @@ export default class Charts extends React.Component {
     return true
   }
   render() {
-    const { data, column, hideCharts, dark,
+    const { data, column, dark,
       onSelectCallback } = this.props;
     const { multiVarSelect } = this.state;
     if (!data || !data.length) return null;
     const notEmpty = data && data.length > 1;
-    const columnPlot = !hideCharts && notEmpty ?
+    const columnPlot = notEmpty ?
       arrayPlotProps(data,
         //prop
         column
@@ -74,7 +74,7 @@ export default class Charts extends React.Component {
           "age_of_casualty", dark, undefined, true)}
         {plotByPropertyByDate(data, "sex_of_casualty", dark)}
 
-        {!hideCharts && <SeriesPlot
+        <SeriesPlot
           dark={dark}
           data={columnPlot.data}
           type={VerticalBarSeries}
@@ -95,9 +95,8 @@ export default class Charts extends React.Component {
           }}
           plotStyle={{ marginBottom: 100 }} noYAxis={true}
 
-        />}
-        {!hideCharts
-          && popPyramidPlot({ data, dark: dark })}
+        />
+        {popPyramidPlot({ data, dark: dark })}
 
       </>
     )

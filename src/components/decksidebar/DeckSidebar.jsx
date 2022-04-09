@@ -43,17 +43,21 @@ export default class DeckSidebar extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const { data, alert, layerName, column,
-      subsetBoundsChange } = this.props;
+      subsetBoundsChange, hideChartGenerator,
+      hideCharts } = this.props;
     const { reset, year, barChartVariable } = this.state;
     // avoid rerender as directly operating on document.get*
     // does not look neat. Keeping it React way.
-    if (reset !== nextState.reset ||
-      year !== nextState.year ||
-      column !== nextProps.column ||
-      alert !== nextProps.alert ||
-      layerName !== nextProps.layerName ||
-      subsetBoundsChange !== nextProps.subsetBoundsChange ||
-      barChartVariable !== nextState.barChartVariable) {
+    if (reset !== nextState.reset
+      || year !== nextState.year
+      || alert !== nextProps.alert
+      || subsetBoundsChange !== nextProps.subsetBoundsChange
+      || barChartVariable !== nextState.barChartVariable
+      // API change
+      || column !== nextProps.column
+      || layerName !== nextProps.layerName
+      || hideChartGenerator !== nextProps.hideChartGenerator
+      || hideCharts !== nextProps.hideCharts ) {
       return true
     };
     //TODO: a bit better now but more is needed.
@@ -80,7 +84,7 @@ export default class DeckSidebar extends React.Component {
       onSelectCallback, data, colourCallback, unfilteredData,
       toggleSubsetBoundsChange, urlCallback, alert, layerName,
       onlocationChange, column, dark, toggleOpen, toggleHexPlot,
-      hideChartGenerator
+      hideChartGenerator, hideCharts
     } = this.props;
 
     const notEmpty = data && data.length > 1;
@@ -197,7 +201,7 @@ export default class DeckSidebar extends React.Component {
                       />
                     </>
                   }
-                  <Charts {...this.props}/>
+                  {!hideCharts && <Charts {...this.props}/>}
                 </Tab>
                 <Tab title={
                   <i style={{ fontSize: '2rem' }}

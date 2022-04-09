@@ -1,26 +1,85 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-// import { BrowserRouter } from 'react-router-dom';
+import { render, screen } from '@testing-library/react'
 
 import Home from '../home';
-import { generateLayer } from '../home/util';
+import {
+  generateLayer,
+  // getViewPort must be mocked
+} from '../home/util';
 import { sampleGeojson } from './utils';
 import { LAYERS } from '../components/settings/settingsUtils';
-// import DeckGL from 'deck.gl';
-const w = shallow(<Home location={{ search: null }} />);
 
-test('Home shallow and mount', () => {
-  // console.log(w.debug())
-  expect(w.find('DeckGL')).not.toBeNull();
-  expect(w.find('InteractiveMap')).not.toBeNull();
-  expect(w.find("div.loader").length).toBe(1)
+// see https://jestjs.io/docs/mock-functions
+jest.mock('../home/util', () => {
+  const originalModule = jest.requireActual('../home/util')
+  return {
+    __esModule: true,
+    ...originalModule,
+    // just return the state viewport
+    getViewPort: jest.fn((state) => state.viewport)
+  }
 })
 
-test('Home child DeckSidebarContainer', () => {
-  const wd = shallow(<Home hideCharts={true} />);
-  const ds = wd.find('div').find('DeckSidebarContainer');
-  // console.log(ds.debug());
-  expect(ds.props().hideCharts).toBe(true)
+test('Home shallow and mount', async () => {
+  await render(<Home location={{ search: null }} />)
+  // screen.debug()
+  /**
+   * 1. there is the main message
+   * 2. there is add data button
+   * 3. there is the fly to search
+   *
+   */
+  expect(await screen
+    .queryByRole("heading")
+    .textContent)
+    .toBe("Nothing to show");
+
+  expect(await screen
+    .queryByRole("button")
+    .textContent)
+    .toBe("Add data")
+
+  expect(await screen
+    .getByPlaceholderText(/fly to/)
+    .textContent)
+    .toBe("")
+})
+
+test('Home - show Charts', async () => {
+  await render(<Home data={sampleGeojson} />)
+  // screen.debug()
+
+  expect(await screen
+    .queryByRole("heading", { level: 2 })
+    .textContent)
+    .toBe("3 rows");
+  expect((await screen
+    .findByText(/generate/i))
+    // await before getting textContent
+    .textContent)
+    .toBe('Generate graphs from columns')
+  expect(await screen
+    .findByText(/vis/i))
+    .toBeInTheDocument()
+})
+
+test('Home - hide Charts', async () => {
+   await render(
+  <Home data={sampleGeojson} hideSidebar={true}/>)
+
+  // screen.debug()
+  expect(await screen
+    .queryByRole("heading", { level: 2 }))
+    .toBeNull()
+  expect(await screen
+    .queryByRole("heading", { level: 6 }))
+    .toBeNull()
+  // above must be used as below will generate
+  // test error
+  // https://timdeschryver.dev/blog/making-sure-youre-using-the-correct-query#byrole-provides-a-solution-to
+  // expect(await screen
+  //   .findByText(/generate/i))
+  //   .toEqual({})
 })
 
 test('generateLayer works', () => {
