@@ -41,7 +41,7 @@ TGVE supports separately-provided geography (in GeoJSON) and point data sources 
 The following parameters can be passed to the TGVE app. Each parameter can be passed as an environment variable, with the exception of:
 - leftSidebarContent
 - data
-- viewport
+
 For example: `REACT_APP_GEOGRAPHY_URL` or when using TGVE as a component
 `<Tgve geographyURL="https://geo.com">`. For more on passing variables to a React app and
 the `REACT_APP_` prefix please see [React docs](https://create-react-app.dev/docs/adding-custom-environment-variables).
