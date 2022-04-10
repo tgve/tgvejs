@@ -123,7 +123,7 @@ test("updateHistory works", () => {
   }));
   //expect(history.location).toBeUndefined()
   // updateHistory({defaultURL: "blah"})
-  console.log("Here is the history:", mockHistoryPush)
+  // console.log("Here is the history:", mockHistoryPush)
 })
 
 export {
