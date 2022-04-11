@@ -11,6 +11,16 @@ test('DeckSidebar with data', async () => {
   expect(await screen
     .queryByText(/nothing/i))
     .not.toBeInTheDocument()
+
+  // open settings tab
+  fireEvent.click(
+    (await screen.findAllByRole('tab'))[1]
+  )
+
+  // generate hexplot
+  fireEvent.click(
+    (await screen.findAllByRole('checkbox'))[0]
+  )
 })
 
 test('DeckSidebar with no data', async () => {
@@ -31,8 +41,6 @@ test('DeckSidebar with no data', async () => {
     await screen.findByText(/close/i)
   )
 
-  // screen.debug()
-  // open
 })
 
 test('Shallow and mount - Charts', () => {
