@@ -98,7 +98,7 @@ export default function Variables(props) {
                 )
               )
             )
-            return <>
+            return <React.Fragment key={key}>
               {humanize(key)}
               <MultiSelect
                 title={"Available (" + columnValues.length + ")"}
@@ -117,7 +117,7 @@ export default function Variables(props) {
                     .map(e => ({ id: e + "", value: e + "" }))
                 }
               />
-            </>
+            </React.Fragment>
           })
       }
     </div>

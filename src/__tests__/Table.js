@@ -18,7 +18,7 @@ test('Table renders empty', () => {
 test('Table renders with data', async () => {
   //header not tested in npm
   render(<Table data={geojson.features} />);
-  screen.debug()
+
   expect(screen
     .queryByText(/datetime/i))
     .toBeInTheDocument()
