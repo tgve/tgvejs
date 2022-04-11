@@ -29,7 +29,7 @@ jobs:
     - name: install react & react-dom
       run: npm i react react-dom
     - name: npm test
-      run: npm test
+      run: npm test && npm run coverage
 
     - name: Codecov
       uses: codecov/codecov-action@v2
