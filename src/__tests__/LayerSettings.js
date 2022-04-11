@@ -5,12 +5,10 @@ import LayerSettings from '../components/settings/LayerSettings'
 import { sample20CasualtiesGeojson as geojson } from './utils';
 
 test('LayerSettings renders empty', () => {
-  //header not tested in npm
   render(<LayerSettings />);
 })
 
 test('LayerSettings renders geojson settings', async () => {
-  //header not tested in npm
   const {container} = render(<LayerSettings
     columnNames={
       Object.keys(geojson.features[0].properties)
@@ -26,7 +24,6 @@ test('LayerSettings renders geojson settings', async () => {
 })
 
 test('LayerSettings renders grid settings', async () => {
-  //header not tested in npm
   const {container} = render(<LayerSettings
     columnNames={
       Object.keys(geojson.features[0].properties)
