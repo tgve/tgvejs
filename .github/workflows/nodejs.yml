@@ -33,6 +33,7 @@ jobs:
 
     - name: Codecov
       uses: codecov/codecov-action@v2
+      if: ${{matrix.node-version == '14.x'}}
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         flags: unittests
