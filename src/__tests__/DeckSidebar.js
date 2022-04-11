@@ -6,6 +6,9 @@ import Charts from '../components/decksidebar/Charts';
 import { sampleGeojson } from './utils';
 
 test('DeckSidebar with data', async () => {
+  // do not use sample20CasualtiesGeojson
+  // it will hit Plotly
+  // for now cannot mock it
   render(<DeckSidebar data={sampleGeojson.features} />);
 
   expect(await screen
