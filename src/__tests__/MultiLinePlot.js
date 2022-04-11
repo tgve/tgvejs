@@ -10,17 +10,15 @@ test('MultiLinePlot empty', () => {
 
 })
 
-test('MultiLinePlot with data', () => {
+test('MultiLinePlot with data', async () => {
   const col = "day_of_week"
   const data = xyObjectByProperty(
     geojson.features, col
   )
-  console.log(data);
   render(<MultiLinePlot data={[data]} title={humanize(col)}/>);
-  screen.debug()
 
-  // expect(await screen
-  //   .findByText(/day of week/i))
-  //   .toBeInTheDocument()
+  expect(await screen
+    .findByText(/day of week/i))
+    .toBeInTheDocument()
 
 })
