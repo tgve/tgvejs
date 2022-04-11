@@ -15,12 +15,10 @@ test('MultiLinePlot with data', () => {
   const data = xyObjectByProperty(
     geojson.features, col
   )
-  console.log(data);
   render(<MultiLinePlot data={[data]} title={humanize(col)}/>);
-  screen.debug()
 
-  // expect(await screen
-  //   .findByText(/day of week/i))
-  //   .toBeInTheDocument()
+  expect(await screen
+    .findByText(/day of week/i))
+    .toBeInTheDocument()
 
 })

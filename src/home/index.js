@@ -246,7 +246,7 @@ export default class Home extends React.Component {
 
   _fitViewport(newData, bboxLonLat) {
     this.setState({
-      viewport: getViewPort(this.state, newData, bboxLonLat) })
+      viewport: getViewPort(this.state, newData, bboxLonLat, this.map) })
   }
 
   /**

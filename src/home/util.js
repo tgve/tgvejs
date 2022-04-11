@@ -375,7 +375,7 @@ const initViewState = (props) => {
   return init;
 }
 
-const getViewPort = (state, newData, bboxLonLat) => {
+const getViewPort = (state, newData, bboxLonLat, map) => {
   const data = newData || state.data;
   if ((!data || data.length === 0) && !bboxLonLat) return;
   const bounds = bboxLonLat ?
@@ -383,7 +383,7 @@ const getViewPort = (state, newData, bboxLonLat) => {
   const center = bboxLonLat ?
     [bboxLonLat.lon, bboxLonLat.lat] : centroid(data).geometry.coordinates;
 
-  !this.map || this.map.fitBounds(bounds, { padding: 100 })
+  map || map.fitBounds(bounds, { padding: 100 })
 
   return ({
     ...state.viewport,
