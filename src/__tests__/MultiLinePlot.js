@@ -10,7 +10,7 @@ test('MultiLinePlot empty', () => {
 
 })
 
-test('MultiLinePlot with data', () => {
+test('MultiLinePlot with data', async () => {
   const col = "day_of_week"
   const data = xyObjectByProperty(
     geojson.features, col
