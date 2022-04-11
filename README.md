@@ -126,7 +126,8 @@ If you are not sure, please see the [`app`](https://github.com/tgve/app) reposit
 ### Testing
 
 The package follows `create-react-app` testing kits and uses mainly
-`jest`. Run `npm run test`.
+`@testing-library/react` and `jest`. 
+Run `npm run test`.
 
 ## Contributing
 
