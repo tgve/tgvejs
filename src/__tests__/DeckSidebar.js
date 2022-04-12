@@ -47,7 +47,7 @@ test('DeckSidebar with no data', async () => {
 })
 
 test('Shallow and mount - Charts', () => {
-  // see sampleGeojson for 'prop1'
+  // see sampleGeojson for 'prop0'
   const { container } = render(
     <Charts
       data={sampleGeojson.features}

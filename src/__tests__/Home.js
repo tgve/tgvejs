@@ -135,6 +135,31 @@ test("Home call mock screenshot", () => {
   expect(screenshot).toHaveBeenCalled()
 })
 
+test("Home geo & csv", () => {
+  const unmocked = global.fetch
+
+  global.fetch = () =>
+    Promise.resolve({
+      json: () => Promise.resolve(sampleGeojson),
+      text: () => Promise.resolve(`
+        ranking,la_code,name,ranking_count
+        Good,E06000001,Hartlepool,32
+        Good,E06000002,Middlesbrough,54
+        Good,E06000003,Redcar and Cleveland,44
+      `),
+
+    })
+  const gurl = "https://raw.githubusercontent.com/saferactive/tgve/main/las-only-code.geojson"
+  const durl = "https://raw.githubusercontent.com/tgve/example-data/main/schools/data.csv"
+  render(<Home
+    geographyURL={gurl}
+    defaultURL={durl}
+    geographyColumn="la_code" />)
+
+  global.fetch = unmocked
+})
+
+
 test("spatial filterGeojson works", () => {
   // see sampleGeojson for the lng/lats used below
   const noResult = {

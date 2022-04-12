@@ -4,7 +4,6 @@ import { render, screen } from '@testing-library/react';
 import URL from '../components/URL'
 
 test('Shallow and mount', () => {
-  //header not tested in npm
   render(<URL />);
 
   expect(screen

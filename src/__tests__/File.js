@@ -1,11 +1,11 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import File from '../components/File'
+import Uploader from '../components/File'
 
 test('Shallow and mount', async () => {
-  const file = new File(["one,two,three", "dummy.csv", {type: "text/plain"}])
-  const { container } = render(<File />);
+  const file = new File(["one,two,three"], "dummy.csv", {type: "text/plain"})
+  const { container } = render(<Uploader />);
 
   const uploader = container.querySelector('input')
   await fireEvent.change(uploader, {
