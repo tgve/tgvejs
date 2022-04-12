@@ -8,6 +8,7 @@ import {
 } from '../home/util';
 import { sampleGeojson } from './utils';
 import { LAYERS } from '../components/settings/settingsUtils';
+import { screenshot } from '../utils/utils';
 
 // see https://jestjs.io/docs/mock-functions
 jest.mock('../home/util', () => {
@@ -19,6 +20,17 @@ jest.mock('../home/util', () => {
     getViewPort: jest.fn((state) => state.viewport)
   }
 })
+
+jest.mock('../utils/utils', () => {
+  const originalModule = jest.requireActual('../utils/utils')
+  return {
+    __esModule: true,
+    ...originalModule,
+    // just return the state viewport
+    screenshot: jest.fn(() => {})
+  }
+})
+
 
 test('Home shallow and mount', async () => {
   await render(<Home location={{ search: null }} />)
@@ -82,7 +94,7 @@ test('Home - hide Charts', async () => {
   //   .toEqual({})
 })
 
-test('generateLayer works', () => {
+test('Home generateLayer works', () => {
   let result = generateLayer(
     {}, {}, () => { }
   )
@@ -101,6 +113,26 @@ test('generateLayer works', () => {
   expect(['polygon', 'line', 'point'])
     .toContain(result.geomType)
   expect(result.alert).toBe(null)
+})
+
+// test('Home take screenshot', async () => {
+//   await render(<Home data={sampleGeojson} />)
+//   // let iTags = await container.querySelectorAll('i')
+//   // querySelector can find tag names
+//   screenshot(
+//     {getCanvas:() => ({
+//       width: 600, height: 400
+//     }),},
+//     {redraw: () => {}},
+//     () => {}
+//   )
+//   // above fails and jest-mock-canvas
+//   // did not help so stop here.
+// })
+
+test("Home call mock screenshot", () => {
+  screenshot()
+  expect(screenshot).toHaveBeenCalled()
 })
 
 test("spatial filterGeojson works", () => {
