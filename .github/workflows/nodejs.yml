@@ -22,16 +22,16 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: npm install
-      run: npm i
+    - name: yarn install
+      run: yarn
       env:
         CI:
 
     - name: install react & react-dom
-      run: npm i react react-dom
+      run: yarn add react react-dom
 
-    - name: Test
-      run: npm run coverage
+    - name: Tests (cov)
+      run: yarn run coverage
 
     - name: Codecov
       uses: codecov/codecov-action@v2
