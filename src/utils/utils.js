@@ -187,7 +187,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
  */
   function generateOptions(name, data, renderTooltip) {
     const layerProps = getLayerProps(name);
-    if(!layerProps.class || !layerProps.class["value"]) return null
+    if(!layerProps || !layerProps.class || !layerProps.class["value"]) return null
     const layerOptions = {}, updateTriggers = {};
     Object.keys(layerProps).forEach(key => {
       const type = layerProps[key] && layerProps[key].type;

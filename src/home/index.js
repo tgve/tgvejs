@@ -17,11 +17,9 @@
 import React from 'react';
 import DeckGL from 'deck.gl';
 import MapGL, {
-  NavigationControl, FlyToInterpolator,
+  NavigationControl,
   ScaleControl
 } from 'react-map-gl';
-import centroid from '@turf/centroid';
-import bbox from '@turf/bbox';
 import { throttle } from 'lodash';
 
 import {
@@ -35,7 +33,8 @@ import DeckSidebarContainer from
 import '../App.css';
 import Tooltip from '../components/tooltip';
 import { isObject } from '../utils/JSUtils';
-import { generateLayer, initViewState } from './util';
+import { generateLayer, initViewState,
+  getViewPort } from './util';
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -246,24 +245,8 @@ export default class Home extends React.Component {
   }
 
   _fitViewport(newData, bboxLonLat) {
-    const data = newData || this.state.data;
-    if ((!data || data.length === 0) && !bboxLonLat) return;
-    const bounds = bboxLonLat ?
-      bboxLonLat.bbox : bbox(data)
-    const center = bboxLonLat ?
-      [bboxLonLat.lon, bboxLonLat.lat] : centroid(data).geometry.coordinates;
-
-    !this.map || this.map.fitBounds(bounds, { padding: 100 })
-
-    const viewport = {
-      ...this.state.viewport,
-      longitude: center[0],
-      latitude: center[1],
-      transitionDuration: 500,
-      transitionInterpolator: new FlyToInterpolator(),
-      // transitionEasing: d3.easeCubic
-    };
-    this.setState({ viewport })
+    this.setState({
+      viewport: getViewPort(this.state, newData, bboxLonLat, this.map) })
   }
 
   /**

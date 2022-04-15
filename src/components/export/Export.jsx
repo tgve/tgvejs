@@ -43,7 +43,7 @@ export default function Export(props) {
           </Block>
         )}
       >
-        <i>
+        <i role="button" alt="save, download or share">
           {iWithFaName("fa fa-share-alt-square", undefined)}
           {
             notification &&

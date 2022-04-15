@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Slider } from 'baseui/slider';
-import { XYPlot, XAxis, YAxis, HexbinSeries, Hint } from 'react-vis';
+import { XYPlot, XAxis, YAxis, HexbinSeries } from 'react-vis';
 
 export default class HexHeatmap extends Component {
   state = {

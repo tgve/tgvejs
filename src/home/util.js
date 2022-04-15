@@ -2,6 +2,9 @@ import React from 'react';
 import { difference, isString } from 'underscore';
 import booleanContains from '@turf/boolean-contains';
 import { polygon } from '@turf/helpers';
+import centroid from '@turf/centroid';
+import bbox from '@turf/bbox';
+import { FlyToInterpolator } from 'react-map-gl';
 
 import {
   generateDeckLayer, suggestDeckLayer,
@@ -365,14 +368,35 @@ const initViewState = (props) => {
       });
     });
   }
-  if(layerName
+  if (layerName
     && new RegExp(LAYERS_2D_REGEX, "i").test(layerName)) {
     init["pitch"] = 0
   }
   return init;
 }
 
+const getViewPort = (state, newData, bboxLonLat, map) => {
+  const data = newData || state.data;
+  if ((!data || data.length === 0) && !bboxLonLat) return;
+  const bounds = bboxLonLat ?
+    bboxLonLat.bbox : bbox(data)
+  const center = bboxLonLat ?
+    [bboxLonLat.lon, bboxLonLat.lat] : centroid(data).geometry.coordinates;
+
+  map || map.fitBounds(bounds, { padding: 100 })
+
+  return ({
+    ...state.viewport,
+    longitude: center[0],
+    latitude: center[1],
+    transitionDuration: 500,
+    transitionInterpolator: new FlyToInterpolator(),
+    // transitionEasing: d3.easeCubic
+  });
+}
+
 export {
   generateLayer,
-  initViewState
+  initViewState,
+  getViewPort
 }

@@ -1,24 +1,29 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { shallow } from 'enzyme';
-import { BaseProvider, DarkTheme, LightTheme } from 'baseui';
 
 import App from './App';
 
 test('renders without crashing', () => {
-  const div = document.createElement('div');
-  const { unmount } = render(<App />, div);
-  unmount();
+  render(<App />);
 });
 
-test('App defaults to dark theme when given no prop', () => {
-  const m = shallow(<App />);
-  expect(m.find(BaseProvider).prop('theme')).toEqual(DarkTheme);
+// in dark theme these are the classes
+// assigned to the parent div
+// ae af ag ah
+// in lighttheme:
+// dg af ag ah
+test('App defaults to dark theme when given no prop', async () => {
+  render(<App />);
+  expect(await screen
+    .getByText(/nothing/i).closest('div'))
+    .toHaveClass('ae af ag ah')
 });
 
-test('App can be set to light theme via props', () => {
-  const n = shallow(<App dark={false}/>);
-  expect(n.find(BaseProvider).prop('theme')).toEqual(LightTheme);
+test('App can be set to light theme via props', async () => {
+  render(<App dark={false} />);
+  expect(await screen
+    .getByText(/nothing/i).closest('div'))
+    .toHaveClass('dg af ag ah')
 });
 
 test('App snapshot dark theme', () => {
@@ -27,44 +32,35 @@ test('App snapshot dark theme', () => {
 });
 
 test('App snapshot light theme', () => {
-  const { asFragment } = render(<App dark={false}/>);
+  const { asFragment } = render(<App dark={false} />);
   expect(asFragment()).toMatchSnapshot();
 });
 
 test("Test empty state", () => {
-  render(<App dark={false}/>);
+  render(<App dark={false} />);
   expect(screen.getByText('Nothing to show')).toBeInTheDocument();
 });
 
-test('App - set props', () => {
-  const m = shallow(<App/>).find('Home');
-  expect(m.props().hideCharts).toEqual(undefined);
-  expect(m.props().hideChartGenerator).toEqual(undefined);
+test('App - API params via ENV', async () => {
+  const { rerender } = render(<App />)
+  expect(await screen
+    .queryByRole("heading", { level: 2 }))
+    .toBeInTheDocument()
 
-  const n = shallow(<App hideCharts={true}/>).find('Home');
-  expect(n.props().hideCharts).toEqual(true);
-})
-
-test('App - API params ENV',() => {
-  process.env.REACT_APP_DEFAULT_URL = "https://react.com"
-  process.env.REACT_APP_GEOGRAPHY_URL = "geographyURL"
-  process.env.REACT_APP_GEOGRAPHY_COLUMN = "geographyColumn"
-  process.env.REACT_APP_COLUMN = "column"
-  process.env.REACT_APP_TOOLTIP_COLUMNS = "tooltipColumns"
-  process.env.REACT_APP_LAYER_NAME = "layerName"
-  process.env.REACT_APP_DARK = true
-  process.env.REACT_APP_HIDE_CHART_GENERATOR = true
-  process.env.REACT_APP_HIDE_CHARTS = true
   process.env.REACT_APP_HIDE_SIDEBAR = true
-  const m = shallow(<App />).find('Home');
-  expect(m.props().defaultURL).toEqual("https://react.com");
-  expect(m.props().geographyURL).toEqual("geographyURL");
-  expect(m.props().geographyColumn).toEqual("geographyColumn");
-  expect(m.props().column).toEqual("column");
-  expect(m.props().tooltipColumns).toEqual("tooltipColumns");
-  expect(m.props().layerName).toEqual("layerName");
-  expect(m.props().dark).toEqual(true);
-  expect(m.props().hideChartGenerator).toEqual(true);
-  expect(m.props().hideCharts).toEqual(true);
-  expect(m.props().hideSidebar).toEqual(true);
+
+  rerender(<App />);
+  expect(await screen
+    .queryByRole("heading", { level: 2 }))
+    .toBeNull()
+  expect(await screen
+    .queryByRole("heading", { level: 6 }))
+    .toBeNull()
+
+  process.env.REACT_APP_DARK = false
+  process.env.REACT_APP_HIDE_SIDEBAR = false
+  rerender(<App />);
+  expect(await screen
+    .getByText(/nothing/i).closest('div'))
+    .toHaveClass('dg af ag ah')
 })
