@@ -17,11 +17,11 @@ line {
 }
 
 .d3-line-grid {
-  stroke: #555555; 
+  stroke: #555555;
   stroke-width:0.1;
 }
 .d3-axis-labels {
   font: italic 11px;
   fill: white;
   stroke: none;
-} 
+}

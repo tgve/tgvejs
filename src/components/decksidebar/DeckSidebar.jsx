@@ -1,39 +1,32 @@
 import React from 'react';
-import {
-  Tabs, Tab, FormGroup, InputGroup,
-  FormControl, Glyphicon, Checkbox
-} from 'react-bootstrap';
+
 import { Button, KIND, SIZE } from 'baseui/button';
+import { Input } from 'baseui/input';
+import { FormControl } from 'baseui/form-control';
+import { Checkbox, StatefulCheckbox } from 'baseui/checkbox';
+import { StatefulTabs, Tab, StyledTabPanel } from "baseui/tabs-motion";
 
 import './DeckSidebar.css';
 import DataInput from '../DataInput';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
-  percentDiv,
   searchNominatom, firstLastNCharacters,
   humanize, getMainMessage, theme
 } from '../../utils/utils';
-import { VerticalBarSeries } from 'react-vis';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
-import { propertyCount, arrayPlotProps } from '../../utils/geojsonutils';
 import ColorPicker from '../ColourPicker';
 import Modal from '../Modal';
 import DataTable from '../Table';
 
-import { yearSlider } from '../showcases/Widgets';
-import {
-  popPyramidPlot, plotByPropertyByDate,
-  plotByProperty
-} from '../showcases/plots';
-import SeriesPlot from '../showcases/SeriesPlot';
 import { isEmptyOrSpaces } from '../../utils/JSUtils';
 import MultiSelect from '../MultiSelect';
 import AddVIS from '../AddVIS';
-import Boxplot from '../boxplot/Boxplot';
 import LayerSettings from '../settings/LayerSettings';
 import { LAYERS } from '../settings/settingsUtils'
 import Export from '../export/Export';
+import Charts from './Charts';
+import { headerComponent } from './utils';
 
 export default class DeckSidebar extends React.Component {
   constructor(props) {
@@ -42,30 +35,39 @@ export default class DeckSidebar extends React.Component {
       radius: 100,
       year: "", // required to reset state
       reset: false,
-      multiVarSelect: {},
+      multiVarSelect: props.multiVarSelect || {},
       barChartVariable: "road_type",
       datasetName: props.datasetName
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { data, alert, loading, layerStyle, column } = this.props;
+    const { data, alert, layerName, column,
+      subsetBoundsChange, hideChartGenerator,
+      hideCharts } = this.props;
     const { reset, year, barChartVariable } = this.state;
-    // avoid rerender as directly operating on document.get* 
+    // avoid rerender as directly operating on document.get*
     // does not look neat. Keeping it React way.
-    if (reset !== nextState.reset ||
-      year !== nextState.year ||
-      column !== nextProps.column ||
-      alert !== nextProps.alert ||
-      loading !== nextProps.loading ||
-      layerStyle !== nextProps.layerStyle ||
-      barChartVariable !== nextState.barChartVariable) return true;
-    //TODO:  a more functional way is needed
+    if (reset !== nextState.reset
+      || year !== nextState.year
+      || alert !== nextProps.alert
+      || subsetBoundsChange !== nextProps.subsetBoundsChange
+      || barChartVariable !== nextState.barChartVariable
+      // API change
+      || column !== nextProps.column
+      || layerName !== nextProps.layerName
+      || hideChartGenerator !== nextProps.hideChartGenerator
+      || hideCharts !== nextProps.hideCharts ) {
+      return true
+    };
+    //TODO: a bit better now but more is needed.
+    // this solves a lag in large datasets
+    // a more functional way is needed
     // e.g JSON.stringify like in Welcome.js etc
     // consider change in unfilteredData too
     if (!data && !nextProps.data) return false
-    if (data && nextProps && nextProps.data &&
-      JSON.stringify(data) === JSON.stringify(nextProps.data)) {
+    const r = Math.floor(Math.random() * data.length)
+    if (JSON.stringify(data[r]) === JSON.stringify(nextProps.data[r])) {
       return false
     }
     return true;
@@ -76,11 +78,11 @@ export default class DeckSidebar extends React.Component {
    * Partly because we like to load from a URL.
    */
   render() {
-    const { year, subsetBoundsChange, multiVarSelect,
+    const { multiVarSelect,
       barChartVariable, datasetName } = this.state;
     const { onLayerOptionsCallback,
       onSelectCallback, data, colourCallback, unfilteredData,
-      toggleSubsetBoundsChange, urlCallback, alert, layerStyle,
+      toggleSubsetBoundsChange, urlCallback, alert, layerName,
       onlocationChange, column, dark, toggleOpen, toggleHexPlot,
       hideChartGenerator, hideCharts
     } = this.props;
@@ -89,20 +91,11 @@ export default class DeckSidebar extends React.Component {
 
     // TODO: more comprehensive method needed
     // last reg is "" string which is undefined
-    const withRadius = !layerStyle ||
-      new RegExp("grid|sgrid|hex|scatter", "i").test(layerStyle);
-
-    const severity_data = propertyCount(data, "accident_severity");
-    let columnDomain = [];
+    const withRadius = !layerName ||
+      new RegExp("grid|sgrid|hex|scatter", "i").test(layerName);
 
     const columnNames = notEmpty && Object.keys(data[0].properties)
       .filter(p => !isEmptyOrSpaces(p));
-
-    const columnPlot = !hideCharts && notEmpty ?
-      arrayPlotProps(data,
-        //prop
-        column || barChartVariable
-      ) : [];
 
     const resetState = (urlOrName, button) => {
       this.setState({
@@ -113,6 +106,15 @@ export default class DeckSidebar extends React.Component {
         datasetName: urlOrName || this.props.datasetName
       })
     }
+
+    const TabOverrides = {
+      TabPanel: {
+        component: function TabPanelOverride(props) {
+          return <StyledTabPanel {...props} $pad={false} />;
+        }
+      }
+    };
+
     return (
       <>
         <div
@@ -121,7 +123,7 @@ export default class DeckSidebar extends React.Component {
           }}
           className="side-panel">
           <RBAlert alert={alert} />
-          {this._headerComponent(dark,
+          {headerComponent(
             <><h2>{getMainMessage(data, unfilteredData)}</h2>
               {notEmpty &&
                 <h6 className="truncate">
@@ -158,55 +160,22 @@ export default class DeckSidebar extends React.Component {
               <Modal
                 toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
                 component={<DataTable data={data} />} />}
-            <Export data={data} notEmpty={notEmpty} 
-            screenshot={this.props.screenshot}/>
+            <Export data={data} notEmpty={notEmpty}
+              map={this.props.map} deck={this.props.deck} />
           </div>
           <div className="side-panel-body">
             <div className="side-panel-body-content">
-              {/* range of two values slider is not native html */
-                yearSlider({
-                  data: unfilteredData, year, multiVarSelect,
-                  // for callback we get { year: "",multiVarSelect }
-                  onSelectCallback, callback: (changes) => this.setState(changes)
-                })
-              }
-              <br />
-              {/* TODO: generate this declaritively too */}
-              {
-                severity_data && severity_data.map(each =>
-                  percentDiv(each.x, 100 * each.y / data.length, () => {
-                    if (multiVarSelect && multiVarSelect['accident_severity'] &&
-                      multiVarSelect['accident_severity'].has(each.x)) {
-                      delete multiVarSelect['accident_severity'];
-                    } else {
-                      multiVarSelect['accident_severity'] = new Set([each.x]);
-                      this.setState({ multiVarSelect })
-                    }
-                    onSelectCallback &&
-                      onSelectCallback(Object.keys(multiVarSelect).length === 0 ?
-                        { what: '' } : { what: 'multi', selected: multiVarSelect })
-                  }, dark))
-              }
               <hr style={{ clear: 'both' }} />
-              {columnDomain.length > 1 &&
-                <Boxplot data={columnDomain} />}
-
-              <Tabs defaultActiveKey={"1"} id="main-tabs">
-                <Tab eventKey="1" title={
+              <StatefulTabs initialState={{ activeKey: "0" }} id="main-tabs">
+                <Tab title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-info" />
-                }>
-                  {/* pick a column and vis type */}
-                  {!hideChartGenerator && this._panel(dark,
+                } overrides={TabOverrides}>
+                  {!hideChartGenerator &&
                     <AddVIS data={data} dark={dark} plotStyle={{ width: 270, margin: 10 }} />
-                  )}
-                  {/* distribution example */}
-                  {notEmpty && plotByProperty(
-                    data.filter(d => Boolean(d.properties["age_of_casualty"])), 
-                    "age_of_casualty", dark, undefined, true)}
-                  {plotByPropertyByDate(data, "sex_of_casualty", dark)}
+                  }
                   {notEmpty && columnNames.length > 0 &&
-                    layerStyle !== "grid" &&
+                    layerName !== "grid" &&
                     <>
                       <h6>Column for layer:</h6>
                       <MultiSelect
@@ -232,78 +201,53 @@ export default class DeckSidebar extends React.Component {
                       />
                     </>
                   }
-                  {!hideCharts && <SeriesPlot
-                    dark={dark}
-                    data={columnPlot.data}
-                    type={VerticalBarSeries}
-                    onValueClick={(datapoint) => {
-                      // convert back to string
-                      multiVarSelect[column ||
-                        barChartVariable] = new Set([datapoint.x + ""]);
-                      this.setState({ multiVarSelect })
-                      onSelectCallback &&
-                        onSelectCallback({ what: 'multi', selected: multiVarSelect })
-                    }}
-                    onDragSelected={(datapoints) => {
-                      multiVarSelect[column ||
-                        barChartVariable] = new Set(datapoints.map(e => e + ""));
-                      this.setState({ multiVarSelect })
-                      onSelectCallback &&
-                        onSelectCallback({ what: 'multi', selected: multiVarSelect })
-                    }}
-                    plotStyle={{ marginBottom: 100 }} noYAxis={true}
-
-                  />}
-                  {!hideCharts
-                    && popPyramidPlot({ data, dark: dark })}
+                  {!hideCharts && <Charts {...this.props}/>}
                 </Tab>
-                <Tab eventKey="2" title={
+                <Tab title={
                   <i style={{ fontSize: '2rem' }}
                     className="fa fa-sliders" />
-                }>
+                } overrides={TabOverrides}>
                   {notEmpty &&
-                    this._headerComponent(dark,
+                    headerComponent(
                       <ColorPicker colourCallback={(color) =>
                         typeof colourCallback === 'function' &&
                         colourCallback(color)} />
                     )
                   }
                   {notEmpty &&
-                    this._panel(dark,
-                      <>
-                        <h6>Deck Layer:</h6>
-                        <MultiSelect
-                          title="Choose Layer"
-                          single={true}
-                          values={
-                            // TODO:filter based on data
-                            LAYERS.map(e =>
-                              ({ id: humanize(e), value: e }))
+                    <>
+                      <h6>Deck Layer:</h6>
+                      <MultiSelect
+                        title="Choose Layer"
+                        single={true}
+                        values={
+                          // TODO:filter based on data
+                          LAYERS.map(e =>
+                            ({ id: humanize(e), value: e }))
+                        }
+                        onSelectCallback={(selected) => {
+                          // array of seingle {id: , value: } object
+                          if (selected && selected[0]) {
+                            const ls = selected[0].value;
+                            this.setState({ layerName: ls });
+                            typeof onSelectCallback === 'function' &&
+                              onSelectCallback({
+                                what: 'layerName', selected: ls
+                              });
                           }
-                          onSelectCallback={(selected) => {
-                            // array of seingle {id: , value: } object
-                            if (selected && selected[0]) {
-                              const ls = selected[0].value;
-                              this.setState({ layerStyle: ls });
-                              typeof onSelectCallback === 'function' &&
-                                onSelectCallback({
-                                  what: 'layerStyle', selected: ls
-                                });
-                            }
-                          }}
-                        />
-                        <LayerSettings
-                          dark={dark}
-                          layerName={layerStyle}
-                          columnNames={columnNames}
-                          onLayerOptionsCallback={(layerOptions) => {
-                            typeof (onLayerOptionsCallback) === 'function' &&
-                              onLayerOptionsCallback({ ...layerOptions })
-                          }} />
-                      </>)
+                        }}
+                      />
+                      <LayerSettings
+                        layerName={layerName}
+                        columnNames={columnNames}
+                        onLayerOptionsCallback={(layerOptions) => {
+                          typeof (onLayerOptionsCallback) === 'function' &&
+                            onLayerOptionsCallback({ ...layerOptions })
+                        }} />
+                    </>
                   }
                   {
-                    this._headerComponent(dark,
+                    headerComponent(
                       <>
                         Map Styles
                         <br />
@@ -320,51 +264,50 @@ export default class DeckSidebar extends React.Component {
                       </>)
                   }
                   {notEmpty && withRadius &&
-                    <Checkbox
+                    <StatefulCheckbox
                       onChange={() => toggleHexPlot && toggleHexPlot()}
-                    >Hex Plot</Checkbox>
+                    >Hex Plot</StatefulCheckbox>
                   }
                   {notEmpty &&
                     <Checkbox
-                      onChange={() => {
-                        this.setState({ subsetBoundsChange: !subsetBoundsChange })
-                        if (toggleSubsetBoundsChange && typeof (toggleSubsetBoundsChange) === 'function') {
-                          toggleSubsetBoundsChange(!subsetBoundsChange) //starts with false
-                        }
-                      }}
+                      checked={this.props.subsetBoundsChange}
+                      onChange={() =>
+                        typeof (toggleSubsetBoundsChange) === 'function'
+                        && toggleSubsetBoundsChange()
+                      }
                     >Subset by map boundary</Checkbox>
                   }
                 </Tab>
                 {unfilteredData && unfilteredData.length > 0 &&
-                  <Tab eventKey="3" title={
+                  <Tab title={
                     <i style={{ fontSize: '2rem' }}
                       className="fa fa-filter" >{
                         multiVarSelect && Object.keys(multiVarSelect).length ?
                           Object.keys(multiVarSelect).length : ""
                       }</i>
-                  }>
+                  } overrides={TabOverrides}>
                     {
-                      this._headerComponent(dark, <Variables
-                        dark={dark}
-                        multiVarSelect={multiVarSelect}
-                        onSelectCallback={(mvs) => {
-                          typeof (onSelectCallback) === 'function' &&
-                            onSelectCallback(
-                              Object.keys(mvs).length === 0 ?
-                                { what: '' } : { what: 'multi', selected: mvs })
-                          this.setState({ multiVarSelect: mvs })
-                        }}
-                        unfilteredData={unfilteredData} />
+                      headerComponent(
+                        <Variables
+                          multiVarSelect={multiVarSelect}
+                          onSelectCallback={(mvs) => {
+                            typeof (onSelectCallback) === 'function' &&
+                              onSelectCallback(
+                                Object.keys(mvs).length === 0 ?
+                                  { what: '' } : { what: 'multi', selected: mvs })
+                            this.setState({ multiVarSelect: mvs })
+                          }}
+                          unfilteredData={unfilteredData} />
                       )
                     }
                   </Tab>}
-              </Tabs>
+              </StatefulTabs>
             </div>
             {/* TODO: find the right place for this */}
             {this.props.leftSidebarContent}
             {/* TODO: find the right place for above */}
             <div className="space"></div>
-            {notEmpty && this._headerComponent(dark, "Vis: " + (layerStyle || "None"))}
+            {notEmpty && headerComponent("Vis: " + (layerName || "None"))}
             <form className="search-form" onSubmit={(e) => {
               e.preventDefault();
               searchNominatom(this.state.search, (json) => {
@@ -377,52 +320,19 @@ export default class DeckSidebar extends React.Component {
                   })
               })
             }}>
-              <FormGroup>
-                <InputGroup>
-                  <FormControl
-                    style={{
-                      background: dark ? '#242730' : 'white',
-                      color: dark ? 'white' : 'black'
-                    }}
-                    onChange={(e) => this.setState({ search: e.target.value })}
-                    placeholder="fly to..." type="text" />
-                  <InputGroup.Addon
-                    style={{
-                      background: dark ? '#242730' : 'white',
-                      color: dark ? 'white' : 'black'
-                    }}>
-                    <Glyphicon glyph="search" />
-                  </InputGroup.Addon>
-                </InputGroup>
-              </FormGroup>
+              <FormControl >
+                <Input
+                  id="search-nominatum"
+                  placeholder="fly to ..."
+                  value={this.state.search}
+                  onChange={({ target: { value } }) => this.setState({ search: value })}
+                  endEnhancer="🌐"
+                />
+              </FormControl>
             </form>
           </div>
         </div>
       </>
     )
   }
-
-  _headerComponent(dark, content) {
-    return (
-      <div
-        style={{
-          marginTop: 2,
-          background: dark ? '#29323C' : '#eee'
-        }}
-        className="side-pane-header">
-        {content}
-      </div>)
-  }
-
-  _panel(dark, content) {
-    return (
-      <div
-        style={{
-          borderColor: dark ? '#29323C' : '#eee'
-        }}
-        className="side-panel-group">
-        {content}
-      </div>)
-  }
 }
-

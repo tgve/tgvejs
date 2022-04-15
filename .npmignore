@@ -1,13 +1,7 @@
 # https://docs.npmjs.com/misc/developers#keeping-files-out-of-your-package
-wip/
-R/
 public/
 .vscode/
-nodetes.md
 __snapshots__/
-Dockerfile
-refs.bib
 rollup.config.js
-semver.md
-notes.md
 notes/
+notes.md

@@ -10,20 +10,20 @@ import { isString } from '../../utils/JSUtils';
 
 export default function Export(props) {
   const [notification, setNotification] = useState(false)
-  const { notEmpty, screenshot } = props;
+  const { notEmpty, map, deck } = props;
 
   return (
     notEmpty ?
       <StatefulPopover
         placement="top"
         dismissOnEsc={false}
-        dismissOnClickOutside={false}
+        dismissOnClickOutside={true}
         accessibilityType={'tooltip'}
         content={({ close }) => (
           <Block padding="5px"
             data-html2canvas-ignore="true">
             {iWithFaName("fa fa-times", close)}
-            <Preview screenshot={screenshot} />
+            <Preview map={map} deck={deck} />
             {notEmpty && downloadButton(props.data)}
             {iWithFaName("fa fa-copy", () => {
               window.location &&
@@ -35,7 +35,7 @@ export default function Export(props) {
                       close()
                     } else {
                       // setNotification("Could not write to clipboard")
-                      window.prompt("Copy to clipboard: Ctrl+C, Enter", 
+                      window.prompt("Copy to clipboard: Ctrl+C, Enter",
                       window.location.href)
                     }
                   });
@@ -43,7 +43,7 @@ export default function Export(props) {
           </Block>
         )}
       >
-        <i>
+        <i role="button" alt="save, download or share">
           {iWithFaName("fa fa-share-alt-square", undefined)}
           {
             notification &&
@@ -59,7 +59,7 @@ export default function Export(props) {
             </Notification>
           }
         </i>
-      </StatefulPopover> : <Preview screenshot={screenshot} />
+      </StatefulPopover> : <Preview map={map} deck={deck} />
   )
 }
 
@@ -67,21 +67,26 @@ export default function Export(props) {
  * Generates a `data:text/json` URI and assigned
  * to a `href` attribute of the dom therefore
  * opened by browsers as a file.
- * 
+ *
  * @param {*} data feature array to be assembled as GeoJSON
- * @param {*} name optional filename 
- * @returns 
+ * @param {*} name optional filename
+ * @returns
  */
 const downloadButton = (data, name) => {
-  return (<StyledLink
-    download={name || "tgve-data.geojson"}
-    href={
-      "data:text/json;charset=utf-8," +
+  const anchorID = 'tgve-span-download'
+  return (<span
+    onClick={ () => {
+      const dataStr = "data:text/json;charset=utf-8," +
       encodeURIComponent(JSON.stringify({
         type: 'FeatureCollection',
         features: data
       }))
-    }>
+      const e = document.getElementById(anchorID);
+      e.setAttribute("href", dataStr);
+      e.setAttribute("download", name || "tgve-data.geojson");
+      e.click();
+    }}>
+      <a id={anchorID} style={{display:"none"}}></a>
     {<i
       style={{
         margin: 5,
@@ -89,7 +94,7 @@ const downloadButton = (data, name) => {
         fontSize: '1.5em',
       }}
       className={"fa fa-download"}></i>}
-  </StyledLink>)
+  </span>)
 }
 
 /**
@@ -97,11 +102,11 @@ const downloadButton = (data, name) => {
  * in the relevant SO answer with credit to community.
  * Fallback is ignored as document.execCommand("copy")
  * is deprecated.
- * 
+ *
  * https://stackoverflow.com/a/30810322
- * 
- * @param {*} text 
- * @returns 
+ *
+ * @param {*} text
+ * @returns
  */
 const copyTextToClipboard = (text, callback) => {
   if (!isString(text)) return

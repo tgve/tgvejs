@@ -13,7 +13,7 @@ import { isArray } from '../../utils/JSUtils';
  * Function currently only accepts ISO standard date/datetime.
  * This function generates a "Year" slider with option to set
  * year value given int he `option` object.
- * 
+ *
  * @param {*} options in the form of { data, year, multiVarSelect, onSelectCallback,
     callback }
  */
@@ -29,7 +29,7 @@ const yearSlider = (options) => {
   const years = getPropertyValues({ features: data }, yearColumn)
     // returned 2009-01-02, convert to 2009
     .map(e => DateTime.fromISO(e).year).sort()
-  
+
   if(!years || !isArray(years) || !years.length || years.length == 1) return null
 
   return <GenerateUI

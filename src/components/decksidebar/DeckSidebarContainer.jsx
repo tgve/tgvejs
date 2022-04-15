@@ -4,13 +4,13 @@ import DeckSidebar from "./DeckSidebar";
 import HexPlot from './HexPlot';
 
 /**
- * The idea of this component is to avoid 
+ * The idea of this component is to avoid
  * rerender in the main component, everytime
- * open/close is executed. 
- * 
- * It could add further states to save main component rerendering 
+ * open/close is executed.
+ *
+ * It could add further states to save main component rerendering
  * if need be.
- * 
+ *
  */
 export default function DeckSidebarContainer (props) {
   const [open, setOpen] = useState(!props.isMobile);
@@ -24,7 +24,7 @@ export default function DeckSidebarContainer (props) {
       <div className="side-panel-container"
         style={{ marginLeft: open ? 0 : '-320px' }}>
         <DeckSidebar {...props}
-          // Note: 
+          // Note:
           // *****************************
           // Hooks is strange see this
           // https://stackoverflow.com/a/54069332/2332101

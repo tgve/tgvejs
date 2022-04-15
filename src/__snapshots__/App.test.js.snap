@@ -1,382 +1,421 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`App - should create snapshot 1`] = `
-<main>
-  <div
-    className=""
-  >
-    <div>
-      <div
-        className="loader"
-        style={
-          Object {
-            "visibility": "visible",
-            "zIndex": -1,
-          }
-        }
-      />
-      <div
-        style={
-          Object {
-            "cursor": "grab",
-            "height": "768px",
-            "position": "relative",
-            "width": "1024px",
-          }
-        }
-      >
+exports[`App snapshot dark theme 1`] = `
+<DocumentFragment>
+  <main>
+    <div
+      class=""
+    >
+      <div>
         <div
-          style={
-            Object {
-              "height": "100%",
-              "position": "relative",
-              "width": "100%",
-            }
-          }
+          class="loader"
+          style="z-index: -1; visibility: visible;"
+        />
+        <div
+          style="position: relative; width: 1024px; height: 768px; cursor: grab; outline: none;"
+          tabindex="0"
         >
           <div
-            className=""
-            style={
-              Object {
-                "height": "100%",
-                "overflow": "hidden",
-                "position": "absolute",
-                "visibility": "inherit",
-                "width": "100%",
-              }
-            }
-          />
-          <div
-            style={
-              Object {
-                "height": 0,
-                "overflow": "visible",
-                "width": 0,
-              }
-            }
-          />
-        </div>
-      </div>
-      <div
-        className="side-panel-container"
-        style={
-          Object {
-            "marginLeft": 0,
-          }
-        }
-      >
-        <div
-          className="side-panel"
-          style={
-            Object {
-              "background": "#242730",
-              "color": "white",
-            }
-          }
-        >
-          <div
-            className="side-pane-header"
-            style={
-              Object {
-                "background": "#29323C",
-                "marginTop": 2,
-              }
-            }
-          >
-            <h2>
-              Nothing to show
-            </h2>
-          </div>
-          <div>
-            <button
-              className="ae af ag ah ai aj ak al am an ao ap aq ar as at au av aw ax ay az b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 ba bb bc bd be bf bg bh bi bj bk"
-              data-baseweb="button"
-              disabled={false}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-            >
-              Add data
-            </button>
-            <i
-              className="fa fa-save"
-              onClick={[Function]}
-              style={
-                Object {
-                  "cursor": "pointer",
-                  "fontSize": "1.5em",
-                  "margin": 5,
-                }
-              }
-            />
-          </div>
-          <div
-            className="side-panel-body"
+            style="position: relative; width: 100%; height: 100%;"
           >
             <div
-              className="side-panel-body-content"
+              class=""
+              style="position: absolute; width: 100%; height: 100%; overflow: hidden; visibility: inherit;"
+            />
+            <div
+              style="overflow: visible; height: 0px; width: 0px;"
+            />
+            <div
+              class="resize-triggers"
             >
-              <br />
-              <hr
-                style={
-                  Object {
-                    "clear": "both",
-                  }
-                }
-              />
               <div
-                id="main-tabs"
+                class="expand-trigger"
               >
-                <ul
-                  className="nav nav-tabs"
-                  role="tablist"
-                >
-                  <li
-                    className="active"
-                    role="presentation"
-                  >
-                    <a
-                      aria-controls="main-tabs-pane-1"
-                      aria-selected={true}
-                      href="#"
-                      id="main-tabs-tab-1"
-                      onClick={[Function]}
-                      onKeyDown={[Function]}
-                      role="tab"
-                    >
-                      <i
-                        className="fa fa-info"
-                        style={
-                          Object {
-                            "fontSize": "2rem",
-                          }
-                        }
-                      />
-                    </a>
-                  </li>
-                  <li
-                    className=""
-                    role="presentation"
-                  >
-                    <a
-                      aria-controls="main-tabs-pane-2"
-                      aria-selected={false}
-                      href="#"
-                      id="main-tabs-tab-2"
-                      onClick={[Function]}
-                      onKeyDown={[Function]}
-                      role="tab"
-                      tabIndex={-1}
-                    >
-                      <i
-                        className="fa fa-sliders"
-                        style={
-                          Object {
-                            "fontSize": "2rem",
-                          }
-                        }
-                      />
-                    </a>
-                  </li>
-                </ul>
                 <div
-                  className="tab-content"
+                  style="width: 1px; height: 1px;"
+                />
+              </div>
+              <div
+                class="contract-trigger"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="side-panel-container"
+          style="margin-left: 0px;"
+        >
+          <div
+            class="side-panel"
+            style="color: white; background: rgb(36, 39, 48);"
+          >
+            <div
+              class="ae af ag ah"
+            >
+              <h2>
+                Nothing to show
+              </h2>
+            </div>
+            <div>
+              <button
+                class="ai aj ak al am an ao ap aq ar as at au av aw ax ay az b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 ba bb bc bd be bf bg bh bi bj bk bl ae bm bn"
+                data-baseweb="button"
+              >
+                Add data
+              </button>
+              <i
+                class="fa fa-save"
+                style="margin: 5px; cursor: pointer; font-size: 1.5em;"
+              />
+            </div>
+            <div
+              class="side-panel-body"
+            >
+              <div
+                class="side-panel-body-content"
+              >
+                <hr
+                  style="clear: both;"
+                />
+                <div
+                  class="bo"
                 >
                   <div
-                    aria-hidden={false}
-                    aria-labelledby="main-tabs-tab-1"
-                    className="fade tab-pane active in"
-                    id="main-tabs-pane-1"
-                    role="tabpanel"
+                    aria-orientation="horizontal"
+                    class="bp bq br aj bs bt bu bv bw bx"
+                    data-baseweb="tab-list"
+                    role="tablist"
                   >
+                    <button
+                      aria-controls="tabs-bui1-tabpanel-0"
+                      aria-selected="true"
+                      class="b1 ax b5 b7 b6 b8 by ai ak bz c0 c1 c2 am an ao ap aq ar as at bl c3 ay az b0 au c4 b2 c5 c6 c7 b9 ba bb bc al"
+                      data-baseweb="tab"
+                      id="tabs-bui1-tab-0"
+                      role="tab"
+                      tabindex="0"
+                      type="button"
+                    >
+                      <i
+                        class="fa fa-info"
+                        style="font-size: 2rem;"
+                      />
+                    </button>
+                    <button
+                      aria-controls="tabs-bui1-tabpanel-1"
+                      aria-selected="false"
+                      class="b1 ax b5 b7 b6 b8 by ai ak bz c0 c1 c2 am an ao ap aq ar as at bl c3 ay az b0 au c4 b2 c5 c6 c7 b9 ba bb bc al"
+                      data-baseweb="tab"
+                      id="tabs-bui1-tab-1"
+                      role="tab"
+                      tabindex="-1"
+                      type="button"
+                    >
+                      <i
+                        class="fa fa-sliders"
+                        style="font-size: 2rem;"
+                      />
+                    </button>
                     <div
-                      className="side-panel-group"
-                      style={
-                        Object {
-                          "borderColor": "#29323C",
-                        }
-                      }
+                      aria-hidden="true"
+                      class="c8 c9 ca cb cc cd ce cf"
+                      data-baseweb="tab-highlight"
+                      role="presentation"
                     />
                   </div>
                   <div
-                    aria-hidden={true}
-                    aria-labelledby="main-tabs-tab-2"
-                    className="fade tab-pane"
-                    id="main-tabs-pane-2"
+                    aria-hidden="true"
+                    class="ae bp cd"
+                    data-baseweb="tab-border"
+                    role="presentation"
+                  />
+                  <div
+                    aria-labelledby="tabs-bui1-tab-0"
+                    class="cg au"
+                    data-baseweb="tab-panel"
+                    id="tabs-bui1-tabpanel-0"
                     role="tabpanel"
+                  />
+                  <div
+                    aria-labelledby="tabs-bui1-tab-1"
+                    class="cg au"
+                    data-baseweb="tab-panel"
+                    hidden=""
+                    id="tabs-bui1-tabpanel-1"
+                    role="tabpanel"
+                  />
+                </div>
+              </div>
+              <div
+                class="space"
+              />
+              <form
+                class="search-form"
+              >
+                <div
+                  class="ch ci"
+                  data-baseweb="form-control-container"
+                >
+                  <div
+                    class="by bq cj ch ck cl cm cn co cp cq cr cs az ct bf bg bd be b9 cu cv cw cx cy cz d0 d1 d2 d3"
+                    data-baseweb="input"
                   >
                     <div
-                      className="side-pane-header"
-                      style={
-                        Object {
-                          "background": "#29323C",
-                          "marginTop": 2,
-                        }
-                      }
+                      class="bq ch d4 az ct b9 cu cv cw bl d1"
+                      data-baseweb="base-input"
                     >
-                      Map Styles
-                      <br />
-                      <div
-                        aria-controls={null}
-                        aria-expanded="false"
-                        aria-haspopup="true"
-                        className="b5 bl bm bn bo bp bq"
-                        data-baseweb="select"
-                        onBlur={[Function]}
-                        onClick={[Function]}
-                      >
-                        <div
-                          className="bb b9 ba bc bo br bq bs bt bu bv bw bx by bz c0 c1 c2 c3 av c4 bh c5 c6 c7 c8 c9"
-                          onClick={[Function]}
-                          onKeyDown={[Function]}
-                          onTouchEnd={[Function]}
-                          onTouchMove={[Function]}
-                          onTouchStart={[Function]}
-                        >
-                          <div
-                            className="bs ca bh cb cc ax cd ce cf ag"
-                          >
-                            <svg
-                              className="cg ca ch ci cc"
-                              data-baseweb="icon"
-                              title="search"
-                              viewBox="0 0 24 24"
-                            >
-                              <title>
-                                search
-                              </title>
-                              <path
-                                clipRule="evenodd"
-                                d="M11 6C8.79086 6 7 7.79086 7 10C7 12.2091 8.79086 14 11 14C13.2091 14 15 12.2091 15 10C15 7.79086 13.2091 6 11 6ZM5 10C5 6.68629 7.68629 4 11 4C14.3137 4 17 6.68629 17 10C17 11.2958 16.5892 12.4957 15.8907 13.4765L19.7071 17.2929C20.0976 17.6834 20.0976 18.3166 19.7071 18.7071C19.3166 19.0976 18.6834 19.0976 18.2929 18.7071L14.4765 14.8907C13.4957 15.5892 12.2958 16 11 16C7.68629 16 5 13.3137 5 10Z"
-                                fillRule="evenodd"
-                              />
-                            </svg>
-                          </div>
-                          <div
-                            className="bo bp cj ck cl bs ag cm br bd be cn co"
-                          >
-                            <div
-                              className="bp cg cp cq am an ao ap ar bo aq b2 b4 b1 b3 cr cs ct co cu cv"
-                            >
-                              <input
-                                aria-activedescendant={null}
-                                aria-autocomplete="list"
-                                aria-controls={null}
-                                aria-describedby={null}
-                                aria-disabled={null}
-                                aria-errormessage={null}
-                                aria-expanded={false}
-                                aria-haspopup="listbox"
-                                aria-label=""
-                                aria-labelledby={null}
-                                aria-required={null}
-                                className="b5 bl bm bn bh cw cx cp cy am an ao ap ar cg aq b2 b4 b1 b3 cr cs ct co"
-                                disabled={null}
-                                id={null}
-                                onChange={[Function]}
-                                onFocus={[Function]}
-                                required={null}
-                                role="combobox"
-                                tabIndex={0}
-                                value=""
-                              />
-                              <div
-                                className="b5 bl bm bn cd ce cz d0 d1 d2 d3"
-                              >
-                                
-                              </div>
-                            </div>
-                            <div
-                              className="d4 cp br d5 d6"
-                            >
-                              Default(dark)
-                            </div>
-                          </div>
-                          <div
-                            className="bo bp bs d7 ag d8 bg"
-                          />
-                        </div>
-                      </div>
+                      <input
+                        aria-invalid="false"
+                        aria-required="false"
+                        autocomplete="on"
+                        class="by d5 am ao an ap aq as ar at au ch d6 d7 d8 d9 bh bi da d3 b9 cu cv cw bl db dc"
+                        id="search-nominatum"
+                        inputmode="text"
+                        name=""
+                        placeholder="fly to ..."
+                        type="text"
+                        value=""
+                      />
+                    </div>
+                    <div
+                      class="bq ak al dd az ct b9 cu cv cw de df bl d1"
+                    >
+                      🌐
                     </div>
                   </div>
                 </div>
-              </div>
+              </form>
             </div>
-            <div
-              className="space"
-            />
-            <form
-              className="search-form"
-              onSubmit={[Function]}
-            >
-              <div
-                className="form-group"
-              >
-                <span
-                  className="input-group"
-                >
-                  <input
-                    className="form-control"
-                    onChange={[Function]}
-                    placeholder="fly to..."
-                    style={
-                      Object {
-                        "background": "#242730",
-                        "color": "white",
-                      }
-                    }
-                    type="text"
-                  />
-                  <span
-                    className="input-group-addon"
-                    style={
-                      Object {
-                        "background": "#242730",
-                        "color": "white",
-                      }
-                    }
-                  >
-                    <span
-                      className="glyphicon glyphicon-search"
-                    />
-                  </span>
-                </span>
-              </div>
-            </form>
           </div>
-        </div>
-        <div
-          className="close-button"
-          onClick={[Function]}
-          style={
-            Object {
-              "color": "white",
-            }
-          }
-        >
           <div
-            style={
-              Object {
-                "backgroundColor": "#242730",
-              }
-            }
+            class="close-button"
+            style="color: white;"
           >
-            <i
-              className="fa fa-arrow-circle-left"
-              style={
-                Object {
-                  "color": "white !important",
-                  "fontSize": "2rem",
-                }
-              }
-            />
+            <div
+              style="background-color: rgb(36, 39, 48);"
+            >
+              <i
+                class="fa fa-arrow-circle-left"
+                style="font-size: 2rem;"
+              />
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div
-    className=""
-  />
-</main>
+    <div
+      class=""
+    />
+  </main>
+</DocumentFragment>
+`;
+
+exports[`App snapshot light theme 1`] = `
+<DocumentFragment>
+  <main>
+    <div
+      class=""
+    >
+      <div>
+        <div
+          class="loader"
+          style="z-index: -1; visibility: visible;"
+        />
+        <div
+          style="position: relative; width: 1024px; height: 768px; cursor: grab; outline: none;"
+          tabindex="0"
+        >
+          <div
+            style="position: relative; width: 100%; height: 100%;"
+          >
+            <div
+              class=""
+              style="position: absolute; width: 100%; height: 100%; overflow: hidden; visibility: inherit;"
+            />
+            <div
+              style="overflow: visible; height: 0px; width: 0px;"
+            />
+            <div
+              class="resize-triggers"
+            >
+              <div
+                class="expand-trigger"
+              >
+                <div
+                  style="width: 1px; height: 1px;"
+                />
+              </div>
+              <div
+                class="contract-trigger"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="side-panel-container"
+          style="margin-left: 0px;"
+        >
+          <div
+            class="side-panel"
+            style="color: black; background: white;"
+          >
+            <div
+              class="dg af ag ah"
+            >
+              <h2>
+                Nothing to show
+              </h2>
+            </div>
+            <div>
+              <button
+                class="ai aj ak al am an ao ap aq ar as at au av aw ax ay az b0 b1 b2 dh di b5 b6 b7 b8 b9 ba bb bc bd be bf bg bh bi bj bk dj dg dk dl"
+                data-baseweb="button"
+              >
+                Add data
+              </button>
+              <i
+                class="fa fa-save"
+                style="margin: 5px; cursor: pointer; font-size: 1.5em;"
+              />
+            </div>
+            <div
+              class="side-panel-body"
+            >
+              <div
+                class="side-panel-body-content"
+              >
+                <hr
+                  style="clear: both;"
+                />
+                <div
+                  class="bo"
+                >
+                  <div
+                    aria-orientation="horizontal"
+                    class="bp bq br aj bs bt bu bv bw bx"
+                    data-baseweb="tab-list"
+                    role="tablist"
+                  >
+                    <button
+                      aria-controls="tabs-bui1-tabpanel-0"
+                      aria-selected="true"
+                      class="b1 ax b5 b7 b6 b8 by ai ak bz c0 c1 c2 am an ao ap aq ar as at dj dm ay az b0 au c4 b2 di dn c7 b9 ba bb bc al"
+                      data-baseweb="tab"
+                      id="tabs-bui1-tab-0"
+                      role="tab"
+                      tabindex="0"
+                      type="button"
+                    >
+                      <i
+                        class="fa fa-info"
+                        style="font-size: 2rem;"
+                      />
+                    </button>
+                    <button
+                      aria-controls="tabs-bui1-tabpanel-1"
+                      aria-selected="false"
+                      class="b1 ax b5 b7 b6 b8 by ai ak bz c0 c1 c2 am an ao ap aq ar as at dj dm ay az b0 au c4 b2 di dn c7 b9 ba bb bc al"
+                      data-baseweb="tab"
+                      id="tabs-bui1-tab-1"
+                      role="tab"
+                      tabindex="-1"
+                      type="button"
+                    >
+                      <i
+                        class="fa fa-sliders"
+                        style="font-size: 2rem;"
+                      />
+                    </button>
+                    <div
+                      aria-hidden="true"
+                      class="do c9 ca cb cc cd ce cf"
+                      data-baseweb="tab-highlight"
+                      role="presentation"
+                    />
+                  </div>
+                  <div
+                    aria-hidden="true"
+                    class="c8 bp cd"
+                    data-baseweb="tab-border"
+                    role="presentation"
+                  />
+                  <div
+                    aria-labelledby="tabs-bui1-tab-0"
+                    class="cg au"
+                    data-baseweb="tab-panel"
+                    id="tabs-bui1-tabpanel-0"
+                    role="tabpanel"
+                  />
+                  <div
+                    aria-labelledby="tabs-bui1-tab-1"
+                    class="cg au"
+                    data-baseweb="tab-panel"
+                    hidden=""
+                    id="tabs-bui1-tabpanel-1"
+                    role="tabpanel"
+                  />
+                </div>
+              </div>
+              <div
+                class="space"
+              />
+              <form
+                class="search-form"
+              >
+                <div
+                  class="ch ci"
+                  data-baseweb="form-control-container"
+                >
+                  <div
+                    class="by bq cj ch ck cl cm cn co cp cq cr cs az ct bf bg bd be b9 cu cv cw dp dq dr ds dg d2 d3"
+                    data-baseweb="input"
+                  >
+                    <div
+                      class="bq ch d4 az ct b9 cu cv cw dj dg"
+                      data-baseweb="base-input"
+                    >
+                      <input
+                        aria-invalid="false"
+                        aria-required="false"
+                        autocomplete="on"
+                        class="by d5 am ao an ap aq as ar at au ch d6 d7 d8 d9 bh bi da d3 b9 cu cv cw dj dt dc"
+                        id="search-nominatum"
+                        inputmode="text"
+                        name=""
+                        placeholder="fly to ..."
+                        type="text"
+                        value=""
+                      />
+                    </div>
+                    <div
+                      class="bq ak al dd az ct b9 cu cv cw de df dj dg"
+                    >
+                      🌐
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div
+            class="close-button"
+            style="color: white;"
+          >
+            <div
+              style="background-color: rgb(36, 39, 48);"
+            >
+              <i
+                class="fa fa-arrow-circle-left"
+                style="font-size: 2rem;"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class=""
+    />
+  </main>
+</DocumentFragment>
 `;

@@ -1,48 +1,29 @@
 import React, { useState } from 'react';
-import {
-  InputGroup, FormControl,
-  Glyphicon, FormGroup
-} from 'react-bootstrap';
+import { Input } from 'baseui/input';
+import { FormControl } from 'baseui/form-control';
 
 import { isURL } from '../utils/utils';
 
 export default function URL(props) {
   const { urlCallback } = props;
-  const [url, setUrl] = useState("https://domain.com/api/stats19")
+  const [url, setUrl] = useState()
 
   return (
-    <form
-      onKeyPress={(event) => {
-        if (event.which === 13 /* Enter */) {
-          event.preventDefault();
-          isURL(url) && typeof (urlCallback) === 'function' &&
-            urlCallback(url)
-        }
-      }}
-      className="search-form">
-      <FormGroup>
-        <InputGroup>
-          <FormControl
-          onChange={(e) => {            
-            const { value } = e.target;
-            setUrl(value)
-          }}
-          style={{
-            background: props.dark ? '#242730' : 'white',
-            color: props.dark ? 'white' : 'black'
-          }}
+    <form className="search-form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        isURL(url) && typeof (urlCallback) === 'function' &&
+          urlCallback(url)
+      }}>
+      <FormControl >
+        <Input
+          id="url-input"
+          placeholder={"https://domain.com/api/file.csv"}
           value={url}
-          placeholder={url} type="text" />
-          <InputGroup.Addon
-          style={{
-            background: props.dark ? '#242730' : 'white',
-            color: props.dark ? 'white' : 'black'
-          }}>
-            <Glyphicon 
-            glyph="globe" />
-          </InputGroup.Addon>
-        </InputGroup>
-      </FormGroup>
+          onChange={({ target: { value } }) => setUrl(value)}
+          endEnhancer="🔗"
+        />
+      </FormControl>
     </form>
   )
 }

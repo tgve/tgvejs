@@ -15,16 +15,16 @@ import { Accordion, Panel } from 'baseui/accordion';
 
 
 /**
- * One idea is to do the same done in Variables. When a set of 
+ * One idea is to do the same done in Variables. When a set of
  * properties need to be assigned different types of primitive
- * values, one drop down could lead to each property shown 
+ * values, one drop down could lead to each property shown
  * along with suitable UI to assign value to.
- * 
+ *
  * Current version shows all properties with their suitable UI
  * (using baseui) so that each value can be set.
- * 
- * @param {*} props 
- * @returns 
+ *
+ * @param {*} props
+ * @returns
  */
 export default function LayerSettings(props) {
   const { layerName, columnNames, onLayerOptionsCallback } = props;
@@ -39,16 +39,26 @@ export default function LayerSettings(props) {
     setValues({}) //reset
   }, [props.layerName])
 
+  if(!options || !Object.keys(options)) return null
+
   return (
     <Accordion>
       <Panel
         title={"Settings: " + layerName}>
-        {
-          Object.keys(options).map(key => {
-            const v = options[key].type;
-            return isString(v) && getUIForKey(v, key);
-          })
-        }
+          {/* The div below is a solution as currently,
+          overriding panel seems to be not working
+          using Block in baseweb will be the same.
+          At least when sidebar needs to resize, we
+          could change the 220 below.
+          See DeckSidebar.css for the calcs  */}
+          <div style={{minWidth:220}}>
+          {
+            Object.keys(options).map(key => {
+              const v = options[key].type;
+              return isString(v) && getUIForKey(v, key);
+            })
+          }
+          </div>
       </Panel>
     </Accordion>
   )
@@ -60,7 +70,7 @@ export default function LayerSettings(props) {
         return <React.Fragment key={key}>
           {key}
           <Slider
-            // raw number is kept in values 
+            // raw number is kept in values
             value={(values[key] && [values[key]]) || [options[key].default]}
             min={options[key].min}
             max={options[key].max}
@@ -90,7 +100,8 @@ export default function LayerSettings(props) {
           <MultiSelect
             title={humanize(key)}
             single={true}
-            values={columnNames.map(e => ({ id: humanize(e), value: e }))}
+            values={columnNames && columnNames
+              .map(e => ({ id: humanize(e), value: e }))}
             onSelectCallback={(selected) => {
               const newValues = {
                 ...values,

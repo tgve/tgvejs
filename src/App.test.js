@@ -1,45 +1,66 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import renderer from 'react-test-renderer'; 
-import { shallow } from 'enzyme';
-import { BaseProvider, DarkTheme, LightTheme } from 'baseui';
+import { render, screen } from '@testing-library/react';
 
 import App from './App';
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, div);
-  ReactDOM.unmountComponentAtNode(div);
+test('renders without crashing', () => {
+  render(<App />);
 });
 
-test('App - should create snapshot', () => { 
-  const component = renderer.create( 
-    <BrowserRouter><App /></BrowserRouter> 
-  ); 
-  const tree = component.toJSON(); 
-  expect(tree).toMatchSnapshot(); 
-})
+// in dark theme these are the classes
+// assigned to the parent div
+// ae af ag ah
+// in lighttheme:
+// dg af ag ah
+test('App defaults to dark theme when given no prop', async () => {
+  render(<App />);
+  expect(await screen
+    .getByText(/nothing/i).closest('div'))
+    .toHaveClass('ae af ag ah')
+});
 
-test('App - dark/light themes set', () => {
-  const m = shallow(<App />);
-  expect(m.find(BaseProvider).prop('theme')).toEqual(DarkTheme);
+test('App can be set to light theme via props', async () => {
+  render(<App dark={false} />);
+  expect(await screen
+    .getByText(/nothing/i).closest('div'))
+    .toHaveClass('dg af ag ah')
+});
 
-  const n = shallow(<App dark={false}/>);
-  expect(n.find(BaseProvider).prop('theme')).toEqual(LightTheme);
+test('App snapshot dark theme', () => {
+  const { asFragment } = render(<App />);
+  expect(asFragment()).toMatchSnapshot();
+});
 
-})
+test('App snapshot light theme', () => {
+  const { asFragment } = render(<App dark={false} />);
+  expect(asFragment()).toMatchSnapshot();
+});
 
-test('App - API params set', () => {
-  const m = shallow(<App />).find('Welcome');
-  // console.log(m.find('Welcome').props());
-  // console.log(m.debug());
-  expect(m.props().hideCharts).toEqual(undefined);
-  expect(m.props().hideChartGenerator).toEqual(undefined);
-  expect(m.props().defaultURL).toEqual(undefined);
+test("Test empty state", () => {
+  render(<App dark={false} />);
+  expect(screen.getByText('Nothing to show')).toBeInTheDocument();
+});
 
-  const n = shallow(<App hideCharts={true}/>)
-    .find('Welcome');
-  expect(n.props().hideCharts).toEqual(true);
+test('App - API params via ENV', async () => {
+  const { rerender } = render(<App />)
+  expect(await screen
+    .queryByRole("heading", { level: 2 }))
+    .toBeInTheDocument()
 
+  process.env.REACT_APP_HIDE_SIDEBAR = true
+
+  rerender(<App />);
+  expect(await screen
+    .queryByRole("heading", { level: 2 }))
+    .toBeNull()
+  expect(await screen
+    .queryByRole("heading", { level: 6 }))
+    .toBeNull()
+
+  process.env.REACT_APP_DARK = false
+  process.env.REACT_APP_HIDE_SIDEBAR = false
+  rerender(<App />);
+  expect(await screen
+    .getByText(/nothing/i).closest('div'))
+    .toHaveClass('dg af ag ah')
 })

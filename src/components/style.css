@@ -60,7 +60,7 @@
 
 .color-box-active {
   border-color: black;
-  bottom: 3px; 
+  bottom: 3px;
   transition: 1s;
   transition-timing-function: ease;
 }
@@ -70,7 +70,7 @@
 }
 
 .unselect-variable {
-  width: 30px; 
+  width: 30px;
   text-align: center;
 }
 
@@ -105,4 +105,3 @@
     max-width: 90%;
   }
 }
-

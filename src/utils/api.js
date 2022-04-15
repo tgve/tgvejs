@@ -1,25 +1,12 @@
 // importing it other ways would cause minification issue.
 import qs from 'qs';
+import { isArray, isObject, isString } from './JSUtils';
 
-// const TGVE_API = [
-//   {column: 'string'},
-//   {dark: 'boolean'},
-//   {data: 'object'},
-//   {defaultURL: 'string'},
-//   {geographyColumn: 'string'},
-//   {geographyURL: 'string'},
-//   {hideChartGenerator: 'boolean'},
-//   {hideCharts: 'boolean'},
-//   {layerName: 'string'},
-//   {leftSidebarContent: 'react'},
-//   {tooltipColumns: 'object'},
-//   {viewport: 'object'}
-// ]
 
 /**
- * Search parameters should take priority. Then comes 
+ * Search parameters should take priority. Then comes
  * component level parameters and finally ENV vars.
- * 
+ *
  * @param {*} props properties to extract APIs from
  * @param {*} search search query that can be parsed with qs
  * @returns {Object} of all valid or undefined TGVE API parameters.
@@ -27,11 +14,6 @@ import qs from 'qs';
 const params = function (props, search = "") {
   const qsr = typeof search === 'string' &&
     qs.parse(search.replace("?", ""))
-
-  const { defaultURL, tooltipColumns, geographyURL,
-    geographyColumn, column, data, layerName, dark,
-    leftSidebarContent, viewport, hideChartGenerator,
-    hideCharts, hideSidebar } = props;
 
   const staticData = document.getElementById('tgve-data')
     && document.getElementById('tgve-data').textContent
@@ -42,7 +24,8 @@ const params = function (props, search = "") {
     && jsonStr(document.getElementById('tgve-settings').textContent))
     || {};
 
-  const apiValue = function (param, paramName, ENV_NAME, bool = false) {
+  const apiValue = function (paramName, ENV_NAME, bool = false) {
+    const param = props[paramName]
     if (qsr.hasOwnProperty(paramName)) {
       return bool ? boolStr(qsr[paramName]) : qsr[paramName]
     } else if (bool && typeof param === 'boolean') {
@@ -61,35 +44,37 @@ const params = function (props, search = "") {
     return typeof found === expected ? found : def
   }
 
+
   return ({
-    defaultURL: apiValue(defaultURL, "defaultURL", "REACT_APP_DEFAULT_URL"),
-    geographyURL: apiValue(geographyURL, "geographyURL", 
-    "REACT_APP_GEOGRAPHY_URL"),
-    geographyColumn: apiValue(geographyColumn, "geographyColumn", 
-    "REACT_APP_GEOGRAPHY_COLUMN_NAME"),
-    column: apiValue(column, "column", "REACT_APP_COLUMN_NAME"),
-    tooltipColumns: apiValue(tooltipColumns, "tooltipColumns", 
-    "REACT_APP_TOOLTIP_COLUMNS"),
-    layerStyle: apiValue(layerName, "layerName", "REACT_APP_LAYER_NAME"),
+    defaultURL: apiValue("defaultURL", "REACT_APP_DEFAULT_URL"),                  // String
+    geographyURL: apiValue("geographyURL", "REACT_APP_GEOGRAPHY_URL"),            // String
+    geographyColumn: apiValue("geographyColumn", "REACT_APP_GEOGRAPHY_COLUMN"),   // String
+    column: apiValue("column", "REACT_APP_COLUMN"),                               // String
+    tooltipColumns: apiValue("tooltipColumns", "REACT_APP_TOOLTIP_COLUMNS"),      // Object
+    layerName: apiValue("layerName", "REACT_APP_LAYER_NAME"),                     // String
     // if no boolean found set a default value
-    dark: expected(apiValue(dark, "dark", "REACT_APP_DARK", true), 
+    dark: expected(apiValue("dark", "REACT_APP_DARK", true),                      // Boolean
       "boolean", true),
-    hideChartGenerator: apiValue(hideChartGenerator, "hideChartGenerator",
+    hideChartGenerator: apiValue("hideChartGenerator",                            // Boolean
       "REACT_APP_HIDE_CHART_GENERATOR", true),
-    hideCharts: apiValue(hideCharts, "hideCharts", 
+    hideCharts: apiValue("hideCharts",                                            // Boolean
       "REACT_APP_HIDE_CHARTS", true),
-    hideSidebar: apiValue(hideSidebar, "hideSidebar", 
+    hideSidebar: apiValue("hideSidebar",                                          // Boolean
       "REACT_APP_HIDE_SIDEBAR", true),
-    viewport: jsonStr(qsr.viewport) || viewport || settings.viewport,
-    data: jsonStr(qsr.data) || data || staticData,
+    viewport: jsonStr(qsr.viewport) || props.viewport || settings.viewport,       // Object
+    data: jsonStr(qsr.data) || props.data || staticData,                          // Object
+    // TOTO: strict checks on props.select to be
+    // either like qsr or exactly like multiVarSelect
+    select: keySetObject(qsr.select) || props.select,                             // Object | String
     // react component
-    leftSidebarContent,
+    leftSidebarContent: props.leftSidebarContent                                  // React object
   })
 }
 
 const boolStr = function (str) {
   if (str === 'true') return true
   if (str === 'false') return false
+  return undefined
 }
 
 const jsonStr = function (str) {
@@ -101,8 +86,47 @@ const jsonStr = function (str) {
   }
 }
 
+/**
+ * The subset object in tgvejs `multiVarSelect`
+ * is composed of {key: Set()} with the set including
+ * values for which the key is subset by.
+ *
+ * @param {Object|String} filterStr
+ * @returns {Object}
+ */
+const keySetObject = function (filterStr) {
+  // is it json with array?
+  const json = jsonStr(filterStr);
+  const result = {}
+  if (isObject(json)) {
+    // sanity check on json object
+    Object.keys(json).forEach(key => {
+      if (isArray(json[key])) {
+        result[key] = new Set(json[key])
+      }
+    })
+    return result
+  } else if (isString(filterStr)) {
+    // validate format
+    // select=key:val1,val2,val3
+    const regex = new RegExp(/^[\w+._-\s\\(\\)]+:[\w+._-\s\\(\\)]+/);
+    if(!regex.test(filterStr)) return null
+    const array = filterStr.split(":")
+    if (array.length < 1) return null
+    for (let i = 0; i < array.length; i += 2) {
+      // ["key", "val1,val2,val3", "key" ..]
+      const values = array[i + 1] && array[i + 1].split(",")
+      if (isArray(values)) {
+        result[array[i]] = new Set(values)
+      }
+    }
+    return result
+  }
+  return null
+}
+
 export {
-  // TGVE_API,
+  keySetObject,
   jsonStr,
   params
 }

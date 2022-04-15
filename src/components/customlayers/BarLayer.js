@@ -40,11 +40,11 @@ const vs = `
     offsetCommon.y = offsetCommon.y * 3.0;
     // width if active
     // offsetCommon = offsetCommon.x + offsetCommon.x / instanceWidth;
-    
+
     offsetCommon = offsetCommon * instanceScale;
-    
+
     vec3 positionCommon = project_position(instancePositions, instancePositions64Low);
-    // missx: So in your shader, positionCommon is the anchor position on the map. 
+    // missx: So in your shader, positionCommon is the anchor position on the map.
     // offsetCommon is the local coordinate relative to the anchor
     // You want to leave the anchor alone and rotate the offset
 
@@ -91,10 +91,10 @@ export default class BarLayer extends Layer {
   //     // data is wrapped
   //     info.object = data.find(d => d.__source.index === index);
   //   }
-    
+
   //   return info;
   // }
-  
+
   getShaders() {
     return super.getShaders({vs, fs, modules: [project32, picking]});
   }
@@ -136,7 +136,7 @@ export default class BarLayer extends Layer {
   }
   updateState({props, oldProps, changeFlags}) {
     super.updateState({props, oldProps, changeFlags});
-    
+
     if (changeFlags.extensionsChanged) {
       const {gl} = this.context;
       if (this.state.model) {
@@ -149,12 +149,12 @@ export default class BarLayer extends Layer {
   draw({uniforms}) {
     this.state.model
       .setUniforms(uniforms)
-      .draw();    
+      .draw();
   }
 
   _getModel(gl) {
     const positions = [
-      -.1, -1, 
+      -.1, -1,
       0.1, -1,
       -.1, 1,
       -.1, 1,

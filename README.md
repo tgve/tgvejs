@@ -1,5 +1,5 @@
 [![Node CI](https://github.com/tgve/tgvejs/workflows/Node%20CI/badge.svg?branch=release)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22)
-[![npm version](https://badge.fury.io/js/@tgve%2Ftgvejs.svg)](https://badge.fury.io/js/@tgve%2Ftgvejs)
+[![npm version](https://badge.fury.io/js/@tgve%2Ftgvejs.svg)](https://badge.fury.io/js/@tgve%2Ftgvejs) [![codecov](https://codecov.io/gh/tgve/tgvejs/branch/develop/graph/badge.svg?token=FnXegSkNXD)](https://codecov.io/gh/tgve/tgvejs)
 
 The Turing Geovisualisation Engine (TGVE) is a web-based,
 interactive visual analytics tool for geospatial data analysis, built using R and JavaScript/React, that can be used as a complete server-client application or just as a front-end stand-alone application. The visual views and interaction mechanisms designed into the tool is underpinned by empirically-informed guidelines around
@@ -38,11 +38,12 @@ function App() {
 
 TGVE supports separately-provided geography (in GeoJSON) and point data sources (in CSV). Other formats are not supported.
 
-The following parameters can be passed to the TGVE app, each (except
-objects) can be passed as an environment variable like
-`REACT_APP_LAYER_NAME` or when using TGVE as a component
-`<Tgve layerName="geojson">`. The mapping between parameters names and the corresponding REACT_APP environment variables is not entirely consistent; see [here](https://github.com/tgve/tgvejs/blob/release/src/utils/api.js) for the mapping, and note that `leftSidebarContent` cannot be passed as an
-environment variable. For more on passing variables to a React app and
+The following parameters can be passed to the TGVE app. Each parameter can be passed as an environment variable, with the exception of:
+- leftSidebarContent
+- data
+
+For example: `REACT_APP_GEOGRAPHY_URL` or when using TGVE as a component
+`<Tgve geographyURL="https://geo.com">`. For more on passing variables to a React app and
 the `REACT_APP_` prefix please see [React docs](https://create-react-app.dev/docs/adding-custom-environment-variables).
 
 They can also be passed to the TGVE as URL query parameters. For instance
@@ -70,6 +71,8 @@ They can also be passed to the TGVE as URL query parameters. For instance
 -   `column`: if provided, and if the geometry is of particular type
     which would need a column, it would be used. Defaults on to the
     second column as often first column is an ID of sort.
+
+-   `select`: if provided, either as a string or a JSON object, it will be passed to the `tgvejs` subsetting workflow. For now, only when the application is started. The format could be one of `select={"key1": ["val1", "val2"]}` or `select=key1:val1,val2:key2:val3,val4`. For example: `https://tgve.github.io/app/?select=ranking:45` in a dataset with a column named `ranking` and its value being `45`.
 
 -   `layerName`: if provided, and if the given name is in the list of
     DeckGL layers supported by TGVE, will be passed to generate the
@@ -100,7 +103,7 @@ They can also be passed to the TGVE as URL query parameters. For instance
 
 None of the above is necessary and in the current release “Add data” button will allow loading data into eAtlas.
 
-### Data and settings 
+### Data and settings
 
 As stated above, you can create a `script` tag to pass data and above configurations as `JSON` to where TGVE is being rendered; for example in an `index.html` where the component is rendered like:
 
@@ -123,10 +126,14 @@ If you are not sure, please see the [`app`](https://github.com/tgve/app) reposit
 ### Testing
 
 The package follows `create-react-app` testing kits and uses mainly
-`jest`. Run `npm run test`.
+`@testing-library/react` and `jest`. 
+Run `npm run test`.
 
 ## Contributing
-See the TGVE [Contributor Code of Conduct](https://github.com/tgve/tgver/blob/master/CODE_OF_CONDUCT.md).
+
+See:
+- [Contributor Code of Conduct](https://github.com/tgve/tgver/blob/master/CODE_OF_CONDUCT.md)
+- [developer setup instructions](notes/dev-setup.md)
 
 ## Package Status
 

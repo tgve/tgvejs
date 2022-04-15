@@ -46,7 +46,7 @@ layers['scatterplot'] = addOptionsToObject(options, scatterObj)
 const geojsonObject = {
   class: { value: GeoJsonLayer, type: 'class' },
   pickable: { type: 'boolean', value: true },
-  extruded: { type: 'boolean', value: false }, 
+  extruded: { type: 'boolean', value: false },
   stroked: { type: 'boolean', value: false },
   filled: { type: 'boolean', value: true },
   lineWidthScale: makeObject('number', 20, 100, 20, 5),
@@ -102,9 +102,9 @@ const lineObject = {
 }
 layers['line'] =  addOptionsToObject(options, lineObject)
 const arcObject = {
-  // options.getSourceColor = d => 
+  // options.getSourceColor = d =>
   // [Math.sqrt(+(d.properties.base)) * 1000, 140, 0]
-  // options.getTargetColor = d => 
+  // options.getTargetColor = d =>
   // [Math.sqrt(+(d.properties.hs2)) * 1e13, 140, 0]
   class: { value: ArcLayer, type: 'class' },
   getWidth: { type: 'column', value: 'number', default: 1},
@@ -131,6 +131,8 @@ const heatObject = {
 layers['heatmap'] = addOptionsToObject(options, heatObject);
 const textObject = {
   class: { value: TextLayer, type: 'class' },
+  getText: { type: 'column', value: 'string', default: ""}
+
 }
 layers["text"] = addOptionsToObject(options, textObject);
 const barvisObject = {
@@ -145,7 +147,7 @@ const pointCloudObject = {
   pointSize: makeObject('number', 1, 100, 10, 2),
   opacity: makeObject('number', 0, 1, 0.5, 0.1),
   // TODO: add trigger arrays before defining these
-  // getPosition: { type: 'column', value: 'array', 
+  // getPosition: { type: 'column', value: 'array',
   // default: (d) => d.geometry.coordinates},
   // getNormal: { type: 'column', value: 'array', default: (d) => d.properties.normal},
   // getColor: { type: 'column', value: 'array', default: (d) => d.properties.color}
@@ -153,9 +155,9 @@ const pointCloudObject = {
 layers["pointcloud"] = addOptionsToObject(options, pointCloudObject);
 /**
  * Frozen object to keep the properties intact.
- * 
- * @param {String} name 
- * @returns 
+ *
+ * @param {String} name
+ * @returns
  */
 const getLayerProps = (name) => {
   if (!isString(name)) return null
