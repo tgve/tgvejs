@@ -63,7 +63,7 @@ const fetchData = (url, callback) => {
     .then((response) => {
       // TODO: better checks for both
       // zip and csv
-      if(url.endsWith("zip")) {
+      if(isString(url) && url.endsWith("zip")) {
         if (typeof shp === 'function') {
           shp(url).then(geojson => {
             typeof callback === "function"
@@ -71,10 +71,10 @@ const fetchData = (url, callback) => {
           });
         } else {
           callback(undefined, new Error(
-            url + " ends with zip but 'shp' function is not in context."
+            url + "Function 'shp' is not in context."
           ))
         }
-      } else if(url.endsWith("csv")) {
+      } else if(isString(url) && url.endsWith("csv")) {
         csv2geojson.csv2geojson(response, (err, data) => {
           if (!err) {
             typeof (callback) === 'function'
@@ -199,7 +199,7 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
  */
   function generateOptions(name, data, renderTooltip) {
     const layerProps = getLayerProps(name);
-    if(!layerProps.class || !layerProps.class["value"]) return null
+    if(!layerProps || !layerProps.class || !layerProps.class["value"]) return null
     const layerOptions = {}, updateTriggers = {};
     Object.keys(layerProps).forEach(key => {
       const type = layerProps[key] && layerProps[key].type;

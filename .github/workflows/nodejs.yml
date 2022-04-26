@@ -1,9 +1,10 @@
 name: Node CI
 
-on: 
+on:
   push:
-    paths-ignore: 
+    paths-ignore:
       - '**/README.*md'
+      - '**/change*.md'
       - 'notes/**'
 
 jobs:
@@ -13,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x]
+        node-version: [14.x, 16.x]
 
     steps:
     - uses: actions/checkout@v1
@@ -21,11 +22,20 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: npm install
-      run: npm i
+    - name: yarn install
+      run: yarn
       env:
-        CI: true
+        CI:
+
     - name: install react & react-dom
-      run: npm i react react-dom
-    - name: npm test
-      run: npm test
+      run: yarn add react react-dom
+
+    - name: Tests (cov)
+      run: yarn run coverage
+
+    - name: Codecov
+      uses: codecov/codecov-action@v2
+      if: ${{matrix.node-version == '14.x'}}
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        flags: unittests

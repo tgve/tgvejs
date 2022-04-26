@@ -5,8 +5,8 @@ import {
 } from 'react-vis';
 import { format } from 'd3-format';
 
-import { shortenName } from '../../utils';
-import { isArray } from '../../JSUtils';
+import { shortenName } from '../../utils/utils';
+import { isArray } from '../../utils/JSUtils';
 import { PLOT_W } from '../../Constants';
 
 const W = PLOT_W;
@@ -89,8 +89,8 @@ export default function MultiLinePlot(options) {
           className={'test-class-name'}
         />}
       </XYPlot>
-      <DiscreteColorLegend
+      {legend && <DiscreteColorLegend
         orientation="horizontal" width={W}
-        items={legend} />
+        items={legend} />}
     </div>;
 }

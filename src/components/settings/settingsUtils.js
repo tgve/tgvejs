@@ -131,6 +131,8 @@ const heatObject = {
 layers['heatmap'] = addOptionsToObject(options, heatObject);
 const textObject = {
   class: { value: TextLayer, type: 'class' },
+  getText: { type: 'column', value: 'string', default: ""}
+
 }
 layers["text"] = addOptionsToObject(options, textObject);
 const barvisObject = {

@@ -39,6 +39,8 @@ export default function LayerSettings(props) {
     setValues({}) //reset
   }, [props.layerName])
 
+  if(!options || !Object.keys(options)) return null
+
   return (
     <Accordion>
       <Panel
@@ -98,7 +100,8 @@ export default function LayerSettings(props) {
           <MultiSelect
             title={humanize(key)}
             single={true}
-            values={columnNames.map(e => ({ id: humanize(e), value: e }))}
+            values={columnNames && columnNames
+              .map(e => ({ id: humanize(e), value: e }))}
             onSelectCallback={(selected) => {
               const newValues = {
                 ...values,

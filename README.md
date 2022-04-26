@@ -1,5 +1,5 @@
 [![Node CI](https://github.com/tgve/tgvejs/workflows/Node%20CI/badge.svg?branch=release)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22)
-[![npm version](https://badge.fury.io/js/@tgve%2Ftgvejs.svg)](https://badge.fury.io/js/@tgve%2Ftgvejs)
+[![npm version](https://badge.fury.io/js/@tgve%2Ftgvejs.svg)](https://badge.fury.io/js/@tgve%2Ftgvejs) [![codecov](https://codecov.io/gh/tgve/tgvejs/branch/develop/graph/badge.svg?token=FnXegSkNXD)](https://codecov.io/gh/tgve/tgvejs)
 
 The Turing Geovisualisation Engine (TGVE) is a web-based,
 interactive visual analytics tool for geospatial data analysis, built using R and JavaScript/React, that can be used as a complete server-client application or just as a front-end stand-alone application. The visual views and interaction mechanisms designed into the tool is underpinned by empirically-informed guidelines around
@@ -41,7 +41,7 @@ TGVE supports separately-provided geography (in GeoJSON) and point data sources 
 The following parameters can be passed to the TGVE app. Each parameter can be passed as an environment variable, with the exception of:
 - leftSidebarContent
 - data
-- viewport
+
 For example: `REACT_APP_GEOGRAPHY_URL` or when using TGVE as a component
 `<Tgve geographyURL="https://geo.com">`. For more on passing variables to a React app and
 the `REACT_APP_` prefix please see [React docs](https://create-react-app.dev/docs/adding-custom-environment-variables).
@@ -129,7 +129,8 @@ If you are not sure, please see the [`app`](https://github.com/tgve/app) reposit
 ### Testing
 
 The package follows `create-react-app` testing kits and uses mainly
-`jest`. Run `npm run test`.
+`@testing-library/react` and `jest`. 
+Run `npm run test`.
 
 ## Contributing
 

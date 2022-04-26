@@ -1,12 +1,15 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import { Input } from 'baseui/input';
+import { render, screen } from '@testing-library/react';
 
 import URL from '../components/URL'
 
 test('Shallow and mount', () => {
-  //header not tested in npm
-  const m = shallow(<URL />);
-  expect(m.find(Input).prop('id')).toEqual("url-input");
+  render(<URL />);
 
+  expect(screen
+    .queryByPlaceholderText(/file.csv/i))
+    .not.toBeNull()
+  expect(screen
+    .queryByText("🔗"))
+    .not.toBeNull()
 })

@@ -1,4 +1,10 @@
 ## Change log
+- `1.4.7`
+  - Fix colouring various layers
+  - Add popup as well as hover
+  - Clipping of geography based on map screen boundary
+  - Other improvements
+
 - `1.4.6`
   - Mainly tests. Snapshot testing both using React and adding puppeteer as the UI testing suite.
   - New API added `select`.
