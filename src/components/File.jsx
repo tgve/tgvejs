@@ -14,21 +14,33 @@ export default class Uploader extends React.Component {
 
   handleDrop (acceptedFiles, rejectedFiles) {
     const { contentCallback } = this.props;
-    // TODO: accept shape files
-    const textType = /text.*/;
+    const textType = /text.*|json|geo/;
     const file = acceptedFiles[0]
 
-    if (!file.type || file.type.match(textType) || file.type.match(/geo/)
-    || file.type.match(/json/)) {
+    if (file.type.match(textType) || file.type.match(/zip/)) {
       const reader = new FileReader();
       reader.onload = (e) => {
         this.setState({ progressAmount: 100 });
         this.reset();
-        const text = reader.result;
-        typeof (contentCallback) === 'function' &&
-          contentCallback({ text, name: file.name })
+        if(file.type.match(textType)) {
+          const text = reader.result;
+          typeof (contentCallback) === 'function' &&
+            contentCallback({ text, name: file.name })
+        } else {
+          if (typeof shp === 'function') {
+            typeof contentCallback === 'function'
+            && shp(reader.result)
+              .then((geojson) => contentCallback({
+                geojson,
+                name: file.name
+              }))
+          } else {
+            console.log("No shp in context or corrupt shapefile zip");
+          }
+        }
       }
-      reader.readAsText(file);
+      if(file.type.match(textType)) reader.readAsText(file);
+      if(file.type.match(/zip/)) reader.readAsArrayBuffer(file)
     } else {
       this.setState({ progressAmount: 100 });
       this.reset();
