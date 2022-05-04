@@ -16,6 +16,6 @@ test('Shallow and mount', async () => {
   fireEvent.click(
     await screen.findByRole('button')
   )
-  screen.debug()
+  // screen.debug()
 
 })

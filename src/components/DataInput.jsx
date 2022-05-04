@@ -61,12 +61,11 @@ export default function (props) {
                 && urlCallback(url)
             }} />
           </FocusOnce>
-          TGVE Accepts GeoJSON, CSV and Shapefiles (zip)
-          <File contentCallback={({ text, geojson, name }) => {
-            if (name && (name.match(/geo|json/) //test.json
-              || name.match(/zip/))) {
+          <File contentCallback={({ text, name }) => {
+            if (name && (name.split(".")[1].match(/geo/) //test.json
+              || name.split(".")[1].match(/json/))) {
               try {
-                const json = name.match(/zip/) ? geojson : JSON.parse(text);
+                const json = JSON.parse(text);
                 typeof (urlCallback) === 'function'
                   && urlCallback(null, json, name)
                   toggleSelfAndParent(toggleOpen, setOpen);
