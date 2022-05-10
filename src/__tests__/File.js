@@ -35,6 +35,14 @@ test('Shallow and mount - DataInput', async () => {
 
   const uploader = await screen.queryByText(/browse files/i)
   // looks like RTL does not like these sort of tests
+  /**
+   * <div>        <-- parent of closest
+   *   <div>      <-- closest div
+   *     <button> <-- uploader
+   *   </div>
+   *   <input />  <-- hidden children[1]
+   * </div>
+   */
   const input = uploader
   .parentNode.closest("div").parentNode.children[1]
   await fireEvent.change(input, {
