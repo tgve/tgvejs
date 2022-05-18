@@ -22,22 +22,12 @@ export default class Uploader extends React.Component {
       reader.onload = (e) => {
         this.setState({ progressAmount: 100 });
         this.reset();
-        if(file.type.match(textType)) {
-          const text = reader.result;
-          typeof (contentCallback) === 'function' &&
-            contentCallback({ text, name: file.name })
-        } else {
-          if (typeof shp === 'function') {
-            typeof contentCallback === 'function'
-            && shp(reader.result)
-              .then((geojson) => contentCallback({
-                geojson,
-                name: file.name
-              }))
-          } else {
-            console.log("No shp in context or corrupt shapefile zip");
-          }
-        }
+        typeof (contentCallback) === 'function' &&
+          contentCallback({
+            textOrBuffer: reader.result,
+            name: file.name,
+            type: file.type
+          })
       }
       if(file.type.match(textType)) reader.readAsText(file);
       if(file.type.match(/zip/)) reader.readAsArrayBuffer(file)

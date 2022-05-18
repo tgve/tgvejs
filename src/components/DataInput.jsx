@@ -61,24 +61,43 @@ export default function (props) {
                 && urlCallback(url)
             }} />
           </FocusOnce>
-          <File contentCallback={({ text, name }) => {
-            if (name && (name.split(".")[1].match(/geo/) //test.json
-              || name.split(".")[1].match(/json/))) {
+          {/**
+           * The approach is to do all processing here and
+           * in future a separate function to handle file content
+           * processing but leave File component only to read
+           * the file.
+           */}
+          <File contentCallback={({ textOrBuffer, name, type }) => {
+            const textType = /json|geo/i;
+            if (type.match(textType)) {
               try {
-                const json = JSON.parse(text);
+                const json = JSON.parse(textOrBuffer);
                 typeof (urlCallback) === 'function'
                   && urlCallback(null, json, name)
-                  toggleSelfAndParent(toggleOpen, setOpen);
+                toggleSelfAndParent(toggleOpen, setOpen);
               } catch (e) {
                 console.log(e);
               }
+            } else if (type.match(/zip/)) {
+              if (typeof shp === 'function') {
+                typeof (urlCallback) === 'function'
+                  && shp(textOrBuffer)
+                    .then((geojson) => {
+                      urlCallback(null, geojson, name)
+                      toggleSelfAndParent(toggleOpen, setOpen);
+                    })
+              } else {
+                console.log("No shp in context or corrupt shapefile zip");
+              }
             } else {
+              // csv
               // err has any parsing errors
-              csv2geojson.csv2geojson(text, (err, data) => {
+              csv2geojson.csv2geojson(textOrBuffer, (err, data) => {
                 if (!err) {
-                  toggleSelfAndParent(toggleOpen, setOpen);
                   typeof (urlCallback) === 'function'
                     && urlCallback(null, data, name)
+                  toggleSelfAndParent(toggleOpen, setOpen);
+
                 } else {
                   // console.log(err);
                   /** err == array with feature errors? */
@@ -87,7 +106,7 @@ export default function (props) {
                   setAlert({
                     time: 5000,
                     content: "Invalid format. "
-                    + (message ?  "ERROR: " + message : "")
+                      + (message ? "ERROR: " + message : "")
                   })
                 }
               });
