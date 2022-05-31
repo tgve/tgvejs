@@ -785,36 +785,38 @@ const getOSMTiles = (name) => {
  *
  * @param {*} geojson a gejson with matching `geoColumn` to `data` param
  * {features:[], type:}
- * @param {*} data a json {properties:{}} object with matchin
+ * @param {*} data a json {properties:{}} object with matching
  * `geoColumn` to `geojson` param. Typically features of another geojons.
  * @param {*} geoColumn geocode which is shared between `geojson` and `data`.
  * It can be the same column name or mapped as `dataCol:geographyCol` string.
  */
 const setGeojsonProps = (geojson, data, geoColumn) => {
-  // const r = randomToNumber(data && data.length);
-  // either split or same values
-  let dataColumn = isString(geoColumn) && geoColumn.split(":")[0];
-  let geojsonColumn = isString(geoColumn)
-    && geoColumn.split(":")[1] || geoColumn
   // TODO: find matching columns
   // first matching column
   // const firstMatching = Object.keys(geojson.features[0].properties).map(e =>
   // Object.keys(data[0].properties.includes(e)))[0]
   if(!isString(geoColumn)) return geojson
+  // either split or same values
+  const splitOrSameString = (n) => {
+    return isString(geoColumn)
+      && geoColumn.split(":")[n] || geoColumn;
+  }
+  let dataColumn = splitOrSameString(0);
+  let geojsonColumn = splitOrSameString(1)
   const r = 0;
   const result = Object.assign({}, geojson)
-  // if no matching or mapped columns
   result.features = []
-  if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
+  if (!isObject(geojson) || !isArray(data) ||
     !geojson.features || !geojson.features[r] ||
     !geojson.features[r].properties[geojsonColumn] || !data[r] ||
     !data[r].properties || !data[r].properties[dataColumn]) return null
-  // for now modify the object itself
+
+  // add geography to result
+  // cost = geo.features.length * data.length
   geojson.features.forEach(feature => {
     for (let i = 0; i < data.length; i++) {
       if (feature.properties[geojsonColumn] ===
         data[i].properties[dataColumn]) {
-        // feature.properties = data[i].properties;
         const obj = {
           type: feature.type,
           properties: data[i].properties,
@@ -854,12 +856,6 @@ const getMainMessage = (filtered, unfiltered) => {
     return getMessage(filtered)
     // TODO: check all rows before declaring
   }
-  // else if(unfiltered && unfiltered.length) {
-  //   const r = randomToNumber(unfiltered.length);
-  //   console.log(r);
-  //   if(!unfiltered[r].geometry) return getMessage(unfiltered) + " - no geometry"
-  //   return getMessage(unfiltered)
-  // }
   else {
     return "Nothing to show"
   }

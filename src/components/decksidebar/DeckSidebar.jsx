@@ -134,10 +134,10 @@ export default class DeckSidebar extends React.Component {
           <div>
             <DataInput
               toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
-              urlCallback={(url, geojson, name) => {
+              urlCallback={(url, geojson, name, geography) => {
                 resetState(url || name);
                 typeof (urlCallback) === 'function'
-                  && urlCallback(url, geojson);
+                  && urlCallback(url, geojson, geography);
               }} />
             {
               this.state.reset &&

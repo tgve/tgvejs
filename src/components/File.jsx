@@ -1,19 +1,23 @@
 import * as React from 'react';
 import { FileUploader } from 'baseui/file-uploader';
+import { StatefulCheckbox } from 'baseui/checkbox';
+import { Input } from 'baseui/input';
 
 export default class Uploader extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      progressAmount: 0
+      progressAmount: 0,
+      separateGeo: false
     }
     this.reset = this.reset.bind(this);
     this.handleDrop = this.handleDrop.bind(this)
     this.startProgress = this.startProgress.bind(this)
   }
 
-  handleDrop (acceptedFiles, rejectedFiles) {
+  handleDrop(acceptedFiles, rejectedFiles) {
     const { contentCallback } = this.props;
+    const { separateGeo, dataFile, geoColumn } = this.state;
     const textType = /text.*|json|geo/;
     const file = acceptedFiles[0]
 
@@ -22,15 +26,40 @@ export default class Uploader extends React.Component {
       reader.onload = (e) => {
         this.setState({ progressAmount: 100 });
         this.reset();
-        typeof (contentCallback) === 'function' &&
-          contentCallback({
-            textOrBuffer: reader.result,
-            name: file.name,
-            type: file.type
-          })
+        if (typeof (contentCallback) === 'function') {
+          if (!separateGeo) {
+            contentCallback({
+              textOrBuffer: reader.result,
+              name: file.name,
+              type: file.type
+            })
+          } else {
+            if (!dataFile) {
+              this.setState({
+                dataFile: {
+                  textOrBuffer: reader.result,
+                  name: file.name,
+                  type: file.type
+                }
+              })
+            } else {
+              //both ready
+              contentCallback({
+                separateGeo: true,
+                geoColumn,
+                dataTextOrBuffer: dataFile,
+                geoTextOrBuffer: {
+                  textOrBuffer: reader.result,
+                  name: file.name,
+                  type: file.type
+                }
+              })
+            }
+          }
+        }
       }
-      if(file.type.match(textType)) reader.readAsText(file);
-      if(file.type.match(/zip/)) reader.readAsArrayBuffer(file)
+      if (file.type.match(textType)) reader.readAsText(file);
+      if (file.type.match(/zip/)) reader.readAsArrayBuffer(file)
     } else {
       this.setState({ progressAmount: 100 });
       this.reset();
@@ -42,7 +71,7 @@ export default class Uploader extends React.Component {
 
   // startProgress method is only illustrative. Use the progress info returned
   // from your upload endpoint. If unavailable, do not provide a progressAmount.
-  startProgress () {
+  startProgress() {
     this.intervalId = setInterval(() => {
       if (this.state.progressAmount >= 100) {
         this.reset();
@@ -53,15 +82,18 @@ export default class Uploader extends React.Component {
   };
 
   // reset the component to its original state. use this to cancel/retry the upload.
-  reset () {
+  reset() {
     clearInterval(this.intervalId);
     this.setState({ progressAmount: 0 });
   };
 
   render() {
+    const { separateGeo, dataFile } = this.state;
     return (
       <center className="file-upload">
+        {separateGeo && <p>Now drop/select the geography file</p>}
         <FileUploader
+          multiple={false}
           onCancel={this.reset}
           onDrop={this.handleDrop}
           progressAmount={this.state.progressAmount}
@@ -70,6 +102,25 @@ export default class Uploader extends React.Component {
             `Uploading... ${this.state.progressAmount}% of 100%`
           }
         />
+        <StatefulCheckbox onChange={() => this.setState({
+          separateGeo: !separateGeo
+        })} />
+        {
+          separateGeo &&
+          <>
+            <p>Data file:
+              {(dataFile && ` ${dataFile.name} , waiting for geography file`)
+                || " none"}</p>
+            <p>Type the geography column name or map data file
+              column name to geography like `geo:geography`
+            </p>
+            <Input
+              placeholder='geo:geography'
+              onChange={
+                (e) => this.setState({ geoColumn: e.target.value })
+              } />
+          </>
+        }
       </center>
     );
   }

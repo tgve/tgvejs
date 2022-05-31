@@ -433,7 +433,19 @@ export default class Home extends React.Component {
     );
   }
 
-  _urlCallback(url_returned, geojson_returned) {
+  /**
+   * Function takes input from FileInput componet.
+   * It can take url, geojson or data & geojson
+   * just like reading from URL APIs.
+   *
+   * @param {*} url_returned a URL to fetch data from
+   * @param {*} geojson_returned ready to consume geojson when
+   * no `geography_returned` is returned
+   * @param {*} geography_returned if this is returned then
+   * `geojson_returned` must be valid geojson.
+   *
+   */
+  _urlCallback(url_returned, geojson_returned, geography_returned) {
     this.setState({
       /**
        * This set state can take care of all
@@ -450,9 +462,9 @@ export default class Home extends React.Component {
        *
        * 4. if (1) is the case but geojson
        * is invalid or corrupt, then do not
-       * update data state and fail on the try
+       * update state's `data` or `geography`
+       * and fail on the try below.
        */
-      geography: null,
       column: null,
       tooltip: "",
       loading: true,
@@ -465,10 +477,14 @@ export default class Home extends React.Component {
         // as data returned could be
         // corrupt
         this.setState({
-          data: geojson_returned
+          data: geojson_returned,
+          geography: geography_returned || null ,
+        }, () => {
+          // it is better to go with geography first
+          // if not fallback onto data source.
+          this._fitViewport(geography_returned || geojson_returned);
+          this._callGenerateLayer()
         })
-        this._fitViewport(geojson_returned)
-        this._callGenerateLayer()
       } catch (error) {
         // load up default
         this._fetchAndUpdateState(undefined,
