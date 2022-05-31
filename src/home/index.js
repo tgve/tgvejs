@@ -443,9 +443,11 @@ export default class Home extends React.Component {
    * no `geography_returned` is returned
    * @param {*} geography_returned if this is returned then
    * `geojson_returned` must be valid geojson.
-   *
+   * @param {String} geoColumn the matching column name
+   * for `geojson_returned` and `geography_returned` params
    */
-  _urlCallback(url_returned, geojson_returned, geography_returned) {
+  _urlCallback(url_returned, geojson_returned,
+    geography_returned, geoColumn) {
     this.setState({
       /**
        * This set state can take care of all
@@ -478,10 +480,10 @@ export default class Home extends React.Component {
         // corrupt
         this.setState({
           data: geojson_returned,
-          geography: geography_returned || null ,
+          geography: geography_returned || null,
+          geographyColumn: geography_returned ? geoColumn : null,
         }, () => {
-          // it is better to go with geography first
-          // if not fallback onto data source.
+          // go with geography first fallback onto data source.
           this._fitViewport(geography_returned || geojson_returned);
           this._callGenerateLayer()
         })

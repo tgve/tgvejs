@@ -62,7 +62,6 @@ export default function (props) {
                 && urlCallback(url)
             }} />
           </FocusOnce>
-          <hr/>
           {/**
            * The approach is to do all processing here and
            * in future a separate function to handle file content
@@ -74,7 +73,7 @@ export default function (props) {
             geoColumn, textOrBuffer, name, type }) => {
             if (typeof (urlCallback) !== 'function') return
             const callBackAndClose = (json, dataName, geography) => {
-              urlCallback(null, json, dataName, geography)
+              urlCallback(null, json, dataName, geography, geoColumn)
               toggleSelfAndParent(toggleOpen, setOpen);
             }
             if (separateGeo) {
