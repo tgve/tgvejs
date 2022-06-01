@@ -358,7 +358,7 @@ const isValueNumeric = (data, columnNameOrIndex) => {
 const initViewState = (props) => {
   const { viewport, layerName } = props;
   const init = viewport && Object.keys(viewport) ?
-    Object.assign(DECK_INIT, viewport) : DECKGL_INIT;
+    Object.assign(DECKGL_INIT, viewport) : DECKGL_INIT;
   const param = getViewportParams(props.location ?
     props.location.search : window.location.search);
   if (param) {

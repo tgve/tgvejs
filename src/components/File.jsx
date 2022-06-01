@@ -91,7 +91,7 @@ export default class Uploader extends React.Component {
     const { separateGeo, dataFile } = this.state;
     return (
       <center className="file-upload">
-        {separateGeo && <p>Now drop/select the geography file</p>}
+        {separateGeo && <p>Data file first</p>}
         <FileUploader
           multiple={false}
           onCancel={this.reset}

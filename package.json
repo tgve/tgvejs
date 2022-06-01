@@ -48,6 +48,7 @@
     "underscore": "^1.12.0"
   },
   "scripts": {
+    "lint": "eslint --ignore-path .gitignore .",
     "test": "yarn install --check-files && react-scripts test --env=jest-environment-jsdom-sixteen",
     "test-debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",

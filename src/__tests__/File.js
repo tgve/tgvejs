@@ -21,7 +21,7 @@ test('Shallow and mount - File', async () => {
     target: { files: [file] }
   })
   // console.log(uploader.files[0]);
-  https://github.com/testing-library/react-testing-library/issues/93#issuecomment-631511472
+  // https://github.com/testing-library/react-testing-library/issues/93#issuecomment-631511472
   expect(uploader.files[0]).toStrictEqual(file)
 
 })

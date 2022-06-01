@@ -64,6 +64,7 @@ const fetchData = (url, callback) => {
       // TODO: better checks for both
       // zip and csv
       if(isString(url) && url.endsWith("zip")) {
+        /* global shp */
         if (typeof shp === 'function') {
           shp(url).then(geojson => {
             typeof callback === "function"
@@ -431,6 +432,7 @@ const percentDiv = (title, left, cb, dark) => {
 }
 
 if(!Array.prototype.flat) {
+  // eslint-disable-next-line no-extend-native
   Object.defineProperty(Array.prototype, 'flat', {
     value: function(depth = 1) {
       return this.reduce(function (flat, toFlatten) {
@@ -798,8 +800,8 @@ const setGeojsonProps = (geojson, data, geoColumn) => {
   if(!isString(geoColumn)) return geojson
   // either split or same values
   const splitOrSameString = (n) => {
-    return isString(geoColumn)
-      && geoColumn.split(":")[n] || geoColumn;
+    return (isString(geoColumn)
+      && geoColumn.split(":")[n]) || geoColumn;
   }
   let dataColumn = splitOrSameString(0);
   let geojsonColumn = splitOrSameString(1)

@@ -71,7 +71,7 @@ const EXTERNALS = Object.keys(pkg.dependencies)
   ])
   .concat(Object.keys((deckpkg && deckpkg.dependencies) || {}));
 
-export default [{
+const config = [{
   input: 'src/index.js',
   output: {
     intro: 'const ENVIRONMENT = "production";',
@@ -103,3 +103,4 @@ export default [{
   ],
   external: EXTERNALS.concat(["lodash", "polished", "underscore"])
 }];
+export default config;

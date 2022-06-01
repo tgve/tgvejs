@@ -33,7 +33,7 @@ import { setGeojsonProps } from '../utils/utils';
 const csv2geojson = require('csv2geojson');
 
 export default function (props) {
-  const [isOpen, setOpen] = React.useState(true);
+  const [isOpen, setOpen] = React.useState(false);
   const [alert, setAlert] = React.useState(false);
 
   const { urlCallback, toggleOpen } = props;

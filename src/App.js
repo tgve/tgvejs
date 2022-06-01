@@ -2,7 +2,7 @@
  * Turing Geovisualization Engine (TGVE)
  *
  */
-import React, { Component } from 'react';
+import React from 'react';
 import { Provider as StyletronProvider } from 'styletron-react';
 import { BaseProvider, DarkTheme, LightTheme } from 'baseui';
 import { Client as Styletron } from 'styletron-engine-atomic';
@@ -14,7 +14,7 @@ import { params } from './utils/api';
 
 const engine = new Styletron();
 
-export default function (props) {
+export default function App(props) {
   const apis = params(props,
     props.location ?
       props.location.search : window.location.search)
