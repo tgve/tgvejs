@@ -21,6 +21,7 @@ const makeObject = (type, min, max, def, step) => {
 const options = {
   pickable: { type: 'boolean', value: true },
   extruded: { type: 'boolean', value: true },
+  autoHighlight: { type: 'boolean', value: true},
 }
 const layers = {};
 

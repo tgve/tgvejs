@@ -52,11 +52,14 @@ const newRange = (d, columnNameOrIndex, min, max) => {
    * @param {Object} props read props
    * @param {Object} state read state
    * @param {Function} renderTooltip to pass to DeckGL
+   * @param {Function} callingFunction the function that calls
+   * this function from Home component
    *
    * @returns {Object|undefined} depending on values, props and state
    * either undefined or an object to setState of index.js
    */
-const generateLayer = (values = {}, props, state, renderTooltip) => {
+const generateLayer = (values = {}, props, state, renderTooltip,
+  callingFunction) => {
   const { layerOptions = {}, filter, cn, customError } = values;
 
   if (filter && filter.what === 'mapstyle') {
@@ -102,10 +105,9 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
     };
     // it was data.features when this function started
     data = data.features || data;
-    data = filterGeojson(data, filter, state, multiVarSelect)
-  } else {
-    data = filterGeojson(data, filter, state, multiVarSelect)
   }
+  data = filterGeojson(data, filter, state, multiVarSelect)
+
   // critical check
   if (!data || !data.length) {
     return ({
@@ -195,12 +197,13 @@ const generateLayer = (values = {}, props, state, renderTooltip) => {
       if (info && info.hasOwnProperty('coordinate')) {
         if (['path', 'arc', 'line'].includes(layerName) &&
           info.object.geometry.coordinates) {
-          generateLayer({
-            filter: {
-              what: 'coords',
-              selected: info.object.geometry.coordinates[0]
-            }
-          }, props, state)
+          typeof callingFunction === 'function'
+            && callingFunction({
+              filter: {
+                what: 'coords',
+                selected: info.object.geometry.coordinates[0]
+              }
+            })
         }
       }
     }

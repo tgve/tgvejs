@@ -14,20 +14,23 @@ export default class Uploader extends React.Component {
 
   handleDrop (acceptedFiles, rejectedFiles) {
     const { contentCallback } = this.props;
-    const textType = /text.*/;
+    const textType = /text.*|json|geo/;
     const file = acceptedFiles[0]
 
-    if (!file.type || file.type.match(textType) || file.type.match(/geo/)
-    || file.type.match(/json/)) {
+    if (file.type.match(textType) || file.type.match(/zip/)) {
       const reader = new FileReader();
       reader.onload = (e) => {
         this.setState({ progressAmount: 100 });
         this.reset();
-        const text = reader.result;
         typeof (contentCallback) === 'function' &&
-          contentCallback({ text, name: file.name })
+          contentCallback({
+            textOrBuffer: reader.result,
+            name: file.name,
+            type: file.type
+          })
       }
-      reader.readAsText(file);
+      if(file.type.match(textType)) reader.readAsText(file);
+      if(file.type.match(/zip/)) reader.readAsArrayBuffer(file)
     } else {
       this.setState({ progressAmount: 100 });
       this.reset();

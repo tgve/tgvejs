@@ -239,7 +239,8 @@ export default class Home extends React.Component {
 
   _callGenerateLayer(values = {}) {
     const updateState = generateLayer(
-      values, this.props, this.state, this._renderTooltip
+      values, this.props, this.state, this._renderTooltip,
+      this._callGenerateLayer
     )
     updateState && this.setState({ ...updateState })
   }

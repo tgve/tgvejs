@@ -103,6 +103,9 @@ They can also be passed to the TGVE as URL query parameters. For instance
 
 None of the above is necessary and in the current release “Add data” button will allow loading data into eAtlas.
 
+### Shapefiles
+For more about shapefiles please refer to [this](https://en.wikipedia.org/wiki/Shapefile) Wikipedia entry. The TGVE can read shapefiles if provided as a zip file using [`shapefile.js`](https://github.com/calvinmetcalf/shapefile-js). The package is used as external dependency, therefore, if you do use it make sure you have `<script src="https://unpkg.com/shpjs@latest/dist/shp.js"></script>` in your React app's `index.html` file. Then, just add the source as `defaultURL=www.domain/shape.zip`.
+
 ### Data and settings
 
 As stated above, you can create a `script` tag to pass data and above configurations as `JSON` to where TGVE is being rendered; for example in an `index.html` where the component is rendered like:
@@ -126,7 +129,7 @@ If you are not sure, please see the [`app`](https://github.com/tgve/app) reposit
 ### Testing
 
 The package follows `create-react-app` testing kits and uses mainly
-`@testing-library/react` and `jest`. 
+`@testing-library/react` and `jest`.
 Run `npm run test`.
 
 ## Contributing
