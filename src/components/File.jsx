@@ -91,7 +91,8 @@ export default class Uploader extends React.Component {
     const { separateGeo, dataFile } = this.state;
     return (
       <center className="file-upload">
-        {separateGeo && <p>Data file first</p>}
+        {separateGeo
+          && <p>{dataFile ? "Now the geography" : "Data file first"}</p>}
         <FileUploader
           multiple={false}
           onCancel={this.reset}
@@ -110,7 +111,12 @@ export default class Uploader extends React.Component {
           <>
             <p>Data file:
               {(dataFile && ` ${dataFile.name} , waiting for geography file`)
-                || " none"}</p>
+                || " none"}
+              {dataFile
+                && <i onClick={() => this.setState({ dataFile: null })}
+                  style={{ fontSize: '2rem' }}
+                  className="fa fa-trash" />}
+            </p>
             <p>Type the geography column name or map data file
               column name to geography like `geo:geography`
             </p>

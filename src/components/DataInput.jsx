@@ -6,13 +6,10 @@ import {
   ModalBody,
   ModalFooter,
   ModalButton,
-  FocusOnce,
 } from 'baseui/modal';
 
 import File from './File'
-import URL from './URL';
 import RBAlert from './RBAlert';
-import { setGeojsonProps } from '../utils/utils';
 
 /**
  * The csv2geojson package is by mapbox.
@@ -38,6 +35,62 @@ export default function (props) {
 
   const { urlCallback, toggleOpen } = props;
 
+  const _contentCallback = ({
+    separateGeo, dataTextOrBuffer, geoTextOrBuffer,
+    geoColumn, textOrBuffer, name, type }) => {
+    if (typeof (urlCallback) !== 'function')
+      return;
+    const callBackAndClose = (json, dataName, geography) => {
+      let noGeoCount = 0;
+      if (!geography) {
+        json.features
+          && json.features.forEach(e => {
+            if (!e.geometry)
+              noGeoCount += 1;
+          });
+      } else {
+        geography.features
+          && geography.features.forEach(e => {
+            if (!e.geometry)
+              noGeoCount += 1;
+          });
+      }
+      // do not proceed if no geography
+      if (noGeoCount === json.features.length) {
+        setAlert({
+          time: 7000,
+          content: !geography ?
+            "File has no geography. Separate geography file?"
+            : "Geography file has no geography."
+        });
+        return;
+      }
+      urlCallback(null, json, dataName, geography, geoColumn);
+      toggleSelfAndParent(toggleOpen, setOpen);
+    };
+    if (separateGeo) {
+      // first process data
+      processTextOrBuffer(
+        dataTextOrBuffer.type, dataTextOrBuffer.textOrBuffer,
+        (dataGeojson) => {
+          processTextOrBuffer(
+            geoTextOrBuffer.type, geoTextOrBuffer.textOrBuffer,
+            (geographyGeojson) => {
+              // both ready now
+              // do not combine them yet
+              // this happens in home/generatelayer
+              callBackAndClose(
+                dataGeojson, dataTextOrBuffer.name, geographyGeojson);
+            }
+          );
+        }
+      );
+    } else {
+      processTextOrBuffer(type, textOrBuffer, (json) => {
+        callBackAndClose(json, name);
+      });
+    }
+  };
   return (
     <React.Fragment>
       <Button
@@ -55,50 +108,16 @@ export default function (props) {
           Your data remains on your browser. It is NOT uploaded anywhere.
         </ModalHeader>
         <ModalBody>
-          <FocusOnce>
-            <URL urlCallback={(url) => {
-              toggleSelfAndParent(toggleOpen, setOpen);
-              typeof (urlCallback) === 'function'
-                && urlCallback(url)
-            }} />
-          </FocusOnce>
+          <p>You can add remote data using the URL API.
+            Like tgve.github.com/app?defaultURL=https://domain.com/data.geojson
+          </p>
           {/**
            * The approach is to do all processing here and
            * in future a separate function to handle file content
            * processing but leave File component only to read
            * the file.
            */}
-          <File contentCallback={({
-            separateGeo, dataTextOrBuffer, geoTextOrBuffer,
-            geoColumn, textOrBuffer, name, type }) => {
-            if (typeof (urlCallback) !== 'function') return
-            const callBackAndClose = (json, dataName, geography) => {
-              urlCallback(null, json, dataName, geography, geoColumn)
-              toggleSelfAndParent(toggleOpen, setOpen);
-            }
-            if (separateGeo) {
-              // first process data
-              processTextOrBuffer(
-                dataTextOrBuffer.type, dataTextOrBuffer.textOrBuffer,
-                (dataGeojson) => {
-                  processTextOrBuffer(
-                    geoTextOrBuffer.type, geoTextOrBuffer.textOrBuffer,
-                    (geographyGeojson) => {
-                      // both ready now
-                      // do not combine them yet
-                      // this happens in home/generatelayer
-                      callBackAndClose(
-                        dataGeojson, dataTextOrBuffer.name, geographyGeojson)
-                    }
-                  )
-                }
-              )
-            } else {
-              processTextOrBuffer(type, textOrBuffer, (json) => {
-                callBackAndClose(json, name)
-              });
-            }
-          }} />
+          <File contentCallback={_contentCallback} />
         </ModalBody>
         <ModalFooter>
           <ModalButton onClick={() => {

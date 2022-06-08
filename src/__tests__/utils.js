@@ -2,6 +2,7 @@ import {firstLastNCharacters, humanize,
   colorScale, generateDomain, xyObjectByProperty,
   suggestDeckLayer, isURL,
   uniqueValuePercentage,
+  isStringDate,
 } from '../utils/utils';
 import { LAYERSTYLES } from '../Constants';
 
@@ -154,6 +155,23 @@ const sample20CasualtiesGeojson = {
   { "type": "Feature", "properties": { "date": "2017-12-02", "day_of_week": "Saturday", "accident_severity": "Slight", "road_type": "Single carriageway", "speed_limit": 30, "datetime": "2017-12-02 15:17:00+00", "age_of_casualty": 51, "sex_of_casualty": "Female", "sex_of_driver": "" }, "geometry": { "type": "Point", "coordinates": [ -0.112261, 51.498789 ] } }
   ]
 }
+
+test("isStringDate works", () => {
+  const a = ["june 05 2022",
+    "june 5 2022",
+    "jun 05 2022",
+    "05/06/2022",
+    "05-06-2022",
+    "2022/06/05",
+    "2022-06-05"
+  ]
+  const r = a.map(e => isStringDate(e))
+  expect(
+    new Array(7).fill(true)
+  ).toEqual(expect.arrayContaining(r))
+
+  expect(isStringDate("jun 5 2022")).toBe(true)
+})
 export {
   sampleGeojson,
   sample20CasualtiesGeojson
