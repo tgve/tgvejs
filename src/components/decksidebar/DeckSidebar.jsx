@@ -7,7 +7,7 @@ import { Checkbox, StatefulCheckbox } from 'baseui/checkbox';
 import { StatefulTabs, Tab, StyledTabPanel } from "baseui/tabs-motion";
 
 import './DeckSidebar.css';
-import DataInput from '../DataInput';
+import DataInput from '../input/DataInput';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   searchNominatom, firstLastNCharacters,

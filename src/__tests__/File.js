@@ -1,8 +1,8 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import Uploader from '../components/File'
-import DataInput from '../components/DataInput'
+import Uploader from '../components/input/File'
+import DataInput from '../components/input/DataInput'
 const textCSV = `
   Month,Reported by,Falls within,Longitude,Latitude
   2020-12,Avon and Somerset Constabulary,Avon and Somerset Constabulary,-3.496102,54.714537

@@ -9,7 +9,7 @@ import {
 } from 'baseui/modal';
 
 import File from './File'
-import RBAlert from './RBAlert';
+import RBAlert from '../RBAlert';
 
 /**
  * The csv2geojson package is by mapbox.
@@ -144,7 +144,10 @@ export default function (props) {
             callback(json);
           });
       } else {
-        console.log("No shp in context or corrupt shapefile zip");
+        setAlert({
+          time: 5000,
+          content: "No shp in context or corrupt shapefile zip"
+        })
       }
     } else {
       // csv
