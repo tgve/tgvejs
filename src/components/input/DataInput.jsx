@@ -42,6 +42,13 @@ export default function (props) {
     setAlert(null)
     setAlert(alert)
   }
+
+  function toggleSelfAndParent() {
+    setAlert(null)
+    setOpen(o => !o);
+    typeof (toggleOpen) === 'function' && toggleOpen();
+  }
+
   /**
    *
    * @param {Object} param is expected to have
@@ -78,7 +85,7 @@ export default function (props) {
         });
       // do not proceed if no geography
       if (noGeoCount === file.features.length) {
-        !dataFile && setDataFile({json, name, type});
+        !dataFile && setDataFile({ json, name, type });
         cleanAlert({
           time: 5000,
           content: !geography ?
@@ -94,7 +101,7 @@ export default function (props) {
           name, geography, geoColumn);
         // clear dataFile
         setDataFile(null)
-        toggleSelfAndParent(toggleOpen, setOpen);
+        toggleSelfAndParent();
       }
     };
 
@@ -119,11 +126,11 @@ export default function (props) {
       <Button
         kind={KIND.secondary} size={SIZE.compact}
         onClick={() => {
-          toggleSelfAndParent(toggleOpen, setOpen);
+          toggleSelfAndParent();
         }}>Add data</Button>
       <Modal
         onClose={() => {
-          toggleSelfAndParent(toggleOpen, setOpen);
+          toggleSelfAndParent();
         }}
         isOpen={isOpen}>
         <ModalHeader>
@@ -152,7 +159,10 @@ export default function (props) {
                 {(dataFile && ` ${dataFile.name} , waiting for geography file. `)
                   || " none"}
                 {dataFile
-                  && <i onClick={() => setDataFile(null)}
+                  && <i onClick={() => {
+                    setDataFile(null)
+                    setAlert(null)
+                  }}
                     style={{ fontSize: '2rem' }}
                     className="fa fa-trash" />}
               </p>
@@ -217,9 +227,4 @@ export default function (props) {
       });
     }
   }
-}
-
-function toggleSelfAndParent(toggleOpen, setOpen) {
-  typeof (toggleOpen) === 'function' && toggleOpen();
-  setOpen(o => !o);
 }

@@ -133,7 +133,7 @@ export default class DeckSidebar extends React.Component {
           }
           <div>
             <DataInput
-              toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
+              toggleOpen={toggleOpen}
               urlCallback={(url, geojson, name, geography, geoColumn) => {
                 resetState(url || name);
                 typeof (urlCallback) === 'function'
@@ -158,7 +158,7 @@ export default class DeckSidebar extends React.Component {
             }
             {notEmpty &&
               <Modal
-                toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
+                toggleOpen={toggleOpen}
                 component={<DataTable data={data} />} />}
             <Export data={data} notEmpty={notEmpty}
               map={this.props.map} deck={this.props.deck} />
