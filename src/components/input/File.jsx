@@ -1,14 +1,11 @@
 import * as React from 'react';
 import { FileUploader } from 'baseui/file-uploader';
-import { StatefulCheckbox } from 'baseui/checkbox';
-import { Input } from 'baseui/input';
 
 export default class Uploader extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       progressAmount: 0,
-      separateGeo: false
     }
     this.reset = this.reset.bind(this);
     this.handleDrop = this.handleDrop.bind(this)
@@ -17,7 +14,6 @@ export default class Uploader extends React.Component {
 
   handleDrop(acceptedFiles, rejectedFiles) {
     const { contentCallback } = this.props;
-    const { separateGeo, dataFile, geoColumn } = this.state;
     const textType = /text.*|json|geo/;
     const file = acceptedFiles[0]
 
@@ -26,37 +22,13 @@ export default class Uploader extends React.Component {
       reader.onload = (e) => {
         this.setState({ progressAmount: 100 });
         this.reset();
-        if (typeof (contentCallback) === 'function') {
-          if (!separateGeo) {
-            contentCallback({
-              textOrBuffer: reader.result,
-              name: file.name,
-              type: file.type
-            })
-          } else {
-            if (!dataFile) {
-              this.setState({
-                dataFile: {
-                  textOrBuffer: reader.result,
-                  name: file.name,
-                  type: file.type
-                }
-              })
-            } else {
-              //both ready
-              contentCallback({
-                separateGeo: true,
-                geoColumn,
-                dataTextOrBuffer: dataFile,
-                geoTextOrBuffer: {
-                  textOrBuffer: reader.result,
-                  name: file.name,
-                  type: file.type
-                }
-              })
-            }
-          }
-        }
+
+        typeof contentCallback === 'function'
+        && contentCallback({
+          textOrBuffer: reader.result,
+          name: file.name,
+          type: file.type
+        })
       }
       if (file.type.match(textType)) reader.readAsText(file);
       if (file.type.match(/zip/)) reader.readAsArrayBuffer(file)
@@ -88,11 +60,8 @@ export default class Uploader extends React.Component {
   };
 
   render() {
-    const { separateGeo, dataFile } = this.state;
     return (
       <center className="file-upload">
-        {separateGeo
-          && <p>{dataFile ? "Now the geography" : "Data file first"}</p>}
         <FileUploader
           multiple={false}
           onCancel={this.reset}
@@ -103,30 +72,6 @@ export default class Uploader extends React.Component {
             `Uploading... ${this.state.progressAmount}% of 100%`
           }
         />
-        <StatefulCheckbox onChange={() => this.setState({
-          separateGeo: !separateGeo
-        })} />
-        {
-          separateGeo &&
-          <>
-            <p>Data file:
-              {(dataFile && ` ${dataFile.name} , waiting for geography file`)
-                || " none"}
-              {dataFile
-                && <i onClick={() => this.setState({ dataFile: null })}
-                  style={{ fontSize: '2rem' }}
-                  className="fa fa-trash" />}
-            </p>
-            <p>Type the geography column name or map data file
-              column name to geography like `geo:geography`
-            </p>
-            <Input
-              placeholder='geo:geography'
-              onChange={
-                (e) => this.setState({ geoColumn: e.target.value })
-              } />
-          </>
-        }
       </center>
     );
   }

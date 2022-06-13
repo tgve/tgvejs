@@ -481,7 +481,7 @@ export default class Home extends React.Component {
         this.setState({
           data: geojson_returned,
           geography: geography_returned || null,
-          geographyColumn: geography_returned ? geoColumn : null,
+          geographyColumn: geoColumn,
         }, () => {
           // go with geography first fallback onto data source.
           this._fitViewport(geography_returned || geojson_returned);
