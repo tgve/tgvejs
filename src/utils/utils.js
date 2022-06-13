@@ -5,7 +5,7 @@ import {
   interpolateOranges, interpolateSinebow,
   schemeSet1
 } from 'd3-scale-chromatic';
-import {scaleThreshold} from 'd3-scale';
+import { scaleThreshold } from 'd3-scale';
 import { isArray } from 'underscore';
 import csv2geojson from 'csv2geojson';
 import { ascending } from 'd3-array';
@@ -15,8 +15,10 @@ import qs from 'qs'; // importing it other ways would cause minification issue.
 
 import mapping from '../location-icon-mapping.json';
 import Constants from '../Constants';
-import { isString, isNumber, isObject, randomToNumber, isStringNumeric,
-  isNullUndefinedNaN } from './JSUtils.js';
+import {
+  isString, isNumber, isObject, randomToNumber, isStringNumeric,
+  isNullUndefinedNaN
+} from './JSUtils.js';
 import IconClusterLayer from '../icon-cluster-layer';
 import atlas from '../img/location-icon-atlas.png';
 import { sfType } from './geojsonutils';
@@ -63,7 +65,8 @@ const fetchData = (url, callback) => {
     .then((response) => {
       // TODO: better checks for both
       // zip and csv
-      if(isString(url) && url.endsWith("zip")) {
+      if (isString(url) && url.endsWith("zip")) {
+        /* global shp */
         if (typeof shp === 'function') {
           shp(url).then(geojson => {
             typeof callback === "function"
@@ -74,7 +77,7 @@ const fetchData = (url, callback) => {
             url + "Function 'shp' is not in context."
           ))
         }
-      } else if(isString(url) && url.endsWith("csv")) {
+      } else if (isString(url) && url.endsWith("csv")) {
         csv2geojson.csv2geojson(response, (err, data) => {
           if (!err) {
             typeof (callback) === 'function'
@@ -107,16 +110,16 @@ const fetchData = (url, callback) => {
  */
 const checkURLReachable = (URL, callback) => {
   fetch(URL)
-  .then((response) => {
-    if(response.ok) {
-      callback(true)
-    } else {
-      callback(false)
-    }
-  })
-  .catch((error) => {
-    console.log('There has been a problem with your fetch operation: ' + error.message);
-  });
+    .then((response) => {
+      if (response.ok) {
+        callback(true)
+      } else {
+        callback(false)
+      }
+    })
+    .catch((error) => {
+      console.log('There has been a problem with your fetch operation: ' + error.message);
+    });
 }
 
 /**
@@ -152,7 +155,7 @@ const xyObjectByProperty = (data, property, noNulls = true) => {
 
   const sortedArray = Array.from(map.keys());
 
-  if(!sortedArray || !sortedArray.length) return;
+  if (!sortedArray || !sortedArray.length) return;
   sortedArray.sort(ascending)
 
   return sortedArray.map(key => {
@@ -191,15 +194,15 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     )
   }
 
- /**
- * @param {String} name passed down from generateDeckLayer
- * @param {Object} data passed down from generateDeckLayer
- * @param {Object} renderTooltip passed down from generateDeckLayer
- * @returns
- */
+  /**
+  * @param {String} name passed down from generateDeckLayer
+  * @param {Object} data passed down from generateDeckLayer
+  * @param {Object} renderTooltip passed down from generateDeckLayer
+  * @returns
+  */
   function generateOptions(name, data, renderTooltip) {
     const layerProps = getLayerProps(name);
-    if(!layerProps || !layerProps.class || !layerProps.class["value"]) return null
+    if (!layerProps || !layerProps.class || !layerProps.class["value"]) return null
     const layerOptions = {}, updateTriggers = {};
     Object.keys(layerProps).forEach(key => {
       const type = layerProps[key] && layerProps[key].type;
@@ -210,8 +213,8 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
         // odd fill colour etc can be added.
         if (type === 'column' && typeof options[key] === 'function') {
           updateTriggers[key] =
-              typeof (options[key]) === 'function'
-              && data.map(d => options[key](d))
+            typeof (options[key]) === 'function'
+            && data.map(d => options[key](d))
         }
       } else if (type === 'boolean' || type === 'class') {
         layerOptions[key] = layerProps[key].value;
@@ -228,7 +231,8 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
     // (source, target) vs Object.assign(target, source)
     addOptionsToObject(options, layerOptions)
     layerOptions.updateTriggers = {
-      ...layerOptions.updateTriggers, ...updateTriggers}
+      ...layerOptions.updateTriggers, ...updateTriggers
+    }
     return new layerProps.class["value"](layerOptions);
   }
 
@@ -326,7 +330,7 @@ const getBbx = (bounds) => {
  */
 const suggestDeckLayer = (features) => {
   const r = randomToNumber(features && features.length)
-  if(!features || !features[r].geometry ||
+  if (!features || !features[r].geometry ||
     !features[r].geometry.type) return null
   // basic version should suggest a layer based
   // on a simple check of a random geometry type from
@@ -334,9 +338,9 @@ const suggestDeckLayer = (features) => {
   // TODO: go through each feature? in case of features.
   const type = sfType(features[r]);
   // Constants.LAYERSTYLES
-  if(new RegExp("point", 'i').test(type)) {
+  if (new RegExp("point", 'i').test(type)) {
     return "grid"
-  } else if(new RegExp("line", 'i').test(type)) {
+  } else if (new RegExp("line", 'i').test(type)) {
     return "line"
   } else {
     return "geojson"
@@ -430,58 +434,59 @@ const percentDiv = (title, left, cb, dark) => {
   )
 }
 
-if(!Array.prototype.flat) {
+if (!Array.prototype.flat) {
+  // eslint-disable-next-line no-extend-native
   Object.defineProperty(Array.prototype, 'flat', {
-    value: function(depth = 1) {
+    value: function (depth = 1) {
       return this.reduce(function (flat, toFlatten) {
-        return flat.concat((Array.isArray(toFlatten) && (depth>1)) ? toFlatten.flat(depth-1) : toFlatten);
+        return flat.concat((Array.isArray(toFlatten) && (depth > 1)) ? toFlatten.flat(depth - 1) : toFlatten);
       }, []);
     }
   });
 }
 const ll = ["http://localhost", "http://127.0.0.1"]
-const devURLS = ll.map(lh => [lh, lh+":8080", lh+":8000",
-lh+":5000", lh+":3000"]).flat()
+const devURLS = ll.map(lh => [lh, lh + ":8080", lh + ":8000",
+  lh + ":5000", lh + ":3000"]).flat()
 const urlRegex = new RegExp(
   "^" +
-    // protocol identifier (optional)
-    // short syntax // still required
-    "(?:(?:(?:https?|ftp):)?\\/\\/)" +
-    // user:pass BasicAuth (optional)
-    "(?:\\S+(?::\\S*)?@)?" +
-    "(?:" +
-      // IP address exclusion
-      // private & local networks
-      "(?!(?:10|127)(?:\\.\\d{1,3}){3})" +
-      "(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})" +
-      "(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})" +
-      // IP address dotted notation octets
-      // excludes loopback network 0.0.0.0
-      // excludes reserved space >= 224.0.0.0
-      // excludes network & broadcast addresses
-      // (first & last IP address of each class)
-      "(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])" +
-      "(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}" +
-      "(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))" +
-    "|" +
-      // host & domain names, may end with dot
-      // can be replaced by a shortest alternative
-      // (?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.)+
-      "(?:" +
-        "(?:" +
-          "[a-z0-9\\u00a1-\\uffff]" +
-          "[a-z0-9\\u00a1-\\uffff_-]{0,62}" +
-        ")?" +
-        "[a-z0-9\\u00a1-\\uffff]\\." +
-      ")+" +
-      // TLD identifier name, may end with dot
-      // TGVE edit: remove requirement of TLD
-      "(?:[a-z\\u00a1-\\uffff]{2,}\\.?)?" +
-    ")" +
-    // port number (optional)
-    "(?::\\d{2,5})?" +
-    // resource path (optional)
-    "(?:[/?#]\\S*)?" +
+  // protocol identifier (optional)
+  // short syntax // still required
+  "(?:(?:(?:https?|ftp):)?\\/\\/)" +
+  // user:pass BasicAuth (optional)
+  "(?:\\S+(?::\\S*)?@)?" +
+  "(?:" +
+  // IP address exclusion
+  // private & local networks
+  "(?!(?:10|127)(?:\\.\\d{1,3}){3})" +
+  "(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})" +
+  "(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})" +
+  // IP address dotted notation octets
+  // excludes loopback network 0.0.0.0
+  // excludes reserved space >= 224.0.0.0
+  // excludes network & broadcast addresses
+  // (first & last IP address of each class)
+  "(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])" +
+  "(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}" +
+  "(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))" +
+  "|" +
+  // host & domain names, may end with dot
+  // can be replaced by a shortest alternative
+  // (?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.)+
+  "(?:" +
+  "(?:" +
+  "[a-z0-9\\u00a1-\\uffff]" +
+  "[a-z0-9\\u00a1-\\uffff_-]{0,62}" +
+  ")?" +
+  "[a-z0-9\\u00a1-\\uffff]\\." +
+  ")+" +
+  // TLD identifier name, may end with dot
+  // TGVE edit: remove requirement of TLD
+  "(?:[a-z\\u00a1-\\uffff]{2,}\\.?)?" +
+  ")" +
+  // port number (optional)
+  "(?::\\d{2,5})?" +
+  // resource path (optional)
+  "(?:[/?#]\\S*)?" +
   "$", "i"
 );
 /**
@@ -513,7 +518,7 @@ function hexToRgb(hex, array = false) {
   let r = (bigint >> 16) & 255;
   let g = (bigint >> 8) & 255;
   let b = bigint & 255;
-  if(array) return [r/255,g/255,b/255]
+  if (array) return [r / 255, g / 255, b / 255]
   return 'rgb(' + r + "," + g + "," + b + ")";
 }
 
@@ -528,14 +533,14 @@ function hexToRgb(hex, array = false) {
  */
 const colorScale = (v, domain, alpha = 180, colorName) => {
   if (!v || !isArray(domain) || !domain.length) return null;
-  if(colorName === colorRangeNames[5] && domain.length <= 10) {
+  if (colorName === colorRangeNames[5] && domain.length <= 10) {
     const rgb = hexToRgb(schemeSet1[domain.indexOf(v)], true);
     return [...rgb, alpha]
   }
   const index = domain.indexOf(v)
   const d3InterpolateFn = isString(colorName) &&
-  colorRangeNamesToInterpolate(colorName) ?
-  colorRangeNamesToInterpolate(colorName) : interpolateOrRd;
+    colorRangeNamesToInterpolate(colorName) ?
+    colorRangeNamesToInterpolate(colorName) : interpolateOrRd;
   let rgb = d3InterpolateFn(index / domain.length);
   rgb = rgb.substring(4, rgb.length - 1)
     .replace(/ /g, '')
@@ -547,16 +552,16 @@ const colorRangeNames = ['inverseDefault', 'yellowblue', 'greens',
   'oranges', 'diverge', 'default'];
 
 const colorRangeNamesToInterpolate = (name) => {
-  if(!name) return interpolateOrRd;
-  if(name === colorRangeNames[0]) {
+  if (!name) return interpolateOrRd;
+  if (name === colorRangeNames[0]) {
     return interpolateReds;
-  } else if(name === colorRangeNames[1]) {
+  } else if (name === colorRangeNames[1]) {
     return interpolateYlGnBu;
-  } else if(name === colorRangeNames[2]) {
+  } else if (name === colorRangeNames[2]) {
     return interpolateGreens;
-  } else if(name === colorRangeNames[3]) {
+  } else if (name === colorRangeNames[3]) {
     return interpolateOranges;
-  } else if(name === colorRangeNames[4]) {
+  } else if (name === colorRangeNames[4]) {
     return interpolateSinebow;
   } else {
     return interpolateOrRd
@@ -627,7 +632,7 @@ const colorRanges = (name) => {
  * @returns
  */
 const getColorArray = (name) => {
-  if(!isString(name)) return null;
+  if (!isString(name)) return null;
   const colors = {
     yellowblue: [0, 52, 148],
     greens: [0, 255, 0],
@@ -680,7 +685,7 @@ const generateLegend = (options) => {
   const r = randomToNumber(domain && domain.length)
   if (!domain || !Array.isArray(domain) || !isNumber(domain[r])) return null
   const jMax = domain[domain.length - 1], jMin = domain[0];
-  if(!isNumber(jMax) || !isNumber(jMin)) return null
+  if (!isNumber(jMax) || !isNumber(jMin)) return null
 
   const legend = [<p key='title'>{title}</p>]
 
@@ -715,12 +720,12 @@ const generateDomain = (data, column) => {
     const i = feature.properties[
       +(column) ? Object.keys(feature.properties)[column] : column
     ]; // eliminate nulls
-    if(!i) return;
+    if (!i) return;
     if (+(i) &&
       column === 'Mean.Travel.Time..Seconds.') {
-        domain.push(Math.floor(i / 300));
+      domain.push(Math.floor(i / 300));
     } else {
-      if(+(i)) {
+      if (+(i)) {
         domain.push(+(i))
       } else {
         domainIsNumeric = false;
@@ -760,72 +765,23 @@ const getOSMTiles = (name) => {
     TONER: "http://tile.stamen.com/toner/{z}/{x}/{y}.png",
     STAMEN: 'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg'
   }
-  return({
-  "version": 8,
-  "sources": {
-    "simple-tiles": {
-      "type": "raster",
-      "tiles": [
-        TILES[name] || TILES["STAMEN"]
-      ],
-      "tileSize": 256
-    }
-  },
-  "layers": [{
-    "id": "simple-tiles",
-    "type": "raster",
-    "source": "simple-tiles",
-  }]
-});
-}
-
-/**
- *
- * Function modifies `geojson` in place.
- *
- * @param {*} geojson a gejson with matching `geoColumn` to `data` param
- * {features:[], type:}
- * @param {*} data a json {properties:{}} object with matchin
- * `geoColumn` to `geojson` param. Typically features of another geojons.
- * @param {*} geoColumn geocode which is shared between `geojson` and `data`.
- * It can be the same column name or mapped as `dataCol:geographyCol` string.
- */
-const setGeojsonProps = (geojson, data, geoColumn) => {
-  // const r = randomToNumber(data && data.length);
-  // either split or same values
-  let dataColumn = isString(geoColumn) && geoColumn.split(":")[0];
-  let geojsonColumn = isString(geoColumn)
-    && geoColumn.split(":")[1] || geoColumn
-  // TODO: find matching columns
-  // first matching column
-  // const firstMatching = Object.keys(geojson.features[0].properties).map(e =>
-  // Object.keys(data[0].properties.includes(e)))[0]
-  if(!isString(geoColumn)) return geojson
-  const r = 0;
-  const result = Object.assign({}, geojson)
-  // if no matching or mapped columns
-  result.features = []
-  if (!isObject(geojson) || !isArray(data) || !isString(geoColumn) ||
-    !geojson.features || !geojson.features[r] ||
-    !geojson.features[r].properties[geojsonColumn] || !data[r] ||
-    !data[r].properties || !data[r].properties[dataColumn]) return null
-  // for now modify the object itself
-  geojson.features.forEach(feature => {
-    for (let i = 0; i < data.length; i++) {
-      if (feature.properties[geojsonColumn] ===
-        data[i].properties[dataColumn]) {
-        // feature.properties = data[i].properties;
-        const obj = {
-          type: feature.type,
-          properties: data[i].properties,
-          geometry: feature.geometry
-        }
-        result.features.push(obj)
-        break;
+  return ({
+    "version": 8,
+    "sources": {
+      "simple-tiles": {
+        "type": "raster",
+        "tiles": [
+          TILES[name] || TILES["STAMEN"]
+        ],
+        "tileSize": 256
       }
-    }
+    },
+    "layers": [{
+      "id": "simple-tiles",
+      "type": "raster",
+      "source": "simple-tiles",
+    }]
   });
-  return result
 }
 
 /**
@@ -836,7 +792,7 @@ const setGeojsonProps = (geojson, data, geoColumn) => {
  * @returns first key in the objec that matches the regex
  */
 const getFirstDateColumnName = (obj) => {
-  if(!isObject(obj) || !Object.keys(obj)) return null
+  if (!isObject(obj) || !Object.keys(obj)) return null
   // find the date/time column with year in
   const r = new RegExp(Constants.DATE_REGEX);
   return Object.keys(obj).filter(e => r.test(e))[0]
@@ -844,29 +800,23 @@ const getFirstDateColumnName = (obj) => {
 
 const getMessage = (array) => {
   return array && array.length &&
-  array.length + " row" + (array.length > 1 ? "s" : "")
+    array.length + " row" + (array.length > 1 ? "s" : "")
 }
 const getMainMessage = (filtered, unfiltered) => {
-  if(filtered && filtered.length && unfiltered && unfiltered.length) {
+  if (filtered && filtered.length && unfiltered && unfiltered.length) {
     return getMessage(filtered) + (filtered.length < unfiltered.length ?
-    " of " + unfiltered.length : "")
-  } else if(filtered && filtered.length) {
+      " of " + unfiltered.length : "")
+  } else if (filtered && filtered.length) {
     return getMessage(filtered)
     // TODO: check all rows before declaring
   }
-  // else if(unfiltered && unfiltered.length) {
-  //   const r = randomToNumber(unfiltered.length);
-  //   console.log(r);
-  //   if(!unfiltered[r].geometry) return getMessage(unfiltered) + " - no geometry"
-  //   return getMessage(unfiltered)
-  // }
   else {
     return "Nothing to show"
   }
 }
 
 const theme = (dark) => {
-  return({
+  return ({
     color: dark ? "white" : "black",
     background: dark ? "#242730" : "white"
   })
@@ -887,16 +837,16 @@ const isStringDate = (value) => {
 }
 
 const arrayCardinality = (array) => {
-  if(!Array.isArray(array) || !array.length) return null
+  if (!Array.isArray(array) || !array.length) return null
   //
-  return(Array.from(new Set(array)).length)
+  return (Array.from(new Set(array)).length)
 }
 
 const uniqueValuePercentage = (array, test = 60) => {
   // simple logic: over limit is unique
   const cardinality = arrayCardinality(array)
-  if(!cardinality && cardinality !== 0) return null
-  return cardinality/array.length * 100 > test;
+  if (!cardinality && cardinality !== 0) return null
+  return cardinality / array.length * 100 > test;
 }
 
 /**
@@ -926,7 +876,7 @@ const updateHistory = (urlVars) => {
     }
   })
   // remove the trailing '&'
-  search = search.slice(0,-1);
+  search = search.slice(0, -1);
   // construct the entry for the history
   const entry = {
     pathname: history.location.pathname,
@@ -966,8 +916,8 @@ const screenshot = (map, deck, includeBody = true, callback) => {
   context.drawImage(mapboxCanvas, 0, 0);
   context.globalAlpha = 1.0;
   context.drawImage(deckglCanvas, 0, 0);
-  if(!includeBody) {
-    if(typeof callback === 'function') {
+  if (!includeBody) {
+    if (typeof callback === 'function') {
       callback(canvas, fileName);
       return
     }
@@ -975,7 +925,7 @@ const screenshot = (map, deck, includeBody = true, callback) => {
   } else {
     html2canvas(document.body).then((htmlCanvas) => {
       context.drawImage(htmlCanvas, 0, 0)
-      if(typeof callback === 'function') {
+      if (typeof callback === 'function') {
         callback(canvas, fileName);
         return
       }
@@ -1000,7 +950,7 @@ const iWithFaName = (faName, onClick, fontSize) => <i
     fontSize: fontSize || '1.5em'
   }}
   onClick={onClick}
-className={faName || "fa fa-info"}></i>
+  className={faName || "fa fa-info"}></i>
 
 export {
   colorRangeNamesToInterpolate,
@@ -1015,7 +965,6 @@ export {
   checkURLReachable,
   suggestDeckLayer,
   sortNumericArray,
-  setGeojsonProps,
   colorRangeNames,
   searchNominatom,
   generateLegend,

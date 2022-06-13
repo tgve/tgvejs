@@ -42,7 +42,10 @@ export default function DeckSidebarContainer (props) {
           style={{ color: 'white' }}>
           <div style={{ backgroundColor: '#242730' }}>
             <i
-              style={{ fontSize: '2rem', color: 'white !important' }}
+              style={{
+                marginLeft: 0, fontSize: '2rem',
+                color: 'white !important'
+              }}
               className={open ? "fa fa-arrow-circle-left" :
                 "fa fa-arrow-circle-right"} />
           </div>

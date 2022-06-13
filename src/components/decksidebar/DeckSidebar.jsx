@@ -7,7 +7,7 @@ import { Checkbox, StatefulCheckbox } from 'baseui/checkbox';
 import { StatefulTabs, Tab, StyledTabPanel } from "baseui/tabs-motion";
 
 import './DeckSidebar.css';
-import DataInput from '../DataInput';
+import DataInput from '../input/DataInput';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   searchNominatom, firstLastNCharacters,
@@ -133,11 +133,11 @@ export default class DeckSidebar extends React.Component {
           }
           <div>
             <DataInput
-              toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
-              urlCallback={(url, geojson, name) => {
+              toggleOpen={toggleOpen}
+              urlCallback={(url, geojson, name, geography, geoColumn) => {
                 resetState(url || name);
                 typeof (urlCallback) === 'function'
-                  && urlCallback(url, geojson);
+                  && urlCallback(url, geojson, geography, geoColumn);
               }} />
             {
               this.state.reset &&
@@ -158,7 +158,7 @@ export default class DeckSidebar extends React.Component {
             }
             {notEmpty &&
               <Modal
-                toggleOpen={() => typeof toggleOpen === 'function' && toggleOpen()}
+                toggleOpen={toggleOpen}
                 component={<DataTable data={data} />} />}
             <Export data={data} notEmpty={notEmpty}
               map={this.props.map} deck={this.props.deck} />

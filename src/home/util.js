@@ -9,7 +9,7 @@ import { FlyToInterpolator } from 'react-map-gl';
 import {
   generateDeckLayer, suggestDeckLayer,
   colorScale, getOSMTiles, colorRanges, getBbx,
-  generateDomain, setGeojsonProps, convertRange, getMin, getMax,
+  generateDomain, convertRange, getMin, getMax,
   generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
   getViewportParams,
 } from '../utils/utils';
@@ -17,7 +17,8 @@ import {
   LIGHT_SETTINGS, BLANKSTYLE
 } from '../Constants';
 
-import { getPropertyValues, sfType } from '../utils/geojsonutils';
+import { getPropertyValues, setGeojsonProps,
+  sfType } from '../utils/geojsonutils';
 import { CustomSlider } from '../components/showcases/Widgets';
 import { isArray, isNumber } from '../utils/JSUtils';
 import { DECKGL_INIT, LAYERS_2D_REGEX } from '../Constants'
@@ -358,7 +359,7 @@ const isValueNumeric = (data, columnNameOrIndex) => {
 const initViewState = (props) => {
   const { viewport, layerName } = props;
   const init = viewport && Object.keys(viewport) ?
-    Object.assign(DECK_INIT, viewport) : DECKGL_INIT;
+    Object.assign(DECKGL_INIT, viewport) : DECKGL_INIT;
   const param = getViewportParams(props.location ?
     props.location.search : window.location.search);
   if (param) {

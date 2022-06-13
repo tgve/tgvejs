@@ -54,7 +54,7 @@ const generateTooltip =(props) => {
         }
       })
     })
-    severity_data_separate.map(e => {
+    severity_data_separate.forEach(e => {
       if (e.x.length > 1) {
         e.mode = 'lines'
       }

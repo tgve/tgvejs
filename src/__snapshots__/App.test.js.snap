@@ -196,7 +196,7 @@ exports[`App snapshot dark theme 1`] = `
             >
               <i
                 class="fa fa-arrow-circle-left"
-                style="font-size: 2rem;"
+                style="margin-left: 0px; font-size: 2rem;"
               />
             </div>
           </div>
@@ -406,7 +406,7 @@ exports[`App snapshot light theme 1`] = `
             >
               <i
                 class="fa fa-arrow-circle-left"
-                style="font-size: 2rem;"
+                style="margin-left: 0px; font-size: 2rem;"
               />
             </div>
           </div>

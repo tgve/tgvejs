@@ -98,7 +98,7 @@ test('Home generateLayer works', () => {
   let result = generateLayer(
     {}, {}, () => { }
   )
-  expect(result).toBeUndefined
+  expect(result).toBeUndefined()
 
   result = generateLayer(
     {},
