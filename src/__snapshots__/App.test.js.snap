@@ -185,6 +185,9 @@ exports[`App snapshot dark theme 1`] = `
                   </div>
                 </div>
               </form>
+              <p>
+                TGVE: 1.5.0
+              </p>
             </div>
           </div>
           <div
@@ -395,6 +398,9 @@ exports[`App snapshot light theme 1`] = `
                   </div>
                 </div>
               </form>
+              <p>
+                TGVE: 1.5.0
+              </p>
             </div>
           </div>
           <div
