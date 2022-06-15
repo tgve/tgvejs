@@ -1,5 +1,5 @@
 [![Node CI](https://github.com/tgve/tgvejs/workflows/Node%20CI/badge.svg?branch=release)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22)
-[![npm version](https://badge.fury.io/js/@tgve%2Ftgvejs.svg)](https://badge.fury.io/js/@tgve%2Ftgvejs) [![codecov](https://codecov.io/gh/tgve/tgvejs/branch/develop/graph/badge.svg?token=FnXegSkNXD)](https://codecov.io/gh/tgve/tgvejs)
+[![npm version](https://badge.fury.io/js/@tgve%2Ftgvejs.svg)](https://badge.fury.io/js/@tgve%2Ftgvejs) ![GitHub package.json version](https://img.shields.io/github/package-json/v/tgve/tgvejs?label=gh%3Aversion) [![codecov](https://codecov.io/gh/tgve/tgvejs/branch/develop/graph/badge.svg?token=FnXegSkNXD)](https://codecov.io/gh/tgve/tgvejs)
 
 The Turing Geovisualisation Engine (TGVE) is a web-based,
 interactive visual analytics tool for geospatial data analysis, built using R and JavaScript/React, that can be used as a complete server-client application or just as a front-end stand-alone application. The visual views and interaction mechanisms designed into the tool is underpinned by empirically-informed guidelines around
