@@ -36,7 +36,7 @@ function App() {
 
 ### Configuration settings
 
-TGVE supports separately-provided geography (in GeoJSON) and point data sources (in CSV). Other formats are not supported.
+TGVE supports separately-provided geography (in GeoJSON or Shapefile) and point data sources (in CSV). Other formats are not supported.
 
 The following parameters can be passed to the TGVE app. Each parameter can be passed as an environment variable, with the exception of:
 - leftSidebarContent
