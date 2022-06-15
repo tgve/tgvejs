@@ -1,5 +1,5 @@
 ## Change log
-- `1.4.9`
+- `1.5.0`
   - Add support for reading Shapefiles via shapefile.js
   - Read separate geography & data file from local machine
   - Other minor performance improvements.
