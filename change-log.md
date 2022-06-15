@@ -1,4 +1,12 @@
 ## Change log
+- `1.4.9`
+  - Add support for reading Shapefiles via shapefile.js
+  - Read separate geography & data file from local machine
+  - Other minor performance improvements.
+
+- `1.4.8`
+  - Mainly performance improvements (viewport)
+
 - `1.4.7`
   - Fix colouring various layers
   - Add popup as well as hover

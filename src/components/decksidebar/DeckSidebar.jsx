@@ -27,6 +27,7 @@ import { LAYERS } from '../settings/settingsUtils'
 import Export from '../export/Export';
 import Charts from './Charts';
 import { headerComponent } from './utils';
+const tgve = require('../../../package.json');
 
 export default class DeckSidebar extends React.Component {
   constructor(props) {
@@ -330,6 +331,7 @@ export default class DeckSidebar extends React.Component {
                 />
               </FormControl>
             </form>
+            <p>TGVE: {tgve.version}</p>
           </div>
         </div>
       </>
