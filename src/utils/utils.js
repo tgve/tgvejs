@@ -518,7 +518,7 @@ function hexToRgb(hex, array = false) {
   let r = (bigint >> 16) & 255;
   let g = (bigint >> 8) & 255;
   let b = bigint & 255;
-  if (array) return [r / 255, g / 255, b / 255]
+  if (array) return [r, g, b]
   return 'rgb(' + r + "," + g + "," + b + ")";
 }
 

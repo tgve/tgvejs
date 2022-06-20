@@ -25,13 +25,13 @@ import { DECKGL_INIT, LAYERS_2D_REGEX } from '../Constants'
 
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
-const newRange = (d, columnNameOrIndex, min, max) => {
+const newRange = (d, columnName, min, max) => {
   let newMax = max, newMin = min;
   if (min < 1 || max > 300) {
     newMax = 10; newMin = 1;
   }
   const r = convertRange(
-    d.properties[columnNameOrIndex], {
+    d.properties[columnName], {
     oldMin: min, oldMax: max, newMax: newMax, newMin: newMin
   });
   return r;
@@ -117,10 +117,13 @@ const generateLayer = (values = {}, props, state, renderTooltip,
     })
   };
 
-  let column = (filter && filter.what === 'column' && filter.selected) ||
+  const column = (filter && filter.what === 'column' && filter.selected) ||
     state.column;
   // in case there is no or one column
-  const columnNameOrIndex = column || 0;
+  const columnName = column
+    //get first property of the first feature
+    || (Object.keys(data[0].properties) && Object.keys(data[0].properties)[0])
+    || 0;
 
   const geomType = sfType(
     geography ? geography.features[0] : data[0]
@@ -142,27 +145,22 @@ const generateLayer = (values = {}, props, state, renderTooltip,
     getColor: getColorArray(cn || colorName)
   }, layerOptions);
   // generate a domain
-  const domain = generateDomain(
-    data,
-    columnNameOrIndex === 0 ?
-      // TODO better check than just data[0]
-      Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex);
-
+  const domain = generateDomain(data, columnName);
   if (layerName === 'heatmap') {
     options.getPosition = d => d.geometry.coordinates
-    // options.getWeight = d => d.properties[columnNameOrIndex]
+    // options.getWeight = d => d.properties[columnName]
     options.updateTriggers = {
       // even if nulls
       getWeight: typeof (options.getWeight) === 'function' &&
         data.map(d => options.getWeight(d))
     }
   }
-  // TODO
+  // TODO: color
   if (layerName === 'scatterplot') {
-    if (isValueNumeric(data, columnNameOrIndex)) {
+    if (isValueNumeric(data, columnName)) {
       const min = getMin(domain), max = getMax(domain)
       options.getRadius = d => {
-        return newRange(d, columnNameOrIndex, min, max);
+        return newRange(d, columnName, min, max);
       }
     }
   }
@@ -175,18 +173,10 @@ const generateLayer = (values = {}, props, state, renderTooltip,
 
   let newLegend = state.legend;
 
-  const getValue = (d) => {
-    // columnNameOrIndex must be init with 0
-    // TODO write tests for no props at all
-    if (+columnNameOrIndex || +columnNameOrIndex === 0) {
-      // if not checking against 0 then, we will have 0 passed to properties
-      // which could return undefined like obj = {foo:'bar', baz: 'boo'}; obj[0]
-      return (d.properties[Object.keys(d.properties)[columnNameOrIndex]])
-    } else {
-      return (d.properties[columnNameOrIndex])
-    }
-  }
+  const getValue = (d) => d.properties[columnName]
   const fill = (d) => colorScale(
+    // domain converts numerics into numbers
+    // must do the same here
     +getValue(d) ? +getValue(d) : getValue(d),
     domain, 180, cn || state.colorName
   )
@@ -208,10 +198,10 @@ const generateLayer = (values = {}, props, state, renderTooltip,
         }
       }
     }
-    if (isValueNumeric(data, columnNameOrIndex)) {
+    if (isValueNumeric(data, columnName)) {
       const min = getMin(domain), max = getMax(domain)
       options.getWidth = d => {
-        return newRange(d, columnNameOrIndex, min, max);
+        return newRange(d, columnName, min, max);
       }; // avoid id
     }
     options.updateTriggers = {
@@ -238,8 +228,6 @@ const generateLayer = (values = {}, props, state, renderTooltip,
   }
 
   // attempt legend
-  const columnName = +columnNameOrIndex || +columnNameOrIndex === 0 ?
-    Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex
   newLegend = generateLegend(
     {
       domain,
@@ -347,13 +335,13 @@ const filterGeojson = (data, filter, state, multiVarSelect) => {
   );
 }
 
-const isValueNumeric = (data, columnNameOrIndex) => {
+const isValueNumeric = (data, columnName) => {
   if (!isArray(data)) return null
-  if (!isString(columnNameOrIndex)
-    && !isNumber(columnNameOrIndex)) return null
+  if (!isString(columnName)
+    && !isNumber(columnName)) return null
   const r = Math.floor(Math.random() * data.length)
   return +(data[r] && data[r].properties &&
-    data[r].properties[columnNameOrIndex]);
+    data[r].properties[columnName]);
 }
 
 const initViewState = (props) => {
