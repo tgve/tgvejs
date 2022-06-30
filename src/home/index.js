@@ -35,6 +35,7 @@ import Tooltip from '../components/tooltip';
 import { isObject } from '../utils/JSUtils';
 import { generateLayer, initViewState,
   getViewPort } from './util';
+import { jsonFromKeySetObject } from '../utils/api';
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -242,7 +243,14 @@ export default class Home extends React.Component {
       values, this.props, this.state, this._renderTooltip,
       this._callGenerateLayer
     )
-    updateState && this.setState({ ...updateState })
+    if(isObject(updateState)) {
+      this.setState({ ...updateState })
+      // TODO: send this to a factory
+      const { multiVarSelect } = updateState;
+      const { onStateChange } = this.props;
+      typeof onStateChange === 'function'
+        && onStateChange({select: jsonFromKeySetObject(multiVarSelect)})
+    }
   }
 
   _fitViewport(newData, bboxLonLat) {
@@ -288,6 +296,7 @@ export default class Home extends React.Component {
 
   _updateURL(viewport) {
     const { subsetBoundsChange, lastViewPortChange } = this.state;
+    const { onViewStateChange } = this.props;
 
     //if we do history.replace/push 100 times in less than 30 secs
     // browser will crash
@@ -301,6 +310,9 @@ export default class Home extends React.Component {
         }
       });
       this.setState({ lastViewPortChange: new Date() })
+      // TODO: in future send this to factory of callbacks
+      typeof onViewStateChange === 'function'
+        && onViewStateChange({viewState: viewport})
     }
 
     if (subsetBoundsChange) {
