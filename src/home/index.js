@@ -94,7 +94,7 @@ export default class Home extends React.Component {
       geographyColumn } = nextProps;
     const r = isArray(data) && Math.floor(Math.random() * data.length)
     if (
-      (data && this.props.data
+      (isArray(data) && isArray(this.props.data)
         && JSON.stringify(data[r]) !== JSON.stringify(this.props.data[r])) ||
       defaultURL !== this.props.defaultURL ||
       geographyURL !== this.props.geographyURL ||
