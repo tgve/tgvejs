@@ -104,9 +104,9 @@ None of the above values is necessary and in the current release “Add data” 
 
 #### Callbacks
 Current version of TGVE has these callbacks exposed:
-* `onViewStateChange`: a `function` to get the `viewport` passed to the TGVE from DeckGL. The returned object is described in DeckGL's documentations [here](https://deck.gl/docs/developer-guide/view-state-transitions). It contains zoom level, location information (longitude, latitude etc), current camera view (bearing and pitch) and transition details like "transitionDuration".
+* `onViewStateChange`: a `function` to get the `viewport` of the TGVE which is passed from DeckGL. The returned object is described in DeckGL's documentations [here](https://deck.gl/docs/developer-guide/view-state-transitions). It contains zoom level, location information (longitude, latitude etc), current camera view (bearing and pitch) and transition details like "transitionDuration".
 
-* `onStateChange`: a `JSON` object which currently contains the select (filter) state of the TGVE.
+* `onStateChange`: a `function` to get a `JSON` object which contains the select (filter) state of the TGVE. As the state of the app changes the provided function is called. The returned object contains an object called `select` which contains columns selected (filtered) with values in an array like `{select:{columnName: [value1, value2]}}`
 
 ### Shapefiles
 For more about shapefiles please refer to [this](https://en.wikipedia.org/wiki/Shapefile) Wikipedia entry. The TGVE can read shapefiles if provided as a zip file using [`shapefile.js`](https://github.com/calvinmetcalf/shapefile-js). The package is used as external dependency, therefore, if you do use it make sure you have `<script src="https://unpkg.com/shpjs@latest/dist/shp.js"></script>` in your React app's `index.html` file. Then, just add the source as `defaultURL=www.domain/shape.zip`.
