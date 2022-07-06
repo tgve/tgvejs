@@ -32,7 +32,7 @@ import DeckSidebarContainer from
 
 import '../App.css';
 import Tooltip from '../components/tooltip';
-import { isObject } from '../utils/JSUtils';
+import { isArray, isObject } from '../utils/JSUtils';
 import { generateLayer, initViewState,
   getViewPort } from './util';
 import { jsonFromKeySetObject } from '../utils/api';
@@ -92,14 +92,16 @@ export default class Home extends React.Component {
     // props change
     const { data, defaultURL, geographyURL,
       geographyColumn } = nextProps;
-    if (JSON.stringify(data) !== JSON.stringify(this.props.data) ||
+    const r = isArray(data) && Math.floor(Math.random() * data.length)
+    if (
+      (data && this.props.data
+        && JSON.stringify(data[r]) !== JSON.stringify(this.props.data[r])) ||
       defaultURL !== this.props.defaultURL ||
       geographyURL !== this.props.geographyURL ||
       geographyColumn !== this.props.geographyColumn) {
+      this.map && this.map.stop()
       this._initDataState()
-      return true
     }
-    //TODO: return false?
   }
 
   componentDidMount() {

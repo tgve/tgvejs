@@ -26,7 +26,7 @@ const params = function (props, search = "") {
 
   const apiValue = function (paramName, ENV_NAME, bool = false) {
     const param = props[paramName]
-    if (qsr.hasOwnProperty(paramName)) {
+    if (qsr.hasOwnProperty(paramName) && !param) {
       return bool ? boolStr(qsr[paramName]) : qsr[paramName]
     } else if (bool && typeof param === 'boolean') {
       return param
