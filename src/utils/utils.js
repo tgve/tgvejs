@@ -514,6 +514,7 @@ const isMobile = function () {
 // [247,129,191,255]]
 
 function hexToRgb(hex, array = false) {
+  if(!isString(hex)) return;
   let bigint = parseInt(hex.substring(1, hex.length), 16);
   let r = (bigint >> 16) & 255;
   let g = (bigint >> 8) & 255;
