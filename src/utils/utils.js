@@ -530,13 +530,20 @@ function hexToRgb(hex, array = false) {
  * @param {any} v particular value to use in interpolateOrRd
  * @param {Array} domain domain to use in interpolateOrRd
  * @param {Number} alpha value to add to colour pallete
- * @param {String} colorName colorName found in `colorRangeNamesToInterpolate`
+ * @param {String} colorName colorName found in
+ * `colorRangeNamesToInterpolate`
+ *
+ * @returns depending on the domain and `colorName` it
+ * could return an array of hex array or a hex string
  */
-const colorScale = (v, domain, alpha = 180, colorName) => {
+ const colorScale = (v, domain, alpha = 180, colorName) => {
   if (!v || !isArray(domain) || !domain.length) return null;
-  if (colorName === colorRangeNames[5] && domain.length <= 10) {
+  if(colorName === colorRangeNames[5] && domain.length <= 10) {
     const rgb = hexToRgb(schemeSet1[domain.indexOf(v)], true);
-    return [...rgb, alpha]
+    if(isArray(rgb)) {
+      return [...rgb, alpha]
+    }
+    return undefined
   }
   const index = domain.indexOf(v)
   const d3InterpolateFn = isString(colorName) &&
