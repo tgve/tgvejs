@@ -241,6 +241,7 @@ export default class DeckSidebar extends React.Component {
                       <LayerSettings
                         layerName={layerName}
                         columnNames={columnNames}
+                        layerOptions={this.props.layerOptions}
                         onLayerOptionsCallback={(layerOptions) => {
                           typeof (onLayerOptionsCallback) === 'function' &&
                             onLayerOptionsCallback({ ...layerOptions })

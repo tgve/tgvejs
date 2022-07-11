@@ -399,6 +399,7 @@ export default class Home extends React.Component {
           leftSidebarContent={leftSidebarContent}
           dark={dark}
           layerName={layerName}
+          layerOptions={this.state.layerOptions}
           isMobile={isMobile()}
           key="decksidebar"
           alert={alert}
