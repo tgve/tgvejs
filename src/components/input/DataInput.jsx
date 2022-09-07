@@ -96,9 +96,9 @@ export default function (props) {
       } else {
         // when we call back we make sure
         // dataGeojson is not null
-        urlCallback(null,
-          json || dataFile.json,
-          name, geography, geoColumn);
+        urlCallback({
+          geojson: json || dataFile.json,
+          name, geography, geoColumn});
         // clear dataFile
         setDataFile(null)
         toggleSelfAndParent();

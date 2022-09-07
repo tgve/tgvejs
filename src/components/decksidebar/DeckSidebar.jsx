@@ -34,10 +34,9 @@ export default class DeckSidebar extends React.Component {
     super(props)
     this.state = {
       radius: 100,
-      year: "", // required to reset state
       reset: false,
       multiVarSelect: props.multiVarSelect || {},
-      barChartVariable: "road_type",
+      barChartVariable: "",
       datasetName: props.datasetName
     }
   }
@@ -46,11 +45,10 @@ export default class DeckSidebar extends React.Component {
     const { data, alert, layerName, column,
       subsetBoundsChange, hideChartGenerator,
       hideCharts } = this.props;
-    const { reset, year, barChartVariable } = this.state;
+    const { reset, barChartVariable } = this.state;
     // avoid rerender as directly operating on document.get*
     // does not look neat. Keeping it React way.
     if (reset !== nextState.reset
-      || year !== nextState.year
       || alert !== nextProps.alert
       || subsetBoundsChange !== nextProps.subsetBoundsChange
       || barChartVariable !== nextState.barChartVariable
@@ -61,8 +59,7 @@ export default class DeckSidebar extends React.Component {
       || hideCharts !== nextProps.hideCharts ) {
       return true
     };
-    //TODO: a bit better now but more is needed.
-    // this solves a lag in large datasets
+    //TODO:
     // a more functional way is needed
     // e.g JSON.stringify like in Welcome.js etc
     // consider change in unfilteredData too
@@ -101,9 +98,13 @@ export default class DeckSidebar extends React.Component {
     const resetState = (urlOrName, button) => {
       this.setState({
         reset: !button,
-        year: "",
+        /**
+         * TODO: multiVarSelect is editable
+         * however, in this case it should be home/index
+         * which resets it.
+         */
         multiVarSelect: {},
-        barChartVariable: "road_type",
+        barChartVariable: "",
         datasetName: urlOrName || this.props.datasetName
       })
     }
@@ -135,10 +136,15 @@ export default class DeckSidebar extends React.Component {
           <div>
             <DataInput
               toggleOpen={toggleOpen}
-              urlCallback={(url, geojson, name, geography, geoColumn) => {
-                resetState(url || name);
+              urlCallback={(inputValues) => {
+                const {geojson, name, geography,
+                  geoColumn} = inputValues
+                resetState(name);
                 typeof (urlCallback) === 'function'
-                  && urlCallback(url, geojson, geography, geoColumn);
+                  && urlCallback({
+                    geojson_returned: geojson, geography, geoColumn,
+                    reset: true
+                  });
               }} />
             {
               this.state.reset &&
