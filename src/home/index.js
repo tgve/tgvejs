@@ -32,9 +32,10 @@ import DeckSidebarContainer from
 
 import '../App.css';
 import Tooltip from '../components/tooltip';
-import { isObject } from '../utils/JSUtils';
+import { isArray, isObject } from '../utils/JSUtils';
 import { generateLayer, initViewState,
   getViewPort } from './util';
+import { jsonFromKeySetObject } from '../utils/api';
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -81,9 +82,9 @@ export default class Home extends React.Component {
     this._initDataState = this._initDataState.bind(this);
     this._updateStateAndLayers = this._updateStateAndLayers.bind(this);
     this._resize = this._resize.bind(this);
-    this._updateURL = this._updateURL.bind(this);
-    // TODO: can let user change the 300
-    this._throttleUR = throttle((v) => this._updateURL(v), 300);
+    this._updateHistory = this._updateHistory.bind(this);
+    // TODO: expose interval
+    this._throttleUR = throttle((v) => this._updateHistory(v), 300);
     this._urlCallback = this._urlCallback.bind(this);
   }
 
@@ -91,14 +92,20 @@ export default class Home extends React.Component {
     // props change
     const { data, defaultURL, geographyURL,
       geographyColumn } = nextProps;
-    if (JSON.stringify(data) !== JSON.stringify(this.props.data) ||
+    const r = isArray(data) && Math.floor(Math.random() * data.length)
+    /**
+     * If user has added data using Add data button
+     * ignore props updates
+     */
+    if (!this.state.reset &&
+      ((isArray(data) && isArray(this.props.data)
+        && JSON.stringify(data[r]) !== JSON.stringify(this.props.data[r])) ||
       defaultURL !== this.props.defaultURL ||
       geographyURL !== this.props.geographyURL ||
-      geographyColumn !== this.props.geographyColumn) {
+      geographyColumn !== this.props.geographyColumn)) {
+      this.map && this.map.stop()
       this._initDataState()
-      return true
     }
-    //TODO: return false?
   }
 
   componentDidMount() {
@@ -242,7 +249,14 @@ export default class Home extends React.Component {
       values, this.props, this.state, this._renderTooltip,
       this._callGenerateLayer
     )
-    updateState && this.setState({ ...updateState })
+    if(isObject(updateState)) {
+      this.setState({ ...updateState })
+      // TODO: send this to a factory
+      const { multiVarSelect } = updateState;
+      const { onStateChange } = this.props;
+      typeof onStateChange === 'function'
+        && onStateChange({select: jsonFromKeySetObject(multiVarSelect)})
+    }
   }
 
   _fitViewport(newData, bboxLonLat) {
@@ -286,8 +300,9 @@ export default class Home extends React.Component {
     }
   }
 
-  _updateURL(viewport) {
+  _updateHistory(viewport) {
     const { subsetBoundsChange, lastViewPortChange } = this.state;
+    const { onViewStateChange } = this.props;
 
     //if we do history.replace/push 100 times in less than 30 secs
     // browser will crash
@@ -301,6 +316,9 @@ export default class Home extends React.Component {
         }
       });
       this.setState({ lastViewPortChange: new Date() })
+      // TODO: in future send this to factory of callbacks
+      typeof onViewStateChange === 'function'
+        && onViewStateChange({viewState: viewport})
     }
 
     if (subsetBoundsChange) {
@@ -379,17 +397,32 @@ export default class Home extends React.Component {
           </DeckGL>
         </MapGL>
         {!hideSidebar && <DeckSidebarContainer
+          key="decksidebar"
+          /** data */
+          unfilteredData={data && data.features}
+          data={filtered}
+          /** api */
           hideCharts={hideCharts}
-          map={this.map} deck={this.deck}
           hideChartGenerator={hideChartGenerator}
           leftSidebarContent={leftSidebarContent}
           dark={dark}
           layerName={layerName}
+          layerOptions={this.state.layerOptions}
+          /** UI */
+          subsetBoundsChange={this.state.subsetBoundsChange}
+          // TODO: generalise datasetName
+          datasetName={defaultURL}
+          bottomPanel={bottomPanel}
+          map={this.map} deck={this.deck}
           isMobile={isMobile()}
-          key="decksidebar"
           alert={alert}
-          unfilteredData={data && data.features}
-          data={filtered}
+          // only during first load
+          // DeckSidebar ignores this prop later
+          multiVarSelect={this.state.multiVarSelect}
+          /** callbacks */
+          onlocationChange={(bboxLonLat) => {
+            this._fitViewport(undefined, bboxLonLat)
+          }}
           colourCallback={(colorName) => {
             this._callGenerateLayer({ cn: colorName })
           }}
@@ -405,16 +438,6 @@ export default class Home extends React.Component {
             })
             this._callGenerateLayer()
           }}
-          subsetBoundsChange={this.state.subsetBoundsChange}
-          onlocationChange={(bboxLonLat) => {
-            this._fitViewport(undefined, bboxLonLat)
-          }}
-          // TODO: generalise datasetName
-          datasetName={defaultURL}
-          bottomPanel={bottomPanel}
-          // only during first load
-          // DeckSidebar ignores this prop later
-          multiVarSelect={this.state.multiVarSelect}
         />}
         {
           showLegend &&
@@ -446,8 +469,9 @@ export default class Home extends React.Component {
    * @param {String} geoColumn the matching column name
    * for `geojson_returned` and `geography_returned` params
    */
-  _urlCallback(url_returned, geojson_returned,
-    geography_returned, geoColumn) {
+  _urlCallback(params = {}) {
+    const {geojson_returned,
+      geography_returned, geoColumn, reset} = params;
     this.setState({
       /**
        * This set state can take care of all
@@ -471,6 +495,8 @@ export default class Home extends React.Component {
       tooltip: "",
       loading: true,
       coords: null,
+      multiVarSelect: {},
+      reset
     })
     if (geojson_returned) {
       // confirm valid geojson
@@ -493,25 +519,9 @@ export default class Home extends React.Component {
           { content: error.message });
       }
     } else {
-      if (isURL(url_returned)) {
-        fetchData(url_returned, (data, error) => {
-          if (!error) {
-            this._updateStateAndLayers(
-              // geoErr, geojson, data, customError, geographyURL
-              false, null, data
-            )
-          } else {
-            this.setState({
-              loading: false,
-              alert: { content: 'Could not reach: ' + url_returned }
-            });
-          }
-        })
-      } else {
-        // empty, so might be resetting
-        // current geography and defaulturl
-        this._initDataState()
-      }
+      // empty, so might be resetting
+      // current geography and defaulturl
+      this._initDataState()
     }
   }
 

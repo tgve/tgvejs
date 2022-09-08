@@ -27,16 +27,19 @@ import { Accordion, Panel } from 'baseui/accordion';
  * @returns
  */
 export default function LayerSettings(props) {
-  const { layerName, columnNames, onLayerOptionsCallback } = props;
+  const { layerName, columnNames, layerOptions,
+    onLayerOptionsCallback } = props;
   const [options, setOptions] = React.useState(getLayerProps(layerName));
-  const [values, setValues] = React.useState({});
+  const [values, setValues] = React.useState(
+    // already held by app
+    Object.assign({}, layerOptions));
 
   React.useEffect(() => {
     if (!props.layerName) return
     const lp = getLayerProps(props.layerName);
     if (!lp) return
     setOptions(lp)
-    setValues({}) //reset
+    setValues(Object.assign({}, props.layerOptions)) //reset
   }, [props.layerName])
 
   if(!options || !Object.keys(options)) return null
