@@ -331,10 +331,13 @@ const isColumnAllNumeric = (data, columnNameOrIndex) => {
   let geojsonColumn = splitOrSameString(1)
   if (!geoColumn) {
     // try to find first matching column
-    const firstMatching = Object.keys(geojson.features[0].properties)
-      .filter(e =>
-        Object.keys(data[0].properties).includes(e))[0];
-    console.log(firstMatching);
+    // compare first features 0 index
+    const geoSmall = Object.keys(geojson.features[0].properties)
+      .map(e => e.toLocaleLowerCase())
+    const dataSmall = Object.keys(data[0].properties)
+      .map(e => e.toLocaleLowerCase())
+    const firstMatching = geoSmall.filter(e => dataSmall.includes(e))[0];
+    // console.log(firstMatching);
     dataColumn = geojsonColumn = firstMatching
   }
   // if no matching columns or
