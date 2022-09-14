@@ -44,7 +44,7 @@ export default class DeckSidebar extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     const { data, alert, layerName, column,
       subsetBoundsChange, hideChartGenerator,
-      hideCharts } = this.props;
+      hideCharts, datasetName } = this.props;
     const { reset, barChartVariable } = this.state;
     // avoid rerender as directly operating on document.get*
     // does not look neat. Keeping it React way.
@@ -52,6 +52,7 @@ export default class DeckSidebar extends React.Component {
       || alert !== nextProps.alert
       || subsetBoundsChange !== nextProps.subsetBoundsChange
       || barChartVariable !== nextState.barChartVariable
+      || datasetName !== nextProps.datasetName
       // API change
       || column !== nextProps.column
       || layerName !== nextProps.layerName
@@ -142,7 +143,9 @@ export default class DeckSidebar extends React.Component {
                 resetState(name);
                 typeof (urlCallback) === 'function'
                   && urlCallback({
-                    geojson_returned: geojson, geography, geoColumn,
+                    geojson_returned: geojson,
+                    geography_returned: geography,
+                    geoColumn,
                     reset: true
                   });
               }} />
