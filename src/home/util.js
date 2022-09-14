@@ -50,16 +50,15 @@ const newRange = (d, columnName, min, max) => {
    * {Object} layerOptions to override layer properties
    * {Object} customError useful to show an alert when layer
    * is generated
-   * @param {Object} props read props
    * @param {Object} state read state
    * @param {Function} renderTooltip to pass to DeckGL
    * @param {Function} callingFunction the function that calls
    * this function from Home component
    *
-   * @returns {Object|undefined} depending on values, props and state
+   * @returns {Object|undefined} depending on values and state
    * either undefined or an object to setState of index.js
    */
-const generateLayer = (values = {}, props, state, renderTooltip,
+const generateLayer = (values = {}, state, renderTooltip,
   callingFunction) => {
   const { layerOptions = {}, filter, cn, customError } = values;
 
@@ -74,8 +73,10 @@ const generateLayer = (values = {}, props, state, renderTooltip,
   const { colorName, iconLimit, geography, geographyColumn,
     multiVarSelect } = state;
 
-  let data = (props.data && props.data.features)
-    || (state.data && state.data.features)
+  // we must check state only for data
+  // as data may have been added locally via "Add data"
+  let data = state.data && state.data.features
+
   // data or geography and add column data
   if (!data) return;
 
