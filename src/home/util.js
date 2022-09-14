@@ -20,7 +20,7 @@ import {
 import { getPropertyValues, setGeojsonProps,
   sfType } from '../utils/geojsonutils';
 import { CustomSlider } from '../components/showcases/Widgets';
-import { isArray, isNumber } from '../utils/JSUtils';
+import { isArray, isNumber, isObject } from '../utils/JSUtils';
 import { DECKGL_INIT, LAYERS_2D_REGEX } from '../Constants'
 
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -287,7 +287,7 @@ const generateLayer = (values = {}, state, renderTooltip,
 
 const filterGeojson = (data, filter, state, multiVarSelect) => {
   const filterValues = (filter && filter.what === 'multi') ||
-    Object.keys(multiVarSelect).length;
+    (isObject(multiVarSelect) && Object.keys(multiVarSelect).length);
   const filterCoords = filter && filter.what === 'coords';
   const bbox = filter && filter.what === 'boundsSubset'
     && getBbx(filter.bounds)
