@@ -1,5 +1,5 @@
 [![Node CI](https://github.com/tgve/tgvejs/workflows/Node%20CI/badge.svg?branch=release)](https://github.com/tgve/tgve/actions?query=workflow%3A%22Node+CI%22)
-[![npm version](https://badge.fury.io/js/@tgve%2Ftgvejs.svg)](https://badge.fury.io/js/@tgve%2Ftgvejs) [![codecov](https://codecov.io/gh/tgve/tgvejs/branch/develop/graph/badge.svg?token=FnXegSkNXD)](https://codecov.io/gh/tgve/tgvejs)
+[![npm version](https://badge.fury.io/js/@tgve%2Ftgvejs.svg)](https://badge.fury.io/js/@tgve%2Ftgvejs) ![GitHub package.json version](https://img.shields.io/github/package-json/v/tgve/tgvejs?label=gh%3Aversion) [![codecov](https://codecov.io/gh/tgve/tgvejs/branch/develop/graph/badge.svg?token=FnXegSkNXD)](https://codecov.io/gh/tgve/tgvejs)
 
 The Turing Geovisualisation Engine (TGVE) is a web-based,
 interactive visual analytics tool for geospatial data analysis, built using R and JavaScript/React, that can be used as a complete server-client application or just as a front-end stand-alone application. The visual views and interaction mechanisms designed into the tool is underpinned by empirically-informed guidelines around
@@ -36,7 +36,7 @@ function App() {
 
 ### Configuration settings
 
-TGVE supports separately-provided geography (in GeoJSON) and point data sources (in CSV). Other formats are not supported.
+TGVE supports separately-provided geography (in GeoJSON or Shapefile) and point data sources (in CSV). Other formats are not supported.
 
 The following parameters can be passed to the TGVE app. Each parameter can be passed as an environment variable, with the exception of:
 - leftSidebarContent
@@ -65,12 +65,11 @@ They can also be passed to the TGVE as URL query parameters. For instance
     a mapping is provided it must be in this format:
     `defaultURLColumnName:geographyURLColumnName`. This is the joining
     column that will result in dynamically generating `geojson` data for
-    TGVE to consume. If a valid column name is not provided TGVE will
-    fail to load any data to the given geography.
+    TGVE to consume. If a valid column name is not provided TGVE will attempt using the first matching column between the two files. If there is none, TGVE will load the geography data without the data.
 
 -   `column`: if provided, and if the geometry is of particular type
     which would need a column, it would be used. Defaults on to the
-    second column as often first column is an ID of sort.
+    second column as often first column is assumed to be an ID of sort.
 
 -   `select`: if provided, either as a string or a JSON object, it will be passed to the `tgvejs` subsetting workflow. For now, only when the application is started. The format could be one of `select={"key1": ["val1", "val2"]}` or `select=key1:val1,val2:key2:val3,val4`. For example: `https://tgve.github.io/app/?select=ranking:45` in a dataset with a column named `ranking` and its value being `45`.
 
@@ -90,7 +89,7 @@ They can also be passed to the TGVE as URL query parameters. For instance
     (see DeckGL docs). However, the initial viewport can be set using
     this JSON parameter. The default values are:
     `{longitude: -1.6362, latitude: 53.8321, zoom: 10, pitch: 55, bearing: 0}`.
-    If any of these are missing, they will be populated from these
+    Feel free to provide as little as you like, if any of these are missing, TGVE will draw them from these
     default values.
 
 -   `hideChartGenerator` boolean value which would hide the sidebar
@@ -101,7 +100,10 @@ They can also be passed to the TGVE as URL query parameters. For instance
 
 -   `hideSidebar` boolean value which would hide the left sidebar.
 
-None of the above is necessary and in the current release “Add data” button will allow loading data into eAtlas.
+None of the above values is necessary and in the current release “Add data” button allows loading data into eAtlas.
+
+### Shapefiles
+For more about shapefiles please refer to [this](https://en.wikipedia.org/wiki/Shapefile) Wikipedia entry. The TGVE can read shapefiles if provided as a zip file using [`shapefile.js`](https://github.com/calvinmetcalf/shapefile-js). The package is used as external dependency, therefore, if you do use it make sure you have `<script src="https://unpkg.com/shpjs@latest/dist/shp.js"></script>` in your React app's `index.html` file. Then, just add the source as `defaultURL=www.domain/shape.zip`.
 
 ### Data and settings
 
@@ -126,7 +128,7 @@ If you are not sure, please see the [`app`](https://github.com/tgve/app) reposit
 ### Testing
 
 The package follows `create-react-app` testing kits and uses mainly
-`@testing-library/react` and `jest`. 
+`@testing-library/react` and `jest`.
 Run `npm run test`.
 
 ## Contributing

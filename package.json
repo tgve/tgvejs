@@ -1,7 +1,7 @@
 {
   "name": "@tgve/tgvejs",
   "description": "Turing Geovisualization Engine (TGVE) front-end npm package.",
-  "version": "1.4.8",
+  "version": "1.5.0",
   "main": "dist/index.js",
   "author": "Layik Hama (https://github.com/layik)",
   "contributors": [
@@ -42,13 +42,13 @@
     "react-map-gl": "5.2.1",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "3.4.4",
     "react-vis": "^1.11.7",
     "styletron-engine-atomic": "^1.4.6",
     "styletron-react": ">=5.2.2 < 7",
     "underscore": "^1.12.0"
   },
   "scripts": {
+    "lint": "eslint --ignore-path .gitignore .",
     "test": "yarn install --check-files && react-scripts test --env=jest-environment-jsdom-sixteen",
     "test-debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
@@ -98,13 +98,14 @@
     "postcss": "^8.3.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-scripts": "^5.0.1",
     "react-test-renderer": "^16.14.0",
     "rollup": "^2.47.0",
     "rollup-plugin-postcss": "^4.0.1",
     "selenium-webdriver": "^4.0.0-alpha.8",
     "sinon": "^7.5.0",
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "watch": "^1.0.2",
+    "uglifyjs-webpack-plugin": "^1.1.2",
+    "watch": "^0.13.0",
     "webpack-cli": "^4.9.1"
   }
 }

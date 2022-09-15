@@ -1,7 +1,8 @@
 import {
-  isNumber, isBoolean, isObject, isString, isStringNumeric
-} from './JSUtils';
-import { isStringDate, uniqueValuePercentage, xyObjectByProperty } from './utils';
+  isNumber, isBoolean, isObject, isString, isStringNumeric,
+  isArray } from './JSUtils';
+import { isStringDate, uniqueValuePercentage,
+  xyObjectByProperty } from './utils';
 
 // thanks turfjs
 //http://wiki.geojson.org/GeoJSON_draft_version_6
@@ -300,11 +301,77 @@ const isColumnAllNumeric = (data, columnNameOrIndex) => {
   return(props)
 }
 
+/**
+ *
+ * Function modifies `geojson` in place.
+ *
+ * @param {Object} geojson a gejson with matching `geoColumn` to `data` param
+ * {features:[], type:}
+ * @param {Object} data a json {properties:{}} object with matching
+ * `geoColumn` to `geojson` param. Typically features of another geojons.
+ * @param {String} geoColumn geocode which is shared between `geojson` and `data`.
+ * It can be the same column name or mapped as `dataCol:geographyCol` string.
+ *
+ * @returns {Object} in all cases a geojson object,
+ * if not valid input is given returns `geojson` parameter.
+ */
+ const setGeojsonProps = (geojson, data, geoColumn) => {
+  const r = 0;
+  if (!isObject(geojson) || !isArray(data) ||
+    !geojson.features || !geojson.features[r] ||
+    !data[r] || !data[r].properties) return geojson
+
+  // either split or same values
+  const splitOrSameString = (n) => {
+    return (isString(geoColumn)
+      && geoColumn.split(":")[n]) || geoColumn;
+  }
+
+  let dataColumn = splitOrSameString(0);
+  let geojsonColumn = splitOrSameString(1)
+  if (!geoColumn) {
+    // try to find first matching column
+    const firstMatching = Object.keys(geojson.features[0].properties)
+      .filter(e =>
+        Object.keys(data[0].properties).includes(e))[0];
+    console.log(firstMatching);
+    dataColumn = geojsonColumn = firstMatching
+  }
+  // if no matching columns or
+  // randomly checked a value and fails to find
+  // values in both geojson objects then return geojson
+  // TODO: be more tolerant!
+  if ((!isString(dataColumn) && !isString(geojsonColumn))
+    || !geojson.features[r].properties[geojsonColumn]
+    || !data[r].properties[dataColumn]) return geojson
+
+  const result = Object.assign({}, geojson)
+  result.features = []
+  // add geography to result
+  // cost = geo.features.length * data.length
+  geojson.features.forEach(feature => {
+    for (let i = 0; i < data.length; i++) {
+      if (feature.properties[geojsonColumn] ===
+        data[i].properties[dataColumn]) {
+        const obj = {
+          type: feature.type,
+          properties: data[i].properties,
+          geometry: feature.geometry
+        }
+        result.features.push(obj)
+        break;
+      }
+    }
+  });
+  return result
+}
+
 export {
   describeFeatureVariables,
   propertyCountByProperty,
   isColumnAllNumeric,
   getPropertyValues,
+  setGeojsonProps,
   arrayPlotProps,
   getKeyColumns,
   propertyCount,
