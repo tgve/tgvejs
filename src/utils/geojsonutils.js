@@ -337,7 +337,6 @@ const isColumnAllNumeric = (data, columnNameOrIndex) => {
     const dataSmall = Object.keys(data[0].properties)
       .map(e => e.toLocaleLowerCase())
     const firstMatching = geoSmall.filter(e => dataSmall.includes(e))[0];
-    // console.log(firstMatching);
     dataColumn = geojsonColumn = firstMatching
   }
   // if no matching columns or
