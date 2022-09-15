@@ -92,17 +92,20 @@ export default class Home extends React.Component {
     // props change
     const { data, defaultURL, geographyURL,
       geographyColumn } = nextProps;
-    const r = isArray(data) && Math.floor(Math.random() * data.length)
+    if(!isObject(data)) return
+    const r = isArray(data.features)
+      && Math.floor(Math.random() * data.features.length)
     /**
      * If user has added data using Add data button
      * ignore props updates
      */
     if (!this.state.reset &&
-      ((isArray(data) && isArray(this.props.data)
-        && JSON.stringify(data[r]) !== JSON.stringify(this.props.data[r])) ||
-      defaultURL !== this.props.defaultURL ||
-      geographyURL !== this.props.geographyURL ||
-      geographyColumn !== this.props.geographyColumn)) {
+      ((isArray(this.props.data.features)
+        && JSON.stringify(data.features[r]) !==
+        JSON.stringify(this.props.data.features[r])) ||
+        defaultURL !== this.props.defaultURL ||
+        geographyURL !== this.props.geographyURL ||
+        geographyColumn !== this.props.geographyColumn)) {
       this.map && this.map.stop()
       this._initDataState()
     }
@@ -246,7 +249,7 @@ export default class Home extends React.Component {
 
   _callGenerateLayer(values = {}) {
     const updateState = generateLayer(
-      values, this.props, this.state, this._renderTooltip,
+      values, this.state, this._renderTooltip,
       this._callGenerateLayer
     )
     if(isObject(updateState)) {
@@ -481,12 +484,10 @@ export default class Home extends React.Component {
        * `this._fitViewport(geojson_returned)` &&
        * `generateLayer` take care of it.
        *
-       * 2. if a URL has been returned,
-       *
-       * 3. if we are resetting, that means start from
+       * 2. if we are resetting, that means start from
        * fresh: this._initDataState
        *
-       * 4. if (1) is the case but geojson
+       * 3. if (1) is the case but geojson
        * is invalid or corrupt, then do not
        * update state's `data` or `geography`
        * and fail on the try below.
@@ -496,33 +497,35 @@ export default class Home extends React.Component {
       loading: true,
       coords: null,
       multiVarSelect: {},
+      geography: null,
       reset
-    })
-    if (geojson_returned) {
-      // confirm valid geojson
-      try {
-        // do not move this setState up
-        // as data returned could be
-        // corrupt
-        this.setState({
-          data: geojson_returned,
-          geography: geography_returned || null,
-          geographyColumn: geoColumn,
-        }, () => {
-          // go with geography first fallback onto data source.
-          this._fitViewport(geography_returned || geojson_returned);
-          this._callGenerateLayer()
-        })
-      } catch (error) {
-        // load up default
-        this._fetchAndUpdateState(undefined,
-          { content: error.message });
+    }, () => {
+      if (geojson_returned) {
+        // confirm valid geojson
+        try {
+          // do not move this setState up
+          // as data returned could be
+          // corrupt
+          this.setState({
+            data: geojson_returned,
+            geography: geography_returned || null,
+            geographyColumn: geoColumn,
+          }, () => {
+            // go with geography first fallback onto data source.
+            this._fitViewport(geography_returned || geojson_returned);
+            this._callGenerateLayer()
+          })
+        } catch (error) {
+          // load up default
+          this.setState({alert: { content: error.message }})
+          this._initDataState();
+        }
+      } else {
+        // empty, so might be resetting
+        // current geography and defaulturl
+        this._initDataState()
       }
-    } else {
-      // empty, so might be resetting
-      // current geography and defaulturl
-      this._initDataState()
-    }
+    })
   }
 
   _resize() {
