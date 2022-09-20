@@ -124,7 +124,7 @@ const getPropertyValues = (geojson, property) => {
 }
 
 /**
- * Get a list of {x:property, y:count} objects for a features in
+ * Get a list of {x:property, y:count} objects for features in
  * a geojson object. The function can return the counts for
  * a specific list provided or it would get all values in
  * the given key/column of the data.
