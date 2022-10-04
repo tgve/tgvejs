@@ -11,7 +11,7 @@ import {
   colorScale, getOSMTiles, colorRanges, getBbx,
   generateDomain, convertRange, getMin, getMax,
   generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
-  getViewportParams,
+  getViewportParams, isValueNumeric
 } from '../utils/utils';
 import {
   LIGHT_SETTINGS, BLANKSTYLE
@@ -334,15 +334,6 @@ const filterGeojson = (data, filter, state, multiVarSelect) => {
       return (true);
     }
   );
-}
-
-const isValueNumeric = (data, columnName) => {
-  if (!isArray(data)) return null
-  if (!isString(columnName)
-    && !isNumber(columnName)) return null
-  const r = Math.floor(Math.random() * data.length)
-  return +(data[r] && data[r].properties &&
-    data[r].properties[columnName]);
 }
 
 const initViewState = (props) => {

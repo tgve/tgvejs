@@ -26,7 +26,7 @@ import {
   fetchData, isMobile, getOSMTiles,
   isURL, theme, updateHistory,
 } from '../utils/utils';
-import { ICONLIMIT } from '../Constants';
+import { ICONLIMIT, NO_LEGEND_LAYERS_REGEX } from '../Constants';
 import DeckSidebarContainer from
   '../components/decksidebar/DeckSidebarContainer';
 
@@ -99,7 +99,7 @@ export default class Home extends React.Component {
      * If user has added data using Add data button
      * ignore props updates
      */
-    if (!this.state.reset &&
+    if (!this.state.reset && this.props.data &&
       ((isArray(this.props.data.features)
         && JSON.stringify(data.features[r]) !==
         JSON.stringify(this.props.data.features[r])) ||
@@ -341,7 +341,7 @@ export default class Home extends React.Component {
       loading, mapStyle, alert, data, filtered, bottomPanel,
       layerName, legend, coords } = this.state;
     const showLegend = legend
-      && !new RegExp("grid|sgrid|text|heatmap|icon", "i").test(layerName)
+      && !new RegExp(NO_LEGEND_LAYERS_REGEX, "i").test(layerName)
 
     return (
       <div>
@@ -447,6 +447,8 @@ export default class Home extends React.Component {
           <div
             id="tgve-legend"
             style={{
+              overflowY: 'scroll',
+              maxHeight: '70%',
               ...theme(this.props.dark)
             }}
             className="right-side-panel mapbox-legend">

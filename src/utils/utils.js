@@ -681,8 +681,12 @@ const searchNominatom = (location, callback) => {
 }
 
 /**
- * Helper function to generate a legend from: `domain`,
- * `interpolate` function and a `title`.
+ * Helper function to generate a legend from: a `domain`,
+ * an `interpolate` function and a `title`.
+ *
+ * It works with both numerical & categorical arrays.
+ * In the case of numerical values, it generates the gradient,
+ * whilst in the categorical case it generates a legend.
  *
  * @param {Object} options
  * @returns {Object} React.Fragment
@@ -690,25 +694,32 @@ const searchNominatom = (location, callback) => {
 const generateLegend = (options) => {
   //quick check
   const { domain, interpolate = interpolateOrRd, title } = options;
-  const r = randomToNumber(domain && domain.length)
-  if (!domain || !Array.isArray(domain) || !isNumber(domain[r])) return null
-  const jMax = domain[domain.length - 1], jMin = domain[0];
-  if (!isNumber(jMax) || !isNumber(jMin)) return null
+  const r = randomToNumber(domain && domain.length) // defaults to 0
+  if (!domain || !Array.isArray(domain)) return null
 
   const legend = [<p key='title'>{title}</p>]
-
-  const legendMax = domain.length < 10 ? domain.length : 10
+  const jMax = domain[domain.length - 1], jMin = domain[0];
+  const legendMax = isNumber(jMin) &&
+    isNumber(jMax) && domain.length > 10 ? 10 : domain.length
   for (var i = 0; i < legendMax; i += 1) {
-    legend.push(
-      i === 0 ?
-        <i key={i}>{nFormatter(jMin)}</i>
-        :
-        i === (legendMax - 1) ?
-          <i key={i}>{nFormatter(jMax)}</i>
-          :
-          <span key={i} style={{ background: interpolate(i / legendMax) }}>
-          </span>
-    )
+    // break the tgve legend css
+    let item = <p style={{
+      textAlign: 'left'
+    }}><span key={i} style={{
+      background: interpolate(i / legendMax),
+    }} /> {shortenName(domain[i], 8)}
+    </p>
+    if (+domain[i]) {
+      // implement the tgve legend css
+      item = <i key={i}>{nFormatter(jMin)}</i>
+      if (i === (legendMax - 1)) {
+        item = <i key={i}>{nFormatter(jMax)}</i>
+      } else if (i !== 0) {
+        item = <span key={i} style={{ background: interpolate(i / legendMax) }}>
+        </span>
+      }
+    }
+    legend.push(item)
   }
   return legend;
 }
@@ -978,6 +989,14 @@ const iWithFaName = (faName, onClick, fontSize) => <i
   onClick={onClick}
   className={faName || "fa fa-info"}></i>
 
+const isValueNumeric = (data, columnName) => {
+  if (!isArray(data)) return null
+  if (!isString(columnName)
+    && !isNumber(columnName)) return null
+  const r = Math.floor(Math.random() * data.length)
+  return +(data[r] && data[r].properties &&
+    data[r].properties[columnName]);
+}
 export {
   colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
@@ -996,6 +1015,7 @@ export {
   generateLegend,
   generateDomain,
   getMainMessage,
+  isValueNumeric,
   updateHistory,
   getColorArray,
   convertRange,

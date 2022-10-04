@@ -32,6 +32,10 @@ define("LAYERS_2D_REGEX",
   "sgrid|scatter|geojson|line|path"
 )
 
+define("NO_LEGEND_LAYERS_REGEX",
+  "hex|grid|sgrid|text|heatmap|icon"
+)
+
 define("DECKGL_INIT", {
   longitude: -1.6362,
   latitude: 53.8321,
