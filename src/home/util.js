@@ -10,9 +10,10 @@ import {
   generateDeckLayer, suggestDeckLayer,
   colorScale, getOSMTiles, colorRanges, getBbx,
   generateDomain, convertRange, getMin, getMax,
-  generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
+  humanize, colorRangeNamesToInterpolate, getColorArray,
   getViewportParams, isValueNumeric
 } from '../utils/utils';
+import { generateLegend } from '../utils/legend';
 import {
   LIGHT_SETTINGS, BLANKSTYLE
 } from '../Constants';

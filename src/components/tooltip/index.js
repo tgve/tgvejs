@@ -1,9 +1,10 @@
 import React from 'react';
 import { Button, KIND } from 'baseui/button';
 import generateTooltip from './utils';
+import DraggableComponent from '../../utils/draggable';
 
-const BOTTOM_OFFSET = 50;
-const RIGHT_OFFSET = 50;
+const TOP_OFFSET = 100;
+const LEFT_OFFSET = 320;
 
 export default class Tooltip extends React.Component {
 
@@ -26,18 +27,21 @@ export default class Tooltip extends React.Component {
     if (this.props.popup) {
       return (
         <div
+          id='tgve-tooltip'
           style={{
-            bottom: BOTTOM_OFFSET,
-            right: RIGHT_OFFSET,
+            top: TOP_OFFSET,
+            left: LEFT_OFFSET,
             position: 'absolute',
+            cursor: 'move'
           }}>
-          <Button
-            kind={KIND.minimal}
-            onClick={() => typeof (onCloseCallback) === 'function'
-            && onCloseCallback()} >X</Button>
-          <div>
-            {generateTooltip(this.props)}
-          </div>
+          <DraggableComponent
+            component={
+              <div>
+                <Button
+                  kind={KIND.minimal}
+                  onClick={() => typeof (onCloseCallback) === 'function'
+                    && onCloseCallback()} >X</Button>
+                {generateTooltip(this.props)}</div>} />
         </div >
       )
     }
