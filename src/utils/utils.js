@@ -918,14 +918,15 @@ const saveCanvas = (canvas, fileName) => {
   link.click();
 }
 
-const iWithFaName = (faName, onClick, fontSize) => <i
-  style={{
+const iWithFaName = (faName, onClick, style, title) => <i
+  style={Object.assign({
     margin: 5,
     cursor: 'pointer',
-    fontSize: fontSize || '1.5em'
-  }}
+    fontSize: '1.5em'
+  }, style)}
   onClick={onClick}
-  className={faName || "fa fa-info"}></i>
+  className={faName || "fa fa-info"}
+  title={title}></i>
 
 const isValueNumeric = (data, columnName) => {
   if (!isArray(data)) return null

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { StatefulPopover } from 'baseui/popover';
-import { StyledLink } from "baseui/link";
 import { Block } from 'baseui/block';
 import { Notification, KIND } from "baseui/notification";
 
@@ -22,7 +21,7 @@ export default function Export(props) {
         content={({ close }) => (
           <Block padding="5px"
             data-html2canvas-ignore="true">
-            {iWithFaName("fa fa-times", close)}
+            {iWithFaName("fa fa-times", close, {}, "Close")}
             <Preview map={map} deck={deck} />
             {notEmpty && downloadButton(props.data)}
             {iWithFaName("fa fa-copy", () => {
@@ -39,12 +38,12 @@ export default function Export(props) {
                       window.location.href)
                     }
                   });
-            })}
+            }, {}, "Copy URL")}
           </Block>
         )}
       >
-        <i role="button" alt="save, download or share">
-          {iWithFaName("fa fa-share-alt-square", undefined)}
+        <i role="button" title="save, download or share">
+          {iWithFaName("fa fa-share-alt-square", undefined, {}, "Share")}
           {
             notification &&
             <Notification

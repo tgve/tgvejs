@@ -11,7 +11,7 @@ import DataInput from '../input/DataInput';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   searchNominatom, firstLastNCharacters,
-  humanize, getMainMessage, theme
+  humanize, getMainMessage, theme, iWithFaName
 } from '../../utils/utils';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
@@ -177,10 +177,9 @@ export default class DeckSidebar extends React.Component {
             <div className="side-panel-body-content">
               <hr style={{ clear: 'both' }} />
               <StatefulTabs initialState={{ activeKey: "0" }} id="main-tabs">
-                <Tab title={
-                  <i style={{ fontSize: '2rem' }}
-                    className="fa fa-info" />
-                } overrides={TabOverrides}>
+                <Tab title={iWithFaName(
+                  "fa fa-info", undefined,
+                  { fontSize: '2rem' }, "Explore")} overrides={TabOverrides}>
                   {!hideChartGenerator &&
                     <AddVIS data={data} dark={dark} plotStyle={{ width: 270, margin: 10 }} />
                   }
@@ -213,10 +212,10 @@ export default class DeckSidebar extends React.Component {
                   }
                   {!hideCharts && <Charts {...this.props}/>}
                 </Tab>
-                <Tab title={
-                  <i style={{ fontSize: '2rem' }}
-                    className="fa fa-sliders" />
-                } overrides={TabOverrides}>
+                <Tab title={iWithFaName(
+                  "fa fa-sliders", undefined,
+                  { fontSize: '2rem' }, "Settings")}
+                  overrides={TabOverrides}>
                   {notEmpty &&
                     headerComponent(
                       <ColorPicker colourCallback={(color) =>

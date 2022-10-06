@@ -13,7 +13,7 @@ import {
   humanize, colorRangeNamesToInterpolate, getColorArray,
   getViewportParams, isValueNumeric
 } from '../utils/utils';
-import { generateLegend } from '../utils/legend';
+import { Legend } from '../utils/legend';
 import {
   LIGHT_SETTINGS, BLANKSTYLE
 } from '../Constants';
@@ -230,15 +230,12 @@ const generateLayer = (values = {}, state, renderTooltip,
   }
 
   // attempt legend
-  newLegend = generateLegend(
-    {
-      domain,
-      title: humanize(columnName),
-      interpolate: colorRangeNamesToInterpolate(
-        cn || state.colorName
-      )
-    }
-  )
+  newLegend = <Legend domain={domain}
+    title={humanize(columnName)}
+    interpolate={colorRangeNamesToInterpolate(
+      cn || state.colorName
+    )}
+  />
 
   const alayer = generateDeckLayer(
     layerName, data, renderTooltip, options

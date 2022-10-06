@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { interpolateOrRd } from 'd3-scale-chromatic';
+import { styled } from 'baseui';
 
 import {
   isNumber, randomToNumber,
 } from './JSUtils.js';
-import { shortenName } from './utils';
+import { iWithFaName, shortenName } from './utils';
+
+const Header = styled("div", ({ $theme }) => ({
+  backgroundColor: $theme.colors.backgroundTertiary,
+  display: 'flex', justifyContent: 'space-between',
+  position: '-webkit-sticky', /* Safari */
+  position: 'sticky',
+  top: 0
+}))
 
 /**
  * Helper function to generate a legend from: a `domain`,
@@ -16,23 +26,38 @@ import { shortenName } from './utils';
  * @param {Object} options
  * @returns {Object} React.Fragment
  */
- const generateLegend = (options) => {
-  //quick check
-  const { domain, interpolate = interpolateOrRd, title } = options;
+const Legend = (options) => {
+
+  const [open, setOpen] = useState(
+    options.hasOwnProperty('open') ? options.open: true)
+  const { domain, interpolate = interpolateOrRd, title } = options
+
   const r = randomToNumber(domain && domain.length) // defaults to 0
   if (!domain || !Array.isArray(domain)) return null
 
-  const legend = [<p key='title'>{title}</p>]
+  const toggleButton = iWithFaName(
+    open ? 'fa fa-compress' : 'fa fa-expand',
+    () => { setOpen(o => !o) },
+    { fontSize: '1.1em' },
+    open ? "Minimize legend" : "Expand legend"
+  )
+
   const jMax = domain[domain.length - 1], jMin = domain[0];
-  const legendMax = isNumber(jMin) &&
-    isNumber(jMax) && domain.length > 10 ? 10 : domain.length
+  const numeric = isNumber(jMin) && isNumber(jMax)
+  const legend = [<Header key="tgve-legend-header">
+    <p key='title'>{title}</p>
+    {toggleButton}
+  </Header>]
+  const legendMax = numeric && domain.length > 10 ? 10 : domain.length
   for (var i = 0; i < legendMax; i += 1) {
     // break the tgve legend css
-    let item = <p key={i} style={{
-      textAlign: 'left'
-    }}><span style={{
-      background: interpolate(i / legendMax),
-    }} /> {shortenName(domain[i], 8)}
+    let item = <p
+      title={domain[i]}
+      key={i} style={{textAlign: 'left'}}>
+      <span style={{
+        borderRadius: 0, width: 15, /* compared to 10 for numeric */
+        background: interpolate(i / legendMax)}} />
+      {shortenName(domain[i], 8)}
     </p>
     if (+domain[i]) {
       // implement the tgve legend css
@@ -46,7 +71,7 @@ import { shortenName } from './utils';
     }
     legend.push(item)
   }
-  return legend;
+  return open ? legend : toggleButton;
 }
 
 
@@ -62,12 +87,12 @@ function nFormatter(num, digits = 2) {
     { value: 1e18, symbol: "E" }
   ];
   const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-  var item = lookup.slice().reverse().find(function(item) {
+  var item = lookup.slice().reverse().find(function (item) {
     return num >= item.value;
   });
   return item ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol : "0";
 }
 
 export {
-  generateLegend
+  Legend
 }

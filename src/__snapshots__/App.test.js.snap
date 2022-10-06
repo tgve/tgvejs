@@ -66,6 +66,7 @@ exports[`App snapshot dark theme 1`] = `
               <i
                 class="fa fa-save"
                 style="margin: 5px; cursor: pointer; font-size: 1.5em;"
+                title="Save"
               />
             </div>
             <div
@@ -98,7 +99,8 @@ exports[`App snapshot dark theme 1`] = `
                     >
                       <i
                         class="fa fa-info"
-                        style="font-size: 2rem;"
+                        style="margin: 5px; cursor: pointer; font-size: 2rem;"
+                        title="Explore"
                       />
                     </button>
                     <button
@@ -113,7 +115,8 @@ exports[`App snapshot dark theme 1`] = `
                     >
                       <i
                         class="fa fa-sliders"
-                        style="font-size: 2rem;"
+                        style="margin: 5px; cursor: pointer; font-size: 2rem;"
+                        title="Settings"
                       />
                     </button>
                     <div
@@ -279,6 +282,7 @@ exports[`App snapshot light theme 1`] = `
               <i
                 class="fa fa-save"
                 style="margin: 5px; cursor: pointer; font-size: 1.5em;"
+                title="Save"
               />
             </div>
             <div
@@ -311,7 +315,8 @@ exports[`App snapshot light theme 1`] = `
                     >
                       <i
                         class="fa fa-info"
-                        style="font-size: 2rem;"
+                        style="margin: 5px; cursor: pointer; font-size: 2rem;"
+                        title="Explore"
                       />
                     </button>
                     <button
@@ -326,7 +331,8 @@ exports[`App snapshot light theme 1`] = `
                     >
                       <i
                         class="fa fa-sliders"
-                        style="font-size: 2rem;"
+                        style="margin: 5px; cursor: pointer; font-size: 2rem;"
+                        title="Settings"
                       />
                     </button>
                     <div
