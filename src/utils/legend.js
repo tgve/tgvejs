@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { interpolateOrRd } from 'd3-scale-chromatic';
 import { styled } from 'baseui';
 
@@ -29,7 +29,7 @@ const Header = styled("div", ({ $theme }) => ({
 const Legend = (options) => {
 
   const [open, setOpen] = useState(
-    options.hasOwnProperty('open') ? options.open: true)
+    options.hasOwnProperty('open') ? options.open : true)
   const { domain, interpolate = interpolateOrRd, title } = options
 
   const r = randomToNumber(domain && domain.length) // defaults to 0
@@ -53,10 +53,11 @@ const Legend = (options) => {
     // break the tgve legend css
     let item = <p
       title={domain[i]}
-      key={i} style={{textAlign: 'left'}}>
+      key={i} style={{ textAlign: 'left' }}>
       <span style={{
         borderRadius: 0, width: 15, /* compared to 10 for numeric */
-        background: interpolate(i / legendMax)}} />
+        background: interpolate(i / legendMax)
+      }} />
       {shortenName(domain[i], 8)}
     </p>
     if (+domain[i]) {
@@ -87,10 +88,9 @@ function nFormatter(num, digits = 2) {
     { value: 1e18, symbol: "E" }
   ];
   const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-  var item = lookup.slice().reverse().find(function (item) {
-    return num >= item.value;
-  });
-  return item ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol : "0";
+  var item = lookup.reverse().find((item) => num >= item.value);
+  return item ? (num / item.value)
+    .toFixed(digits).replace(rx, "$1") + item.symbol : "0";
 }
 
 export {
