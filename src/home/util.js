@@ -11,7 +11,8 @@ import {
   colorScale, getOSMTiles, colorRanges, getBbx,
   generateDomain, convertRange, getMin, getMax,
   humanize, colorRangeNamesToInterpolate, getColorArray,
-  getViewportParams, isValueNumeric
+  getViewportParams,
+  isArrayNumeric
 } from '../utils/utils';
 import { Legend } from '../utils/legend';
 import {
@@ -300,13 +301,16 @@ export {
   initViewState,
   getViewPort
 }
-function generateOptions(state, cn, currentColorName, layerOptions, layerName, data, columnName, domain, geomType, callingFunction) {
+function generateOptions(state, cn, currentColorName, layerOptions, layerName, data,
+  columnName, domain, geomType, callingFunction) {
   const options = Object.assign({
     ...state.layerOptions,
     lightSettings: LIGHT_SETTINGS,
     colorRange: colorRanges(cn || currentColorName),
     getColor: getColorArray(cn || currentColorName)
   }, layerOptions);
+  const numericValidDomain = isArrayNumeric(domain) && domain.length > 1
+
   if (layerName === 'heatmap') {
     options.getPosition = d => d.geometry.coordinates;
     // options.getWeight = d => d.properties[columnName]
@@ -318,7 +322,7 @@ function generateOptions(state, cn, currentColorName, layerOptions, layerName, d
   }
   // TODO: color
   if (layerName === 'scatterplot') {
-    if (isValueNumeric(data, columnName)) {
+    if (numericValidDomain) {
       const min = getMin(domain), max = getMax(domain);
       options.getRadius = d => {
         return newRange(d, columnName, min, max);
@@ -327,7 +331,7 @@ function generateOptions(state, cn, currentColorName, layerOptions, layerName, d
   }
 
   if (layerName === 'arc') {
-    if (domain && domain.length > 1) {
+    if (numericValidDomain) {
       const min = getMin(domain), max = getMax(domain);
       options.getSourceColor = colorScale(min, domain, 180, cn || currentColorName);
       options.getTargetColor = colorScale(max, domain, 180, cn || currentColorName);
@@ -364,7 +368,7 @@ function generateOptions(state, cn, currentColorName, layerOptions, layerName, d
         }
       }
     };
-    if (isValueNumeric(data, columnName)) {
+    if (numericValidDomain) {
       const min = getMin(domain), max = getMax(domain);
       options.getWidth = d => {
         return newRange(d, columnName, min, max);

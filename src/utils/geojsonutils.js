@@ -248,6 +248,14 @@ const isColumnAllNumeric = (data, columnNameOrIndex) => {
   return isNumeric
 }
 
+const isPropertyValueNumeric = (data, columnName) => {
+  if (!isArray(data)) return null
+  if (!isString(columnName)
+    && !isNumber(columnName)) return null
+  const r = Math.floor(Math.random() * data.length)
+  return +(data[r] && data[r].properties &&
+    data[r].properties[columnName]);
+}
 
 /**
  * Function to get an arrays plotable properties.
@@ -371,6 +379,7 @@ const isColumnAllNumeric = (data, columnNameOrIndex) => {
 export {
   describeFeatureVariables,
   propertyCountByProperty,
+  isPropertyValueNumeric,
   isColumnAllNumeric,
   getPropertyValues,
   setGeojsonProps,

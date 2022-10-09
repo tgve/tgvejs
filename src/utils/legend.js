@@ -5,7 +5,7 @@ import { styled } from 'baseui';
 import {
   isNumber, randomToNumber,
 } from './JSUtils.js';
-import { iWithFaName, shortenName } from './utils';
+import { isArrayNumeric, iWithFaName, shortenName } from './utils';
 
 const Header = styled("div", ({ $theme }) => ({
   backgroundColor: $theme.colors.backgroundTertiary,
@@ -43,7 +43,7 @@ const Legend = (options) => {
   )
 
   const jMax = domain[domain.length - 1], jMin = domain[0];
-  const numeric = isNumber(jMin) && isNumber(jMax)
+  const numeric = isArrayNumeric(domain)
   const legend = [<Header key="tgve-legend-header">
     <p key='title'>{title}</p>
     {toggleButton}
@@ -60,7 +60,7 @@ const Legend = (options) => {
       }} />
       {shortenName(domain[i], 8)}
     </p>
-    if (+domain[i]) {
+    if (numeric) {
       // implement the tgve legend css
       item = <i key={i}>{nFormatter(jMin)}</i>
       if (i === (legendMax - 1)) {

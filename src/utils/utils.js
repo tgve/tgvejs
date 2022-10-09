@@ -927,14 +927,17 @@ const iWithFaName = (faName, onClick, style, title) => <i
   className={faName || "fa fa-info"}
   title={title}></i>
 
-const isValueNumeric = (data, columnName) => {
-  if (!isArray(data)) return null
-  if (!isString(columnName)
-    && !isNumber(columnName)) return null
-  const r = Math.floor(Math.random() * data.length)
-  return +(data[r] && data[r].properties &&
-    data[r].properties[columnName]);
+const isArrayNumeric = (array) => {
+  if(!isArray(array)) return null
+  let isNumeric = true;
+  array.forEach(e => {
+    if (!isNumber(e)) {
+      isNumeric = false
+    }
+  });
+  return isNumeric
 }
+
 export {
   colorRangeNamesToInterpolate,
   getResultsFromGoogleMaps,
@@ -952,7 +955,7 @@ export {
   searchNominatom,
   generateDomain,
   getMainMessage,
-  isValueNumeric,
+  isArrayNumeric,
   updateHistory,
   getColorArray,
   convertRange,
