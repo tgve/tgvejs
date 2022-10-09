@@ -337,7 +337,6 @@ const suggestDeckLayer = (features) => {
   // array of features
   // TODO: go through each feature? in case of features.
   const type = sfType(features[r]);
-  // Constants.LAYERSTYLES
   if (new RegExp("point", 'i').test(type)) {
     return "grid"
   } else if (new RegExp("line", 'i').test(type)) {

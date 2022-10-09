@@ -1,5 +1,5 @@
 import React from 'react';
-import { difference, isString } from 'underscore';
+import { difference } from 'underscore';
 import booleanContains from '@turf/boolean-contains';
 import { polygon } from '@turf/helpers';
 import centroid from '@turf/centroid';
@@ -21,7 +21,7 @@ import {
 import { getPropertyValues, setGeojsonProps,
   sfType } from '../utils/geojsonutils';
 import { CustomSlider } from '../components/showcases/Widgets';
-import { isArray, isNumber, isObject } from '../utils/JSUtils';
+import { isObject } from '../utils/JSUtils';
 import { DECKGL_INIT, LAYERS_2D_REGEX } from '../Constants'
 
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -71,7 +71,7 @@ const generateLayer = (values = {}, state, renderTooltip,
           newStyle : state.mapStyle,
     })
   }
-  const { colorName, iconLimit, geography, geographyColumn,
+  const { currentColorName, iconLimit, geography, geographyColumn,
     multiVarSelect } = state;
 
   // we must check state only for data
@@ -140,100 +140,18 @@ const generateLayer = (values = {}, state, renderTooltip,
     (!filter || filter.what !== 'layerName') && geomType === "point";
   if (switchToIcon) layerName = 'icon';
 
-  const options = Object.assign({
-    ...state.layerOptions,
-    lightSettings: LIGHT_SETTINGS,
-    colorRange: colorRanges(cn || colorName),
-    getColor: getColorArray(cn || colorName)
-  }, layerOptions);
   // generate a domain
   const domain = generateDomain(data, columnName);
-  if (layerName === 'heatmap') {
-    options.getPosition = d => d.geometry.coordinates
-    // options.getWeight = d => d.properties[columnName]
-    options.updateTriggers = {
-      // even if nulls
-      getWeight: typeof (options.getWeight) === 'function' &&
-        data.map(d => options.getWeight(d))
-    }
-  }
-  // TODO: color
-  if (layerName === 'scatterplot') {
-    if (isValueNumeric(data, columnName)) {
-      const min = getMin(domain), max = getMax(domain)
-      options.getRadius = d => {
-        return newRange(d, columnName, min, max);
-      }
-    }
-  }
 
-  if (layerName === 'arc') {
-    const min = getMin(domain), max = getMax(domain)
-    options.getSourceColor = colorScale(min, domain, 180, cn || state.colorName);
-    options.getTargetColor = colorScale(max, domain, 180, cn || state.colorName);
-  }
-
-  let newLegend = state.legend;
-
-  const getValue = (d) => d.properties[columnName]
-  const fill = (d) => colorScale(
-    // domain converts numerics into numbers
-    // must do the same here
-    +getValue(d) ? +getValue(d) : getValue(d),
-    domain, 180, cn || state.colorName
-  )
-
-  if (geomType === 'linestring') {
-    options.getColor = fill;
-    options.getPath = d => d.geometry.coordinates
-    options.onClick = (info) => {
-      if (info && info.hasOwnProperty('coordinate')) {
-        if (['path', 'arc', 'line'].includes(layerName) &&
-          info.object.geometry.coordinates) {
-          typeof callingFunction === 'function'
-            && callingFunction({
-              filter: {
-                what: 'coords',
-                selected: info.object.geometry.coordinates[0]
-              }
-            })
-        }
-      }
-    }
-    if (isValueNumeric(data, columnName)) {
-      const min = getMin(domain), max = getMax(domain)
-      options.getWidth = d => {
-        return newRange(d, columnName, min, max);
-      }; // avoid id
-    }
-    options.updateTriggers = {
-      getColor: data.map((d) => fill(d)),
-    }
-  }
-
-  if (geomType === "polygon" || geomType === "multipolygon" ||
-    layerName === 'geojson' || layerName === "scatterplot") {
-
-    options.getFillColor = fill;
-
-    options.updateTriggers = {
-      getFillColor: data.map((d) => fill(d))
-    }
-  }
-
-  if (layerName === 'pointcloud' || layerName === 'barvis') {
-    options.getColor = fill;
-    options.updateTriggers = {
-      getColor: data.map((d) => fill(d)),
-      getPosition: [data.length]
-    }
-  }
+  const options = generateOptions(state, cn, currentColorName, layerOptions,
+    layerName, data, columnName, domain, geomType, callingFunction);
 
   // attempt legend
+  let newLegend = state.legend;
   newLegend = <Legend domain={domain}
     title={humanize(columnName)}
     interpolate={colorRangeNamesToInterpolate(
-      cn || state.colorName
+      cn || currentColorName
     )}
   />
 
@@ -256,7 +174,7 @@ const generateLayer = (values = {}, state, renderTooltip,
       filter.selected : multiVarSelect,
     road_type: filter && filter.what === 'road_type' ? filter.selected :
       state.road_type,
-    colorName: cn || colorName,
+    colorName: cn || currentColorName,
     column, // all checked
     coords: filter && filter.what === 'coords' ? filter.selected :
       state.coords,
@@ -382,3 +300,98 @@ export {
   initViewState,
   getViewPort
 }
+function generateOptions(state, cn, currentColorName, layerOptions, layerName, data, columnName, domain, geomType, callingFunction) {
+  const options = Object.assign({
+    ...state.layerOptions,
+    lightSettings: LIGHT_SETTINGS,
+    colorRange: colorRanges(cn || currentColorName),
+    getColor: getColorArray(cn || currentColorName)
+  }, layerOptions);
+  if (layerName === 'heatmap') {
+    options.getPosition = d => d.geometry.coordinates;
+    // options.getWeight = d => d.properties[columnName]
+    options.updateTriggers = {
+      // even if nulls
+      getWeight: typeof (options.getWeight) === 'function' &&
+        data.map(d => options.getWeight(d))
+    };
+  }
+  // TODO: color
+  if (layerName === 'scatterplot') {
+    if (isValueNumeric(data, columnName)) {
+      const min = getMin(domain), max = getMax(domain);
+      options.getRadius = d => {
+        return newRange(d, columnName, min, max);
+      };
+    }
+  }
+
+  if (layerName === 'arc') {
+    if (domain && domain.length > 1) {
+      const min = getMin(domain), max = getMax(domain);
+      options.getSourceColor = colorScale(min, domain, 180, cn || currentColorName);
+      options.getTargetColor = colorScale(max, domain, 180, cn || currentColorName);
+    }
+    if(cn) {
+      const colorRange = colorRanges(cn)
+      options.getSourceColor = colorRange[0]
+      options.getTargetColor = colorRange[colorRange.length - 1]
+    }
+  }
+
+  const getValue = (d) => d.properties[columnName];
+  const fill = (d) => colorScale(
+    // domain converts numerics into numbers
+    // must do the same here
+    +getValue(d) ? +getValue(d) : getValue(d),
+    domain, 180, cn || currentColorName
+  );
+
+  if (geomType === 'linestring' || layerName === 'line') {
+    options.getColor = fill;
+    options.getPath = d => d.geometry.coordinates;
+    options.onClick = (info) => {
+      if (info && info.hasOwnProperty('coordinate')) {
+        if (['path', 'arc', 'line'].includes(layerName) &&
+          info.object.geometry.coordinates) {
+          typeof callingFunction === 'function'
+            && callingFunction({
+              filter: {
+                what: 'coords',
+                selected: info.object.geometry.coordinates[0]
+              }
+            });
+        }
+      }
+    };
+    if (isValueNumeric(data, columnName)) {
+      const min = getMin(domain), max = getMax(domain);
+      options.getWidth = d => {
+        return newRange(d, columnName, min, max);
+      }; // avoid id
+    }
+    options.updateTriggers = {
+      getColor: data.map((d) => fill(d)),
+    };
+  }
+
+  if (geomType === "polygon" || geomType === "multipolygon" ||
+    layerName === 'geojson' || layerName === "scatterplot") {
+
+    options.getFillColor = fill;
+
+    options.updateTriggers = {
+      getFillColor: data.map((d) => fill(d))
+    };
+  }
+
+  if (layerName === 'pointcloud' || layerName === 'barvis') {
+    options.getColor = fill;
+    options.updateTriggers = {
+      getColor: data.map((d) => fill(d)),
+      getPosition: [data.length]
+    };
+  }
+  return options;
+}
+

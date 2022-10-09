@@ -14,7 +14,7 @@ define("UI_LIST", [
   "buttongroups",
   "dropdown",
   "slider"])
-define("LAYERSTYLES", [
+define("DECK_LAYER_NAMES", [
   "arc",
   "geojson",
   "grid",

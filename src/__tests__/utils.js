@@ -4,7 +4,7 @@ import {firstLastNCharacters, humanize,
   uniqueValuePercentage,
   isStringDate,
 } from '../utils/utils';
-import { LAYERSTYLES } from '../Constants';
+import { DECK_LAYER_NAMES } from '../Constants';
 
 const sampleGeojson = { "type": "FeatureCollection",
 "features": [
@@ -78,7 +78,7 @@ test("xyObjectByProperty", () => {
 
 test("suggestDeckLayer", () => {
   const s = suggestDeckLayer(sampleGeojson.features)
-  expect(LAYERSTYLES).toContain(s)
+  expect(DECK_LAYER_NAMES).toContain(s)
 })
 
 const array = Array.from({length: 10}, (v, i) => i)

@@ -103,9 +103,6 @@ const lineObject = {
 }
 layers['line'] =  addOptionsToObject(options, lineObject)
 const arcObject = {
-  // options.getSourceColor = d =>
-  // [Math.sqrt(+(d.properties.base)) * 1000, 140, 0]
-  // options.getTargetColor = d =>
   // [Math.sqrt(+(d.properties.hs2)) * 1e13, 140, 0]
   class: { value: ArcLayer, type: 'class' },
   getWidth: { type: 'column', value: 'number', default: 1},
@@ -113,6 +110,8 @@ const arcObject = {
   getTilt: { type: 'column', value: 'number', default: 0},
   getSourcePosition: d => d.geometry.coordinates[0],
   getTargetPosition: d => d.geometry.coordinates[1],
+  getSourceColor: [255, 255, 178],
+  getTargetColor: [189, 0, 38],
 }
 layers['arc'] = addOptionsToObject(options, arcObject)
 const pathObject = {
