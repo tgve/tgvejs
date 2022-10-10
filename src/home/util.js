@@ -72,7 +72,7 @@ const generateLayer = (values = {}, state, renderTooltip,
           newStyle : state.mapStyle,
     })
   }
-  const { currentColorName, iconLimit, geography, geographyColumn,
+  const { colorName: currentColorName, iconLimit, geography, geographyColumn,
     multiVarSelect } = state;
 
   // we must check state only for data
