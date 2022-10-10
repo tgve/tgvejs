@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { interpolateOrRd } from 'd3-scale-chromatic';
 import { styled } from 'baseui';
 
-import {
-  isNumber, randomToNumber,
-} from './JSUtils.js';
+import { randomToNumber } from './JSUtils.js';
 import { isArrayNumeric, iWithFaName, shortenName } from './utils';
 
 const Header = styled("div", ({ $theme }) => ({
