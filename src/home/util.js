@@ -16,7 +16,7 @@ import {
 } from '../utils/utils';
 import { Legend } from '../utils/legend';
 import {
-  LIGHT_SETTINGS, BLANKSTYLE
+  LIGHT_SETTINGS, BLANKSTYLE, DECK_LAYER_NAMES
 } from '../Constants';
 
 import { getPropertyValues, setGeojsonProps,
@@ -133,8 +133,11 @@ const generateLayer = (values = {}, state, renderTooltip,
   ).toLowerCase();
 
   let layerName = (filter && filter.what ===
-    'layerName' && filter.selected) || state.layerName ||
-    suggestDeckLayer(geography ? geography.features : data);
+    'layerName' && filter.selected) || state.layerName
+
+  if (!DECK_LAYER_NAMES.includes(state.layerName)) {
+    layerName = suggestDeckLayer(geography ? geography.features : data);
+  }
   // TODO: incorporate this into suggestDeckLayer
   // if (!new RegExp("point", "i").test(geomType)) layerName = "geojson"
   const switchToIcon = data.length < iconLimit && !layerName &&
