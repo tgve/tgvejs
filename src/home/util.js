@@ -377,6 +377,7 @@ function _generateOptions(state, cn, currentColorName, layerOptions, layerName, 
     options.onClick = (info) => {
       if (info && info.hasOwnProperty('coordinate')) {
         if ((['path', 'arc', 'line'].includes(layerName)
+          // when geojson is chosen for linestring simple features
           || geomType === 'linestring') &&
           info.object.geometry.coordinates) {
           typeof callingFunction === 'function'

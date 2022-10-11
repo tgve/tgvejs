@@ -576,7 +576,6 @@ const colorRangeNamesToInterpolate = (name) => {
 }
 
 const colorRanges = (name) => {
-  if (!name) return
   const colors = {
     yellowblue: [
       [255, 255, 204],
@@ -627,6 +626,7 @@ const colorRanges = (name) => {
       [189, 0, 38],
     ]
   }
+  if (!isString(name)) return (colors['default'])
   return (colors[name])
 }
 
