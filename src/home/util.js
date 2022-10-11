@@ -19,8 +19,10 @@ import {
   LIGHT_SETTINGS, BLANKSTYLE, DECK_LAYER_NAMES
 } from '../Constants';
 
-import { getPropertyValues, setGeojsonProps,
-  sfType } from '../utils/geojsonutils';
+import {
+  getPropertyValues, setGeojsonProps,
+  sfType
+} from '../utils/geojsonutils';
 import { CustomSlider } from '../components/showcases/Widgets';
 import { isObject } from '../utils/JSUtils';
 import { DECKGL_INIT, LAYERS_2D_REGEX } from '../Constants'
@@ -147,17 +149,18 @@ const generateLayer = (values = {}, state, renderTooltip,
   // generate a domain
   const domain = generateDomain(data, columnName);
 
-  const options = generateOptions(state, cn, currentColorName, layerOptions,
+  const options = _generateOptions(state, cn, currentColorName, layerOptions,
     layerName, data, columnName, domain, geomType, callingFunction);
 
   // attempt legend
   let newLegend = state.legend;
-  newLegend = <Legend domain={domain}
-    title={humanize(columnName)}
-    interpolate={colorRangeNamesToInterpolate(
-      cn || currentColorName
-    )}
-  />
+  newLegend = domain && domain.length > 1
+    && <Legend domain={domain}
+      title={humanize(columnName)}
+      interpolate={colorRangeNamesToInterpolate(
+        cn || currentColorName
+      )}
+    />
 
   const alayer = generateDeckLayer(
     layerName, data, renderTooltip, options
@@ -304,12 +307,22 @@ export {
   initViewState,
   getViewPort
 }
-function generateOptions(state, cn, currentColorName, layerOptions, layerName, data,
+/**
+ * Internal function to generate Deck.GL layer options.
+ * The settingsUtil.js generates the generic options,
+ * this function customises them based on the input in
+ * run time. Mainly deals with:
+ * - Generating coloring options
+ * - Geographic filtering for linestring simple features
+ * - Updating Deck.GL layer updateTriggers object
+ */
+function _generateOptions(state, cn, currentColorName, layerOptions, layerName, data,
   columnName, domain, geomType, callingFunction) {
+  const colorRange = colorRanges(cn || currentColorName)
   const options = Object.assign({
     ...state.layerOptions,
     lightSettings: LIGHT_SETTINGS,
-    colorRange: colorRanges(cn || currentColorName),
+    colorRange: colorRange,
     getColor: getColorArray(cn || currentColorName)
   }, layerOptions);
   const numericValidDomain = isArrayNumeric(domain) && domain.length > 1
@@ -338,9 +351,7 @@ function generateOptions(state, cn, currentColorName, layerOptions, layerName, d
       const min = getMin(domain), max = getMax(domain);
       options.getSourceColor = colorScale(min, domain, 180, cn || currentColorName);
       options.getTargetColor = colorScale(max, domain, 180, cn || currentColorName);
-    }
-    if(cn) {
-      const colorRange = colorRanges(cn)
+    } else {
       options.getSourceColor = colorRange[0]
       options.getTargetColor = colorRange[colorRange.length - 1]
     }
@@ -353,13 +364,20 @@ function generateOptions(state, cn, currentColorName, layerOptions, layerName, d
     +getValue(d) ? +getValue(d) : getValue(d),
     domain, 180, cn || currentColorName
   );
+  const trigger = data.map((d) => fill(d))
+  // so long as there is some properties to generate a range
+  // if not a constant
+  const fillOrConstantColor = domain && domain.length > 1 ?
+  fill : colorRange[colorRange.length - 1]
 
+  // caters for line and path layers
   if (geomType === 'linestring' || layerName === 'line') {
-    options.getColor = fill;
+    options.getColor = fillOrConstantColor;
     options.getPath = d => d.geometry.coordinates;
     options.onClick = (info) => {
       if (info && info.hasOwnProperty('coordinate')) {
-        if (['path', 'arc', 'line'].includes(layerName) &&
+        if ((['path', 'arc', 'line'].includes(layerName)
+          || geomType === 'linestring') &&
           info.object.geometry.coordinates) {
           typeof callingFunction === 'function'
             && callingFunction({
@@ -376,26 +394,27 @@ function generateOptions(state, cn, currentColorName, layerOptions, layerName, d
       options.getWidth = d => {
         return newRange(d, columnName, min, max);
       }; // avoid id
+      options.updateTriggers = {
+        getColor: trigger,
+      };
     }
-    options.updateTriggers = {
-      getColor: data.map((d) => fill(d)),
-    };
   }
 
   if (geomType === "polygon" || geomType === "multipolygon" ||
     layerName === 'geojson' || layerName === "scatterplot") {
 
-    options.getFillColor = fill;
-
+    options.getFillColor = fillOrConstantColor;
+    options.getLineColor = fillOrConstantColor;
     options.updateTriggers = {
-      getFillColor: data.map((d) => fill(d))
+      getFillColor: trigger,
+      getLineColor: trigger
     };
   }
 
   if (layerName === 'pointcloud' || layerName === 'barvis') {
-    options.getColor = fill;
+    options.getColor = fillOrConstantColor;
     options.updateTriggers = {
-      getColor: data.map((d) => fill(d)),
+      getColor: trigger,
       getPosition: [data.length]
     };
   }
