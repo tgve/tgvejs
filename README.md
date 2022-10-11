@@ -7,7 +7,8 @@ visualization design and techniques from Geographic Information Science (GIScien
 to implement automatic aggregation of temporal and
 spatial data.
 
-<img width=90% alt="TGVE screen shot" src="https://user-images.githubusercontent.com/408568/76419738-c46edc80-6398-11ea-8bbe-496394f90adc.png">
+<!-- https://user-images.githubusercontent.com/408568/76419738-c46edc80-6398-11ea-8bbe-496394f90adc.png -->
+<img width=90% alt="TGVE screen shot" src="https://user-images.githubusercontent.com/408568/195129362-92b9fc70-e5b7-4895-9331-162324e53e76.png">
 
 
 ## npm package
