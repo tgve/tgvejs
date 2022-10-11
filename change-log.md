@@ -1,4 +1,10 @@
 ## Change log
+- `1.5.1`
+  - Add two callbacks to TGVE: `onViewStateChange` and `onStateChange`. See `README` for API details.
+  - Legend supports categorical data
+  - Barvis custom layer color handling fix
+  - Minor improvements and changes
+
 - `1.5.0`
   - Add support for reading Shapefiles via shapefile.js
   - Read separate geography & data file from local machine

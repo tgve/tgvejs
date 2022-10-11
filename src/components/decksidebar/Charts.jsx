@@ -21,11 +21,6 @@ export default class Charts extends React.Component {
   }
   shouldComponentUpdate(nextProps) {
     const { data } = this.props;
-  //  //TODO: a bit better now but more is needed.
-  //   // this solves a lag in large datasets
-  //   // a more functional way is needed
-  //   // e.g JSON.stringify like in Welcome.js etc
-  //   // consider change in unfilteredData too
     if (!data && !nextProps.data) return false
     const r = Math.floor(Math.random() * data.length)
     if (data.length !== nextProps.data.length) return true

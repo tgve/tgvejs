@@ -9,7 +9,7 @@ import { isArray, isObject, isString } from './JSUtils';
  *
  * @param {*} props properties to extract APIs from
  * @param {*} search search query that can be parsed with qs
- * @returns {Object} of all valid or undefined TGVE API parameters.
+ * @returns {object} of all valid or undefined TGVE API parameters.
  */
 const params = function (props, search = "") {
   const qsr = typeof search === 'string' &&
@@ -26,7 +26,7 @@ const params = function (props, search = "") {
 
   const apiValue = function (paramName, ENV_NAME, bool = false) {
     const param = props[paramName]
-    if (qsr.hasOwnProperty(paramName)) {
+    if (qsr.hasOwnProperty(paramName) && !param) {
       return bool ? boolStr(qsr[paramName]) : qsr[paramName]
     } else if (bool && typeof param === 'boolean') {
       return param
@@ -46,28 +46,37 @@ const params = function (props, search = "") {
 
 
   return ({
-    defaultURL: apiValue("defaultURL", "REACT_APP_DEFAULT_URL"),                  // String
-    geographyURL: apiValue("geographyURL", "REACT_APP_GEOGRAPHY_URL"),            // String
-    geographyColumn: apiValue("geographyColumn", "REACT_APP_GEOGRAPHY_COLUMN"),   // String
-    column: apiValue("column", "REACT_APP_COLUMN"),                               // String
-    tooltipColumns: apiValue("tooltipColumns", "REACT_APP_TOOLTIP_COLUMNS"),      // Object
-    layerName: apiValue("layerName", "REACT_APP_LAYER_NAME"),                     // String
+    /** String */
+    defaultURL: apiValue("defaultURL", "REACT_APP_DEFAULT_URL"),
+    geographyURL: apiValue("geographyURL", "REACT_APP_GEOGRAPHY_URL"),
+    geographyColumn: apiValue("geographyColumn", "REACT_APP_GEOGRAPHY_COLUMN"),
+    column: apiValue("column", "REACT_APP_COLUMN"),
+    layerName: apiValue("layerName", "REACT_APP_LAYER_NAME"),
+    /**  Object */
+    tooltipColumns: apiValue("tooltipColumns", "REACT_APP_TOOLTIP_COLUMNS"),
+    viewport: jsonStr(qsr.viewport) || props.viewport || settings.viewport,
+    data: jsonStr(qsr.data) || props.data || staticData,
     // if no boolean found set a default value
-    dark: expected(apiValue("dark", "REACT_APP_DARK", true),                      // Boolean
+    /** Boolean */
+    dark: expected(apiValue("dark", "REACT_APP_DARK", true),
       "boolean", true),
-    hideChartGenerator: apiValue("hideChartGenerator",                            // Boolean
+    hideChartGenerator: apiValue("hideChartGenerator",
       "REACT_APP_HIDE_CHART_GENERATOR", true),
-    hideCharts: apiValue("hideCharts",                                            // Boolean
+    hideCharts: apiValue("hideCharts",
       "REACT_APP_HIDE_CHARTS", true),
-    hideSidebar: apiValue("hideSidebar",                                          // Boolean
+    hideSidebar: apiValue("hideSidebar",
       "REACT_APP_HIDE_SIDEBAR", true),
-    viewport: jsonStr(qsr.viewport) || props.viewport || settings.viewport,       // Object
-    data: jsonStr(qsr.data) || props.data || staticData,                          // Object
+
     // TOTO: strict checks on props.select to be
     // either like qsr or exactly like multiVarSelect
-    select: keySetObject(qsr.select) || props.select,                             // Object | String
+    /** Object | String */
+    select: keySetObject(qsr.select) || props.select,
     // react component
-    leftSidebarContent: props.leftSidebarContent                                  // React object
+    /** React object */
+    leftSidebarContent: props.leftSidebarContent,
+    /** Callback */
+    onViewStateChange: props.onViewStateChange,
+    onStateChange: props.onStateChange
   })
 }
 
@@ -91,8 +100,8 @@ const jsonStr = function (str) {
  * is composed of {key: Set()} with the set including
  * values for which the key is subset by.
  *
- * @param {Object|String} filterStr
- * @returns {Object}
+ * @param {object|string} filterStr
+ * @returns {object}
  */
 const keySetObject = function (filterStr) {
   // is it json with array?
@@ -125,7 +134,17 @@ const keySetObject = function (filterStr) {
   return null
 }
 
+// reverse keySetObject above to JSON
+const jsonFromKeySetObject = (multiVarSelect) => {
+  if (!multiVarSelect || !Object.keys(multiVarSelect)) return {}
+  return Object.keys(multiVarSelect).reduce((p, c) => {
+    p[c] = Array.from(multiVarSelect[c])
+    return p
+  }, {})
+}
+
 export {
+  jsonFromKeySetObject,
   keySetObject,
   jsonStr,
   params

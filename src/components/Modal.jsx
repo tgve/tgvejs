@@ -6,6 +6,7 @@ import {
   ModalBody,
   ModalFooter,
 } from 'baseui/modal';
+import { iWithFaName } from '../utils/utils';
 
 export default (props) => {
   const [open, setOpen] = React.useState(false);
@@ -13,17 +14,12 @@ export default (props) => {
 
   return (
     <React.Fragment>
-      <i
-        style={{
-          margin: 5,
-          cursor: 'pointer',
-          fontSize: '1.5em'
-        }}
-        onClick={() => {
+      {iWithFaName(
+        button || "fa fa-table",
+        () => {
           typeof toggleOpen === 'function' && toggleOpen();
           setOpen(true);
-        }}
-        className={button || "fa fa-table"}></i>
+        }, {}, "Quick look")}
       <Modal size="80%"
         onClose={() => {
           typeof (toggleOpen) === 'function' && toggleOpen()

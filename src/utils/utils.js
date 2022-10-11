@@ -337,7 +337,6 @@ const suggestDeckLayer = (features) => {
   // array of features
   // TODO: go through each feature? in case of features.
   const type = sfType(features[r]);
-  // Constants.LAYERSTYLES
   if (new RegExp("point", 'i').test(type)) {
     return "grid"
   } else if (new RegExp("line", 'i').test(type)) {
@@ -514,11 +513,12 @@ const isMobile = function () {
 // [247,129,191,255]]
 
 function hexToRgb(hex, array = false) {
+  if(!isString(hex)) return;
   let bigint = parseInt(hex.substring(1, hex.length), 16);
   let r = (bigint >> 16) & 255;
   let g = (bigint >> 8) & 255;
   let b = bigint & 255;
-  if (array) return [r / 255, g / 255, b / 255]
+  if (array) return [r, g, b]
   return 'rgb(' + r + "," + g + "," + b + ")";
 }
 
@@ -529,13 +529,20 @@ function hexToRgb(hex, array = false) {
  * @param {any} v particular value to use in interpolateOrRd
  * @param {Array} domain domain to use in interpolateOrRd
  * @param {Number} alpha value to add to colour pallete
- * @param {String} colorName colorName found in `colorRangeNamesToInterpolate`
+ * @param {String} colorName colorName found in
+ * `colorRangeNamesToInterpolate`
+ *
+ * @returns depending on the domain and `colorName` it
+ * could return an array of hex array or a hex string
  */
-const colorScale = (v, domain, alpha = 180, colorName) => {
+ const colorScale = (v, domain, alpha = 180, colorName) => {
   if (!v || !isArray(domain) || !domain.length) return null;
-  if (colorName === colorRangeNames[5] && domain.length <= 10) {
+  if(colorName === colorRangeNames[5] && domain.length <= 10) {
     const rgb = hexToRgb(schemeSet1[domain.indexOf(v)], true);
-    return [...rgb, alpha]
+    if(isArray(rgb)) {
+      return [...rgb, alpha]
+    }
+    return undefined
   }
   const index = domain.indexOf(v)
   const d3InterpolateFn = isString(colorName) &&
@@ -569,7 +576,6 @@ const colorRangeNamesToInterpolate = (name) => {
 }
 
 const colorRanges = (name) => {
-  if (!name) return
   const colors = {
     yellowblue: [
       [255, 255, 204],
@@ -620,6 +626,7 @@ const colorRanges = (name) => {
       [189, 0, 38],
     ]
   }
+  if (!isString(name)) return (colors['default'])
   return (colors[name])
 }
 
@@ -670,39 +677,6 @@ const searchNominatom = (location, callback) => {
   fetchData(url, (json) => {
     typeof callback === 'function' && callback(json)
   })
-}
-
-/**
- * Helper function to generate a legend from: `domain`,
- * `interpolate` function and a `title`.
- *
- * @param {Object} options
- * @returns {Object} React.Fragment
- */
-const generateLegend = (options) => {
-  //quick check
-  const { domain, interpolate = interpolateOrRd, title } = options;
-  const r = randomToNumber(domain && domain.length)
-  if (!domain || !Array.isArray(domain) || !isNumber(domain[r])) return null
-  const jMax = domain[domain.length - 1], jMin = domain[0];
-  if (!isNumber(jMax) || !isNumber(jMin)) return null
-
-  const legend = [<p key='title'>{title}</p>]
-
-  const legendMax = domain.length < 10 ? domain.length : 10
-  for (var i = 0; i < legendMax; i += 1) {
-    legend.push(
-      i === 0 ?
-        <i key={i}>{jMin.toFixed(2)}</i>
-        :
-        i === (legendMax - 1) ?
-          <i key={i}>{jMax.toFixed(2)}</i>
-          :
-          <span key={i} style={{ background: interpolate(i / legendMax) }}>
-          </span>
-    )
-  }
-  return legend;
 }
 
 /**
@@ -943,14 +917,26 @@ const saveCanvas = (canvas, fileName) => {
   link.click();
 }
 
-const iWithFaName = (faName, onClick, fontSize) => <i
-  style={{
+const iWithFaName = (faName, onClick, style, title) => <i
+  style={Object.assign({
     margin: 5,
     cursor: 'pointer',
-    fontSize: fontSize || '1.5em'
-  }}
+    fontSize: '1.5em'
+  }, style)}
   onClick={onClick}
-  className={faName || "fa fa-info"}></i>
+  className={faName || "fa fa-info"}
+  title={title}></i>
+
+const isArrayNumeric = (array) => {
+  if(!isArray(array)) return null
+  let isNumeric = true;
+  array.forEach(e => {
+    if (!isNumber(e)) {
+      isNumeric = false
+    }
+  });
+  return isNumeric
+}
 
 export {
   colorRangeNamesToInterpolate,
@@ -967,9 +953,9 @@ export {
   sortNumericArray,
   colorRangeNames,
   searchNominatom,
-  generateLegend,
   generateDomain,
   getMainMessage,
+  isArrayNumeric,
   updateHistory,
   getColorArray,
   convertRange,

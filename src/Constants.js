@@ -14,7 +14,7 @@ define("UI_LIST", [
   "buttongroups",
   "dropdown",
   "slider"])
-define("LAYERSTYLES", [
+define("DECK_LAYER_NAMES", [
   "arc",
   "geojson",
   "grid",
@@ -30,6 +30,10 @@ define("LAYERSTYLES", [
 
 define("LAYERS_2D_REGEX",
   "sgrid|scatter|geojson|line|path"
+)
+
+define("NO_LEGEND_LAYERS_REGEX",
+  "hex|grid|sgrid|text|heatmap|icon"
 )
 
 define("DECKGL_INIT", {

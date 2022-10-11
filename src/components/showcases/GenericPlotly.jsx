@@ -32,7 +32,8 @@ export default function(props) {
   const axes = { visible: true, color: dark && '#fff'}
   const sColor = {color: dark && '#fff'};
 
-  if (!data || !isArray(data) || data.length === 0) return null
+  if (!data || !isArray(data) || data.length === 0
+    ||!Plot) return null
   return (
     <Plot
       data={data}

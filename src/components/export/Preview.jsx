@@ -36,7 +36,7 @@ export default function Preview(props) {
   return (
     <React.Fragment>
       {iWithFaName("fa fa-save", () =>
-        setOpen(o => !o))}
+        setOpen(o => !o), {}, "Save")}
       <Modal
         isOpen={isOpen}>
         <ModalHeader data-html2canvas-ignore="true">

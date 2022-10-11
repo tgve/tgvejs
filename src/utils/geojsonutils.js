@@ -124,7 +124,7 @@ const getPropertyValues = (geojson, property) => {
 }
 
 /**
- * Get a list of {x:property, y:count} objects for a features in
+ * Get a list of {x:property, y:count} objects for features in
  * a geojson object. The function can return the counts for
  * a specific list provided or it would get all values in
  * the given key/column of the data.
@@ -248,6 +248,14 @@ const isColumnAllNumeric = (data, columnNameOrIndex) => {
   return isNumeric
 }
 
+const isPropertyValueNumeric = (data, columnName) => {
+  if (!isArray(data)) return null
+  if (!isString(columnName)
+    && !isNumber(columnName)) return null
+  const r = Math.floor(Math.random() * data.length)
+  return +(data[r] && data[r].properties &&
+    data[r].properties[columnName]);
+}
 
 /**
  * Function to get an arrays plotable properties.
@@ -331,10 +339,12 @@ const isColumnAllNumeric = (data, columnNameOrIndex) => {
   let geojsonColumn = splitOrSameString(1)
   if (!geoColumn) {
     // try to find first matching column
-    const firstMatching = Object.keys(geojson.features[0].properties)
-      .filter(e =>
-        Object.keys(data[0].properties).includes(e))[0];
-    console.log(firstMatching);
+    // compare first features 0 index
+    const geoSmall = Object.keys(geojson.features[0].properties)
+      .map(e => e.toLocaleLowerCase())
+    const dataSmall = Object.keys(data[0].properties)
+      .map(e => e.toLocaleLowerCase())
+    const firstMatching = geoSmall.filter(e => dataSmall.includes(e))[0];
     dataColumn = geojsonColumn = firstMatching
   }
   // if no matching columns or
@@ -369,6 +379,7 @@ const isColumnAllNumeric = (data, columnNameOrIndex) => {
 export {
   describeFeatureVariables,
   propertyCountByProperty,
+  isPropertyValueNumeric,
   isColumnAllNumeric,
   getPropertyValues,
   setGeojsonProps,

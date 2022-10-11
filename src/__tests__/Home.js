@@ -207,3 +207,26 @@ test("spatial filterGeojson works", () => {
   )
   expect(result.filtered.length).toBe(1)
 })
+
+test('onStateChange callback works', async () => {
+  const callback = jest.fn(() => {})
+  await render(
+    <Home
+      onStateChange={callback}
+      data={sampleGeojson}
+      hideSidebar={true} />)
+
+  expect(callback).toHaveBeenCalled()
+})
+
+test('onViewStateChange callback works', async () => {
+  const callback = jest.fn(() => {})
+  await render(
+    <Home
+      onViewStateChange={callback}
+      data={sampleGeojson}
+      hideSidebar={true} />)
+  // because in tests we do not call
+  // viewport update callback is never reached
+  expect(callback).not.toHaveBeenCalled()
+})

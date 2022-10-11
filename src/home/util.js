@@ -1,5 +1,5 @@
 import React from 'react';
-import { difference, isString } from 'underscore';
+import { difference } from 'underscore';
 import booleanContains from '@turf/boolean-contains';
 import { polygon } from '@turf/helpers';
 import centroid from '@turf/centroid';
@@ -10,28 +10,32 @@ import {
   generateDeckLayer, suggestDeckLayer,
   colorScale, getOSMTiles, colorRanges, getBbx,
   generateDomain, convertRange, getMin, getMax,
-  generateLegend, humanize, colorRangeNamesToInterpolate, getColorArray,
+  humanize, colorRangeNamesToInterpolate, getColorArray,
   getViewportParams,
+  isArrayNumeric
 } from '../utils/utils';
+import { Legend } from '../utils/legend';
 import {
-  LIGHT_SETTINGS, BLANKSTYLE
+  LIGHT_SETTINGS, BLANKSTYLE, DECK_LAYER_NAMES
 } from '../Constants';
 
-import { getPropertyValues, setGeojsonProps,
-  sfType } from '../utils/geojsonutils';
+import {
+  getPropertyValues, setGeojsonProps,
+  sfType
+} from '../utils/geojsonutils';
 import { CustomSlider } from '../components/showcases/Widgets';
-import { isArray, isNumber } from '../utils/JSUtils';
+import { isObject } from '../utils/JSUtils';
 import { DECKGL_INIT, LAYERS_2D_REGEX } from '../Constants'
 
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
-const newRange = (d, columnNameOrIndex, min, max) => {
+const newRange = (d, columnName, min, max) => {
   let newMax = max, newMin = min;
   if (min < 1 || max > 300) {
     newMax = 10; newMin = 1;
   }
   const r = convertRange(
-    d.properties[columnNameOrIndex], {
+    d.properties[columnName], {
     oldMin: min, oldMax: max, newMax: newMax, newMin: newMin
   });
   return r;
@@ -50,16 +54,15 @@ const newRange = (d, columnNameOrIndex, min, max) => {
    * {Object} layerOptions to override layer properties
    * {Object} customError useful to show an alert when layer
    * is generated
-   * @param {Object} props read props
    * @param {Object} state read state
    * @param {Function} renderTooltip to pass to DeckGL
    * @param {Function} callingFunction the function that calls
    * this function from Home component
    *
-   * @returns {Object|undefined} depending on values, props and state
+   * @returns {Object|undefined} depending on values and state
    * either undefined or an object to setState of index.js
    */
-const generateLayer = (values = {}, props, state, renderTooltip,
+const generateLayer = (values = {}, state, renderTooltip,
   callingFunction) => {
   const { layerOptions = {}, filter, cn, customError } = values;
 
@@ -71,11 +74,13 @@ const generateLayer = (values = {}, props, state, renderTooltip,
           newStyle : state.mapStyle,
     })
   }
-  const { colorName, iconLimit, geography, geographyColumn,
+  const { colorName: currentColorName, iconLimit, geography, geographyColumn,
     multiVarSelect } = state;
 
-  let data = (props.data && props.data.features)
-    || (state.data && state.data.features)
+  // we must check state only for data
+  // as data may have been added locally via "Add data"
+  let data = state.data && state.data.features
+
   // data or geography and add column data
   if (!data) return;
 
@@ -117,138 +122,45 @@ const generateLayer = (values = {}, props, state, renderTooltip,
     })
   };
 
-  let column = (filter && filter.what === 'column' && filter.selected) ||
+  const column = (filter && filter.what === 'column' && filter.selected) ||
     state.column;
   // in case there is no or one column
-  const columnNameOrIndex = column || 0;
+  const columnName = column
+    //get first property of the first feature
+    || (Object.keys(data[0].properties) && Object.keys(data[0].properties)[0])
+    || 0;
 
   const geomType = sfType(
     geography ? geography.features[0] : data[0]
   ).toLowerCase();
 
   let layerName = (filter && filter.what ===
-    'layerName' && filter.selected) || state.layerName ||
-    suggestDeckLayer(geography ? geography.features : data);
+    'layerName' && filter.selected) || state.layerName
+
+  if (!DECK_LAYER_NAMES.includes(state.layerName)) {
+    layerName = suggestDeckLayer(geography ? geography.features : data);
+  }
   // TODO: incorporate this into suggestDeckLayer
   // if (!new RegExp("point", "i").test(geomType)) layerName = "geojson"
   const switchToIcon = data.length < iconLimit && !layerName &&
     (!filter || filter.what !== 'layerName') && geomType === "point";
   if (switchToIcon) layerName = 'icon';
 
-  const options = Object.assign({
-    ...state.layerOptions,
-    lightSettings: LIGHT_SETTINGS,
-    colorRange: colorRanges(cn || colorName),
-    getColor: getColorArray(cn || colorName)
-  }, layerOptions);
   // generate a domain
-  const domain = generateDomain(
-    data,
-    columnNameOrIndex === 0 ?
-      // TODO better check than just data[0]
-      Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex);
+  const domain = generateDomain(data, columnName);
 
-  if (layerName === 'heatmap') {
-    options.getPosition = d => d.geometry.coordinates
-    // options.getWeight = d => d.properties[columnNameOrIndex]
-    options.updateTriggers = {
-      // even if nulls
-      getWeight: typeof (options.getWeight) === 'function' &&
-        data.map(d => options.getWeight(d))
-    }
-  }
-  // TODO
-  if (layerName === 'scatterplot') {
-    if (isValueNumeric(data, columnNameOrIndex)) {
-      const min = getMin(domain), max = getMax(domain)
-      options.getRadius = d => {
-        return newRange(d, columnNameOrIndex, min, max);
-      }
-    }
-  }
-
-  if (layerName === 'arc') {
-    const min = getMin(domain), max = getMax(domain)
-    options.getSourceColor = colorScale(min, domain, 180, cn || state.colorName);
-    options.getTargetColor = colorScale(max, domain, 180, cn || state.colorName);
-  }
-
-  let newLegend = state.legend;
-
-  const getValue = (d) => {
-    // columnNameOrIndex must be init with 0
-    // TODO write tests for no props at all
-    if (+columnNameOrIndex || +columnNameOrIndex === 0) {
-      // if not checking against 0 then, we will have 0 passed to properties
-      // which could return undefined like obj = {foo:'bar', baz: 'boo'}; obj[0]
-      return (d.properties[Object.keys(d.properties)[columnNameOrIndex]])
-    } else {
-      return (d.properties[columnNameOrIndex])
-    }
-  }
-  const fill = (d) => colorScale(
-    +getValue(d) ? +getValue(d) : getValue(d),
-    domain, 180, cn || state.colorName
-  )
-
-  if (geomType === 'linestring') {
-    options.getColor = fill;
-    options.getPath = d => d.geometry.coordinates
-    options.onClick = (info) => {
-      if (info && info.hasOwnProperty('coordinate')) {
-        if (['path', 'arc', 'line'].includes(layerName) &&
-          info.object.geometry.coordinates) {
-          typeof callingFunction === 'function'
-            && callingFunction({
-              filter: {
-                what: 'coords',
-                selected: info.object.geometry.coordinates[0]
-              }
-            })
-        }
-      }
-    }
-    if (isValueNumeric(data, columnNameOrIndex)) {
-      const min = getMin(domain), max = getMax(domain)
-      options.getWidth = d => {
-        return newRange(d, columnNameOrIndex, min, max);
-      }; // avoid id
-    }
-    options.updateTriggers = {
-      getColor: data.map((d) => fill(d)),
-    }
-  }
-
-  if (geomType === "polygon" || geomType === "multipolygon" ||
-    layerName === 'geojson' || layerName === "scatterplot") {
-
-    options.getFillColor = fill;
-
-    options.updateTriggers = {
-      getFillColor: data.map((d) => fill(d))
-    }
-  }
-
-  if (layerName === 'pointcloud' || layerName === 'barvis') {
-    options.getColor = fill;
-    options.updateTriggers = {
-      getColor: data.map((d) => fill(d)),
-      getPosition: [data.length]
-    }
-  }
+  const options = _generateOptions(state, cn, currentColorName, layerOptions,
+    layerName, data, columnName, domain, geomType, callingFunction);
 
   // attempt legend
-  const columnName = +columnNameOrIndex || +columnNameOrIndex === 0 ?
-    Object.keys(data[0].properties)[columnNameOrIndex] : columnNameOrIndex
-  newLegend = generateLegend(
-    {
-      domain,
-      title: humanize(columnName),
-      interpolate: colorRangeNamesToInterpolate(
-        cn || state.colorName
-      )
-    }
-  )
+  let newLegend = state.legend;
+  newLegend = domain && domain.length > 1
+    && <Legend domain={domain}
+      title={humanize(columnName)}
+      interpolate={colorRangeNamesToInterpolate(
+        cn || currentColorName
+      )}
+    />
 
   const alayer = generateDeckLayer(
     layerName, data, renderTooltip, options
@@ -269,7 +181,7 @@ const generateLayer = (values = {}, props, state, renderTooltip,
       filter.selected : multiVarSelect,
     road_type: filter && filter.what === 'road_type' ? filter.selected :
       state.road_type,
-    colorName: cn || colorName,
+    colorName: cn || currentColorName,
     column, // all checked
     coords: filter && filter.what === 'coords' ? filter.selected :
       state.coords,
@@ -298,7 +210,7 @@ const generateLayer = (values = {}, props, state, renderTooltip,
 
 const filterGeojson = (data, filter, state, multiVarSelect) => {
   const filterValues = (filter && filter.what === 'multi') ||
-    Object.keys(multiVarSelect).length;
+    (isObject(multiVarSelect) && Object.keys(multiVarSelect).length);
   const filterCoords = filter && filter.what === 'coords';
   const bbox = filter && filter.what === 'boundsSubset'
     && getBbx(filter.bounds)
@@ -345,15 +257,6 @@ const filterGeojson = (data, filter, state, multiVarSelect) => {
       return (true);
     }
   );
-}
-
-const isValueNumeric = (data, columnNameOrIndex) => {
-  if (!isArray(data)) return null
-  if (!isString(columnNameOrIndex)
-    && !isNumber(columnNameOrIndex)) return null
-  const r = Math.floor(Math.random() * data.length)
-  return +(data[r] && data[r].properties &&
-    data[r].properties[columnNameOrIndex]);
 }
 
 const initViewState = (props) => {
@@ -404,3 +307,118 @@ export {
   initViewState,
   getViewPort
 }
+/**
+ * Internal function to generate Deck.GL layer options.
+ * The settingsUtil.js generates the generic options,
+ * this function customises them based on the input in
+ * run time. Mainly deals with:
+ * - Generating coloring options
+ * - Geographic filtering for linestring simple features
+ * - Updating Deck.GL layer updateTriggers object
+ */
+function _generateOptions(state, cn, currentColorName, layerOptions, layerName, data,
+  columnName, domain, geomType, callingFunction) {
+  const colorRange = colorRanges(cn || currentColorName)
+  const options = Object.assign({
+    ...state.layerOptions,
+    lightSettings: LIGHT_SETTINGS,
+    colorRange: colorRange,
+    getColor: getColorArray(cn || currentColorName)
+  }, layerOptions);
+  const numericValidDomain = isArrayNumeric(domain) && domain.length > 1
+
+  if (layerName === 'heatmap') {
+    options.getPosition = d => d.geometry.coordinates;
+    // options.getWeight = d => d.properties[columnName]
+    options.updateTriggers = {
+      // even if nulls
+      getWeight: typeof (options.getWeight) === 'function' &&
+        data.map(d => options.getWeight(d))
+    };
+  }
+  // TODO: color
+  if (layerName === 'scatterplot') {
+    if (numericValidDomain) {
+      const min = getMin(domain), max = getMax(domain);
+      options.getRadius = d => {
+        return newRange(d, columnName, min, max);
+      };
+    }
+  }
+
+  if (layerName === 'arc') {
+    if (numericValidDomain) {
+      const min = getMin(domain), max = getMax(domain);
+      options.getSourceColor = colorScale(min, domain, 180, cn || currentColorName);
+      options.getTargetColor = colorScale(max, domain, 180, cn || currentColorName);
+    } else {
+      options.getSourceColor = colorRange[0]
+      options.getTargetColor = colorRange[colorRange.length - 1]
+    }
+  }
+
+  const getValue = (d) => d.properties[columnName];
+  const fill = (d) => colorScale(
+    // domain converts numerics into numbers
+    // must do the same here
+    +getValue(d) ? +getValue(d) : getValue(d),
+    domain, 180, cn || currentColorName
+  );
+  const trigger = data.map((d) => fill(d))
+  // so long as there is some properties to generate a range
+  // if not a constant
+  const fillOrConstantColor = domain && domain.length > 1 ?
+  fill : colorRange[colorRange.length - 1]
+
+  // caters for line and path layers
+  if (geomType === 'linestring' || layerName === 'line') {
+    options.getColor = fillOrConstantColor;
+    options.getPath = d => d.geometry.coordinates;
+    options.onClick = (info) => {
+      if (info && info.hasOwnProperty('coordinate')) {
+        if ((['path', 'arc', 'line'].includes(layerName)
+          // when geojson is chosen for linestring simple features
+          || geomType === 'linestring') &&
+          info.object.geometry.coordinates) {
+          typeof callingFunction === 'function'
+            && callingFunction({
+              filter: {
+                what: 'coords',
+                selected: info.object.geometry.coordinates[0]
+              }
+            });
+        }
+      }
+    };
+    if (numericValidDomain) {
+      const min = getMin(domain), max = getMax(domain);
+      options.getWidth = d => {
+        return newRange(d, columnName, min, max);
+      }; // avoid id
+      options.updateTriggers = {
+        getColor: trigger,
+      };
+    }
+  }
+
+  if (geomType === "polygon" || geomType === "multipolygon" ||
+    layerName === 'geojson' || layerName === "scatterplot") {
+
+    options.getFillColor = fillOrConstantColor;
+    options.getLineColor = fillOrConstantColor;
+    options.updateTriggers = {
+      getFillColor: trigger,
+      getLineColor: trigger
+    };
+  }
+
+  if (layerName === 'pointcloud' || layerName === 'barvis') {
+    options.getColor = fillOrConstantColor;
+    options.updateTriggers = {
+      getColor: trigger,
+      getPosition: [data.length]
+    };
+  }
+  return options;
+}
+

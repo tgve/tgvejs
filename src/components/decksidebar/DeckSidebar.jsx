@@ -11,7 +11,7 @@ import DataInput from '../input/DataInput';
 import MapboxBaseLayers from '../MapboxBaseLayers';
 import {
   searchNominatom, firstLastNCharacters,
-  humanize, getMainMessage, theme
+  humanize, getMainMessage, theme, iWithFaName
 } from '../../utils/utils';
 import Variables from '../Variables';
 import RBAlert from '../RBAlert';
@@ -34,10 +34,9 @@ export default class DeckSidebar extends React.Component {
     super(props)
     this.state = {
       radius: 100,
-      year: "", // required to reset state
       reset: false,
       multiVarSelect: props.multiVarSelect || {},
-      barChartVariable: "road_type",
+      barChartVariable: "",
       datasetName: props.datasetName
     }
   }
@@ -45,15 +44,15 @@ export default class DeckSidebar extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     const { data, alert, layerName, column,
       subsetBoundsChange, hideChartGenerator,
-      hideCharts } = this.props;
-    const { reset, year, barChartVariable } = this.state;
+      hideCharts, datasetName } = this.props;
+    const { reset, barChartVariable } = this.state;
     // avoid rerender as directly operating on document.get*
     // does not look neat. Keeping it React way.
     if (reset !== nextState.reset
-      || year !== nextState.year
       || alert !== nextProps.alert
       || subsetBoundsChange !== nextProps.subsetBoundsChange
       || barChartVariable !== nextState.barChartVariable
+      || datasetName !== nextProps.datasetName
       // API change
       || column !== nextProps.column
       || layerName !== nextProps.layerName
@@ -61,8 +60,7 @@ export default class DeckSidebar extends React.Component {
       || hideCharts !== nextProps.hideCharts ) {
       return true
     };
-    //TODO: a bit better now but more is needed.
-    // this solves a lag in large datasets
+    //TODO:
     // a more functional way is needed
     // e.g JSON.stringify like in Welcome.js etc
     // consider change in unfilteredData too
@@ -101,9 +99,13 @@ export default class DeckSidebar extends React.Component {
     const resetState = (urlOrName, button) => {
       this.setState({
         reset: !button,
-        year: "",
+        /**
+         * TODO: multiVarSelect is editable
+         * however, in this case it should be home/index
+         * which resets it.
+         */
         multiVarSelect: {},
-        barChartVariable: "road_type",
+        barChartVariable: "",
         datasetName: urlOrName || this.props.datasetName
       })
     }
@@ -135,10 +137,17 @@ export default class DeckSidebar extends React.Component {
           <div>
             <DataInput
               toggleOpen={toggleOpen}
-              urlCallback={(url, geojson, name, geography, geoColumn) => {
-                resetState(url || name);
+              urlCallback={(inputValues) => {
+                const {geojson, name, geography,
+                  geoColumn} = inputValues
+                resetState(name);
                 typeof (urlCallback) === 'function'
-                  && urlCallback(url, geojson, geography, geoColumn);
+                  && urlCallback({
+                    geojson_returned: geojson,
+                    geography_returned: geography,
+                    geoColumn,
+                    reset: true
+                  });
               }} />
             {
               this.state.reset &&
@@ -152,9 +161,7 @@ export default class DeckSidebar extends React.Component {
                 onClick={() => {
                   resetState(undefined, true);
                   typeof (urlCallback) === 'function'
-                    && urlCallback();
-                  typeof (this.props.showLegend) === 'function' &&
-                    this.props.showLegend(false);
+                    && urlCallback({reset: true});
                 }}>Reset</Button>
             }
             {notEmpty &&
@@ -168,10 +175,9 @@ export default class DeckSidebar extends React.Component {
             <div className="side-panel-body-content">
               <hr style={{ clear: 'both' }} />
               <StatefulTabs initialState={{ activeKey: "0" }} id="main-tabs">
-                <Tab title={
-                  <i style={{ fontSize: '2rem' }}
-                    className="fa fa-info" />
-                } overrides={TabOverrides}>
+                <Tab title={iWithFaName(
+                  "fa fa-info", undefined,
+                  { fontSize: '2rem' }, "Explore")} overrides={TabOverrides}>
                   {!hideChartGenerator &&
                     <AddVIS data={data} dark={dark} plotStyle={{ width: 270, margin: 10 }} />
                   }
@@ -204,10 +210,10 @@ export default class DeckSidebar extends React.Component {
                   }
                   {!hideCharts && <Charts {...this.props}/>}
                 </Tab>
-                <Tab title={
-                  <i style={{ fontSize: '2rem' }}
-                    className="fa fa-sliders" />
-                } overrides={TabOverrides}>
+                <Tab title={iWithFaName(
+                  "fa fa-sliders", undefined,
+                  { fontSize: '2rem' }, "Settings")}
+                  overrides={TabOverrides}>
                   {notEmpty &&
                     headerComponent(
                       <ColorPicker colourCallback={(color) =>
@@ -241,6 +247,7 @@ export default class DeckSidebar extends React.Component {
                       <LayerSettings
                         layerName={layerName}
                         columnNames={columnNames}
+                        layerOptions={this.props.layerOptions}
                         onLayerOptionsCallback={(layerOptions) => {
                           typeof (onLayerOptionsCallback) === 'function' &&
                             onLayerOptionsCallback({ ...layerOptions })

@@ -7,7 +7,8 @@ visualization design and techniques from Geographic Information Science (GIScien
 to implement automatic aggregation of temporal and
 spatial data.
 
-<img width=90% alt="TGVE screen shot" src="https://user-images.githubusercontent.com/408568/76419738-c46edc80-6398-11ea-8bbe-496394f90adc.png">
+<!-- https://user-images.githubusercontent.com/408568/76419738-c46edc80-6398-11ea-8bbe-496394f90adc.png -->
+<img width=90% alt="TGVE screen shot" src="https://user-images.githubusercontent.com/408568/195129362-92b9fc70-e5b7-4895-9331-162324e53e76.png">
 
 
 ## npm package
@@ -101,6 +102,14 @@ They can also be passed to the TGVE as URL query parameters. For instance
 -   `hideSidebar` boolean value which would hide the left sidebar.
 
 None of the above values is necessary and in the current release “Add data” button allows loading data into eAtlas.
+
+#### Callbacks
+The TGVE has supports these callbacks from v1.5.1:
+* `onViewStateChange`: a `function` to get the `viewport` of the TGVE which is passed from DeckGL. The returned object is described in DeckGL's documentations [here](https://deck.gl/docs/developer-guide/view-state-transitions). It contains zoom level, location information (longitude, latitude etc), current camera view (bearing and pitch) and transition details like "transitionDuration".
+
+* `onStateChange`: a `function` to get a `JSON` object which contains the select (filter) state of the TGVE. As the state of the app changes the provided function is called. The returned object contains an object called `select` which contains columns selected (filtered) with values in an array like `{select:{columnName: [value1, value2]}}`
+
+> In light of the above callbacks, when data is loaded in TGVE via "Add data" button from the local machine (i.e via FileReader API), the TGVE will disable other data sources until "reset" button is pressed.
 
 ### Shapefiles
 For more about shapefiles please refer to [this](https://en.wikipedia.org/wiki/Shapefile) Wikipedia entry. The TGVE can read shapefiles if provided as a zip file using [`shapefile.js`](https://github.com/calvinmetcalf/shapefile-js). The package is used as external dependency, therefore, if you do use it make sure you have `<script src="https://unpkg.com/shpjs@latest/dist/shp.js"></script>` in your React app's `index.html` file. Then, just add the source as `defaultURL=www.domain/shape.zip`.
