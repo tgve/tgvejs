@@ -342,7 +342,6 @@ export default class Home extends React.Component {
       layerName, legend, coords } = this.state;
     const showLegend = legend
       && !new RegExp(NO_LEGEND_LAYERS_REGEX, "i").test(layerName)
-
     return (
       <div>
         <div className="loader" style={{
@@ -500,6 +499,10 @@ export default class Home extends React.Component {
       coords: null,
       multiVarSelect: {},
       geography: null,
+      data: reset ? [] : this.state.data,
+      filtered: reset ? [] : this.state.filtered,
+      layers: reset ? [] : this.state.layers,
+      legend: reset ? null : this.state.legend,
       reset
     }, () => {
       if (geojson_returned) {
@@ -510,7 +513,7 @@ export default class Home extends React.Component {
           // corrupt
           this.setState({
             data: geojson_returned,
-            geography: geography_returned || null,
+            geography: geography_returned,
             geographyColumn: geoColumn,
           }, () => {
             // go with geography first fallback onto data source.
