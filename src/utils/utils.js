@@ -27,38 +27,6 @@ import history from '../history';
 
 const { DateTime } = require("luxon");
 
-const getResultsFromGoogleMaps = (string, callback) => {
-
-  if (typeof (string) === 'string' && typeof (callback) === 'function') {
-    let fullURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" +
-      string
-      + "&key=WRONG_KEY";
-    fetch(fullURL)
-      .then((response) => {
-        if (response.status !== 200) {
-          console.log('Looks like there was a problem. Status Code: ' +
-            response.status);
-          return;
-        }
-        // Examine the text in the response
-        response.json()
-          .then((data) => {
-            //rouch search results will do.
-            if (data.results.length === 0 || response.status === 'ZERO_RESULTS') {
-              callback(response.status);
-            } else {
-              callback(data.results[0].geometry.location)
-            }
-          });
-      })
-      .catch((err) => {
-        console.log('Fetch Error :-S', err);
-      });
-
-  }
-  //ignore
-};
-
 const fetchData = (url, callback) => {
   fetch(url) //
     .then((response) => response.text())
@@ -915,7 +883,6 @@ const isArrayNumeric = (array) => {
 
 export {
   colorRangeNamesToInterpolate,
-  getResultsFromGoogleMaps,
   getFirstDateColumnName,
   uniqueValuePercentage,
   firstLastNCharacters,
