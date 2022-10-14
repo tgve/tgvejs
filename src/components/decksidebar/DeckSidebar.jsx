@@ -46,7 +46,6 @@ export default class DeckSidebar extends React.Component {
         datasetName: urlOrName || this.props.datasetName
       })
     }
-    console.log("sidebar - render");
     return (
       <>
         <div
