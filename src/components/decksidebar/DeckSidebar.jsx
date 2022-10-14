@@ -4,9 +4,10 @@ import { Button, KIND, SIZE } from 'baseui/button';
 
 import './DeckSidebar.css';
 import DataInput from '../input/DataInput';
-import { firstLastNCharacters,
-  getMainMessage, theme
+import {
+  firstLastNCharacters, theme
 } from '../../utils/utils';
+import { getMainMessage } from './utils';
 import RBAlert from '../RBAlert';
 import Modal from '../Modal';
 import DataTable from '../Table';

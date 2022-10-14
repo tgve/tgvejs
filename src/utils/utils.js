@@ -764,23 +764,6 @@ const getFirstDateColumnName = (obj) => {
   return Object.keys(obj).filter(e => r.test(e))[0]
 }
 
-const getMessage = (array) => {
-  return array && array.length &&
-    array.length + " row" + (array.length > 1 ? "s" : "")
-}
-const getMainMessage = (filtered, unfiltered) => {
-  if (filtered && filtered.length && unfiltered && unfiltered.length) {
-    return getMessage(filtered) + (filtered.length < unfiltered.length ?
-      " of " + unfiltered.length : "")
-  } else if (filtered && filtered.length) {
-    return getMessage(filtered)
-    // TODO: check all rows before declaring
-  }
-  else {
-    return "Nothing to show"
-  }
-}
-
 const theme = (dark) => {
   return ({
     color: dark ? "white" : "black",
@@ -945,7 +928,6 @@ export {
   sortNumericArray,
   colorRangeNames,
   generateDomain,
-  getMainMessage,
   isArrayNumeric,
   updateHistory,
   getColorArray,
