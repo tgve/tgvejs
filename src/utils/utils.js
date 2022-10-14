@@ -27,38 +27,6 @@ import history from '../history';
 
 const { DateTime } = require("luxon");
 
-const getResultsFromGoogleMaps = (string, callback) => {
-
-  if (typeof (string) === 'string' && typeof (callback) === 'function') {
-    let fullURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" +
-      string
-      + "&key=WRONG_KEY";
-    fetch(fullURL)
-      .then((response) => {
-        if (response.status !== 200) {
-          console.log('Looks like there was a problem. Status Code: ' +
-            response.status);
-          return;
-        }
-        // Examine the text in the response
-        response.json()
-          .then((data) => {
-            //rouch search results will do.
-            if (data.results.length === 0 || response.status === 'ZERO_RESULTS') {
-              callback(response.status);
-            } else {
-              callback(data.results[0].geometry.location)
-            }
-          });
-      })
-      .catch((err) => {
-        console.log('Fetch Error :-S', err);
-      });
-
-  }
-  //ignore
-};
-
 const fetchData = (url, callback) => {
   fetch(url) //
     .then((response) => response.text())
@@ -671,14 +639,6 @@ const iconJSType = (dataType) => {
   return dataType
 }
 
-const searchNominatom = (location, callback) => {
-  const url = "https://nominatim.openstreetmap.org/search/" +
-    location + "?format=json";
-  fetchData(url, (json) => {
-    typeof callback === 'function' && callback(json)
-  })
-}
-
 /**
  *
  * @param {*} data features from a geojson object
@@ -770,23 +730,6 @@ const getFirstDateColumnName = (obj) => {
   // find the date/time column with year in
   const r = new RegExp(Constants.DATE_REGEX);
   return Object.keys(obj).filter(e => r.test(e))[0]
-}
-
-const getMessage = (array) => {
-  return array && array.length &&
-    array.length + " row" + (array.length > 1 ? "s" : "")
-}
-const getMainMessage = (filtered, unfiltered) => {
-  if (filtered && filtered.length && unfiltered && unfiltered.length) {
-    return getMessage(filtered) + (filtered.length < unfiltered.length ?
-      " of " + unfiltered.length : "")
-  } else if (filtered && filtered.length) {
-    return getMessage(filtered)
-    // TODO: check all rows before declaring
-  }
-  else {
-    return "Nothing to show"
-  }
 }
 
 const theme = (dark) => {
@@ -940,7 +883,6 @@ const isArrayNumeric = (array) => {
 
 export {
   colorRangeNamesToInterpolate,
-  getResultsFromGoogleMaps,
   getFirstDateColumnName,
   uniqueValuePercentage,
   firstLastNCharacters,
@@ -952,9 +894,7 @@ export {
   suggestDeckLayer,
   sortNumericArray,
   colorRangeNames,
-  searchNominatom,
   generateDomain,
-  getMainMessage,
   isArrayNumeric,
   updateHistory,
   getColorArray,
