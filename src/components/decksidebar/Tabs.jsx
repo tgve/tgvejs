@@ -39,7 +39,6 @@ function SidebarTabs(props) {
       }
     }
   };
-  console.log("render - Tabs");
   return (
     <StatefulTabs initialState={{ activeKey: "0" }} id="main-tabs">
       <Tab title={iWithFaName(
@@ -86,7 +85,6 @@ function SidebarTabs(props) {
               colourCallback(color)} />
           )
         }
-        {console.log("render")}
         {notEmpty &&
           <>
             <h6>Deck Layer:</h6>
