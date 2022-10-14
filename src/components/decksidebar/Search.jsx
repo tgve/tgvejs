@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Input } from 'baseui/input';
 import { FormControl } from 'baseui/form-control';
 
-import { searchNominatom } from '../../utils/utils';
+import { searchNominatom } from './utils';
 
 export default function SearchForm (props) {
   const [search, setSearch] = useState();
