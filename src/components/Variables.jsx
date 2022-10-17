@@ -73,12 +73,12 @@ export default function Variables(props) {
           const columnsArray = value.map(e => e.value)
           Object.keys(multiVarSelect).map(key => {
             //delete any that is not in value
-            if (!columnsArray.includes(key)) {
+            if (!columnsArray.includes(key) && multiVarSelect[key]) {
               delete multiVarSelect[key]
+              typeof (onSelectCallback) === 'function' &&
+                onSelectCallback(multiVarSelect)
             }
           })
-          typeof (onSelectCallback) === 'function' &&
-            onSelectCallback(multiVarSelect)
           setColumns(value)
         }}
         // TODO: do not show column type after selection
