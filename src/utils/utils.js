@@ -210,14 +210,6 @@ const generateDeckLayer = (name, data, renderTooltip, options) => {
   return generateOptions(name, data, renderTooltip)
 }
 
-const getCentroid = (coords) => {
-  let center = coords.reduce((x, y) => {
-    return [x[0] + y[0] / coords.length, x[1] + y[1] / coords.length]
-  }, [0, 0])
-  center = [parseFloat(center[1].toFixed(3)), parseFloat(center[0].toFixed(3))]
-  return center;
-}
-
 const convertRange = (oldValue = 2, values =
   { oldMax: 10, oldMin: 1, newMax: 1, newMin: 0 }) => {
   const value = (((oldValue - values.oldMin) * (values.newMax - values.newMin))
@@ -730,7 +722,6 @@ export {
   updateHistory,
   convertRange,
   isStringDate,
-  getCentroid,
   shortenName,
   iWithFaName,
   getOSMTiles,
