@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { colorRangeNames} from '../utils/utils';
+import { colorRangeNames} from '../utils/color';
 
 export default function ColorPicker(props) {
   const [chosen, setChosen] = useState(0);

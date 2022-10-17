@@ -1,9 +1,10 @@
 import {firstLastNCharacters, humanize,
-  colorScale, generateDomain, xyObjectByProperty,
+  generateDomain, xyObjectByProperty,
   suggestDeckLayer, isURL,
   uniqueValuePercentage,
   isStringDate,
 } from '../utils/utils';
+import { colorScale } from '../utils/color';
 import { DECK_LAYER_NAMES } from '../Constants';
 
 const sampleGeojson = { "type": "FeatureCollection",
