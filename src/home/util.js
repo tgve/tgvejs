@@ -148,8 +148,8 @@ const generateLayer = (values = {}, state, renderTooltip,
 
   // generate a domain
   const domain = generateDomain(data, columnName);
-
-  const options = _generateOptions(state, cn, currentColorName, layerOptions,
+  const colorName = cn || currentColorName;
+  const options = _generateOptions(state, colorName, layerOptions,
     layerName, data, columnName, domain, geomType, callingFunction);
 
   // attempt legend
@@ -158,7 +158,7 @@ const generateLayer = (values = {}, state, renderTooltip,
     && <Legend domain={domain}
       title={humanize(columnName)}
       interpolate={colorRangeNamesToInterpolate(
-        cn || currentColorName
+        colorName
       )}
     />
 
@@ -181,7 +181,7 @@ const generateLayer = (values = {}, state, renderTooltip,
       filter.selected : multiVarSelect,
     road_type: filter && filter.what === 'road_type' ? filter.selected :
       state.road_type,
-    colorName: cn || currentColorName,
+    colorName,
     column, // all checked
     coords: filter && filter.what === 'coords' ? filter.selected :
       state.coords,
@@ -316,16 +316,17 @@ export {
  * - Geographic filtering for linestring simple features
  * - Updating Deck.GL layer updateTriggers object
  */
-function _generateOptions(state, cn, currentColorName, layerOptions, layerName, data,
-  columnName, domain, geomType, callingFunction) {
-  const colorRange = colorRanges(cn || currentColorName)
+function _generateOptions(state, colorName, layerOptions, layerName, data,
+  columnName, domain, geomType, callingFunction, compare = false) {
+  const colorRange = colorRanges(colorName)
   const options = Object.assign({
     ...state.layerOptions,
     lightSettings: LIGHT_SETTINGS,
     colorRange: colorRange,
-    getColor: getColorArray(cn || currentColorName)
+    getColor: getColorArray(colorName)
   }, layerOptions);
   const numericValidDomain = isArrayNumeric(domain) && domain.length > 1
+  const notEmptyDomain = domain && domain.length > 1
 
   if (layerName === 'heatmap') {
     options.getPosition = d => d.geometry.coordinates;
@@ -349,11 +350,13 @@ function _generateOptions(state, cn, currentColorName, layerOptions, layerName, 
   if (layerName === 'arc') {
     if (numericValidDomain) {
       const min = getMin(domain), max = getMax(domain);
-      options.getSourceColor = colorScale(min, domain, 180, cn || currentColorName);
-      options.getTargetColor = colorScale(max, domain, 180, cn || currentColorName);
+      options.getSourceColor = compare ? GREY :
+        colorScale(min, domain, 180, colorName);
+      options.getTargetColor = compare ? GREY :
+        colorScale(max, domain, 180, colorName);
     } else {
-      options.getSourceColor = colorRange[0]
-      options.getTargetColor = colorRange[colorRange.length - 1]
+      options.getSourceColor = compare ? GREY : colorRange[0]
+      options.getTargetColor = compare ? GREY : colorRange[colorRange.length - 1]
     }
   }
 
@@ -362,13 +365,14 @@ function _generateOptions(state, cn, currentColorName, layerOptions, layerName, 
     // domain converts numerics into numbers
     // must do the same here
     +getValue(d) ? +getValue(d) : getValue(d),
-    domain, 180, cn || currentColorName
+    domain, 180, colorName
   );
-  const trigger = data.map((d) => fill(d))
   // so long as there is some properties to generate a range
   // if not a constant
   const fillOrConstantColor = domain && domain.length > 1 ?
   fill : colorRange[colorRange.length - 1]
+  const trigger = notEmptyDomain ? [...domain, colorName]
+    : [colorName]
 
   // caters for line and path layers
   if (geomType === 'linestring' || layerName === 'line') {
