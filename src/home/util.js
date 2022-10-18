@@ -7,13 +7,14 @@ import bbox from '@turf/bbox';
 import { FlyToInterpolator } from 'react-map-gl';
 
 import {
-  generateDeckLayer, suggestDeckLayer,
-  colorScale, getOSMTiles, colorRanges, getBbx,
+  generateDeckLayer, suggestDeckLayer, getOSMTiles, getBbx,
   generateDomain, convertRange, getMin, getMax,
-  humanize, colorRangeNamesToInterpolate, getColorArray,
-  getViewportParams,
-  isArrayNumeric
+  humanize, getViewportParams, isArrayNumeric
 } from '../utils/utils';
+import {
+  colorScale, colorRanges,
+  colorRangeNamesToInterpolate, getColorArray,
+} from '../utils/color';
 import { Legend } from '../utils/legend';
 import {
   LIGHT_SETTINGS, BLANKSTYLE, DECK_LAYER_NAMES
