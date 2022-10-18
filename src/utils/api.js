@@ -1,7 +1,35 @@
 // importing it other ways would cause minification issue.
 import qs from 'qs';
 import { isArray, isObject, isString } from './JSUtils';
+const TGVE_API = {
+  /** String */
+  defaultURL: "string",
+  geographyURL: "string",
+  geographyColumn: "string",
+  column: "string",
+  layerName: "string",
+  /**  Object */
+  tooltipColumns: "object",
+  viewport: "object",
+  data: "object",
+  // if no boolean found set a default value
+  /** Boolean */
+  dark: "boolean",
+  hideChartGenerator: "boolean",
+  hideCharts: "boolean",
+  hideSidebar: "boolean",
 
+  // TOTO: strict checks on props.select to be
+  // either like qsr or exactly like multiVarSelect
+  /** Object | String */
+  select: "object|string",
+  // react component
+  /** React object */
+  leftSidebarContent: "react",
+  /** Callback */
+  onViewStateChange: "function",
+  onStateChange: "function"
+}
 
 /**
  * Search parameters should take priority. Then comes
@@ -26,14 +54,18 @@ const params = function (props, search = "") {
 
   const apiValue = function (paramName, ENV_NAME, bool = false) {
     const param = props[paramName]
+    // first check query string (URL params)
     if (qsr.hasOwnProperty(paramName) && !param) {
       return bool ? boolStr(qsr[paramName]) : qsr[paramName]
+      // then React props
     } else if (bool && typeof param === 'boolean') {
       return param
     } else if (!bool && param) {
       return param
+      // then settings inside a html doc
     } else if (settings.hasOwnProperty(paramName)) {
       return bool ? boolStr(settings[paramName]) : settings[paramName]
+      // finally env variables
     } else if (process.env.hasOwnProperty(ENV_NAME)) {
       return bool ? boolStr(process.env[ENV_NAME]) : process.env[ENV_NAME]
     }
@@ -45,39 +77,28 @@ const params = function (props, search = "") {
   }
 
 
-  return ({
-    /** String */
-    defaultURL: apiValue("defaultURL", "REACT_APP_DEFAULT_URL"),
-    geographyURL: apiValue("geographyURL", "REACT_APP_GEOGRAPHY_URL"),
-    geographyColumn: apiValue("geographyColumn", "REACT_APP_GEOGRAPHY_COLUMN"),
-    column: apiValue("column", "REACT_APP_COLUMN"),
-    layerName: apiValue("layerName", "REACT_APP_LAYER_NAME"),
-    /**  Object */
-    tooltipColumns: apiValue("tooltipColumns", "REACT_APP_TOOLTIP_COLUMNS"),
-    viewport: jsonStr(qsr.viewport) || props.viewport || settings.viewport,
-    data: jsonStr(qsr.data) || props.data || staticData,
-    // if no boolean found set a default value
-    /** Boolean */
-    dark: expected(apiValue("dark", "REACT_APP_DARK", true),
-      "boolean", true),
-    hideChartGenerator: apiValue("hideChartGenerator",
-      "REACT_APP_HIDE_CHART_GENERATOR", true),
-    hideCharts: apiValue("hideCharts",
-      "REACT_APP_HIDE_CHARTS", true),
-    hideSidebar: apiValue("hideSidebar",
-      "REACT_APP_HIDE_SIDEBAR", true),
-
-    // TOTO: strict checks on props.select to be
-    // either like qsr or exactly like multiVarSelect
-    /** Object | String */
-    select: keySetObject(qsr.select) || props.select,
-    // react component
-    /** React object */
-    leftSidebarContent: props.leftSidebarContent,
-    /** Callback */
-    onViewStateChange: props.onViewStateChange,
-    onStateChange: props.onStateChange
+  const r = {}
+  Object.keys(TGVE_API).forEach(k => {
+    const RA = apiToReactApp(k)
+    if(TGVE_API[k] === 'function' || TGVE_API[k] === 'react') {
+      r[k] = props[k]
+    } else if (k === 'select') {
+      r[k] = keySetObject(qsr[k]) || props[k]
+      // TODO: move following two to apiValue func
+    } else if (k === 'data') {
+      r[k] = jsonStr(qsr[k]) || props[k] || staticData
+    } else if (k === 'viewport' || k === 'tooltipColumns') {
+      r[k] = jsonStr(qsr[k]) || props[k] || settings[k]
+    } else if (k === 'dark') {
+      r[k] = expected(apiValue(k, RA, true),"boolean", true)
+    } else if (TGVE_API[k] === 'boolean') {
+      r[k] = apiValue(k, RA, true)
+    } else if (TGVE_API[k] === 'string') {
+      r[k] = apiValue(k, RA)
+    }
   })
+
+  return (r)
 }
 
 const boolStr = function (str) {
@@ -143,9 +164,42 @@ const jsonFromKeySetObject = (multiVarSelect) => {
   }, {})
 }
 
+const apiSplit = (str) => {
+  if (!isString(str)) return null
+  if (str.toUpperCase() === str) return str
+  const m = /[A-Z]+/.exec(str)
+  if (!m) return str.toUpperCase()
+  const i = m.index
+  if (i === 0) {
+    //lower first letter & recall
+    return apiSplit(str.charAt(0).toLowerCase() + str.slice(1))
+  } else {
+    return [str.slice(0, i), str.slice(i)]
+  }
+}
+
+const apiToReactApp = (str) => {
+  if (!isString(str)) return null
+  const ra = "REACT_APP_"
+  let w = [], r = apiSplit(str)
+  if (isArray(r)) {
+    do {
+      w.push(r[0].toUpperCase())
+      r = apiSplit(r[1])
+    } while(isArray(r))
+    w.push(r)
+  } else {
+    w = r
+  }
+
+  return ra + (isArray(w) ? w.join("_") : w)
+}
+
 export {
   jsonFromKeySetObject,
+  apiToReactApp,
   keySetObject,
+  TGVE_API,
   jsonStr,
   params
 }

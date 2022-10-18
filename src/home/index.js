@@ -67,7 +67,8 @@ export default class Home extends React.Component {
       legend: false,
       multiVarSelect: props.select || {},
       width: window.innerWidth, height: window.innerHeight,
-      tooltipColumns: { column1: "accident_severity", column2: "date" },
+      tooltipColumns: props.tooltipColumns
+        || { column1: "accident_severity", column2: "date" },
       geographyURL: props.geographyURL,
       geographyColumn: props.geographyColumn,
       column: props.column,
