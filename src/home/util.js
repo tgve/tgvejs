@@ -318,7 +318,7 @@ export {
  * - Updating Deck.GL layer updateTriggers object
  */
 function _generateOptions(state, colorName, layerOptions, layerName, data,
-  columnName, domain, geomType, callingFunction, compare = false) {
+  columnName, domain, geomType, callingFunction) {
   const colorRange = colorRanges(colorName)
   const options = Object.assign({
     ...state.layerOptions,
@@ -351,13 +351,11 @@ function _generateOptions(state, colorName, layerOptions, layerName, data,
   if (layerName === 'arc') {
     if (numericValidDomain) {
       const min = getMin(domain), max = getMax(domain);
-      options.getSourceColor = compare ? GREY :
-        colorScale(min, domain, 180, colorName);
-      options.getTargetColor = compare ? GREY :
-        colorScale(max, domain, 180, colorName);
+      options.getSourceColor = colorScale(min, domain, 180, colorName);
+      options.getTargetColor = colorScale(max, domain, 180, colorName);
     } else {
-      options.getSourceColor = compare ? GREY : colorRange[0]
-      options.getTargetColor = compare ? GREY : colorRange[colorRange.length - 1]
+      options.getSourceColor = colorRange[0]
+      options.getTargetColor = colorRange[colorRange.length - 1]
     }
   }
 
