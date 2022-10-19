@@ -104,7 +104,7 @@ They can also be passed to the TGVE as URL query parameters. For instance
 None of the above values is necessary and in the current release “Add data” button allows loading data into eAtlas.
 
 #### Callbacks
-The TGVE has supports these callbacks from v1.5.1:
+The TGVE supports these callbacks since v1.5.1:
 * `onViewStateChange`: a `function` to get the `viewport` of the TGVE which is passed from DeckGL. The returned object is described in DeckGL's documentations [here](https://deck.gl/docs/developer-guide/view-state-transitions). It contains zoom level, location information (longitude, latitude etc), current camera view (bearing and pitch) and transition details like "transitionDuration".
 
 * `onStateChange`: a `function` to get a `JSON` object which contains the select (filter) state of the TGVE. As the state of the app changes the provided function is called. The returned object contains an object called `select` which contains columns selected (filtered) with values in an array like `{select:{columnName: [value1, value2]}}`
