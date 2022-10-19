@@ -91,10 +91,6 @@ export default class Home extends React.Component {
     this._urlCallback = this._urlCallback.bind(this);
   }
 
-  shouldComponentUpdate(nextProps) {
-    return hasAPIChanged(nextProps, this.props)
-  }
-
   componentDidUpdate(nextProps) {
     // props change
     const { data, defaultURL, geographyURL,
