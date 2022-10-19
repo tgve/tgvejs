@@ -33,8 +33,10 @@ import DeckSidebarContainer from
 import '../App.css';
 import Tooltip from '../components/tooltip';
 import { isArray, isObject } from '../utils/JSUtils';
-import { generateLayer, initViewState,
-  getViewPort } from './util';
+import {
+  generateLayer, initViewState,
+  getViewPort
+} from './util';
 import { jsonFromKeySetObject } from '../utils/api';
 
 // Set your mapbox access token here
@@ -67,7 +69,8 @@ export default class Home extends React.Component {
       legend: false,
       multiVarSelect: props.select || {},
       width: window.innerWidth, height: window.innerHeight,
-      tooltipColumns: { column1: "accident_severity", column2: "date" },
+      tooltipColumns: props.tooltipColumns
+        || { column1: "accident_severity", column2: "date" },
       geographyURL: props.geographyURL,
       geographyColumn: props.geographyColumn,
       column: props.column,
@@ -92,7 +95,7 @@ export default class Home extends React.Component {
     // props change
     const { data, defaultURL, geographyURL,
       geographyColumn } = nextProps;
-    if(!isObject(data)) return
+    if (!isObject(data)) return
     const r = isArray(data.features)
       && Math.floor(Math.random() * data.features.length)
     /**
@@ -167,7 +170,8 @@ export default class Home extends React.Component {
       if (isURL(geographyURL)) {
         // it will always show geojson empty as column is not set
         fetchData(geographyURL, (geojson, geoErr) => {
-          this._updateStateAndLayers(geoErr, geojson, data, customError, geographyURL);
+          this._updateStateAndLayers(geoErr, geojson, data,
+            customError, geographyURL);
         })
       } else {
         if (geographyURL && !isURL(geographyURL)) {
@@ -252,19 +256,20 @@ export default class Home extends React.Component {
       values, this.state, this._renderTooltip,
       this._callGenerateLayer
     )
-    if(isObject(updateState)) {
+    if (isObject(updateState)) {
       this.setState({ ...updateState })
       // TODO: send this to a factory
       const { multiVarSelect } = updateState;
       const { onStateChange } = this.props;
       typeof onStateChange === 'function'
-        && onStateChange({select: jsonFromKeySetObject(multiVarSelect)})
+        && onStateChange({ select: jsonFromKeySetObject(multiVarSelect) })
     }
   }
 
   _fitViewport(newData, bboxLonLat) {
     this.setState({
-      viewport: getViewPort(this.state, newData, bboxLonLat, this.map) })
+      viewport: getViewPort(this.state, newData, bboxLonLat, this.map)
+    })
   }
 
   /**
@@ -299,7 +304,8 @@ export default class Home extends React.Component {
     } else {
       this.setState({
         tooltip: null,
-        popup: tooltip })
+        popup: tooltip
+      })
     }
   }
 
@@ -321,12 +327,12 @@ export default class Home extends React.Component {
       this.setState({ lastViewPortChange: new Date() })
       // TODO: in future send this to factory of callbacks
       typeof onViewStateChange === 'function'
-        && onViewStateChange({viewState: viewport})
+        && onViewStateChange({ viewState: viewport })
     }
 
     if (subsetBoundsChange) {
       const bounds = this.map && this.map.getBounds()
-      this.setState({loading: true})
+      this.setState({ loading: true })
       this._callGenerateLayer({
         filter: { what: 'boundsSubset', bounds }
       })
@@ -474,8 +480,8 @@ export default class Home extends React.Component {
    * for `geojson_returned` and `geography_returned` params
    */
   _urlCallback(params = {}) {
-    const {geojson_returned,
-      geography_returned, geoColumn, reset} = params;
+    const { geojson_returned,
+      geography_returned, geoColumn, reset } = params;
     this.setState({
       /**
        * This set state can take care of all
@@ -522,7 +528,7 @@ export default class Home extends React.Component {
           })
         } catch (error) {
           // load up default
-          this.setState({alert: { content: error.message }})
+          this.setState({ alert: { content: error.message } })
           this._initDataState();
         }
       } else {

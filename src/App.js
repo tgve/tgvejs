@@ -10,11 +10,11 @@ import { Client as Styletron } from 'styletron-engine-atomic';
 import Home from './home';
 
 import './App.css';
-import { params } from './utils/api';
+import { hasAPIChanged, params } from './utils/api';
 
 const engine = new Styletron();
 
-export default function App(props) {
+function App(props) {
   const apis = params(props,
     props.location ?
       props.location.search : window.location.search)
@@ -32,3 +32,7 @@ export default function App(props) {
     </main>
   )
 };
+
+export default React.memo(App, (prevProps, nextProps) => {
+  return hasAPIChanged(prevProps, nextProps)
+})
