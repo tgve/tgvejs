@@ -37,7 +37,7 @@ import {
   generateLayer, initViewState,
   getViewPort
 } from './util';
-import { hasAPIChanged, jsonFromKeySetObject } from '../utils/api';
+import { jsonFromKeySetObject } from '../utils/api';
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
