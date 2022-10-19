@@ -83,7 +83,7 @@ const params = function (props, search = "") {
     if(TGVE_API[k] === 'function' || TGVE_API[k] === 'react') {
       r[k] = props[k]
     } else if (k === 'select') {
-      r[k] = keySetObject(qsr[k]) || props[k]
+      r[k] = keySetObject(qsr[k] || props[k]) || props[k]
       // TODO: move following two to apiValue func
     } else if (k === 'data') {
       r[k] = jsonStr(qsr[k]) || props[k] || staticData
@@ -195,8 +195,52 @@ const apiToReactApp = (str) => {
   return ra + (isArray(w) ? w.join("_") : w)
 }
 
+const hasAPIChanged = (values = {}, compare = {}) => {
+  const { data } = values
+  if(!isObject(values) || !isObject(compare)) return null
+  let r = false
+  Object.keys(TGVE_API).forEach(k => {
+    if(TGVE_API[k] === 'function' || TGVE_API[k] === 'react') {
+      // how ?
+    } else if (k === 'select') {
+      // key: Set() object
+      const a = values[k]
+      isObject(a) && Object.keys(a).forEach(e => {
+        if(!compare.hasOwnProperty(e)) {
+          r = true
+        }
+        isObject(a[e]) && a[e].forEach(v => {
+          if(!compare[k].has(v)) {
+            r = true
+          }
+        })
+      })
+    } else if (k === 'data') {
+      // compare random entry
+      if (isArray(data) && isArray(compare.data)) {
+        const r = (isArray(data) && Math.floor(Math.random() * data.length)) || 0
+        if (JSON.stringify(data[r]) === JSON.stringify(compare.data[r])) {
+          return true
+        }
+      }
+    } else if (k === 'viewport' || k === 'tooltipColumns') {
+      // compare stringify
+      if (JSON.stringify(values[k]) !== JSON.stringify[k]) {
+        r = true
+      }
+    } else {
+      if (values[k] !== compare[k]) {
+        r = true
+      }
+    }
+  })
+
+  return(r)
+}
+
 export {
   jsonFromKeySetObject,
+  hasAPIChanged,
   apiToReactApp,
   keySetObject,
   TGVE_API,

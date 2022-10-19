@@ -1,4 +1,4 @@
-import { apiToReactApp, jsonFromKeySetObject, keySetObject, TGVE_API } from '../utils/api';
+import { apiToReactApp, hasAPIChanged, jsonFromKeySetObject, keySetObject, params, TGVE_API } from '../utils/api';
 
 test("keySetObject is valid", () => {
   expect(keySetObject("{not:['valid']}")).toBeNull()
@@ -44,4 +44,18 @@ test("apiToReactApp works", () => {
     .forEach((e, i) => {
       expect(apiToReactApp(e)).toEqual(RA_V[i])
     });
+})
+
+test("hasAPIChanged works", () => {
+  const apis = params({}, window.location.search)
+  let apis2 = params({}, window.location.search)
+  expect(hasAPIChanged(apis, apis2)).toBe(false)
+
+  process.env.REACT_APP_HIDE_SIDEBAR = true
+  apis2 = params({}, window.location.search)
+  expect(hasAPIChanged(apis, apis2)).toBe(true)
+
+  process.env.REACT_APP_HIDE_SIDEBAR = undefined
+  apis2 = params({}, window.location.search)
+  expect(hasAPIChanged(apis, apis2)).toBe(false)
 })
