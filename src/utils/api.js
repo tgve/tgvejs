@@ -1,5 +1,6 @@
 // importing it other ways would cause minification issue.
 import qs from 'qs';
+import { areEqualFeatureArrays } from './geojsonutils';
 import { isArray, isObject, isString } from './JSUtils';
 const TGVE_API = {
   /** String */
@@ -216,13 +217,7 @@ const hasAPIChanged = (values = {}, compare = {}) => {
         })
       })
     } else if (k === 'data') {
-      // compare random entry
-      if (isArray(data) && isArray(compare.data)) {
-        const r = (isArray(data) && Math.floor(Math.random() * data.length)) || 0
-        if (JSON.stringify(data[r]) === JSON.stringify(compare.data[r])) {
-          return true
-        }
-      }
+      if (areEqualFeatureArrays(data, compare.data)) r = true
     } else if (k === 'viewport' || k === 'tooltipColumns') {
       // compare stringify
       if (JSON.stringify(values[k]) !== JSON.stringify[k]) {

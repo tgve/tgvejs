@@ -13,6 +13,7 @@ import MultiSelect from '../MultiSelect';
 import Variables from '../Variables';
 import Charts from './Charts';
 import AddVIS from '../AddVIS';
+import { areEqualFeatureArrays } from '../../utils/geojsonutils';
 
 function SidebarTabs(props) {
   const { onLayerOptionsCallback,
@@ -195,12 +196,7 @@ const areEqual = (prevProps, nextProps) => {
   // a more functional way is needed
   // e.g JSON.stringify like in Welcome.js etc
   // consider change in unfilteredData too
-  if (isArray(data) && isArray(nextProps.data)) {
-    const r = (isArray(data) && Math.floor(Math.random() * data.length)) || 0
-    if (JSON.stringify(data[r]) === JSON.stringify(nextProps.data[r])) {
-      return true
-    }
-  }
+  if (areEqualFeatureArrays(data, nextProps.data)) return true
   return false
 }
 export default React.memo(SidebarTabs, areEqual)

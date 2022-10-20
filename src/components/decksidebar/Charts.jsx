@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { VerticalBarSeries } from 'react-vis';
-import { propertyCount, arrayPlotProps } from '../../utils/geojsonutils';
+import { propertyCount, arrayPlotProps, areEqualFeatureArrays } from '../../utils/geojsonutils';
 import {
   percentDiv
 } from '../../utils/utils';
@@ -22,11 +22,8 @@ export default class Charts extends React.Component {
   shouldComponentUpdate(nextProps) {
     const { data } = this.props;
     if (!data && !nextProps.data) return false
-    const r = Math.floor(Math.random() * data.length)
     if (data.length !== nextProps.data.length) return true
-    if (JSON.stringify(data[r]) === JSON.stringify(nextProps.data[r])) {
-      return false
-    }
+    if (areEqualFeatureArrays(data, nextProps.data)) return false
     return true
   }
 

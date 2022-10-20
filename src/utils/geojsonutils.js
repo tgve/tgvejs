@@ -376,10 +376,23 @@ const isPropertyValueNumeric = (data, columnName) => {
   return result
 }
 
+const areEqualFeatureArrays = (first, second) => {
+  if (isArray(first) && isArray(second)) {
+    const r = (Math.floor(Math.random() * first.length))
+    if (JSON.stringify(first[r]) === JSON.stringify(second[r])) {
+      return true
+    } else {
+      return false
+    }
+  }
+  return undefined
+}
+
 export {
   describeFeatureVariables,
   propertyCountByProperty,
   isPropertyValueNumeric,
+  areEqualFeatureArrays,
   isColumnAllNumeric,
   getPropertyValues,
   setGeojsonProps,
