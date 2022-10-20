@@ -9,14 +9,17 @@ export default function DataTable(props) {
 
   const { data } = props;
   if (!data || data.length === 0) return null
-  const numPages = Math.floor(data.length / 10)
 
-  const columns = Object.keys(data[0].properties)
-    .map(each => humanize(each))
+  const PR = data.length > 10 ? 10 : 0;
+  const numPages = data.length > 10 ? Math.floor(data.length / PR) : 1;
+  const firstFeatureProps = Object.keys(data[0].properties)
 
-  const rows = data.slice(currentPage * 10, (currentPage * 10) + 10)
-    .map(feature => Object.keys(feature.properties).map(e =>
-      feature.properties[e]))
+  const columns = firstFeatureProps.map(each => humanize(each))
+  const rows = data.slice(currentPage * PR,
+    ((currentPage * PR) + PR) || data.length
+    )
+    .map(feature => firstFeatureProps.map(e =>
+      feature.properties[e] || ""))
 
   return (
     <>
