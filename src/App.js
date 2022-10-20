@@ -34,5 +34,5 @@ function App(props) {
 };
 
 export default React.memo(App, (prevProps, nextProps) => {
-  return hasAPIChanged(prevProps, nextProps)
+  return !hasAPIChanged(prevProps, nextProps)
 })

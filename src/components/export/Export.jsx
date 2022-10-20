@@ -23,7 +23,7 @@ export default function Export(props) {
             data-html2canvas-ignore="true">
             {iWithFaName("fa fa-times", close, {}, "Close")}
             <Preview map={map} deck={deck} />
-            {notEmpty && downloadButton(props.data)}
+            {downloadButton(props.data)}
             {iWithFaName("fa fa-copy", () => {
               window.location &&
                 copyTextToClipboard(window.location.href,
