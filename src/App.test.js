@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import App from './App';
+import { params } from './utils/api';
 
 test('renders without crashing', () => {
   render(<App />);
@@ -48,8 +49,8 @@ test('App - API params via ENV', async () => {
     .toBeInTheDocument()
 
   process.env.REACT_APP_HIDE_SIDEBAR = true
-
-  rerender(<App />);
+  let apis = params({})
+  rerender(<App {...apis} />);
   expect(await screen
     .queryByRole("heading", { level: 2 }))
     .toBeNull()
@@ -59,7 +60,8 @@ test('App - API params via ENV', async () => {
 
   process.env.REACT_APP_DARK = false
   process.env.REACT_APP_HIDE_SIDEBAR = false
-  rerender(<App />);
+  apis = params({})
+  rerender(<App {...params} />);
   expect(await screen
     .getByText(/nothing/i).closest('div'))
     .toHaveClass('dg af ag ah')
