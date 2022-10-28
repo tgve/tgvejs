@@ -7,7 +7,7 @@ import LayerSettings from '../settings/LayerSettings';
 import { isArray, isEmptyOrSpaces } from '../../utils/JSUtils';
 import { LAYERS } from '../settings/settingsUtils';
 import { humanize, iWithFaName } from '../../utils/utils';
-import ColorPicker from '../ColourPicker';
+import ColorPicker from '../ColorPicker';
 import { headerComponent } from './utils';
 import MultiSelect from '../MultiSelect';
 import Variables from '../Variables';
@@ -22,6 +22,7 @@ function SidebarTabs(props) {
     hideChartGenerator, hideCharts, multiVarSelect
   } = props;
   const [barChartVariable, setBarChartVar] = useState(column)
+  const [colorName, setColorName] = useState(props.colorName)
 
   // TODO: more comprehensive method needed
   // last reg is "" string which is undefined
@@ -81,9 +82,13 @@ function SidebarTabs(props) {
         overrides={TabOverrides}>
         {notEmpty &&
           headerComponent(
-            <ColorPicker id="color-picker" colourCallback={(color) =>
-              typeof colourCallback === 'function' &&
-              colourCallback(color)} />
+            <ColorPicker
+              colorName={colorName}
+              id="color-picker" colourCallback={(color) => {
+                setColorName(color)
+                typeof colourCallback === 'function' &&
+                  colourCallback(color)
+              }} />
           )
         }
         {notEmpty &&

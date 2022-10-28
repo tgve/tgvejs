@@ -417,6 +417,7 @@ export default class Home extends React.Component {
           layerName={layerName}
           layerOptions={this.state.layerOptions}
           /** UI */
+          colorName={this.state.colorName}
           subsetBoundsChange={this.state.subsetBoundsChange}
           // TODO: generalise datasetName
           datasetName={defaultURL}
