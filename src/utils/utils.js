@@ -340,7 +340,7 @@ const firstLastNCharacters = (str, n = 5) => {
     str.length > n ? "..." : "")
 }
 
-const percentDiv = (title, left, cb, dark) => {
+const percentDiv = (title, left, cb, dark, percent = '30%') => {
   return (
     <div
       key={title}
@@ -350,7 +350,7 @@ const percentDiv = (title, left, cb, dark) => {
         textAlign: 'center',
         position: 'relative',
         float: 'left',
-        width: '30%',
+        width: percent,
         color: dark ? 'white' : 'black',
         margin: '10px 2px',
         border: '1px solid gray',

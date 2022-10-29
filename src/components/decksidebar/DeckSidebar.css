@@ -1,10 +1,3 @@
-/*minor customization to bootstrap*/
-
-/* .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover, .nav-tabs>li>a:focus {
-  background-color: unset;
-  color: #a3a5a8;
-} */
-
 .nav-tabs>li.active {
   border-bottom: 2px solid #ddd;
 }
@@ -12,19 +5,12 @@
 .right-panel-container {
   bottom: 24px;
   position: fixed;
+  max-height: 80%;
   right: 0;
   display: flex;
   -webkit-box-align: stretch;
   -webkit-transition: margin 250ms;
   transition: margin 250ms;
-}
-
-.right-side-panel {
-  background-color: #242730;
-  text-align: center;
-  max-width: 30%;
-  /* max-width: 350px; defined in the component */
-  /* max-height: 350px; again defined in the component */
 }
 
 .side-panel-container {

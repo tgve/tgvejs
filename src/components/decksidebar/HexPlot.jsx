@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import HexbinSeries from '../showcases/HexbinSeries';
+import { useStyletron } from 'baseui';
 
+import HexbinSeries from '../showcases/HexbinSeries';
 import { coordsAsXY } from '../../utils/geojsonutils';
 
 export default (props) => {
-  // const [value, setValue] = useState([]);
   const [open, setOpen] = useState(props.isMobile === false);
+  const [css, theme] = useStyletron();
   useEffect(() => {
     // if props.open change to false is
     // the only time it should react to it
@@ -15,31 +16,32 @@ export default (props) => {
 
   const { data } = props;
   const notEmpty = data && data.length > 1;
-
+  console.log(theme);
   if (notEmpty && data[0].geometry.type.toUpperCase() === 'POINT') {
     return (
       <div
         style={{
-          marginRight: !open ? -350 : 0
+          marginRight: !open ? -350 : 0,
+          backgroundColor: theme.colors.backgroundTertiary
         }}
         className="right-panel-container">
         <div
           className="close-button"
           onClick={() => setOpen(!open)}
-          style={{ color: 'white' }}>
+          style={{ color: theme.colors.contentPrimary }}>
           <i
             style={{
               //bottom and just outside the div
               marginLeft: -16,
               bottom: 0,
               position: 'absolute',
-              backgroundColor: '#242730',
+              backgroundColor: theme.colors.backgroundTertiary,
               fontSize: '2rem', color: 'white !important'
             }}
             className={open ? "fa fa-arrow-circle-right" :
               "fa fa-arrow-circle-left"} />
         </div>
-        <div className="right-side-panel">
+        <div>
           {notEmpty &&
             <HexbinSeries
               data={coordsAsXY({ features: data })}
