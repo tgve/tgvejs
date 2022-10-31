@@ -3,7 +3,6 @@ import React, { useReducer } from 'react';
 import { isArray } from '../../utils/JSUtils';
 import createPlotlyComponent from "./factory";
 
-const Plot = createPlotlyComponent(window.Plotly);
 /**
  * React Hook generic Plotly plot which takes data in the following format:
  * [
@@ -33,7 +32,9 @@ export default function(props) {
   const sColor = {color: dark && '#fff'};
 
   if (!data || !isArray(data) || data.length === 0
-    ||!Plot) return null
+    || !window.Plotly) return null
+  // no need to import earlier
+  const Plot = createPlotlyComponent(window.Plotly);
   return (
     <Plot
       data={data}
