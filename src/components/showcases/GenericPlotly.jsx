@@ -47,6 +47,10 @@ export default function(props) {
         font: sColor}
       }}
       config={{displayModeBar: Boolean(displayModeBar)}}
+      /**
+       * If this expansion is moved to after the onClick
+       * injection, it would overrite the expansion.
+       */
       {...props}
       /** TODO/WATCH: the Plotly component does not seem to
        * do unzoom when double click happens. The issue is not
@@ -54,10 +58,6 @@ export default function(props) {
        * we can inject a React based reset here.
        * See: https://reactjs.org/docs/hooks-faq.html+
        * #is-there-something-like-forceupdate
-       *
-       * Crucially this needs to be done before the next
-       * line, otherwise the onClick will be overritten
-       * by the expansion statement.
        */
       onClick={(o) => {
         typeof props.onClick === 'function' &&
