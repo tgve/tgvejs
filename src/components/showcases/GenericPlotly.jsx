@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 
 import { isArray } from '../../utils/JSUtils';
 import createPlotlyComponent from "./factory";
@@ -27,8 +27,8 @@ const Plot = createPlotlyComponent(window.Plotly);
 export default function(props) {
   const { data, width = 250, height = 200, title = "Plot",
     dark, xaxis = {}, yaxis = {},
-    displayModeBar, onClickCallback } = props; // Object.assign errs on undefined
-
+    displayModeBar } = props; // Object.assign errs on undefined
+  const [ignored, forceUpdate] = useReducer(x => x + 1, 0)
   const axes = { visible: true, color: dark && '#fff'}
   const sColor = {color: dark && '#fff'};
 
@@ -46,11 +46,30 @@ export default function(props) {
         legend: {x: 0.35, y: -0.35, orientation: 'h',
         font: sColor}
       }}
-      onClick={(e) => {
-        typeof onClickCallback === 'function'
-        && onClickCallback(e.points)
+      config={{displayModeBar: Boolean(displayModeBar)}}
+      {...props}
+      /** TODO/WATCH: the Plotly component does not seem to
+       * do unzoom when double click happens. The issue is not
+       * related to react-plotly. So for now
+       * we can inject a React based reset here.
+       * See: https://reactjs.org/docs/hooks-faq.html+
+       * #is-there-something-like-forceupdate
+       *
+       * Crucially this needs to be done before the next
+       * line, otherwise the onClick will be overritten
+       * by the expansion statement.
+       */
+      onClick={(o) => {
+        typeof props.onClick === 'function' &&
+          /**
+           * Let the calling function know this is potentially
+           * a selected single value chart
+           */
+          props.onClick(o, data.length === 1 && data[0].x.length === 1)
+        if(o.event && o.event.detail === 2) {
+          forceUpdate()
+        }
       }}
-      config={{displayModeBar: !displayModeBar && false}}
     />
   );
 }

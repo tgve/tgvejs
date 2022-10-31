@@ -6,7 +6,7 @@ import {
 } from 'react-vis';
 import { format } from 'd3-format';
 
-import { shortenName } from '../../utils/utils';
+import { humanize, shortenName } from '../../utils/utils';
 import { PLOT_W } from '../../Constants';
 
 const W = PLOT_W;
@@ -20,12 +20,10 @@ export default function SeriesPlot(options) {
   if (!ReactSeries) return null;
   const limit = 10;
 
-  const data = options.type !== MarkSeries && !options.noLimit &&
-    options.data && options.data.length > limit ? options.data.slice(0, limit)
-    : options.data;
+  const data = options.type !== MarkSeries && options.data;
 
   const { plotStyle, title, noXAxis, noYAxis,
-    onValueClick } = options;
+    onValueClick, column } = options;
 
   if (!data || !data.length) return null
 
@@ -36,7 +34,7 @@ export default function SeriesPlot(options) {
     >
       {options.type !== MarkSeries && !options.noLimit &&
         options.data && options.data.length > limit &&
-        <h4>Plotting first {limit} values:</h4>}
+        <h4>First {limit} values of {humanize(column)}:</h4>}
       {noYAxis && title &&
         <h4>{title}</h4>
       }
@@ -51,16 +49,7 @@ export default function SeriesPlot(options) {
           <XAxis
             tickSize={0}
             tickFormat={v => shortenName(v, 10)}
-            tickValues={
-              (data.length > limit)
-                ? data
-                  .filter((item, idx) => {
-                    if ((idx % Math.floor(data.length / limit)) === 0) {
-                      return item.x
-                    }
-                  }).map(item => (item.x))
-                : data.map(item => (item.x))
-            }
+            tickValues={data.map(item => (item.x))}
             position="right" tickLabelAngle={-65} style={{
               line: { strokeWidth: 0 },
               text: { fill: options.dark ? '#fff' : '#000' } //, fontWeight: plotStyle && plotStyle.fontWeight || 400 }

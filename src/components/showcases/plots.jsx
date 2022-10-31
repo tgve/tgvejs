@@ -45,26 +45,34 @@ const plotByPropertyByDate = (data, property, dark) => {
 }
 /**
  *
- * @param {Object} data json array of geojson data.features
- * @param {String} property property of `data` to be passed to `xyObjectByProperty`
- * @param {Boolean} dark TGVE theme
- * @param {String} type Plotly accepted chart type, defaults to "lines"
- * @param {Boolean} noLimit whether data is sliced to first 10 values for bar charts
+ * @param props with these values:
+ * {Object} data json array of geojson data.features
+ * {String} property property of `data` to be passed to `xyObjectByProperty`
+ * {Boolean} dark TGVE theme
+ * {String} type Plotly accepted chart type, defaults to "lines"
+ * {Boolean} noLimit whether data is sliced to first 10 values for bar charts
+ * {Boolean} displayModeBar keep hiding the Plotly toolbar
+ *
+ * @param callbacks such as onClick.
+ *
+ * @return {Object} Plotly React JSX element
  */
-const plotByProperty = (data, property, dark, type, noLimit) => {
+const plotByProperty = (props, callbacks) => {
+  const { data, property, dark, type, noLimit,
+    displayModeBar } = props;
   if (!data || !isArray(data) || !data.length) return null;
   const limit = 10;
   const isOverLimit = !noLimit && data.length > limit
 
   const data_by_prop = data[0].properties.hasOwnProperty(property) &&
     xyObjectByProperty(isOverLimit ? data.slice(0, limit) : data, property)
-  // console.log(isOverLimit, data_by_prop);
   if(!data_by_prop) return null;
 
   return (
     <>
       {isOverLimit && <h4>Plotting first {limit} values:</h4>}
       <GenericPlotly dark={dark}
+        displayModeBar={ displayModeBar }
         yaxis={{ showgrid: false }}
         xaxis={{ showgrid: false }}
         data={[{
@@ -74,7 +82,8 @@ const plotByProperty = (data, property, dark, type, noLimit) => {
           marker: { color: TURQUOISE_RANGE[0] },
           type: type || 'lines'
         }]}
-        title={humanize(property)} />
+        title={ humanize(property) }
+        {...callbacks} />
     </>
   )
 }
