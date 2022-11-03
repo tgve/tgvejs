@@ -35,38 +35,43 @@ export default class Charts extends React.Component {
     let columnDomain = [];
     // TODO: against React state?
     let timer;
-
-    const filterOrReset = ({ points, event }, singleColumn) => {
-      if (event.detail === 1) {
-        // if double click ignore
-        timer = setTimeout(() => {
-          const x = points && points[0] && points[0].x
-          if (!x) return
-          /**
-           * There is no harm if this is happening to
-           * real datasets with single column values as
-           * we check the multiVarSelect object before
-           * acting on it.
-           */
-          if (singleColumn &&
-            multiVarSelect.hasOwnProperty(column)) {
-            delete multiVarSelect[column];
-            typeof onSelectCallback === 'function' &&
-              onSelectCallback(multiVarSelect)
-          } else {
-            /**
-             * This selection works on replacing value for
-             * current column selection in multiVarSelect
-             */
-            // convert back to string
-            multiVarSelect[column] = new Set([points[0].x + ""]);
-            this.setState({ multiVarSelect })
-            onSelectCallback &&
-              onSelectCallback({ what: 'multi', selected: multiVarSelect })
-          }
-        }, 200)
-      } else if (event.detail === 2) {
-        clearTimeout(timer)
+    const filterOrReset = (points) => {
+      const x = points && points[0] && points[0].x
+      if (!x) return
+      /**
+       * The Logic is simple here: if there is selction on
+       * the column involed, it will be reset.
+       */
+      if (multiVarSelect.hasOwnProperty(column)) {
+        delete multiVarSelect[column];
+        typeof onSelectCallback === 'function' &&
+          onSelectCallback(multiVarSelect)
+      } else {
+        /**
+         * This selection works on replacing value for
+         * current selection for the column.
+         */
+        // convert back to string
+        multiVarSelect[column] = new Set(
+          points.map(e => e.x + "")
+        );
+        this.setState({ multiVarSelect })
+        onSelectCallback &&
+          onSelectCallback({ what: 'multi', selected: multiVarSelect })
+      }
+    }
+    const handleSelect = ({ points, event }) => {
+      if (event && event.detail) {
+        if (event.detail === 1) {
+          // if double click ignore
+          timer = setTimeout(() => {
+            filterOrReset(points)
+          }, 200)
+        } else if (event.detail === 2) {
+          clearTimeout(timer)
+        }
+      } else {
+        filterOrReset(points)
       }
     }
 
@@ -103,7 +108,8 @@ export default class Charts extends React.Component {
             property: column, dark, type: "bar", noLimit: true
           },
             {
-              onClick: filterOrReset
+              onClick: handleSelect,
+              onSelected: handleSelect
             })
         }
         {popPyramidPlot({ data, dark: dark })}
