@@ -5,8 +5,8 @@ import {
   percentDiv
 } from '../../utils/utils';
 import {
-  popPyramidPlot, plotByPropertyByDate,
-  plotByProperty
+  PyramidPlot, plotByPropertyByDate,
+  PropertyPlot
 } from '../showcases/plots';
 import Boxplot from '../boxplot/Boxplot';
 
@@ -97,22 +97,24 @@ export default class Charts extends React.Component {
         }
         {/* distribution example */}
         {notEmpty &&
-          plotByProperty({
-            data: data.filter(d => Boolean(d.properties["age_of_casualty"])),
-            property: "age_of_casualty", dark, noLimit: true
-          })}
+          <PropertyPlot
+            data={data.filter(d => Boolean(d.properties["age_of_casualty"]))}
+            property={"age_of_casualty"}
+            dark={dark} noLimit={true}
+          />}
         {plotByPropertyByDate(data, "sex_of_casualty", dark)}
         {notEmpty &&
-          plotByProperty({
-            data: data.filter(d => Boolean(d.properties[column])),
-            property: column, dark, type: "bar", noLimit: true
-          },
-            {
+          <PropertyPlot
+            data={data.filter(d => Boolean(d.properties[column]))}
+            property={column} dark={dark} type="bar" noLimit={true}
+            callbacks=
+            {{
               onClick: handleSelect,
               onSelected: handleSelect
-            })
+            }}
+            />
         }
-        {popPyramidPlot({ data, dark: dark })}
+        <PyramidPlot data={data} dark={dark} />
 
       </>
     )

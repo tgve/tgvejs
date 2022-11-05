@@ -15,8 +15,8 @@ import { scaleSequential } from 'd3-scale';
 import GenericPlotly from './GenericPlotly';
 
 const W = PLOT_W,
-  COLOR_F = 'rgb(18, 147, 154)',
-  COLOR_M = 'rgb(239, 93, 40)';
+COLOR_F = 'rgb(18, 147, 154)',
+COLOR_M = 'rgb(239, 93, 40)';
 
 
 const plotByPropertyByDate = (data, property, dark) => {
@@ -52,14 +52,12 @@ const plotByPropertyByDate = (data, property, dark) => {
  * {String} type Plotly accepted chart type, defaults to "lines"
  * {Boolean} noLimit whether data is sliced to first 10 values for bar charts
  * {Boolean} displayModeBar keep hiding the Plotly toolbar
+ * {Object} callbacks such as onClick.
  *
- * @param callbacks such as onClick.
- *
- * @return {Object} Plotly React JSX element
  */
-const plotByProperty = (props, callbacks) => {
+const PropertyPlot = (props) => {
   const { data, property, dark, type, noLimit,
-    displayModeBar } = props;
+    displayModeBar, callbacks } = props;
   if (!data || !isArray(data) || !data.length) return null;
   const limit = 10;
   const isOverLimit = !noLimit && data.length > limit
@@ -97,14 +95,14 @@ const plotByProperty = (props, callbacks) => {
  *
  * @param {Object} options
  */
-const popPyramidPlot = (options) => {
+const PyramidPlot = (options) => {
   if (!options || !options.data || !options.data[0] ||
     !options.data[0].properties.date ||
-    !options.data[0].properties.sex_of_casualty) return;
+    !options.data[0].properties.sex_of_casualty) return null;
   const mf = propertyCountByProperty(options.data, "sex_of_casualty", "date");
   const mf_array_male = [];
   const mf_array_female = [];
-  if (Object.keys(mf).length === 1) return;
+  if (Object.keys(mf).length === 1) return null;
 
   mf && Object.keys(mf).forEach((y, i) => {
     mf_array_male.push({
@@ -245,7 +243,7 @@ const timePlot = (props = {}) => {
 export {
   arrayOfYearAndProperty,
   plotByPropertyByDate,
-  plotByProperty,
-  popPyramidPlot,
+  PropertyPlot,
+  PyramidPlot,
   timePlot
 }
