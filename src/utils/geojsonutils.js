@@ -15,12 +15,6 @@ const sfType = (geojson) => {
   return geojson.type;
 }
 
-const properties = (geojson) => {
-  if (!geojson || !geojson.features) return null;
-  var properties = geojson.features[0].properties;
-  return Object.keys(properties);
-}
-
 /**
  * Find all columns which can be considered as key/unique columns.
  * Using `getPropertyValues` we compare the length with
@@ -44,24 +38,6 @@ const getKeyColumns = (geojson) => {
   return keys.length > 0 ? keys : null;
 }
 
-/**
- * Given an array of [E010000001, S010000001] the function checks
- * all values within the array and returns true if all matches
- * pattern for UK ONS codes.
- * See https://en.wikipedia.org/wiki/ONS_coding_system
- *
- * @param {*} array
- */
-const isONSCode = (array) => {
-  if (!array || array.length === 0) return false;
-  let result = true;
-  array.forEach(e => {
-    if (!isString(e) || e.length !== 9 || !e.match(/^[EWS]\d{2}.{6}$/)) {
-      result = false;
-    }
-  })
-  return result;
-}
 /**
  * {some: data, another: value}
  * turn it into {some: type, another: type}
@@ -399,8 +375,6 @@ export {
   arrayPlotProps,
   getKeyColumns,
   propertyCount,
-  properties,
   coordsAsXY,
-  isONSCode,
   sfType
 }
