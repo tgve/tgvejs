@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'baseui/table';
+import { Table } from 'baseui/table-semantic';
 import { Pagination } from 'baseui/pagination';
 
 import { humanize } from '../utils/utils';
@@ -20,7 +20,13 @@ export default function DataTable(props) {
     )
     .map(feature => firstFeatureProps.map(e =>
       feature.properties[e] || ""))
-
+  const overrides = {
+    Root: {
+      style: {
+        maxWidth: '70vh',
+      },
+    },
+  };
   return (
     <>
       <Pagination
@@ -30,7 +36,9 @@ export default function DataTable(props) {
           setCurrentPage(Math.min(Math.max(nextPage, 1), numPages));
         }}
       />
-      <Table columns={columns} data={rows} />
+      <Table
+        overrides={overrides}
+        columns={columns} data={rows} />
       {/* // not nice 1000px */}
       <Pagination
         numPages={numPages}

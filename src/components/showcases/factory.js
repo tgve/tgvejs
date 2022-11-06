@@ -1,3 +1,4 @@
+// source https://github.com/plotly/react-plotly.js/blob/master/src/factory.js
 /* eslint-disable react/forbid-foreign-prop-types */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';

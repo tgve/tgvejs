@@ -1,16 +1,14 @@
 import React from 'react';
 
-import { VerticalBarSeries } from 'react-vis';
-import { propertyCount, arrayPlotProps, areEqualFeatureArrays } from '../../utils/geojsonutils';
+import { propertyCount, areEqualFeatureArrays } from '../../utils/geojsonutils';
 import {
   percentDiv
 } from '../../utils/utils';
 import {
-  popPyramidPlot, plotByPropertyByDate,
-  plotByProperty
+  PyramidPlot, plotByPropertyByDate,
+  PropertyPlot
 } from '../showcases/plots';
 import Boxplot from '../boxplot/Boxplot';
-import SeriesPlot from '../showcases/SeriesPlot';
 
 export default class Charts extends React.Component {
   constructor(props) {
@@ -33,13 +31,49 @@ export default class Charts extends React.Component {
     const { multiVarSelect } = this.state;
     if (!data || !data.length) return null;
     const notEmpty = data && data.length > 1;
-    const columnPlot = notEmpty ?
-      arrayPlotProps(data,
-        //prop
-        column
-      ) : [];
     const severity_data = propertyCount(data, "accident_severity");
     let columnDomain = [];
+    // TODO: against React state?
+    let timer;
+    const filterOrReset = (points) => {
+      const x = points && points[0] && points[0].x
+      if (!x) return
+      /**
+       * The Logic is simple here: if there is selction on
+       * the column involed, it will be reset.
+       */
+      if (multiVarSelect.hasOwnProperty(column)) {
+        delete multiVarSelect[column];
+        typeof onSelectCallback === 'function' &&
+          onSelectCallback(multiVarSelect)
+      } else {
+        /**
+         * This selection works on replacing value for
+         * current selection for the column.
+         */
+        // convert back to string
+        multiVarSelect[column] = new Set(
+          points.map(e => e.x + "")
+        );
+        this.setState({ multiVarSelect })
+        onSelectCallback &&
+          onSelectCallback({ what: 'multi', selected: multiVarSelect })
+      }
+    }
+    const handleSelect = ({ points, event }) => {
+      if (event && event.detail) {
+        if (event.detail === 1) {
+          // if double click ignore
+          timer = setTimeout(() => {
+            filterOrReset(points)
+          }, 200)
+        } else if (event.detail === 2) {
+          clearTimeout(timer)
+        }
+      } else {
+        filterOrReset(points)
+      }
+    }
 
     return (
       <>
@@ -62,34 +96,25 @@ export default class Charts extends React.Component {
             }, dark))
         }
         {/* distribution example */}
-        {notEmpty && plotByProperty(
-          data.filter(d => Boolean(d.properties["age_of_casualty"])),
-          "age_of_casualty", dark, undefined, true)}
+        {notEmpty &&
+          <PropertyPlot
+            data={data.filter(d => Boolean(d.properties["age_of_casualty"]))}
+            property={"age_of_casualty"}
+            dark={dark} noLimit={true}
+          />}
         {plotByPropertyByDate(data, "sex_of_casualty", dark)}
-
-        <SeriesPlot
-          dark={dark}
-          data={columnPlot.data}
-          type={VerticalBarSeries}
-          onValueClick={(datapoint) => {
-            // convert back to string
-            multiVarSelect[column ||
-              barChartVariable] = new Set([datapoint.x + ""]);
-            this.setState({ multiVarSelect })
-            onSelectCallback &&
-              onSelectCallback({ what: 'multi', selected: multiVarSelect })
-          }}
-          onDragSelected={(datapoints) => {
-            multiVarSelect[column ||
-              barChartVariable] = new Set(datapoints.map(e => e + ""));
-            this.setState({ multiVarSelect })
-            onSelectCallback &&
-              onSelectCallback({ what: 'multi', selected: multiVarSelect })
-          }}
-          plotStyle={{ marginBottom: 100 }} noYAxis={true}
-
-        />
-        {popPyramidPlot({ data, dark: dark })}
+        {notEmpty &&
+          <PropertyPlot
+            data={data.filter(d => Boolean(d.properties[column]))}
+            property={column} dark={dark} type="bar" noLimit={true}
+            callbacks=
+            {{
+              onClick: handleSelect,
+              onSelected: handleSelect
+            }}
+            />
+        }
+        <PyramidPlot data={data} dark={dark} />
 
       </>
     )

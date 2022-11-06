@@ -16,7 +16,6 @@ export default (props) => {
 
   const { data } = props;
   const notEmpty = data && data.length > 1;
-  console.log(theme);
   if (notEmpty && data[0].geometry.type.toUpperCase() === 'POINT') {
     return (
       <div

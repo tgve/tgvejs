@@ -15,8 +15,8 @@ import { scaleSequential } from 'd3-scale';
 import GenericPlotly from './GenericPlotly';
 
 const W = PLOT_W,
-  COLOR_F = 'rgb(18, 147, 154)',
-  COLOR_M = 'rgb(239, 93, 40)';
+COLOR_F = 'rgb(18, 147, 154)',
+COLOR_M = 'rgb(239, 93, 40)';
 
 
 const plotByPropertyByDate = (data, property, dark) => {
@@ -45,26 +45,32 @@ const plotByPropertyByDate = (data, property, dark) => {
 }
 /**
  *
- * @param {Object} data json array of geojson data.features
- * @param {String} property property of `data` to be passed to `xyObjectByProperty`
- * @param {Boolean} dark TGVE theme
- * @param {String} type Plotly accepted chart type, defaults to "lines"
- * @param {Boolean} noLimit whether data is sliced to first 10 values for bar charts
+ * @param props with these values:
+ * {Object} data json array of geojson data.features
+ * {String} property property of `data` to be passed to `xyObjectByProperty`
+ * {Boolean} dark TGVE theme
+ * {String} type Plotly accepted chart type, defaults to "lines"
+ * {Boolean} noLimit whether data is sliced to first 10 values for bar charts
+ * {Boolean} displayModeBar keep hiding the Plotly toolbar
+ * {Object} callbacks such as onClick.
+ *
  */
-const plotByProperty = (data, property, dark, type, noLimit) => {
+const PropertyPlot = (props) => {
+  const { data, property, dark, type, noLimit,
+    displayModeBar, callbacks } = props;
   if (!data || !isArray(data) || !data.length) return null;
   const limit = 10;
   const isOverLimit = !noLimit && data.length > limit
 
   const data_by_prop = data[0].properties.hasOwnProperty(property) &&
     xyObjectByProperty(isOverLimit ? data.slice(0, limit) : data, property)
-  // console.log(isOverLimit, data_by_prop);
   if(!data_by_prop) return null;
 
   return (
     <>
       {isOverLimit && <h4>Plotting first {limit} values:</h4>}
       <GenericPlotly dark={dark}
+        displayModeBar={ displayModeBar }
         yaxis={{ showgrid: false }}
         xaxis={{ showgrid: false }}
         data={[{
@@ -74,7 +80,8 @@ const plotByProperty = (data, property, dark, type, noLimit) => {
           marker: { color: TURQUOISE_RANGE[0] },
           type: type || 'lines'
         }]}
-        title={humanize(property)} />
+        title={ humanize(property) }
+        {...callbacks} />
     </>
   )
 }
@@ -88,14 +95,14 @@ const plotByProperty = (data, property, dark, type, noLimit) => {
  *
  * @param {Object} options
  */
-const popPyramidPlot = (options) => {
+const PyramidPlot = (options) => {
   if (!options || !options.data || !options.data[0] ||
     !options.data[0].properties.date ||
-    !options.data[0].properties.sex_of_casualty) return;
+    !options.data[0].properties.sex_of_casualty) return null;
   const mf = propertyCountByProperty(options.data, "sex_of_casualty", "date");
   const mf_array_male = [];
   const mf_array_female = [];
-  if (Object.keys(mf).length === 1) return;
+  if (Object.keys(mf).length === 1) return null;
 
   mf && Object.keys(mf).forEach((y, i) => {
     mf_array_male.push({
@@ -236,7 +243,7 @@ const timePlot = (props = {}) => {
 export {
   arrayOfYearAndProperty,
   plotByPropertyByDate,
-  plotByProperty,
-  popPyramidPlot,
+  PropertyPlot,
+  PyramidPlot,
   timePlot
 }

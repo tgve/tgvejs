@@ -4,7 +4,7 @@ import { StatefulTabs, Tab, StyledTabPanel } from "baseui/tabs-motion";
 import MapboxBaseLayers from '../MapboxBaseLayers';
 
 import LayerSettings from '../settings/LayerSettings';
-import { isArray, isEmptyOrSpaces } from '../../utils/JSUtils';
+import { isEmptyOrSpaces } from '../../utils/JSUtils';
 import { LAYERS } from '../settings/settingsUtils';
 import { humanize, iWithFaName } from '../../utils/utils';
 import ColorPicker from '../ColorPicker';
@@ -46,9 +46,6 @@ function SidebarTabs(props) {
       <Tab title={iWithFaName(
         "fa fa-info", undefined,
         { fontSize: '2rem' }, "Explore")} overrides={TabOverrides}>
-        {!hideChartGenerator &&
-          <AddVIS data={data} dark={dark} plotStyle={{ width: 270, margin: 10 }} />
-        }
         {notEmpty && columnNames.length > 0 &&
           layerName !== "grid" &&
           <>
@@ -75,6 +72,9 @@ function SidebarTabs(props) {
           </>
         }
         {!hideCharts && <Charts {...props} />}
+        {!hideChartGenerator &&
+          <AddVIS data={data} dark={dark} plotStyle={{ width: 270, margin: 10 }} />
+        }
       </Tab>
       <Tab title={iWithFaName(
         "fa fa-sliders", undefined,
