@@ -9,6 +9,7 @@ import {
 import { sampleGeojson } from './utils';
 import { LAYERS } from '../components/settings/settingsUtils';
 import { screenshot } from '../utils/utils';
+import { DECK_LAYER_NAMES } from '../Constants';
 
 // see https://jestjs.io/docs/mock-functions
 jest.mock('../home/util', () => {
@@ -56,6 +57,14 @@ test('Home shallow and mount', async () => {
     .textContent)
     .toBe("")
 })
+
+test('Home - layers', async () => {
+  // screen.debug()
+  DECK_LAYER_NAMES.forEach(layer => {
+    render(<Home layerName={layer} data={sampleGeojson} />)
+  })
+})
+
 
 test('Home - show Charts', async () => {
   await render(<Home data={sampleGeojson} />)
