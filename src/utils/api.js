@@ -56,7 +56,7 @@ const params = function (props, search = "") {
   const apiValue = function (paramName, ENV_NAME, bool = false) {
     const param = props[paramName]
     // first check query string (URL params)
-    if (qsr.hasOwnProperty(paramName) && !param) {
+    if (qsr.hasOwnProperty(paramName)) {
       return bool ? boolStr(qsr[paramName]) : qsr[paramName]
       // then React props
     } else if (bool && typeof param === 'boolean') {
