@@ -26,7 +26,7 @@
     "@turf/boolean-contains": "^6.5.0",
     "@turf/centroid": "^6.5.0",
     "baseui": "^10.3.0",
-    "csv2geojson": "^5.1.1",
+    "csv2geojson": "^5.1.2",
     "d3-array": "^2.9.1",
     "d3-format": "^1.4.5",
     "d3-scale": "^3.2.3",
