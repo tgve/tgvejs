@@ -25,7 +25,7 @@
     "@turf/bezier-spline": "^6.5.0",
     "@turf/boolean-contains": "^6.5.0",
     "@turf/centroid": "^6.5.0",
-    "baseui": "^10.3.0",
+    "baseui": "^12.2.0",
     "csv2geojson": "^5.1.2",
     "d3-array": "^3.2.1",
     "d3-format": "^3.1.0",
