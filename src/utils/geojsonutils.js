@@ -79,22 +79,23 @@ const getPropertyValues = (geojson, property) => {
   if (!geojson || !geojson.features) return null;
   const all = {}
   let values = new Set();
+  console.log(geojson);
   geojson.features.forEach(feature => {
-    feature.properties && Object.keys(feature.properties) &&
-    Object.keys(feature.properties).forEach((each) => {
-      if (property && property === each) {
-        // if the right property,
-        // add it to the value to be returnd
-        values.add(feature.properties[each])
-      } else {
-        if (typeof (all[each]) === 'object') { // a set
-          all[each].add(feature.properties[each])
+    feature && feature.properties && Object.keys(feature.properties) &&
+      Object.keys(feature.properties).forEach((each) => {
+        if (property && property === each) {
+          // if the right property,
+          // add it to the value to be returnd
+          values.add(feature.properties[each])
         } else {
-          all[each] = new Set();
-          all[each].add(feature.properties[each])
+          if (typeof (all[each]) === 'object') { // a set
+            all[each].add(feature.properties[each])
+          } else {
+            all[each] = new Set();
+            all[each].add(feature.properties[each])
+          }
         }
-      }
-    })
+      })
   })
   return property ? Array.from(values) : all;
 }
@@ -159,11 +160,8 @@ const propertyCountByProperty = (data, key, key2, year = true) => {
   if (!data || !key || !key2 || key === key2) return;
   let sub_data = {} // create object based on key2 values
   data.forEach(feature => {
-    const props = feature.properties;
+    const props = feature && feature.properties;
     if(!props || !Object.keys(props)) return
-    /**
-     * TODO:
-     */
     const k2 = year && new Date(props[key2]) &&
     new Date(props[key2]).getFullYear() ?
     new Date(props[key2]).getFullYear() : props[key2];
