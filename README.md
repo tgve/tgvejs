@@ -150,6 +150,22 @@ See:
 
 This package is part of ongoing research at the University of Leeds, is provided “as is” and is likely to be changed without warning to meet the research needs of the University.
 
+## Citing TGVE
+
+You can cit TGVE like:
+```bib
+@inproceedings {10.2312:evs.20231045,
+booktitle = {EuroVis 2023 - Short Papers},
+editor = {Hoellt, Thomas and Aigner, Wolfgang and Wang, Bei},
+title = {{TGVE: a Tool for Analysis and Visualization of Geospatial Data}},
+author = {Hama, Layik and Beecham, Roger and Lomax, Nik},
+year = {2023},
+publisher = {The Eurographics Association},
+ISBN = {978-3-03868-219-6},
+DOI = {10.2312/evs.20231045}
+}
+```
+
 ## Funding
 
 The project is led by Dr [Nik
