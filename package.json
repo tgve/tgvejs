@@ -88,7 +88,7 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^12.1.5",
-    "chromedriver": "^108.0.0",
+    "chromedriver": "^119.0.1",
     "geckodriver": "^3.2.0",
     "mutationobserver-shim": "^0.3.7",
     "postcss": "^8.3.7",
