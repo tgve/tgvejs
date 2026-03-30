@@ -18,9 +18,9 @@ jobs:
         node-version: [18.x, 20.x]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v5
       with:
         node-version: ${{ matrix.node-version }}
     - name: yarn install
@@ -28,14 +28,11 @@ jobs:
       env:
         CI:
 
-    - name: install react & react-dom
-      run: yarn add react@17.0.2 react-dom@17.0.2
-
     - name: Tests (cov)
       run: yarn run coverage
 
     - name: Codecov
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v4
       if: ${{matrix.node-version == '18.x'}}
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
