@@ -29,7 +29,7 @@ jobs:
         CI:
 
     - name: install react & react-dom
-      run: yarn add react react-dom
+      run: yarn add react@17.0.2 react-dom@17.0.2
 
     - name: Tests (cov)
       run: yarn run coverage
