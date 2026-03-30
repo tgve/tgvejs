@@ -14,7 +14,6 @@ const generateTooltip =(props) => {
   const BAR_HEIGHT = 80;
   const { topx, topy, selectedObject,
     column1 = "accident_severity", column2 = "date" } = props;
-  console.log(selectedObject);
   const isMobile = isObject(props) && props.isMobile;
   //const isMobile = false;
   if (!selectedObject) return null;

@@ -73,7 +73,7 @@ export default class UI extends React.Component {
               <Button
                 key={each + "-" + i}
                 value={each}
-                onClick={(e) => console.log(e.target.value)}>
+              >
                 {each}
               </Button>
             )
@@ -86,9 +86,7 @@ export default class UI extends React.Component {
         labelKey="id"
         placeholder={"Choose " + humanize(title)}
         type={TYPE.search}
-        onChange={event =>
-          console.log(event && event.value[0] && event.value[0].id)
-        }
+        onChange={() => { }}
       />
     }
     return ui_returned

@@ -79,7 +79,6 @@ const getPropertyValues = (geojson, property) => {
   if (!geojson || !geojson.features) return null;
   const all = {}
   let values = new Set();
-  console.log(geojson);
   geojson.features.forEach(feature => {
     feature && feature.properties && Object.keys(feature.properties) &&
       Object.keys(feature.properties).forEach((each) => {
