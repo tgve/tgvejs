@@ -33,7 +33,6 @@ export default class MapboxBaseLayers extends React.Component {
         }
         value={selected && selected[0] && selected[0].value}
         onSelectCallback={(selected) => {
-          console.log(selected)
           if (selected && selected.length) {
             this.setState({ selected: selected[0].value });
             typeof (onSelectCallback) === 'function' &&

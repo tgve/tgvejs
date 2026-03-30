@@ -24,11 +24,11 @@ export default class Uploader extends React.Component {
         this.reset();
 
         typeof contentCallback === 'function'
-        && contentCallback({
-          textOrBuffer: reader.result,
-          name: file.name,
-          type: file.type
-        })
+          && contentCallback({
+            textOrBuffer: reader.result,
+            name: file.name,
+            type: file.type
+          })
       }
       if (file.type.match(textType)) reader.readAsText(file);
       if (file.type.match(/zip/)) reader.readAsArrayBuffer(file)

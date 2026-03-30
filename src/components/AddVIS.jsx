@@ -129,7 +129,7 @@ export default function AddVIS(props) {
         {!noAccordion ?
           <Accordion
             expanded={true}
-            onChange={({ expanded }) => console.log(expanded)}
+            onChange={() => {}}
           >
             {
               list.map((plot, i) =>
