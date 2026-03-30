@@ -15,12 +15,12 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x]
+        node-version: [18.x, 20.x]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
     - name: yarn install
@@ -29,14 +29,14 @@ jobs:
         CI:
 
     - name: install react & react-dom
-      run: yarn add react react-dom
+      run: yarn add react@17.0.2 react-dom@17.0.2
 
     - name: Tests (cov)
       run: yarn run coverage
 
     - name: Codecov
       uses: codecov/codecov-action@v2
-      if: ${{matrix.node-version == '14.x'}}
+      if: ${{matrix.node-version == '18.x'}}
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         flags: unittests
