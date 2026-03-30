@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x]
+        node-version: [18.x, 20.x]
 
     steps:
     - uses: actions/checkout@v4
@@ -36,7 +36,7 @@ jobs:
 
     - name: Codecov
       uses: codecov/codecov-action@v2
-      if: ${{matrix.node-version == '14.x'}}
+      if: ${{matrix.node-version == '18.x'}}
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         flags: unittests
